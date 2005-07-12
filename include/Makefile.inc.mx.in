@@ -1,0 +1,6 @@
+
+# MX Definitions
+export MXDEF  =-D__MX
+export MXLP   =-L@prefix@/lib
+export MXIP   =-I@prefix@/include 
+export MXLIB  =-lg2 -lsu -lpthread  

@@ -1,0 +1,64 @@
+Submitted as contributed work to the Maui Scheduler
+
+Copyright (C) 2001 Niclas Andersson
+National Supercomputer Centre, Sweden
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+
+DESCRIPTION
+
+The program 'mauires' generates a HTML-table out of the output from
+'showres -n' in the Maui Scheduler.  Job reservations are always shown
+on top of any possible user reservation.
+
+Standing reservations can be recognized by name and shown in a
+different color. Currently, user reservations named "devel*" is
+recognized.
+
+The output consists of a table with gif-images in various sizes
+showing all the reservations made, both running and idle, giving a
+good overview of the load on the system. CSS is used to prettify the
+output.
+
+The output is preferably combined with the output from 'showq' in a
+perl-script creating a WWW-page showing a more complete status of the
+system.  The enclosed file 'ingvarstatus' is such a script. For
+a live demonstration, please direct your WWW browser to
+
+	http://www.nsc.liu.se/cgi-bin/ingvarstatus
+
+
+FILES
+
+mauireswww.c
+mauistatus
+mauistatus.html
+status.gif
+transp.gif
+bggrid.gif
+darkgreen.gif
+green.gif
+red.gif
+yellow.gif
+gray.gif
+sunday.gif
+monday.gif
+tuesday.gif
+wednesday.gif
+thursday.gif
+friday.gif
+saturday.gif
+
+AUTHOR
+	
+Niclas Andersson <nican@nsc.liu.se>
+National Supercomputer Centre, Sweden

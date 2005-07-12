@@ -1,0 +1,6 @@
+# LoadLeveller Definitions
+export LLDEF  = @LLDEF@
+export LLPATH = @LLDIR@
+export LLLIB  = -lllapi
+export LLIP   = -I$(LLPATH)/include -I/u/loadl/include
+export LLLP   = -L$(LLPATH)/lib -L/u/loadl/lib

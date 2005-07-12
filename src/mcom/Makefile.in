@@ -1,0 +1,53 @@
+# Makefile for GridSuite: MCom 4.2.2
+# Copyright 1999 - 2005  Cluster Resources, Inc, All Rights Reserved
+
+prefix=$(ROOT)@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+sysconfdir=@sysconfdir@
+localstatedir=@localstatedir@
+libdir=@libdir@
+includedir=@includedir@
+mandir=@mandir@
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+SEED=@seed@
+moab_defs=@moab_defs@ -D__MGRIDENABLE
+moab_ip=@moab_ip@
+moab_lp=@moab_lp@
+moab_libs=@moab_libs@
+
+LD=$(CC)
+CP=cp
+RM=rm -f
+AR=ar rcs
+
+
+TOP  =../..
+BIN  =$(TOP)/bin
+INC  =$(TOP)/include
+LIB  =$(TOP)/lib
+
+LP   =-L$(LIB) $(moab_lp)
+IP   =-I$(INC) $(moab_ip)
+DEFS =$(moab_defs)
+LIBS = $(moab_libs)
+
+LIBMCOM  =$(LIB)/libmcom.a
+
+OBJS =MSU.o MSec.o MXML.o MSSSI.o MConst.o MComm.o MTComm.o
+
+DEPS =$(INC)/moab.h $(INC)/moab-proto.h $(INC)/mcom.h $(INC)/mg2.h
+
+all: $(LIBMCOM)
+
+.c.o:   $(DEPS)
+	$(CC) $(CFLAGS) $(IP) $(DEFS) -c $<
+
+$(LIBMCOM): $(OBJS)
+	$(AR) $(LIBMCOM) $(OBJS)
+
+clean:
+	$(RM) *.o $(LIBMCOM)

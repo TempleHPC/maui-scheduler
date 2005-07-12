@@ -1,0 +1,9 @@
+
+/* moab-local.h */
+
+#define MBUILD_DATE    "@BUILDDATE@"
+#define MBUILD_DIR     "@BUILDDIR@"
+#define MBUILD_HOST    "@HOSTNAME@"
+#define MBUILD_SKEY    "@SEED@"
+#define MBUILD_HOMEDIR "@SPOOLDIR@"
+

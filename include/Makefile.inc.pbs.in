@@ -1,0 +1,5 @@
+# PBS Definitions
+export PBSDEF  = -D__MPBS
+export PBSIP   = -I@PBSTARGETDIR@/include
+export PBSLP   = -L@PBSTARGETDIR@/lib
+export PBSLIB  = @PBSLIBS@

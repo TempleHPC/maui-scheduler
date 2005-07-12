@@ -1,0 +1,46 @@
+                 Maui Scheduler, Release 3.2.6 (patch 14)
+
+This package contains the Maui Scheduler, an advance reservation based HPC 
+batch scheduler with extensive job management and resource optimization
+features.  This version of Maui requires the Moab Local Scheduling System 
+(2.3 or higher) from Cluster Resources, Inc, which is also bundled in this 
+distribution.
+
+Source and/or binary forms of this software may be used by any 'End User' 
+organization pursuant to the condition's of the constraints in the LICENSE 
+file at no charge and for an unlimited period of time.  'End User' 
+organizations are defined as organizations which use this software on their 
+own systems and are not redistributing, modifying, supporting, or providing 
+other services specific to this software to other organizations for profit.  
+software may be modified for internal use and/or supported by the licensee 
+as necessary to meet the needs of the licensee's system.  For the full 
+license conditions for 'End User' and non-End User organizations see the 
+license agreement/s distributed with this software.
+
+To build this package, run './configure' followed by 'gmake' as the user 
+under which the software should run.
+
+General documentation can be found at the Official Maui Homepage at
+ 
+  http://clusterresources.com/maui
+
+For integration with various resources managers, please see 
+
+  PBS         - http://clusterresources.com/mauidocs/pbsintegration.html
+  Loadleveler - http://clusterresources.com/mauidocs/llintegration.html
+  SGE         - http://clusterresources.com/mauidocs/sgeintegration.html   
+
+Professional services (installation, configuration, development, consultation, 
+and support) are available through Cluster Resources, Inc at 
+
+  http://clusterresources.com
+
+General questions and bug reports may be submitted to the Maui users mailing 
+list address at 
+
+  mauiusers@supercluster.org 
+
+The Moab Workload Manager is based upon the next generation of the Moab 
+Scheduling System.  If you need increased functionality or scalability, you
+may want to consider this tool (see http://clusterresources.com/moab)
+

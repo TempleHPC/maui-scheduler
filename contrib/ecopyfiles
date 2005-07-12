@@ -1,0 +1,36 @@
+#!/bin/sh
+# usage copyfiles PKG VERSION PATCH ACTION
+
+export SERVER=kahu
+export DDIR=/var/www/html/cri/downloads
+
+export NOW=`/bin/date +%s`
+
+export PKG=$1
+export DIST=$2
+export VERSION=$DIST$3
+export SRC=$4
+export ACTION=$5
+
+export DIR=$DDIR/$PKG
+export EDIR=$DDIR/e$PKG
+export SNAP=$DIR/temp/$PKG-$VERSION-snap.$NOW.tar.gz
+export ESNAP=$EDIR/temp/$PKG-$VERSION-snap.$NOW.tar.gz
+export DIST=$DIR/$PKG-$VERSION.tar.gz
+export EDIST=$EDIR/$PKG-$VERSION.tar.gz
+
+cp $SRC /usr/local/dev/dist
+
+case "$ACTION" in
+all)
+	scp $SRC $SERVER:$ESNAP
+	scp $SRC $SERVER:$EDIST
+
+	;;
+snap)
+	scp $SRC $SERVER:$ESNAP
+	;;
+*)
+	;;
+esac
+

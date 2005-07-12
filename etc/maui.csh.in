@@ -1,0 +1,8 @@
+# Setup MAUI PATH
+if ( "$PATH" !~  */maui/sbin* ) then
+        setenv PATH "${PATH}:@prefix@/sbin"
+endif
+if ( "$PATH" !~  */maui/bin* ) then
+        setenv PATH "${PATH}:@prefix@/bin"
+endif
+

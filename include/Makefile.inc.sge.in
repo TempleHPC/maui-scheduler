@@ -1,0 +1,8 @@
+# SGE Definitions
+export SGEDEF  = -D__MSGE -D__SGE_NO_USERMAPPING__
+export SGETOP  = @SGEBUILDDIR@
+export SGEIP   = -I$(SGETOP) -I$(SGETOP)/common -I$(SGETOP)/libs/comm -I$(SGETOP)/libs/cull \
+-I$(SGETOP)/libs/gdi -I$(SGETOP)/daemons/commd -I$(SGETOP)/libs/rmon -I$(SGETOP)/libs/uti \
+-I$(SGETOP)/libs/sched -I$(SGETOP)/daemons/common
+export SGELP   = -L$(SGETOP)/@SGEOSDIR@
+export SGELIB  = -lsched -lgdi -lcull -lcom -luti -lrmon $(SGETOP)/@SGEOSDIR@/sig_handlers.o

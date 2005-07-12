@@ -1,0 +1,5 @@
+# LSF Definitions
+export LSFDEF  = @LSFDEFS@
+export LSFIP   = -I@LSFDIR@/include -I@LSFDIR@/include/lsf
+export LSFLP   = -L@LSFDIR@/lib
+export LSFLIB  = @LSFLIBS@
