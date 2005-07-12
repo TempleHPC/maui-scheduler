@@ -1509,6 +1509,8 @@ typedef struct {
   int           OType;
   } sres_t;
 
+#define srsv_t sres_t
+
 typedef struct {
   long       Time;
   short      Type;

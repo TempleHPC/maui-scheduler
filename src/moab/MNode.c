@@ -1153,6 +1153,9 @@ int MNodeGetPreemptList(
         {
         R = N->R[rindex];
 
+        if (R == NULL)
+          break;
+
         if ((R == (mres_t *)1) ||
             (R->Name[0] == '\0') ||
             (R->Name[0] == '\1'))
@@ -3617,6 +3620,10 @@ int MNodeSetClass(
     {
     ptr = MUStrTok(ClassString,"+",&TokPtr);
     }
+  else
+    {
+    ptr = NULL;
+    }
 
   while ((C != NULL) && (ptr != NULL))
     {
@@ -5102,7 +5109,7 @@ int MUNLGetMinAVal(
   mnalloc_t  *NL,     /* I */
   int         NAttr,  /* I */
   mnode_t   **NPtr,   /* O (optional) */
-  void      **Val)    /* O (optional) */
+  void      **Val)    /* O */
  
   {
   mnode_t *N;
@@ -5118,7 +5125,12 @@ int MUNLGetMinAVal(
     {
     return(FAILURE);
     }
- 
+
+  if (NAttr == mnaNodeType)
+    {
+    ((char *)Val)[0] = '\0';
+    }
+
   switch (NAttr)
     {
     case mnaSpeed:

@@ -754,11 +754,6 @@ int MRMJobCancel(
       break;
     }  /* END switch(MSched.Mode) */
 
-  if (J->IFlags & (1 << mjifIsExiting))
-    {
-    return(SUCCESS);
-    }
-
   memset(RMList,0,sizeof(RMList));
  
   rmcount = 0;
@@ -4208,11 +4203,11 @@ int MRMJobPostUpdate(
   {
   mreq_t   *RQ;
 
-  int       index;
-  int       nindex;
-  int       rqindex;
-  int       tindex;
-  int       jnindex;
+  int       index = 0;
+  int       nindex = 0;
+  int       rqindex = 0;
+  int       tindex = 0;
+  int       jnindex = 0;
 
   int       TC;
 

@@ -1300,13 +1300,13 @@ int MJobSelectMNL(
 
   int           AvailableTaskCount[MAX_MREQ_PER_JOB];
 
-  int           TotalAvailINC;
-  int           TotalAvailITC;
-  int           TotalAvailIPC;
+  int           TotalAvailINC = 0;
+  int           TotalAvailITC = 0;
+  int           TotalAvailIPC = 0;
 
-  int           TotalAvailPNC;
-  int           TotalAvailPTC;
-  int           TotalAvailPPC;
+  int           TotalAvailPNC = 0;
+  int           TotalAvailPTC = 0;
+  int           TotalAvailPPC = 0;
 
   int           PreempteeTCList[MAX_MJOB];
   int           PreempteeNCList[MAX_MJOB];
@@ -1349,7 +1349,7 @@ int MJobSelectMNL(
 
   int      SC;
 
-  int      AllowPreemption;
+  int      AllowPreemption = FALSE;
   int      PIsConditional = FALSE;
 
   const char *FName = "MJobSelectMNL";

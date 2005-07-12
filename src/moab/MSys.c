@@ -15,8 +15,8 @@ mgcred_t *MUser[MAX_MUSER + MAX_MHBUF];
 mgcred_t  MGroup[MAX_MGROUP + MAX_MHBUF];
 mgcred_t  MAcct[MAX_MACCT + MAX_MHBUF];
 mres_t   *MRes[MAX_MRES];    
-sres_t    SRes[MAX_MSRES];
-sres_t    OSRes[MAX_MSRES];
+srsv_t    SRes[MAX_MSRES];
+srsv_t    OSRes[MAX_MSRES];
 mjobl_t   MJobName[MAX_MJOB + MAX_MHBUF];
 mam_t     MAM[MAX_MAM];
 mrange_t  MRange[MAX_MRANGE];
@@ -70,7 +70,7 @@ int __MSysTestRLMerge();
 
 
 
-int MSysInitialize()
+int MSysInitialize(mbool_t DoInit)
 
   {
   int       index;
@@ -162,7 +162,7 @@ int MSysInitialize()
   S->E[mxoSched] = &MSched;
 
   S->T[mxoSRes]  = &SRes[0];
-  S->S[mxoSRes]  = sizeof(sres_t);
+  S->S[mxoSRes]  = sizeof(srsv_t);
   S->M[mxoSRes]  = MAX_MSRES;
   S->E[mxoSRes]  = &SRes[MAX_MSRES - 1];
 
@@ -375,21 +375,21 @@ int MSysLoadConfig(
 
   MCfgProcessBuffer(MSched.ConfigBuffer);
 
-  MCredLoadConfig(mxoSys,NULL,NULL);
+  MCredLoadConfig(mxoSys,NULL,NULL,NULL);
 
-  MCredLoadConfig(mxoQOS,"DEFAULT",NULL);
-  MCredLoadConfig(mxoQOS,NULL,NULL);      
+  MCredLoadConfig(mxoQOS,"DEFAULT",NULL,NULL);
+  MCredLoadConfig(mxoQOS,NULL,NULL,NULL);      
 
-  MCredLoadConfig(mxoUser,"DEFAULT",NULL);
-  MCredLoadConfig(mxoUser,NULL,NULL);      
+  MCredLoadConfig(mxoUser,"DEFAULT",NULL,NULL);
+  MCredLoadConfig(mxoUser,NULL,NULL,NULL);      
 
-  MCredLoadConfig(mxoGroup,"DEFAULT",NULL);
-  MCredLoadConfig(mxoAcct,"DEFAULT",NULL);
-  MCredLoadConfig(mxoClass,"DEFAULT",NULL);
+  MCredLoadConfig(mxoGroup,"DEFAULT",NULL,NULL);
+  MCredLoadConfig(mxoAcct,"DEFAULT",NULL,NULL);
+  MCredLoadConfig(mxoClass,"DEFAULT",NULL,NULL);
  
-  MCredLoadConfig(mxoGroup,NULL,NULL);
-  MCredLoadConfig(mxoAcct,NULL,NULL);
-  MCredLoadConfig(mxoClass,NULL,NULL);
+  MCredLoadConfig(mxoGroup,NULL,NULL,NULL);
+  MCredLoadConfig(mxoAcct,NULL,NULL,NULL);
+  MCredLoadConfig(mxoClass,NULL,NULL,NULL);
   
   MSRLoadConfig(NULL);
 

@@ -3924,12 +3924,12 @@ int UIChangeParameter(
 
   /* evaluate cred config */
 
-  MCredLoadConfig(mxoSys,NULL,RBuffer);
-  MCredLoadConfig(mxoQOS,NULL,RBuffer);
-  MCredLoadConfig(mxoUser,NULL,RBuffer);
-  MCredLoadConfig(mxoGroup,NULL,RBuffer);
-  MCredLoadConfig(mxoAcct,NULL,RBuffer);
-  MCredLoadConfig(mxoClass,NULL,RBuffer);
+  MCredLoadConfig(mxoSys,NULL,RBuffer,NULL);
+  MCredLoadConfig(mxoQOS,NULL,RBuffer,NULL);
+  MCredLoadConfig(mxoUser,NULL,RBuffer,NULL);
+  MCredLoadConfig(mxoGroup,NULL,RBuffer,NULL);
+  MCredLoadConfig(mxoAcct,NULL,RBuffer,NULL);
+  MCredLoadConfig(mxoClass,NULL,RBuffer,NULL);
 
   /* MNodeLoadConfig(NULL,RBuffer); */
  

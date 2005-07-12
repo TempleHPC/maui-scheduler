@@ -40,9 +40,10 @@ char *__MCredShowLimit(mpu_t *,int,int,int);
 
 int MCredLoadConfig(
 
-  int   OIndex,  /* I */
-  char *CName,   /* I */
-  char *ABuf)    /* I (optional) */
+  int   OIndex, 
+  char *CName,
+  char *ABuf,    
+  char *EMsg)
 
   {
   char   IndexName[MAX_MNAME];
@@ -57,11 +58,6 @@ int MCredLoadConfig(
   mfs_t    *CFSPtr = NULL;
   mcredl_t *CLPtr  = NULL;
  
-  /* FORMAT:  <KEY>=<VAL>[<WS><KEY>=<VAL>]...         */
-  /*          <VAL> -> <ATTR>=<VAL>[:<ATTR>=<VAL>]... */
-
-  /* load all/specified cred config info */
-
   head = (ABuf != NULL) ? ABuf : MSched.ConfigBuffer;
 
   if (head == NULL)

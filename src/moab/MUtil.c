@@ -100,6 +100,9 @@ int MUGetPair(
 
   for (index = 0;index < MAX_MNAME;index++)
     {  
+    if (ptr[index] == '\0')
+      break;
+
     if (CmpRelative == TRUE)
       {
       if (isspace(ptr[index]) || 
@@ -131,7 +134,7 @@ int MUGetPair(
       
       for (index = index + 1;index < MAX_MNAME;index++)
         {
-        if (ptr[index] == ']')
+        if ((ptr[index] == ']') || (ptr[index] == '\0'))
           break;
 
         if (AttrArray != NULL)

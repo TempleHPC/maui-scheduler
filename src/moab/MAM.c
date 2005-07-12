@@ -457,7 +457,7 @@ int MAMAllocJDebit(
       /* PROCCOUNT -> PROCS (QBank 2.9) */
       /* CLASS supported in 2.9 */
  
-      sprintf(AMISBuffer,"COMMAND=make_withdrawal AUTH=%s MACHINE=%s%s%s USER=%s WCTIME=%ld PROCCOUNT=%d PROCCRATE=%.2lf %sCLASS=%s NODETYPE=%s JOBID=%s JOBTYPE=job",        
+      sprintf(AMISBuffer,"COMMAND=make_withdrawal AUTH=%s MACHINE=%s%s%s USER=%s WCTIME=%ld PROCCOUNT=%d PROCCRATE=%.2lf %sCLASS=%s NODETYPE=%s JOBID=%s JOBTYPE=job NODES=%d",        
         MSched.Admin1User[0],
         R->Name,
         (AccountName[0] != '\0') ? " ACCOUNT=" : "",
@@ -469,7 +469,8 @@ int MAMAllocJDebit(
         QOSString,
         (J->Cred.C != NULL) ? J->Cred.C->Name : DEFAULT,
         NodeType,
-        J->Name);
+        J->Name,
+        J->NodeCount);
 
       rc = MAMQBDoCommand(
              A,
@@ -771,7 +772,7 @@ int MAMAllocRDebit(
  
     case mamtQBANK:
 
-      sprintf(AMISBuffer,"COMMAND=make_withdrawal AUTH=%s MACHINE=%s ACCOUNT=%s USER=%s WCTIME=%ld PROCCRATE=%.2lf PROCCOUNT=%d QOS=%s CLASS=%s NODETYPE=%s JOBID=%s JOBTYPE=res",
+      sprintf(AMISBuffer,"COMMAND=make_withdrawal AUTH=%s MACHINE=%s ACCOUNT=%s USER=%s WCTIME=%ld PROCCRATE=%.2lf PROCCOUNT=%d QOS=%s CLASS=%s NODETYPE=%s JOBID=%s JOBTYPE=res NODES=%d",
         MSched.Admin1User[0],
         MRM[0].Name,
         AName,
@@ -782,7 +783,8 @@ int MAMAllocRDebit(
         DEFAULT,
         "DEFAULT",
         NodeType,
-        R->Name);
+        R->Name,
+        R->NodeCount);
  
       rc = MAMQBDoCommand(
         AM,
@@ -1084,7 +1086,7 @@ int MAMAllocJReserve(
  
     case mamtQBANK:
     
-      sprintf(AMISBuffer,"COMMAND=make_reservation AUTH=%s MACHINE=%s%s%s USER=%s WCLIMIT=%ld PROCCOUNT=%d %sCLASS=%s NODETYPE=%s TYPE=%s JOBID=%s JOBTYPE=%s",
+      sprintf(AMISBuffer,"COMMAND=make_reservation AUTH=%s MACHINE=%s%s%s USER=%s WCLIMIT=%ld PROCCOUNT=%d %sCLASS=%s NODETYPE=%s TYPE=%s JOBID=%s JOBTYPE=%s NODES=%d",
         MSched.Admin1User[0],
         RM->Name, 
         (AccountName[0] != '\0') ? " ACCOUNT=" : "",
@@ -1097,7 +1099,8 @@ int MAMAllocJReserve(
         NodeType,
         AM->ClientName,
         J->Name,
-        (TestAlloc == TRUE) ?  "tempjob" : "job");
+        (TestAlloc == TRUE) ?  "tempjob" : "job",
+        J->NodeCount);
  
       rc = MAMQBDoCommand(
         AM,
@@ -3811,7 +3814,7 @@ int MAMAllocRReserve(
 
     case mamtQBANK:
 
-      sprintf(Line,"COMMAND=make_reservation AUTH=%s MACHINE=%s ACCOUNT=%s USER=%s WCLIMIT=%ld PROCCOUNT=%d QOS=%s CLASS=%s NODETYPE=%s TYPE=%s JOBID=%s",
+      sprintf(Line,"COMMAND=make_reservation AUTH=%s MACHINE=%s ACCOUNT=%s USER=%s WCLIMIT=%ld PROCCOUNT=%d QOS=%s CLASS=%s NODETYPE=%s TYPE=%s JOBID=%s NODES=%d",
         MSched.Admin1User[0],
         MRM[0].Name,
         AName,
@@ -3822,7 +3825,8 @@ int MAMAllocRReserve(
         DEFAULT,
         NodeType,
         MSCHED_SNAME,
-        ResName);
+        ResName,
+        NodeCount);
 
       rc = MAMQBDoCommand(A,0,Line,NULL,&StatusCode,Response);
 

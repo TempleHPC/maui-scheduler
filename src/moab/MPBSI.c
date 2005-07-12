@@ -3,7 +3,7 @@
 /* Contains:                                    *
  *   int MPBSInitialize(R,SC)                   *
  *   int MPBSWorkloadQuery(R,JCount,SC)         * 
- *   int __MPBSJobGetState(Name,Status,PJob,FlagsP) *
+ *   int __MPBSJobGetState(Name,Status,PJob)    *
  *   int MPBSClusterQuery(R,RCount,SC)          *
  *   int __MPBSGetNodeState(Name,State,PNode)   *
  *   int MPBSJobStart(J,R,Msg,SC)               *
@@ -89,7 +89,7 @@ int __MPBSSystemQuery(mrm_t *,int *);
 int MPBSJobUpdate(struct batch_status *,mjob_t *,short *,int); 
 int MPBSNodeLoad(mnode_t *,struct batch_status *,int,mrm_t *); 
 int MPBSNodeUpdate(mnode_t *,struct batch_status *,enum MNodeStateEnum,mrm_t *);
-int __MPBSJobGetState(struct batch_status *,mrm_t *,char *,enum MJobStateEnum *,mulong *); 
+int __MPBSJobGetState(struct batch_status *,mrm_t *,char *,enum MJobStateEnum *); 
 int __MPBSGetNodeState(char *,enum MNodeStateEnum *,struct batch_status *);
 int MPBSQueryMOM(mnode_t *,mrm_t *,char *,int *);
 int MPBSGetClassInfo(mnode_t *N,char C[][MAX_MNAME],char A[][MAX_MNAME]); 
@@ -545,8 +545,6 @@ int MPBSWorkloadQuery(
 
   mjob_t *JNext;
 
-  mulong  JobFlagBM;
-
   const char *FName = "MPBSWorkloadQuery";
 
   DBG(1,fPBS) DPrint("%s(%s,JCount,SC)\n",
@@ -632,12 +630,10 @@ int MPBSWorkloadQuery(
 
       RMJID[0] = '\0';
 
-      if (__MPBSJobGetState(cur_job,R,RMJID,&Status,&JobFlagBM) == FAILURE)
+      if (__MPBSJobGetState(cur_job,R,RMJID,&Status) == FAILURE)
         break;
 
       MJobGetName(NULL,RMJID,R,SJID,sizeof(SJID),mjnShortName);
-
-      J = NULL;
 
       switch (Status)
         {
@@ -774,9 +770,6 @@ int MPBSWorkloadQuery(
   
           break;
         }  /* END switch (Status) */
-
-      if (J != NULL)
-        J->IFlags |= JobFlagBM;
       }    /* END for (cur_job)  */
 
     pbs_statfree(jobs);
@@ -837,8 +830,7 @@ int __MPBSJobGetState(
   struct batch_status *PJob,    /* I */
   mrm_t               *R,       /* I */
   char                *JobName, /* O (optional) */
-  enum MJobStateEnum  *Status,  
-  mulong              *FlagsP) 
+  enum MJobStateEnum  *Status)  /* O */
 
   {
   struct attrl *AP;
@@ -849,9 +841,6 @@ int __MPBSJobGetState(
     {
     strcpy(JobName,PJob->name);
     }
-
-  if (FlagsP != NULL)
-    *FlagsP = 0;
 
   for (AP = PJob->attribs;AP != NULL;AP = AP->next)
     {
@@ -897,11 +886,8 @@ int __MPBSJobGetState(
 
           break;
 
-        case 'E': 
-         
-          if (FlagsP != NULL)
-            *FlagsP |= (1 << mjifIsExiting);
-
+        case 'E': /* differences between 'exiting' and 'completed?' */
+          
           *Status = mjsRunning;
 
           break;
@@ -3328,8 +3314,6 @@ int MPBSJobLoad(
 
   tpbsa_t       TA;
 
-  mulong        tmpUL;
-
   const char *FName = "MPBSJobLoad";
 
   DBG(2,fPBS) DPrint("%s(%s,%s,J,TaskList,%d)\n",
@@ -3345,7 +3329,7 @@ int MPBSJobLoad(
 
   memset(&TA,0,sizeof(TA));
 
-  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State,&tmpUL) == FAILURE)
+  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State) == FAILURE)
     {
     DBG(1,fPBS) DPrint("ALERT:    cannot get job state info for job '%s'\n",
       J->Name);
@@ -3354,8 +3338,6 @@ int MPBSJobLoad(
 
     return(FAILURE);
     }
-
-  J->IFlags |= tmpUL;
 
   /* add resource requirements information */
   
@@ -3576,8 +3558,6 @@ int MPBSJobUpdate(
   int           MaxJobMem;
   int           MaxJobSwap;
 
-  mulong        tmpUL;
-
   const char *FName = "MPBSJobUpdate";
 
   DBG(2,fPBS) DPrint("%s(%s,%s,TaskList,%d)\n",
@@ -3597,15 +3577,13 @@ int MPBSJobUpdate(
 
   TaskList[0] = -1;
 
-  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State,&tmpUL) == FAILURE)
+  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State) == FAILURE)
     {
     DBG(1,fPBS) DPrint("ALERT:    cannot get job state info for job '%s'\n",
       J->Name);
 
     return(FAILURE);
     }
-
-  J->IFlags |= tmpUL;
 
   RQ = J->Req[0];
 
@@ -5005,11 +4983,8 @@ int MPBSNodeSetAttr(
 
   memset(&tmpAP,0,sizeof(tmpAP));
 
-  if (A != NULL)
-    {
-    AP = (struct attrl *)A;
-    }
-
+  AP = (struct attrl *)A;
+   
   DBG(6,fPBS) DPrint("INFO:     PBS node attribute '%s'  value: '%s'  (r: %s)\n",
     AP->name,
     (AP->value != NULL) ? AP->value : "NULL",

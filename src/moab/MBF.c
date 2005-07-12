@@ -1402,7 +1402,7 @@ int MBFGreedy(
   sindex = 0;
   scount = 0;
 
-  memcpy(LBFQueue,0,sizeof(LBFQueue));
+  memset(LBFQueue,0,sizeof(LBFQueue));
   memset(BFIndex,0,sizeof(BFIndex));    
 
   SPC = 0;

@@ -699,6 +699,8 @@ char *MJobGetName(
 
           Host = ptr;
 
+          JobID = NULL;
+
           StepID = NULL;
 
           while (ptr != NULL)

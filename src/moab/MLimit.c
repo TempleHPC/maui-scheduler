@@ -33,9 +33,9 @@ int MLimitEnforceAll(
 
   int     ResourceLimitsExceeded;  /* boolean */
 
-  int     VRes;
-  int     VLimit;
-  int     VVal;
+  int     VRes = -1;
+  int     VLimit = -1;
+  int     VVal = -1;
 
   int     rc;
 

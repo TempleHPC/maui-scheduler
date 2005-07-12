@@ -366,7 +366,9 @@ int MACLLoadConfig(
 
       ACL[ACLStart + AIndex].Affinity = nmPositiveAffinity;
 
-      for (tail = ptr + strlen(ptr) - 1;strchr("-+=%^!*",*tail);tail++)
+      tail = ptr + strlen(ptr) - 1;
+
+      if (strchr("-+=%^!*",*tail) != NULL)
         {
         switch(*tail)
           {
@@ -423,8 +425,8 @@ int MACLLoadConfig(
             /* NO-OP */
  
             break;
-        }  /* END switch(*tail) */
-      }    /* END for (tail) */
+          }  /* END switch(*tail) */
+        }    /* END if (tail) */
 
       /* extract modifier */
 

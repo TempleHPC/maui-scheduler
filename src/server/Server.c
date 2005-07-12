@@ -103,7 +103,7 @@ int main(
     FName,
     ArgC);
  
-  MSysInitialize();
+  MSysInitialize(TRUE);
 
   ServerSetSignalHandlers();
 
@@ -1215,7 +1215,7 @@ int ServerProcessRequests()
 
     MSysDestroyObjects();
 
-    MSysInitialize();
+    MSysInitialize(TRUE);
 
     ServerSetSignalHandlers();
 
