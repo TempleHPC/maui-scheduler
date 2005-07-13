@@ -60,6 +60,7 @@ int MXMLGetChildCI(mxml_t *,char *,int *,mxml_t **);
 int MXMLFromString(mxml_t **,char *,char **,char *);
 int MXMLDupE(mxml_t *,mxml_t **);
 mbool_t MXMLStringIsValid(char *);
+int MXMLToXString(mxml_t *,char **,int *,int,char **,mbool_t);
 
 
 

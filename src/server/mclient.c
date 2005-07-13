@@ -2534,11 +2534,11 @@ int MCShowCStats(
 
   mgcred_t  *tmpUP[MAX_MUSER]; 
 
-  mgcred_t  *tmpU;
-  mgcred_t *tmpG;
-  mgcred_t  *tmpA;
-  mqos_t   *tmpQ;
-  mclass_t *tmpC;
+  mgcred_t *tmpU = NULL;
+  mgcred_t *tmpG = NULL;
+  mgcred_t *tmpA = NULL;
+  mqos_t   *tmpQ = NULL;
+  mclass_t *tmpC = NULL;
 
   char     *NameP;
 

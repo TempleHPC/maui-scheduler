@@ -3282,7 +3282,7 @@ int MCShowBlocked(
   char  *ptr;
   char   name[MAX_MNAME];
   char   Reason[MAX_MBUFFER];
-  char   TotalProcs[MAX_MNAME];
+  int    TotalProcs;
  
   char   UserName[MAX_MNAME];
 
