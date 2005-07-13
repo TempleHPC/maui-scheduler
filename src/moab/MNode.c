@@ -3592,8 +3592,8 @@ int MNodeSetClass(
   int       Mode)        /* I (mClear/mAdd/mSet) */
 
   {
-  char *ptr;
-  char *ptr2;
+  char *ptr = NULL;
+  char *ptr2 = NULL;
 
   char *TokPtr;
 

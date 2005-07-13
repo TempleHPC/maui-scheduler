@@ -1601,7 +1601,7 @@ int MSecCompress(
   unsigned int Key;
   unsigned int Size;
   unsigned int Pos;
-  unsigned int Command;
+  unsigned int Command = 0;
   unsigned int X = 0;
   unsigned int Y = 9;
   unsigned int Z = 3;

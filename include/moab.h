@@ -21,16 +21,31 @@ typedef struct {
 typedef struct {
   long  MTime;
   int   FailureCount;
-  int   QCount;  /* query count */
-  int   JCount;  /* job count */
-  int   RCount;  /* reservation count */
-  int   CCount;  /* command count */
+  int   QCount;  
+  int   JCount; 
+  int   RCount; 
+  int   CCount;
 
-  int   SIsInitialized;  /* server (boolean) */
-  int   IIsInitialized;  /* interface (boolean) */
+  int   SIsInitialized;  
+  int   IIsInitialized; 
 
   char *Messages;
   } mgrid_t;
+
+typedef struct
+  {
+  char *Data;     
+  char *Owner;    
+  char *Source;     
+  long  ExpireTime; 
+  long  CTime;     
+  int Type;
+
+  int   Priority;  
+  int   Count;    
+
+  void *Next;    
+  } mmb_t;
 
 enum MValModEnum {
   mvmByte = 0,
@@ -190,6 +205,10 @@ typedef struct {
 #ifndef MAX_MRES
 # define MAX_MRES          1024
 #endif /* MAX_MRES */
+
+#ifndef MMAX_RSV
+# define MMAX_RSV MAX_MRES
+#endif
 
 #ifndef MAX_MFSDEPTH
 # define MAX_MFSDEPTH        24
