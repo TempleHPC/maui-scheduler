@@ -82,6 +82,10 @@ int main(
   int      GlobalSQ[MAX_MJOB];
   int      GlobalHQ[MAX_MJOB];
 
+  char    *tmpArgV[1024 + 1];
+
+  int      aindex;
+
   const char *FName = "main";
 
 #ifdef __MPURIFY
@@ -107,7 +111,17 @@ int main(
 
   ServerSetSignalHandlers();
 
-  ServerProcessArgs(ArgC,ArgV,TRUE);
+  for (aindex = 0;aindex < ArgC;aindex++)
+    {
+    if ((ArgV[aindex] == NULL) || (aindex >= 1024))
+      break;
+
+    MUStrDup(&tmpArgV[aindex],ArgV[aindex]);
+    }
+
+  tmpArgV[aindex] = NULL;
+
+  ServerProcessArgs(ArgC,tmpArgV,TRUE);
  
   if (MSysLoadConfig(MSched.HomeDir,MSched.ConfigFile,(1 << mcmForce)) == FAILURE)
     {
@@ -123,7 +137,15 @@ int main(
 
   MSysDoTest();
  
-  ServerProcessArgs(ArgC,ArgV,FALSE);
+  ServerProcessArgs(ArgC,tmpArgV,FALSE);
+
+  for (aindex = 0;aindex < ArgC;aindex++)
+    {
+    if (ArgV[aindex] == NULL)
+      break;
+
+    MUFree(&tmpArgV[aindex]);
+    }
  
   if (MSched.Mode != msmSim)
     {
