@@ -9463,6 +9463,9 @@ int ConfigShow(
     {
     Q = &MQOS[qindex];
 
+    if (Q->Name[0] == '\0')
+      break;
+
     MQOSConfigShow(Q,Vflag,PIndex,ptr,MAX_MBUFFER);
     }  /* END for (qindex) */
 

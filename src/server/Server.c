@@ -620,7 +620,7 @@ int ServerProcessArgs(
       if (ArgV[index] == NULL)
         break;
  
-      MSched.Argv[index] = ArgV[index];
+      MUStrDup(&MSched.Argv[index],ArgV[index]);
       }  /* END for (index) */
  
     MSched.Argv[index] = NULL;

@@ -4,7 +4,12 @@ Maui 3.2.6p14
 
   - Added support for NODEMEMOVERCOMMITFACTOR on TORQUE
   - Integrated latest DOE S3 communications library
-
+  - Cleaned up showconfig output
+  - Corrected multiple memory errors
+  - Fixed security initialization
+  - Fixed feature based reservation checkpoint recovery
+  - Improved command line arg handling
+ 
 Maui 3.2.6p11
 
   Scalability
