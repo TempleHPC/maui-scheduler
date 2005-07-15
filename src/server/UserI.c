@@ -6295,6 +6295,8 @@ int UIResCreate(
   int   index;
 
   char  Pattern[MAX_MBUFFER];
+  char *PatPtr;
+  int   PatSize;
 
   char *ptr;
   char *TokPtr;
@@ -6655,6 +6657,38 @@ int UIResCreate(
       NIndex);
 
     NodeCount = NIndex;
+    }
+
+  /* When the feature list is set, and a HOST_REGEX or "ALL"
+   * is used, we replace the Pattern with the resulting nodelist.
+   * This ensures the reservation is checkpointed properly */
+
+  if ((strcmp(FeatureList,NONE) != 0) && (strstr(Pattern,"TASKS") == NULL))
+    {
+    PatPtr   = Pattern;
+    PatSize = sizeof(Pattern);
+    PatPtr[0] = '\0';
+
+    for (nindex = 0;nindex < NodeCount;nindex++)
+      {
+      if (PatSize < 100)
+        {
+        DBG(0,fSCHED) DPrint("ERROR:    regex buffer overflow creating reservation '%s'\n", ResID);
+
+        return(FAILURE);
+        }
+
+      if (nindex != 0)
+        {
+        MUSNPrintF(&PatPtr,&PatSize,"|%s",
+          NodeList[nindex].N->Name);
+        }
+      else
+        {
+        MUSNPrintF(&PatPtr,&PatSize,"%s",
+          NodeList[nindex].N->Name);
+        }
+      }
     }
 
   /* translate dedicated proc request to per node proc request */

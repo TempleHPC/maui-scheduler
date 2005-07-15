@@ -1237,7 +1237,7 @@ int MResToXML(
  
   int *AList;
  
-  char tmpString[MAX_MLINE];
+  char tmpString[MAX_MBUFFER];
  
   if ((R == NULL) || (E == NULL))
     {
