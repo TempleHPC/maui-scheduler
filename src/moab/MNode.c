@@ -1149,6 +1149,8 @@ int MNodeGetPreemptList(
 
       NodeIsPreemptee = FALSE;
 
+      R = NULL;  /* NOTE: for compiler warnings only */
+
       for (rindex = 0;N->R[rindex] != NULL;rindex++)
         {
         R = N->R[rindex];
