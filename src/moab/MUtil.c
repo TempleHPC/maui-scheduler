@@ -391,7 +391,6 @@ int MUGetMS(
 
   {
   struct timeval  tvp;
-  struct timezone tzp;
 
   if (MS == NULL)
     {
@@ -400,7 +399,7 @@ int MUGetMS(
 
   if (TV == NULL)
     {
-    gettimeofday(&tvp,&tzp);
+    gettimeofday(&tvp,NULL);
 
     /* determine millisecond offset in current time interval */
 
@@ -5119,7 +5118,7 @@ int MUSNPrintF(
 
 
 
-int MUSNCat(char **BPtr,int *BSpace,char *Src) { return(MUStrNCat(BPtr,BSpace,Src)); };
+int MUSNCat(char **BPtr,int *BSpace,char *Src) { return(MUStrNCat(BPtr,BSpace,Src)); }
 
 int MUStrNCat(
 

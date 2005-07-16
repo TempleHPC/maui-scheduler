@@ -470,7 +470,7 @@ int MSUListen(
     {
     for (S->RemotePort = 10000;S->RemotePort < 20000;S->RemotePort++)
       {
-      sin.sin_port = htons((u_short)S->RemotePort);
+      sin.sin_port = htons((unsigned short)S->RemotePort);
 
       if (bind(sd,(struct sockaddr *)&sin,sizeof(sin)) == -1)
         {
@@ -503,7 +503,7 @@ int MSUListen(
     }
   else
     {
-    sin.sin_port = htons((u_short)S->RemotePort);
+    sin.sin_port = htons((unsigned short)S->RemotePort);
 
     if (bind(sd,(struct sockaddr *)&sin,sizeof(sin)) == -1)
       {

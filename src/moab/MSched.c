@@ -3565,8 +3565,6 @@ int MSchedSetDefaults(
   msched_t *S)  /* I */
 
   {
-  struct timezone  tzp;
-
   char            *ptr;
 
   int              count;
@@ -3663,13 +3661,8 @@ int MSchedSetDefaults(
   S->Schedule               = TRUE;
   S->Interval               = 0;
 
-  S->FBPollInterval         = MDEF_FBPOLLINTERVAL;
-  S->FBFailureCount         = MDEF_FBFAILURECOUNT;
+  gettimeofday(&S->SchedTime,NULL);
  
-  gettimeofday(&S->SchedTime,&tzp);
-
-  S->GreenwichOffset        = - (tzp.tz_minuteswest * 60);
-
   strcpy(S->Admin1User[0],DEFAULT_SchedADMIN);
   S->Admin1User[1][0]       = '\0';
  
@@ -6931,7 +6924,6 @@ int MSchedUpdateStats()
 
   {
   struct timeval   tvp;
-  struct timezone  tzp;
   long             schedtime;
 
   double           efficiency;
@@ -6948,7 +6940,7 @@ int MSchedUpdateStats()
   DBG(2,fCORE) DPrint("%s()\n",
     FName);
 
-  gettimeofday(&tvp,&tzp);
+  gettimeofday(&tvp,NULL);
 
   schedtime = (tvp.tv_sec  - MSched.SchedTime.tv_sec) * 1000 +
               (tvp.tv_usec - MSched.SchedTime.tv_usec) / 1000;

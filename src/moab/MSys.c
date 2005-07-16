@@ -2066,11 +2066,10 @@ int MSysUpdateTime(
 
   {
   struct timeval  tvp;
-  struct timezone tzp;
 
   long            interval;
 
-  gettimeofday(&tvp,&tzp);
+  gettimeofday(&tvp,NULL);
 
   /* determine time interval in 1/100's of a second */
 

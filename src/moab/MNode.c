@@ -4105,7 +4105,8 @@ int MNodeSetAttr(
     case mnaStatATime:
 
       if (Format == mdfString)
-        sscanf((char *)Value,"%ld",&N->SATime);
+        sscanf((char *)Value,"%lu",
+          &N->SATime);
       else
         N->SATime = *(long *)Value;
 
@@ -4114,7 +4115,8 @@ int MNodeSetAttr(
     case mnaStatTTime:
 
       if (Format == mdfString)
-        sscanf((char *)Value,"%ld",&N->STTime);
+        sscanf((char *)Value,"%lu",
+          &N->STTime);
       else
         N->STTime = *(long *)Value;
 
@@ -4123,7 +4125,8 @@ int MNodeSetAttr(
     case mnaStatUTime:
 
       if (Format == mdfString)
-        sscanf((char *)Value,"%ld",&N->SUTime);
+        sscanf((char *)Value,"%lu",
+          &N->SUTime);
       else
         N->SUTime = *(long *)Value;
 

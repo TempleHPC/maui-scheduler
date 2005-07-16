@@ -3756,7 +3756,7 @@ int MCShowSchedulerStatistics(
 
   /*          STT INT RT IQ RJ RJ AN AP AM IN IP IM TC SJ TPH DPH SPH MSA MSD QPS AQN WCA CAC PSX IT RPI MEF ME MXF ABP MB AQT MQT PSR PSD PSU MSA MSD JE */
 
-  sscanf(ptr,"%ld %ld %d %d %d %d %d %d %d %d %d %d %d %d %lf %lf %lf %lf %lf %lu %lu %lf %lf %lf %d %ld %lf %d %lf %lf %d %lf %lf %lf %lf %lf %lf %lf %d %d %lf",
+  sscanf(ptr,"%ld %ld %d %d %d %d %d %d %d %d %d %d %d %d %lf %lf %lf %lf %lf %ld %lu %lf %lf %lf %d %ld %lf %d %lf %lf %d %lf %lf %lf %lf %lf %lf %lf %d %d %lf",
     &StartTime,
     &InitializationTime,
     &SchedRunTime,                /* Time in Hundredth of a Second */

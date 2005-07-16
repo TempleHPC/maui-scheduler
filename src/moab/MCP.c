@@ -1493,7 +1493,7 @@ int MCPLoadSysStats(
 
   /*         LABL TME PHA PHB ITM CT SJ MSA MSD NJA JAC MXF MB MQT TXF TB TQT PSR PSD PSU JE SPH WEF WIT */
 
-  sscanf(Line,"%s %ld %lf %lf %ld %d %d %lf %lf %lf %lf %lf %d %ld %lf %d %ld %lf %lf %lf %d %lf %lf %d\n",
+  sscanf(Line,"%s %ld %lf %lf %ld %d %d %lf %lf %lf %lf %lf %d %lu %lf %d %lu %lf %lf %lf %d %lf %lf %d\n",
     tmpName,
     &CkTime,
     &tmpS.TotalPHAvailable,
