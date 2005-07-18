@@ -882,7 +882,7 @@ int __MPBSJobGetState(
          
           /* job has not reached release time */
  
-          *Status = mjsNotQueued;
+          *Status = mjsHold;
 
           break;
 
