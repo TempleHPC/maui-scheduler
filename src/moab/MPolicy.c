@@ -601,7 +601,7 @@ int MQueueSelectAllJobs(
 
   if (UpdateStats == TRUE)
     {
-    MStatClearUsage(0,(1 << mlActive)|(1 << mlIdle),FALSE);
+    MStatClearUsage(0,(1 << mlIdle),FALSE);
     }
   else if (TrackIdle == TRUE)
     {
