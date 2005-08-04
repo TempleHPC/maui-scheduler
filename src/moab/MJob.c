@@ -877,9 +877,9 @@ int MJobDestroy(
     MResDestroy(&J->R);
     }
 
-/* 
+  /* why was this commented out */
+ 
   MUFree((char **)&J->Cred.ACL);
-*/
 
   MUFree((char **)&J->Cred.CL);
 
@@ -887,6 +887,7 @@ int MJobDestroy(
   MUFree(&J->Message);
 
   MUFree(&J->E.Env);
+  MUFree(&J->E.IWD);
   MUFree(&J->E.Input);
   MUFree(&J->E.Output);
   MUFree(&J->E.Error);

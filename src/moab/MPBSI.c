@@ -635,9 +635,6 @@ int MPBSWorkloadQuery(
       if (__MPBSJobGetState(cur_job,R,RMJID,&Status,&IsExiting) == FAILURE)
         break;
 
-      if (IsExiting == TRUE)
-        J->Flags |= (1 << mjfIsExiting);
-
       MJobGetName(NULL,RMJID,R,SJID,sizeof(SJID),mjnShortName);
 
       switch (Status)
@@ -650,6 +647,9 @@ int MPBSWorkloadQuery(
 
           if (MJobFind(SJID,&J,0) == SUCCESS)
             {
+            if (IsExiting == TRUE)
+              IsExiting |= (1 << mjfIsExiting);
+
             MRMJobPreUpdate(J);
   
             MPBSJobUpdate(cur_job,J,TaskList,R->Index);
@@ -659,6 +659,9 @@ int MPBSWorkloadQuery(
           else if (MJobCreate(SJID,TRUE,&J) == SUCCESS)
             {
             /* if new job, load data */
+
+            if (IsExiting == TRUE)
+              IsExiting |= (1 << mjfIsExiting);
 
             MRMJobPreLoad(J,SJID,R->Index);
 
@@ -693,6 +696,9 @@ int MPBSWorkloadQuery(
 
           if (MJobFind(SJID,&J,0) == SUCCESS)
             {
+            if (IsExiting == TRUE)
+              IsExiting |= (1 << mjfIsExiting);
+
             /* if job never ran, remove record.  job cancelled externally */
   
             if ((J->State != mjsRunning) && (J->State != mjsStarting))

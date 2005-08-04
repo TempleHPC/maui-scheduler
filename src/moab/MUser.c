@@ -84,8 +84,6 @@ int MUserLoadCP(
     return(FAILURE);
     }
 
-  MXMLCreateE(&E,(char *)MXO[mxoUser]);        
- 
   MXMLFromString(&E,ptr,NULL,NULL);
  
   MOFromXML((void *)U,mxoUser,E);
