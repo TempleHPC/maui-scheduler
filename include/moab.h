@@ -1059,7 +1059,8 @@ enum {
   mjfSPViolation,   
   mjfIgnNodePolicies,
   mjfNoRMStart,
-  mjfGlobalQueue };
+  mjfGlobalQueue,
+  mjfIsExiting };
 
 enum {
   mjifNONE = 0,

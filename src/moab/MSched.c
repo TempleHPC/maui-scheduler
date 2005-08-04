@@ -6186,6 +6186,9 @@ int MJobDistributeTasks(
 
         for (nindex = 0;RQ->NodeList[nindex].N != NULL;nindex++)
           {
+          if (nindex >= MMAX_NODE_PER_JOB)
+            break;
+
           MaxTPN = MAX(MaxTPN,RQ->NodeList[nindex].TC);
           }
 
@@ -6197,6 +6200,9 @@ int MJobDistributeTasks(
 
         for (nindex = 0;RQ->NodeList[nindex].N != NULL;nindex++)
           {
+          if (nindex >= MMAX_NODE_PER_JOB)
+            break;
+
           if (Overflow == 0)
             break;
 
@@ -6223,6 +6229,9 @@ int MJobDistributeTasks(
 
         for (nindex = 0;RQ->NodeList[nindex].N != NULL;nindex++)
           {
+          if (nindex >= MMAX_NODE_PER_JOB)
+            break;
+
           if (index == RQ->NodeCount)
             {
             DBG(6,fSCHED) DPrint("INFO:     nodecount %d reached\n",
@@ -6290,6 +6299,9 @@ int MJobDistributeTasks(
 
           for (nindex = sindex;RQ->NodeList[nindex].N != NULL;nindex++)
             {
+            if (nindex >= MMAX_NODE_PER_JOB)
+              break;
+
             if ((int)RQ->NodeList[nindex].TC > MaxTPN)
               {
               MaxTPN   = RQ->NodeList[nindex].TC;
@@ -6314,6 +6326,9 @@ int MJobDistributeTasks(
 
           for (nindex = 0;nindex < AllocIndex;nindex++)
             {
+            if (nindex >= MMAX_NODE_PER_JOB)
+              break;
+
             if (RQ->BlockingFactor != 1)
               {
               /* blocking factor specification removes single step constraint */
@@ -6351,6 +6366,9 @@ int MJobDistributeTasks(
 
             for (nindex = AllocIndex - 1;nindex > 0;nindex--)
               {
+              if (nindex >= MMAX_NODE_PER_JOB)
+                break;
+
               if (tmpNodeList[nindex].TC != tmpNodeList[nindex - 1].TC)
                 {
                 tmpNodeList[nindex - 1].TC--;
@@ -6369,6 +6387,9 @@ int MJobDistributeTasks(
 
             for (nindex = AllocIndex - 1;nindex >= 0;nindex--)
               {
+              if (nindex >= MMAX_NODE_PER_JOB)
+                break;
+
               tmpNodeList[nindex].TC--;
 
               TasksAvail--;
@@ -6403,6 +6424,9 @@ int MJobDistributeTasks(
 
         for (nindex = 0;RQ->NodeList[nindex].N != NULL;nindex++)
           {
+          if (nindex >= MMAX_NODE_PER_JOB)
+            break;
+
           if (RQ->NodeList[nindex].TC >= TPN)
             {
             tmpNodeCount --;
@@ -6432,6 +6456,9 @@ int MJobDistributeTasks(
 
       for (nindex = 0;RQ->NodeList[nindex].N != NULL;nindex++)
         {
+        if (nindex >= MMAX_NODE_PER_JOB)
+          break;
+
         tmpNodeList[index].N = RQ->NodeList[nindex].N;
 
         if (RQ->NodeCount > 0)
@@ -6514,8 +6541,6 @@ int MJobDistributeTasks(
       tmpNodeCount = index;
       }  /* END else (R->Type == rmLL) */
     }    /* END for (rqindex) */
-
-   
 
   tmpNodeList[tmpNodeCount].N = NULL;
 
@@ -6626,6 +6651,9 @@ int MJobDistributeTasks(
 
     for (nindex1 = 0;NodeList[nindex1].N != NULL;nindex1++)
       {
+      if (nindex >= MMAX_NODE_PER_JOB)
+        break;
+
       if (NodeList[nindex1].TC == 0)
         continue;
 

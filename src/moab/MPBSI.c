@@ -3,11 +3,11 @@
 /* Contains:                                    *
  *   int MPBSInitialize(R,SC)                   *
  *   int MPBSWorkloadQuery(R,JCount,SC)         * 
- *   int __MPBSJobGetState(Name,Status,PJob)    *
+ *   int __MPBSJobGetState(Name,Status,PJob,IE) *
  *   int MPBSClusterQuery(R,RCount,SC)          *
  *   int __MPBSGetNodeState(Name,State,PNode)   *
  *   int MPBSJobStart(J,R,Msg,SC)               *
- *   int MPBSCancelJob(J,Message,R)             *
+ *   int MPBSJobCancel(J,Message,R)             *
  *   int MPBSJobMigrate(J,R,NL,Msg,SC)          *
  *   int MPBSJobSubmit(String,R,J,JobName,Msg,SC) *
  *   int MPBSNodeLoad(N,PNode,State,RMIndex)    *
@@ -89,7 +89,7 @@ int __MPBSSystemQuery(mrm_t *,int *);
 int MPBSJobUpdate(struct batch_status *,mjob_t *,short *,int); 
 int MPBSNodeLoad(mnode_t *,struct batch_status *,int,mrm_t *); 
 int MPBSNodeUpdate(mnode_t *,struct batch_status *,enum MNodeStateEnum,mrm_t *);
-int __MPBSJobGetState(struct batch_status *,mrm_t *,char *,enum MJobStateEnum *); 
+int __MPBSJobGetState(struct batch_status *,mrm_t *,char *,enum MJobStateEnum *,mbool_t *); 
 int __MPBSGetNodeState(char *,enum MNodeStateEnum *,struct batch_status *);
 int MPBSQueryMOM(mnode_t *,mrm_t *,char *,int *);
 int MPBSGetClassInfo(mnode_t *N,char C[][MAX_MNAME],char A[][MAX_MNAME]); 
@@ -545,6 +545,8 @@ int MPBSWorkloadQuery(
 
   mjob_t *JNext;
 
+  mbool_t IsExiting;
+
   const char *FName = "MPBSWorkloadQuery";
 
   DBG(1,fPBS) DPrint("%s(%s,JCount,SC)\n",
@@ -585,7 +587,7 @@ int MPBSWorkloadQuery(
     else
       ErrMsg = NULL;
 
-    if (ErrMsg == NULL)
+    if (pbs_errno == 0)
       {
       DBG(3,fPBS) DPrint("INFO:     queue is empty\n");
       }
@@ -630,8 +632,11 @@ int MPBSWorkloadQuery(
 
       RMJID[0] = '\0';
 
-      if (__MPBSJobGetState(cur_job,R,RMJID,&Status) == FAILURE)
+      if (__MPBSJobGetState(cur_job,R,RMJID,&Status,&IsExiting) == FAILURE)
         break;
+
+      if (IsExiting == TRUE)
+        J->Flags |= (1 << mjfIsExiting);
 
       MJobGetName(NULL,RMJID,R,SJID,sizeof(SJID),mjnShortName);
 
@@ -830,12 +835,16 @@ int __MPBSJobGetState(
   struct batch_status *PJob,    /* I */
   mrm_t               *R,       /* I */
   char                *JobName, /* O (optional) */
-  enum MJobStateEnum  *Status)  /* O */
+  enum MJobStateEnum  *Status,  /* O */
+  mbool_t             *IsExiting)
 
   {
   struct attrl *AP;
 
   *Status = mjsNONE;
+
+  if (IsExiting != NULL)
+    *IsExiting = FALSE;
 
   if ((JobName != NULL) && (JobName[0] == '\0'))
     {
@@ -887,7 +896,10 @@ int __MPBSJobGetState(
           break;
 
         case 'E': /* differences between 'exiting' and 'completed?' */
-          
+       
+          if (IsExiting != NULL) 
+            *IsExiting = TRUE; 
+ 
           *Status = mjsRunning;
 
           break;
@@ -2096,6 +2108,11 @@ int MPBSJobCancel(
     (J != NULL) ? J->Name : "NULL",
     (R != NULL) ? R->Name : "NULL",
     (Message != NULL) ? Message : "NULL");
+
+  if (J->Flags & (1 << mjfIsExiting))
+    {
+    return(SUCCESS);
+    }
 
   if (MSched.PreemptPolicy == mppCheckpoint)
     {
@@ -3314,6 +3331,8 @@ int MPBSJobLoad(
 
   tpbsa_t       TA;
 
+  mbool_t IsExiting;
+
   const char *FName = "MPBSJobLoad";
 
   DBG(2,fPBS) DPrint("%s(%s,%s,J,TaskList,%d)\n",
@@ -3329,7 +3348,7 @@ int MPBSJobLoad(
 
   memset(&TA,0,sizeof(TA));
 
-  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State) == FAILURE)
+  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State,&IsExiting) == FAILURE)
     {
     DBG(1,fPBS) DPrint("ALERT:    cannot get job state info for job '%s'\n",
       J->Name);
@@ -3338,6 +3357,9 @@ int MPBSJobLoad(
 
     return(FAILURE);
     }
+
+  if (IsExiting == TRUE)
+    J->Flags |= (1 << mjfIsExiting);
 
   /* add resource requirements information */
   
@@ -3558,6 +3580,8 @@ int MPBSJobUpdate(
   int           MaxJobMem;
   int           MaxJobSwap;
 
+  mbool_t       IsExiting;
+
   const char *FName = "MPBSJobUpdate";
 
   DBG(2,fPBS) DPrint("%s(%s,%s,TaskList,%d)\n",
@@ -3577,13 +3601,16 @@ int MPBSJobUpdate(
 
   TaskList[0] = -1;
 
-  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State) == FAILURE)
+  if (__MPBSJobGetState(PJob,&MRM[RMIndex],NULL,&J->State,&IsExiting) == FAILURE)
     {
     DBG(1,fPBS) DPrint("ALERT:    cannot get job state info for job '%s'\n",
       J->Name);
 
     return(FAILURE);
     }
+
+  if (IsExiting == TRUE)
+    J->Flags |= (1 << mjfIsExiting);
 
   RQ = J->Req[0];
 
