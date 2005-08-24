@@ -11,7 +11,7 @@
 #define __M32COMPAT
 #endif /* __M32COMPAT */
 
-#include "msched-verion.h"
+#include "msched-version.h"
 
 #ifdef __LOCAL
 #  include "msched-local.h"
