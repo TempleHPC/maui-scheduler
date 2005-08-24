@@ -4,13 +4,14 @@
 #ifndef __M_H__
 #define __M_H__
 
-#define MSCHED_VERSION "3.2.6p14"
 #define MSCHED_NAME    "Maui"
 #define MSCHED_SNAME   "maui"
 
 #ifndef __M32COMPAT
 #define __M32COMPAT
 #endif /* __M32COMPAT */
+
+#include "msched-verion.h"
 
 #ifdef __LOCAL
 #  include "msched-local.h"
