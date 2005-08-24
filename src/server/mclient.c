@@ -2,6 +2,7 @@
         
 #include "mclient.h"
 #include "mclient-proto.h"
+#include "msched-version.h"
 
 #include "moab.h"
 #include "msched-proto.h"
