@@ -82,7 +82,7 @@ char *MFULoad(
 
   DBG(5,fCORE) DPrint("%s(%s,%d,%s,BlockCount,SC)\n",
     FName,
-    FileName,
+    (FileName != NULL) ? FileName : "NULL",
     BlockSize,
     (AccessMode == macmRead) ? "READ" : "WRITE");
 
@@ -91,7 +91,9 @@ char *MFULoad(
 
   /* check if file is cached */
 
-  if (__MFUGetCachedFile(FileName,&buf,&BufSize) == SUCCESS)
+  if ((FileName != NULL) &&
+      (FileName[0] != '\0') &&
+      (__MFUGetCachedFile(FileName,&buf,&BufSize) == SUCCESS))
     {
     if (BlockCount != NULL)
       *BlockCount = BufSize / BlockSize;
@@ -286,7 +288,19 @@ int __MFUGetCachedFile(
 
   DBG(5,fSTRUCT) DPrint("%s(%s,Buffer,BufSize)\n",
     FName,
-    FileName);
+    (FileName != NULL) ? FileName : "NULL");
+
+  if (Buffer == NULL)
+    {
+    return(FAILURE);
+    }
+
+  *Buffer = NULL;
+
+  if ((FileName == NULL) || (FileName[0] == '\0'))
+    {
+    return(FAILURE);
+    }
 
   for (index = 0;index < MAX_FILECACHE;index++)
     {

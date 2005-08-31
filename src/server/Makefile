@@ -1,5 +1,5 @@
-# Makefile for Maui v3.2
-# Copyright 1999 - 2004  Cluster Resources, Inc, All Rights Reserved
+# Makefile for Maui v3.2.6
+# Copyright 1999 - 2005  Cluster Resources, Inc, All Rights Reserved
 
    TOP =../..
    BIN =$(TOP)/bin
@@ -41,7 +41,7 @@ POBJECTS =mprof.o
     CP =cp
     LN =ln
 
-SOURCE = -g
+SOURCE = 
 CFLAGS = $(OSCCFLAGS)
 
 all:    $(MBINS)

@@ -1,5 +1,5 @@
 # Makefile for Moab 2.2.3
-# Copyright 1999 - 2004  Supercluster Development Group, All Rights Reserved
+# Copyright 1999 - 2005  Cluster Resources Inc, All Rights Reserved
 
    TOP =../..
    BIN =$(TOP)/bin/
@@ -31,7 +31,7 @@ LOBJECTS =MFile.o MConfig.o MQOS.o MLog.o MCred.o MSched.o MAM.o MSR.o MRes.o \
     CP =cp
     RM =rm -f
 
-SOURCE = -g
+SOURCE =
 CFLAGS = $(OSCCFLAGS)
 
 all:    $(MOAB)
