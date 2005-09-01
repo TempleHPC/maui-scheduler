@@ -4312,16 +4312,19 @@ int MResCheckJAccess(
         }
       }    /* END for (aindex) */
 
-    if (J->Cred.CL[aindex].Type == maNONE)
+    if (aindex < MAX_MACL)
       {
-      /* create new time CL */
+      if (J->Cred.CL[aindex].Type == maNONE)
+        {
+        /* create new time CL */
 
-      J->Cred.CL[aindex].Type     = maDuration;
-      J->Cred.CL[aindex].Value    = Overlap;
-      J->Cred.CL[aindex].Cmp      = mcmpEQ;
-      J->Cred.CL[aindex].Affinity = nmPositiveAffinity;
+        J->Cred.CL[aindex].Type     = maDuration;
+        J->Cred.CL[aindex].Value    = Overlap;
+        J->Cred.CL[aindex].Cmp      = mcmpEQ;
+        J->Cred.CL[aindex].Affinity = nmPositiveAffinity;
 
-      OTime = -1;
+        OTime = -1;
+        }
       }
 
     /* NOTE:  res wrappers gain access if R(job) is inclusive on J(res) */
@@ -4331,12 +4334,15 @@ int MResCheckJAccess(
     else
       MACLCheckAccess(R->ACL,J->Cred.CL,Affinity,&IsInclusive);
 
-    /* restore time CL */
+    if (aindex < MAX_MACL)
+      {
+      /* restore time CL */
 
-    if (OTime == -1)
-      J->Cred.CL[aindex].Type  = maNONE;
-    else
-      J->Cred.CL[aindex].Value = OTime;
+      if (OTime == -1)
+        J->Cred.CL[aindex].Type  = maNONE;
+      else
+        J->Cred.CL[aindex].Value = OTime;
+      }
     }  /* END if ((R->ExpireTime <= 0) || (R->ExpireTime == MAX_MTIME)) */
  
   return(IsInclusive);
