@@ -1403,32 +1403,44 @@ int MSysLaunchAction(
 
 int MSysDSQuery(
 
-  char *SName,     /* I:  service name */
-  char *CName,     /* I:  cluster name */
-  char *HostName,  /* O:  service hostname */
-  int  *Port,      /* O:  service port */
-  char *WProtocol, /* O:  service wire protocol */
-  char *SProtocol) /* O:  service socket protocol */
+  char *SName,     /* I  service name */
+  char *CName,     /* I  cluster name */
+  char *HostName,  /* O  service hostname (minsize=MMAX_NAME) */
+  int  *Port,      /* O  service port */
+  char *WProtocol, /* O  service wire protocol (minsize=MMAX_NAME) */
+  char *SProtocol) /* O  service socket protocol (minsize=MMAX_NAME) */
 
   {
   char    *RspPtr = NULL;
 
-  char     CmdString[MAX_MLINE];
-
-  char     tmpLine[MAX_MLINE];
+  char     CmdString[MMAX_LINE];
 
   mxml_t *E  = NULL;
-  mxml_t *RE = NULL;
   mxml_t *LE = NULL;
+  mxml_t *RE = NULL;
+  mxml_t *CE = NULL;
+  mxml_t *tE;
 
-  int      ReqID;
-
+#ifndef __MPROD
   const char *FName = "MSysDSQuery";
 
-  DBG(4,fCORE) DPrint("%s(%s,%s,HostName,Port,WProtocol,SProtocol)\n",
+  MDB(4,fCORE) MLog("%s(%s,%s,HostName,Port,WProtocol,SProtocol)\n",
     FName,
     (SName != NULL) ? SName : "NULL",
     (CName != NULL) ? CName : "NULL");
+#endif /* !__MPROD */
+
+  if (HostName != NULL)
+    HostName[0] = '\0';
+
+  if (Port != NULL)
+    *Port = -1;
+
+  if (WProtocol != NULL)
+    WProtocol[0] = '\0';
+
+  if (SProtocol != NULL)
+    SProtocol[0] = '\0';
 
   if (SName == NULL)
     {
@@ -1437,19 +1449,37 @@ int MSysDSQuery(
 
   /* create request string */
 
-  MXMLCreateE(&E,"DirectoryRequests");
-  MXMLCreateE(&RE,"DirectoryRequest");
+  /* FORMAT:
 
-  MXMLSetAttr(RE,"service",(void *)SName,mdfString);
+  <get-location><location><component>$SNAME</component>
+  <host match="false"></host><port match="false"></port>
+  <protocol match="false"></protocol></location></get-location>
 
-  if (CName != NULL)
-    MXMLSetAttr(RE,"cluster",(void *)CName,mdfString);
+  */
 
-  ReqID = 1;
+  MXMLCreateE(&E,"add-location");
+  MXMLCreateE(&LE,"location");
+  MXMLAddE(E,LE);
 
-  MXMLSetAttr(RE,"reqid",(void *)&ReqID,mdfInt);
+  CE = NULL;
+  MXMLCreateE(&tE,"component");
+  MXMLSetVal(tE,(void *)SName,mdfString);
+  MXMLAddE(LE,CE);
 
-  MXMLAddE(E,RE);
+  tE = NULL;
+  MXMLCreateE(&tE,"host");
+  MXMLSetAttr(tE,"match",(void *)"false",mdfString);
+  MXMLAddE(CE,tE);
+
+  tE = NULL;
+  MXMLCreateE(&tE,"port");
+  MXMLSetAttr(tE,"match",(void *)"false",mdfString);
+  MXMLAddE(CE,tE);
+
+  tE = NULL;
+  MXMLCreateE(&tE,"protocol");
+  MXMLSetAttr(tE,"match",(void *)"false",mdfString);
+  MXMLAddE(CE,tE);
 
   MXMLToString(E,CmdString,sizeof(CmdString),NULL,TRUE);
 
@@ -1457,27 +1487,56 @@ int MSysDSQuery(
 
   if (MS3DoCommand(&MSched.DS,CmdString,&RspPtr,NULL,NULL,NULL) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot query service '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot query service '%s'\n",
       SName);
 
     return(FAILURE);
     }
 
-  if ((MXMLFromString(&E,RspPtr,NULL,NULL) == FAILURE) ||
-      (MXMLGetChild(E,"DirectoryResponse",NULL,&RE) == FAILURE) ||
-      (MXMLGetChild(RE,"Location",NULL,&LE) == FAILURE))
+  if (MXMLFromString(&E,RspPtr,NULL,NULL) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot process DS response '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot parse DS query response '%s'\n",
       RspPtr);
 
     return(FAILURE);
     }
 
-  if ((MXMLGetAttr(RE,"outcome",NULL,tmpLine,0) == FAILURE) ||
-      strcmp(tmpLine,"success"))
+  /* process LR3 response */
+
+  if (MXMLGetChild(E,"error",NULL,&tE) == SUCCESS)
     {
-    DBG(2,fCORE) DPrint("ALERT:    DS query failed '%s'\n",
+    char EType[MMAX_LINE];
+    char Msg[MMAX_LINE];
+
+    MXMLGetAttr(tE,"type",NULL,EType,sizeof(EType));
+    MXMLGetAttr(tE,"msg",NULL,Msg,sizeof(Msg));
+
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS query response '%s' (FailureType: %s  Msg: '%s'\n",
+      RspPtr,
+      EType,
+      Msg);
+
+    MXMLDestroyE(&E);
+
+    return(FAILURE);
+    }
+
+  if (MXMLGetChild(E,"locations",NULL,&RE) == FAILURE)
+    {
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS query response '%s'\n",
       RspPtr);
+
+    MXMLDestroyE(&E);
+
+    return(FAILURE);
+    }
+
+  if (MXMLGetChild(RE,"location",NULL,&LE) == FAILURE)
+    {
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS query response '%s'\n",
+      RspPtr);
+
+    MXMLDestroyE(&E);
 
     return(FAILURE);
     }
@@ -1486,37 +1545,29 @@ int MSysDSQuery(
 
   if (HostName != NULL)
     {
-    if (MXMLGetAttr(LE,"host",NULL,tmpLine,0) == SUCCESS)
+    if ((MXMLGetChild(LE,"host",NULL,&tE) == SUCCESS) && (tE->Val != NULL))
       {
-      MUStrCpy(HostName,tmpLine,MAX_MNAME);
-      }
-    else
-      {
-      HostName[0] = '\0';
+      MUStrCpy(HostName,tE->Val,MMAX_NAME);
       }
     }
 
   if (Port != NULL)
     {
-    if (MXMLGetAttr(LE,"port",NULL,tmpLine,0) == SUCCESS)
+    if ((MXMLGetChild(LE,"port",NULL,&tE) == SUCCESS) && (tE->Val != NULL))
       {
-      *Port = (int)strtol(tmpLine,NULL,0);
-      }
-    else
-      {
-      *Port = -1;
+      *Port = (int)strtol(tE->Val,NULL,10);
       }
     }
 
   if (SProtocol != NULL)
     {
-    if (MXMLGetAttr(LE,"protocol",NULL,tmpLine,0) == SUCCESS)
+    if ((MXMLGetChild(LE,"host",NULL,&tE) == SUCCESS) && (tE->Val != NULL))
       {
-      MUStrCpy(SProtocol,tmpLine,MAX_MNAME);
-      }
-    else
-      {
-      SProtocol[0] = '\0';
+      /* NOTE:  directory service protocol must be translated between S3 and local protocols */
+
+      /* NYI */
+
+      /* MUStrCpy(SProtocol,tE->Val,MMAX_NAME); */
       }
     }
 
@@ -1524,9 +1575,9 @@ int MSysDSQuery(
 
   MXMLDestroyE(&E);
 
-  DBG(2,fCORE) DPrint("INFO:     information for service '%s' successfully queried\n",
+  MDB(2,fCORE) MLog("INFO:     information for service '%s' successfully queried\n",
     SName);
- 
+
   return(SUCCESS);
   }  /* END MSysDSQuery() */
 
@@ -1796,22 +1847,21 @@ int MSysDSUnregister(
   {
   char    *RspPtr = NULL;
 
-  char     CmdString[MAX_MLINE];
+  char     CmdString[MMAX_LINE];
 
-  char     tmpLine[MAX_MLINE];
-
-  mxml_t *E = NULL;
+  mxml_t *E  = NULL;
   mxml_t *RE = NULL;
+  mxml_t *tE = NULL;
 
-  int      ReqID;
-
+#ifndef __MPROD
   const char *FName = "MSysDSUnregister";
 
-  DBG(4,fCORE) DPrint("%s(%s,%s,%s,Port,WProtocol,SProtocol)\n",
+  MDB(4,fCORE) MLog("%s(%s,%s,%s,Port,WProtocol,SProtocol)\n",
     FName,
     (SName != NULL) ? SName : "NULL",
     (CName != NULL) ? CName : "NULL",
     (HostName != NULL) ? HostName : "NULL");
+#endif /* !__MPROD */
 
   if (SName == NULL)
     {
@@ -1822,37 +1872,31 @@ int MSysDSUnregister(
     {
     /* DS disabled */
 
-    DBG(6,fCORE) DPrint("INFO:     DS disabled\n");
+    MDB(6,fCORE) MLog("INFO:     DS disabled\n");
 
     return(SUCCESS);
     }
 
   /* create request string */
 
-  MXMLCreateE(&E,"DirectoryRequests");
-  MXMLCreateE(&RE,"DirectoryRemove");
+  /* FORMAT */
 
-  MXMLSetAttr(RE,"service",(void *)SName,mdfString);
+  /* <del-location><location><component>$SNAME</component></location></del-location> */
 
-  if (CName != NULL)
-    MXMLSetAttr(RE,"cluster",(void *)CName,mdfString);
-
-  if (SProtocol)
-    MXMLSetAttr(RE,"protocol",(void *)SProtocol,mdfString);
-
-  ReqID = 1;
-
-  MXMLSetAttr(RE,"reqid",(void *)&ReqID,mdfInt);
- 
+  MXMLCreateE(&E,"del-location");
+  MXMLCreateE(&RE,"location");
   MXMLAddE(E,RE);
+
+  MXMLCreateE(&tE,"component");
+  MXMLAddE(RE,tE);
 
   MXMLToString(E,CmdString,sizeof(CmdString),NULL,TRUE);
 
   MXMLDestroyE(&E);
- 
+
   if (MS3DoCommand(&MSched.DS,CmdString,&RspPtr,NULL,NULL,NULL) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot un-register service '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot un-register service '%s'\n",
       CName);
 
     return(FAILURE);
@@ -1860,15 +1904,35 @@ int MSysDSUnregister(
 
   if (MXMLFromString(&E,RspPtr,NULL,NULL) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot process DS response '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS response '%s'\n",
       RspPtr);
 
     return(FAILURE);
     }
 
-  if (MXMLGetChild(E,"DirectoryStatus",NULL,&RE) == FAILURE)
+  /* NOTE:  processing LR3 response */
+
+  if (MXMLGetChild(E,"error",NULL,&RE) == SUCCESS)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot process DS response '%s'\n",
+    char EType[MMAX_LINE];
+    char Msg[MMAX_LINE];
+
+    MXMLGetAttr(RE,"type",NULL,EType,sizeof(EType));
+    MXMLGetAttr(RE,"msg",NULL,Msg,sizeof(Msg));
+
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS response '%s' (FailureType: %s  Msg: '%s'\n",
+      RspPtr,
+      EType,
+      Msg);
+
+    MXMLDestroyE(&E);
+
+    return(FAILURE);
+    }
+
+  if (MXMLGetChild(E,"locations",NULL,&RE) == FAILURE)
+    {
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS unregistration response '%s'\n",
       RspPtr);
 
     MXMLDestroyE(&E);
@@ -1876,24 +1940,26 @@ int MSysDSUnregister(
     return(FAILURE);
     }
 
-  if ((MXMLGetAttr(RE,"outcome",NULL,tmpLine,0) == FAILURE) ||
-      strcmp(tmpLine,"success"))
+  if (MXMLGetChild(RE,"location",NULL,&tE) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    un-register request failed '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS unregistration response '%s'\n",
       RspPtr);
 
     MXMLDestroyE(&E);
 
     return(FAILURE);
     }
+
+  /* NOTE:  must extract and record deregistration failure message (NYI) */
 
   MXMLDestroyE(&E);
 
-  DBG(2,fCORE) DPrint("INFO:     service '%s' successfully registered\n",
+  MDB(2,fCORE) MLog("INFO:     service '%s' successfully registered\n",
     SName);
 
   return(SUCCESS);
   }  /* END MSysDSUnregister() */
+
 
 
 
@@ -1910,22 +1976,23 @@ int MSysDSRegister(
   {
   char    *RspPtr = NULL;
 
-  char     CmdString[MAX_MLINE];
+  char     CmdString[MMAX_LINE];
 
-  char     tmpLine[MAX_MLINE];
+  mxml_t  *E = NULL;
+  mxml_t  *RE = NULL;
+  mxml_t  *tE;
 
-  mxml_t *E = NULL;
-  mxml_t *RE = NULL;
+  char    *Version = NULL;
 
-  int      ReqID;
-
+#ifndef __MPROD
   const char *FName = "MSysDSRegister";
 
-  DBG(4,fCORE) DPrint("%s(%s,%s,%s,Port,WProtocol,SProtocol)\n",
+  MDB(4,fCORE) MLog("%s(%s,%s,%s,Port,WProtocol,SProtocol)\n",
     FName,
     (SName != NULL) ? SName : "NULL",
     (CName != NULL) ? CName : "NULL",
     (HostName != NULL) ? HostName : "NULL");
+#endif /* !__MPROD */
 
   if (SName == NULL)
     {
@@ -1936,33 +2003,68 @@ int MSysDSRegister(
     {
     /* DS disabled */
 
-    DBG(6,fCORE) DPrint("INFO:     DS disabled\n");
+    MDB(6,fCORE) MLog("INFO:     DS disabled\n");
 
     return(SUCCESS);
     }
 
+  /* FORMAT:
+<?xml version="1.0" encoding="UTF-8"?><add-location><location>
+<component>$SName</component>
+<host>$HostName</host>
+<port>$Port</port>
+<protocol>challenge</protocol>
+<schema_version>1234</schema_version>
+<tier>1</tier>
+</location></add-location>
+  */
+
   /* create request string */
 
-  MXMLCreateE(&E,"DirectoryRequests");
-  MXMLCreateE(&RE,"DirectoryRegister");
+  MXMLCreateE(&E,"add-location");
+  MXMLCreateE(&RE,"location");
 
-  MXMLSetAttr(RE,"service",(void *)SName,mdfString);
+  tE = NULL;
+  MXMLCreateE(&tE,"component");
+  MXMLSetVal(tE,(void *)SName,mdfString);
+  MXMLAddE(RE,tE);
 
   if (CName != NULL)
-    MXMLSetAttr(RE,"cluster",(void *)CName,mdfString);
+    {
+    /* MXMLSetAttr(RE,"cluster",(void *)CName,mdfString); */
+    }
 
   if (HostName != NULL)
-    MXMLSetAttr(RE,"host",(void *)HostName,mdfString);
+    {
+    tE = NULL;
+    MXMLCreateE(&tE,"host");
+    MXMLSetVal(tE,(void *)HostName,mdfString);
+    MXMLAddE(RE,tE);
+    }
 
   if (Port != -1)
-    MXMLSetAttr(RE,"port",(void *)&Port,mdfInt);
+    {
+    tE = NULL;
+    MXMLCreateE(&tE,"port");
+    MXMLSetVal(tE,(void *)&Port,mdfInt);
+    MXMLAddE(RE,tE);
+    }
 
-  if (SProtocol)
-    MXMLSetAttr(RE,"protocol",(void *)SProtocol,mdfString);
+  if (SProtocol != NULL)
+    {
+    tE = NULL;
+    MXMLCreateE(&tE,"protocol");
+    MXMLSetVal(tE,(void *)SProtocol,mdfString);
+    MXMLAddE(RE,tE);
+    }
 
-  ReqID = 1;
-
-  MXMLSetAttr(RE,"reqid",(void *)&ReqID,mdfInt);
+  if (Version != NULL)
+    {
+    tE = NULL;
+    MXMLCreateE(&tE,"schema_version");
+    MXMLSetVal(tE,(void *)Version,mdfString);
+    MXMLAddE(RE,tE);
+    }
 
   MXMLAddE(E,RE);
 
@@ -1972,7 +2074,7 @@ int MSysDSRegister(
 
   if (MS3DoCommand(&MSched.DS,CmdString,&RspPtr,NULL,NULL,NULL) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot register service '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot register service '%s'\n",
       CName);
 
     return(FAILURE);
@@ -1980,15 +2082,35 @@ int MSysDSRegister(
 
   if (MXMLFromString(&E,RspPtr,NULL,NULL) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot process DS response '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS registration response '%s'\n",
       RspPtr);
 
     return(FAILURE);
     }
 
-  if (MXMLGetChild(E,"DirectoryStatus",NULL,&RE) == FAILURE)
+  /* NOTE:  processing LR3 response */
+
+  if (MXMLGetChild(E,"error",NULL,&RE) == SUCCESS)
     {
-    DBG(2,fCORE) DPrint("ALERT:    cannot process DS response '%s'\n",
+    char EType[MMAX_LINE];
+    char Msg[MMAX_LINE];
+
+    MXMLGetAttr(RE,"type",NULL,EType,sizeof(EType));
+    MXMLGetAttr(RE,"msg",NULL,Msg,sizeof(Msg));
+
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS registration response '%s' (FailureType: %s  Msg: '%s'\n",
+      RspPtr,
+      EType,
+      Msg);
+
+    MXMLDestroyE(&E);
+
+    return(FAILURE);
+    }
+
+  if (MXMLGetChild(E,"locations",NULL,&RE) == FAILURE)
+    {
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS registration response '%s'\n",
       RspPtr);
 
     MXMLDestroyE(&E);
@@ -1996,24 +2118,27 @@ int MSysDSRegister(
     return(FAILURE);
     }
 
-  if ((MXMLGetAttr(RE,"outcome",NULL,tmpLine,0) == FAILURE) ||
-      strcmp(tmpLine,"success"))
+  if (MXMLGetChild(RE,"location",NULL,&tE) == FAILURE)
     {
-    DBG(2,fCORE) DPrint("ALERT:    registation request failed '%s'\n",
+    MDB(2,fCORE) MLog("ALERT:    cannot process DS registration response '%s'\n",
       RspPtr);
 
     MXMLDestroyE(&E);
 
     return(FAILURE);
     }
+
+  /* NOTE:  do not know how failure messages are encapsulated */
+
+  /* must extract and record actual failure (NYI) */
 
   MXMLDestroyE(&E);
 
-  DBG(2,fCORE) DPrint("INFO:     service '%s' successfully registered\n",
+  MDB(2,fCORE) MLog("INFO:     service '%s' successfully registered\n",
     SName);
 
   return(SUCCESS);
-  }  /* END MSysDSUnregister() */
+  }  /* END MSysDSRegister() */
 
 
 
