@@ -3179,6 +3179,8 @@ int MPBSNodeUpdate(
       {
       MUStrCpy(tmpBuffer,AP->value,sizeof(tmpBuffer));
 
+      memset(N->FBM,0,sizeof(N->FBM));
+
       ptr = MUStrTok(tmpBuffer,", \t",&TokPtr);
 
       while (ptr != NULL)
