@@ -1167,17 +1167,27 @@ int MCredProcessConfig(
 
       case mcaMaxIJob:
 
-        if (L->IP == NULL) 
-          break;
+        if (L->IP == NULL)
+          { 
+	  L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
 
-        __MCredParseLimit(
-          ValLine,
-          &L->IP->SLimit[mptMaxJob][0],
-          &L->IP->HLimit[mptMaxJob][0]);
+        if (L->IP != NULL)
+          {
+          __MCredParseLimit(
+            ValLine,
+            &L->IP->SLimit[mptMaxJob][0],
+            &L->IP->HLimit[mptMaxJob][0]);
+          }
  
         break;
  
       case mcaMaxINode:
+
+        if (L->IP == NULL)
+          {
+          L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
 
         if (L->IP != NULL)       
           {
@@ -1191,62 +1201,87 @@ int MCredProcessConfig(
  
       case mcaMaxIPE:
 
-        if (L->IP == NULL)       
-          break;
+        if (L->IP == NULL)
+          {
+          L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
  
-        __MCredParseLimit(
-          ValLine,
-          &L->IP->SLimit[mptMaxPE][0],
-          &L->IP->HLimit[mptMaxPE][0]);
- 
+	if (L->IP != NULL)
+          {
+          __MCredParseLimit(
+            ValLine,
+            &L->IP->SLimit[mptMaxPE][0],
+            &L->IP->HLimit[mptMaxPE][0]);
+          }
+
         break;
  
       case mcaMaxIProc:
 
-        if (L->IP == NULL)  
-          break;
+        if (L->IP == NULL)
+          {
+          L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
 
-        __MCredParseLimit(
-          ValLine,
-          &L->IP->SLimit[mptMaxProc][0],
-          &L->IP->HLimit[mptMaxProc][0]);
- 
+        if (L->IP != NULL)
+          {
+          __MCredParseLimit(
+            ValLine,
+            &L->IP->SLimit[mptMaxProc][0],
+            &L->IP->HLimit[mptMaxProc][0]);
+          }
+
         break;
  
       case mcaMaxIPS:
 
-        if (L->IP == NULL)  
-          break;
+        if (L->IP == NULL)
+          {
+          L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
 
-        __MCredParseLimit(
-          ValLine,
-          &L->IP->SLimit[mptMaxPS][0],
-          &L->IP->HLimit[mptMaxPS][0]);
- 
+        if (L->IP != NULL)
+          {
+          __MCredParseLimit(
+            ValLine,
+            &L->IP->SLimit[mptMaxPS][0],
+            &L->IP->HLimit[mptMaxPS][0]);
+          }
+
         break;
  
       case mcaMaxIWC:
 
-        if (L->IP == NULL)  
-          break;
+        if (L->IP == NULL)
+          {
+          L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
 
-        __MCredParseLimit(
-          ValLine,
-          &L->IP->SLimit[mptMaxWC][0],
-          &L->IP->HLimit[mptMaxWC][0]);
- 
+        if (L->IP != NULL)
+          {
+          __MCredParseLimit(
+            ValLine,
+            &L->IP->SLimit[mptMaxWC][0],
+            &L->IP->HLimit[mptMaxWC][0]);
+          }
+
         break;
  
       case mcaMaxIMem:
 
-        if (L->IP == NULL)  
-          break;
+        if (L->IP == NULL)
+          {
+          L->IP = (mpu_t *)calloc(1,sizeof(mpu_t));
+          }
 
-        __MCredParseLimit(
-          ValLine,
-          &L->IP->SLimit[mptMaxMem][0],
-          &L->IP->HLimit[mptMaxMem][0]);
- 
+        if (L->IP != NULL)
+          {
+          __MCredParseLimit(
+            ValLine,
+            &L->IP->SLimit[mptMaxMem][0],
+            &L->IP->HLimit[mptMaxMem][0]);
+          }
+
         break;
 
       case mcaOMaxJob:
