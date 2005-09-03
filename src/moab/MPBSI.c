@@ -2304,9 +2304,10 @@ int MPBSNodeLoad(
     N->CRes.Swap = MAX(MIN_SWAP,N->CRes.Mem);
     }
 
-  /* PBS does not provide pool, opsys, machine speed, or network info */
+  /* PBS does not provide pool, machine speed, or network info */
 
-  N->ActiveOS = MUMAGetIndex(eOpsys,"DEFAULT",mAdd);
+  if (N->ActiveOS == 0)
+    N->ActiveOS = MUMAGetIndex(eOpsys,"DEFAULT",mAdd);
 
   if (N->Network == 0)
     N->Network = MUMAGetBM(eNetwork,"DEFAULT",mAdd);
@@ -3000,9 +3001,10 @@ int MPBSNodeUpdate(
     N->CRes.Swap = MAX(MIN_SWAP,N->CRes.Mem);
     }
 
-  /* PBS does not provide pool, opsys, machine speed, or network info */
+  /* PBS does not provide pool, machine speed, or network info */
 
-  N->ActiveOS = MUMAGetIndex(eOpsys,"DEFAULT",mAdd);
+  if (N->ActiveOS == 0)
+    N->ActiveOS = MUMAGetIndex(eOpsys,"DEFAULT",mAdd);
 
   if (N->Network == 0)
     N->Network = MUMAGetBM(eNetwork,"DEFAULT",mAdd);
@@ -5032,6 +5034,11 @@ int MPBSNodeSetAttr(
       if (AP->value[0] != '?')
         N->Arch = MUMAGetIndex(eArch,AP->value,mAdd);
       }
+    else if (!strcmp(AP->resource,"opsys"))
+      {
+      if (AP->value[0] != '?')
+        N->ActiveOS = MUMAGetIndex(eOpsys,AP->value,mAdd);
+      }
     else if (!strcmp(AP->resource,"mem"))
       {
       N->CRes.Mem = (MPBSGetResKVal(AP->value) >> 10);
@@ -5473,6 +5480,10 @@ int MPBSJobSetAttr(
     else if (!strcmp(AP->resource,"arch"))
       {
       RQ->Arch = MUMAGetIndex(eArch,AP->value,mAdd);
+      }
+    else if (!strcmp(AP->resource,"opsys"))
+      {
+      RQ->Opsys = MUMAGetIndex(eOpsys,AP->value,mAdd);
       }
     else if (!strcmp(AP->resource,"pmem"))
       {
@@ -6036,6 +6047,10 @@ int __MPBSIGetSSSStatus(
     if (!strcmp(Name,"arch"))
       {
       N->Arch = MUMAGetIndex(eArch,Value,mAdd);
+      }
+    else if (!strcmp(Name,"opsys"))
+      {
+      N->ActiveOS = MUMAGetIndex(eOpsys,Value,mAdd);
       }
     else if (!strcmp(Name,"totmem"))
       {
