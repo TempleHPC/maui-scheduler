@@ -116,6 +116,8 @@ int main(
     if ((ArgV[aindex] == NULL) || (aindex >= 1024))
       break;
 
+    tmpArgV[0] = NULL;
+
     MUStrDup(&tmpArgV[aindex],ArgV[aindex]);
     }
 

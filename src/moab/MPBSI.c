@@ -1048,6 +1048,8 @@ int __MPBSSystemQuery(
       }    /* END for (AP) */
     }      /* END for (SP) */
 
+  pbs_statfree(Server);
+
   return(SUCCESS);
   }  /* END __MPBSSystemQuery() */
 

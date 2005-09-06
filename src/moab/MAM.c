@@ -540,7 +540,7 @@ int MAMAllocJDebit(
       if (J->Cred.Q != NULL)
         {
         AE = NULL;
-        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaQOS]);
+        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaQOSReq]);
         MXMLSetVal(AE,(void *)J->Cred.Q->Name,mdfString);
         MXMLAddE(JE,AE);
         }

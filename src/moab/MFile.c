@@ -186,9 +186,10 @@ char *MFULoad(
 
   BufSize = ReadCount * BlockSize;
 
-  DBG(5,fCORE) DPrint("INFO:     new file '%s' opened (%d bytes)\n",
+  DBG(5,fCORE) DPrint("INFO:     new file '%s' opened with %d bytes (ReadCount = %d)\n",
     FileName,
-    BufSize);
+    BufSize,
+    ReadCount);
 
   if ((ptr = (char *)malloc(BufSize + 1)) == NULL)
     {
