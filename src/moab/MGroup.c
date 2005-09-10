@@ -85,8 +85,6 @@ int MGroupLoadCP(
     return(FAILURE);
     }
  
-  MXMLCreateE(&E,(char *)MXO[mxoGroup]);
- 
   MXMLFromString(&E,ptr,NULL,NULL);
  
   MOFromXML((void *)G,mxoGroup,E);

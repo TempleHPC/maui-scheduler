@@ -80,8 +80,6 @@ int MAcctLoadCP(
     return(FAILURE);
     }
  
-  MXMLCreateE(&E,(char *)MXO[mxoAcct]);
- 
   MXMLFromString(&E,ptr,NULL,NULL);
  
   MOFromXML((void *)A,mxoAcct,E);
