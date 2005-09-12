@@ -7177,6 +7177,9 @@ int MResAdjustDRes(
       if (jreindex >= (MSched.ResDepth << 1) - 1)
         break;
 
+      if ((N->R[N->RE[nreindex].Index] == NULL) || (N->R[N->RE[nreindex].Index] == (mrsv_t *)1))
+        continue;
+
       if (N->R[N->RE[nreindex].Index]->Type == mrtJob)
         {
         JRETime = N->RE[nreindex].Time;
