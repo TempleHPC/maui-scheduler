@@ -3739,7 +3739,7 @@ int UIQueueDiagnose(
     MPolicyMode[PLevel],
     MAList[ePartition][PIndex]);
  
-  if (MQueueDiagnose(MJob,MUIQ,PLevel,&MPar[PIndex],Buffer) == FAILURE)
+  if (MQueueDiagnose(MJob,MUIQ,PLevel,&MPar[PIndex],Buffer,*BufSize) == FAILURE)
     {
     sprintf(Buffer,"cannot evaluate blocked jobs\n");
  

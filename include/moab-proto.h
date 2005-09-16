@@ -380,7 +380,7 @@ int MQueuePrioritizeJobs(mjob_t **,int *);
 int MQueueGetBestRQTime(int *,long *);
 int MQueueScheduleRJobs(int *);
 int MQueueScheduleSJobs(int *);
-int MQueueDiagnose(mjob_t **,int *,int,mpar_t *,char *);
+int MQueueDiagnose(mjob_t **,int *,int,mpar_t *,char *,int);
 int MQueueCheckStatus(void);
 int MQueueGetRequeueValue(int *,long,long,double *);
 int MQueueSelectAllJobs(mjob_t **,int,mpar_t *,int *,int,int,int,char *);

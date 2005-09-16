@@ -925,7 +925,8 @@ int MQueueDiagnose(
   int     *NBJobList, 
   int      PLevel,
   mpar_t  *PS,
-  char    *Buffer)
+  char    *Buffer,
+  int      BufSize)
 
   {
   int       pindex;
@@ -977,6 +978,9 @@ int MQueueDiagnose(
  
   for (J = FullQ[0]->Next;J != FullQ[0];J = J->Next)
     {
+    if (strlen(Buffer) + 256 >= BufSize)
+      break;
+
     if ((PS->Index > 0) && (MUBMCheck(PS->Index,J->PAL) == FAILURE))
       continue;
  
@@ -1183,7 +1187,7 @@ int MQueueDiagnose(
 
     if (IsBlocked == FALSE) 
       {
-      switch(J->BlockReason)
+      switch (J->BlockReason)
         {
         case mjneIdlePolicy:
 
@@ -1205,7 +1209,12 @@ int MQueueDiagnose(
           break;
         }  /* END switch(J->BlockReason) */
       }
-    }     /* END for (jindex) */
+    }   
+
+  if (J != FullQ[0]) 
+    {
+    strcat(Buffer,"\nlist truncated\n");
+    }
 
   return(SUCCESS);
   }  /* END MQueueDiagnose() */
