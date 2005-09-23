@@ -318,8 +318,7 @@ int MClassShow(
           (tmpLString[0] != '\0') && 
            strcmp(tmpLString,NONE))
         {
-        sprintf(tmpLine,"%s  %s=%s",
-          tmpLine,
+        sprintf(&tmpLine[strlen(tmpLine)],"  %s=%s",
           MClassAttr[ClAList[aindex]],
           tmpLString);
         }
@@ -332,8 +331,7 @@ int MClassShow(
       if ((MCredAToString((void *)C,mxoClass,CAList[aindex],tmpLString,mdfString) == SUCCESS) &&
           (tmpLString[0] != '\0'))
         {
-        sprintf(tmpLine,"%s  %s=%s",
-          tmpLine,
+        sprintf(&tmpLine[strlen(tmpLine)],"  %s=%s",
           MCredAttr[CAList[aindex]],
           tmpLString);
         }

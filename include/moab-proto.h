@@ -334,7 +334,7 @@ int MJobDestroy(mjob_t **);
 int MJobSelectPJobList(mjob_t *,int,int,mjob_t **,mnalloc_t *,mjob_t **,int *,int *,nodelist_t **);
 int MJobCheckDependency(mjob_t *,enum MJobDependEnum *,char *);
 int MJobSetDependency(mjob_t *,enum MJobDependEnum,char *);
-int MJobSelectResourceSet(mjob_t *,int,int,char **,mnalloc_t *,int);
+int MJobSelectResourceSet(mjob_t *,mreq_t *,int,int,char **,mnalloc_t *,int);
 int MJobCheckNRes(mjob_t *,mnode_t *,mreq_t *,long,int *,double,int *,char *,long *,int);
 int MJobGetEStartTime(mjob_t *,mpar_t **,int *,int *,mnodelist_t,long *);
 int MJobAddToNL(mjob_t *,nodelist_t);

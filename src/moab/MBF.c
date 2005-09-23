@@ -836,15 +836,13 @@ int MBFGetWindow(
         {
         if ((N->State != mnsIdle) && (N->State != mnsActive))
           {
-          sprintf(Msg,"%snode %s is unavailable (state '%s')\n",
-            Msg,
+          sprintf(&Msg[strlen(Msg)],"node %s is unavailable (state '%s')\n",
             N->Name,
             MNodeState[N->State]);
           }
         else
           {
-          sprintf(Msg,"%snode %s is unavailable (expected state '%s')\n",
-            Msg,
+          sprintf(&Msg[strlen(Msg)],"node %s is unavailable (expected state '%s')\n",
             N->Name,
             MNodeState[N->EState]);
           }
@@ -859,8 +857,7 @@ int MBFGetWindow(
         N->Name);
 
       if (Msg != NULL)
-        sprintf(Msg,"%snode %s is unavailable (partition '%s')\n",
-          Msg,
+        sprintf(&Msg[strlen(Msg)],"node %s is unavailable (partition '%s')\n",
           N->Name,
           MPar[N->PtIndex].Name);
 
@@ -875,8 +872,7 @@ int MBFGetWindow(
 
       if (Msg != NULL)
         {
-        sprintf(Msg,"%snode %s is unavailable (%s)\n",
-          Msg,
+        sprintf(&Msg[strlen(Msg)],"node %s is unavailable (%s)\n",
           N->Name,
           MAllocRejType[RIndex]);
         }
@@ -904,8 +900,7 @@ int MBFGetWindow(
 
       if (Msg != NULL)
         {
-        sprintf(Msg,"%snode %s does not meet requirements (%s)\n",
-          Msg,
+        sprintf(&Msg[strlen(Msg)],"node %s does not meet requirements (%s)\n",
           N->Name,
           MAllocRejType[RIndex]);
         }
@@ -928,8 +923,7 @@ int MBFGetWindow(
 
       if (Msg != NULL)
         {
-        sprintf(Msg,"%snode %s is blocked immediately\n",
-          Msg,
+        sprintf(&Msg[strlen(Msg)],"node %s is blocked immediately\n",
           N->Name);
         }
 
@@ -946,16 +940,14 @@ int MBFGetWindow(
         {
         if (AvailableTime < (MAX_MTIME >> 1))
           {
-          sprintf(Msg,"%snode %s is blocked by reservation %s in %s\n",
-            Msg,
+          sprintf(&Msg[strlen(Msg)],"node %s is blocked by reservation %s in %s\n",
             N->Name,
             BRes,
             MULToTString(AvailableTime));
           }
         else
           {
-          sprintf(Msg,"%snode %sx%d is available with no timelimit\n",
-            Msg,
+          sprintf(&Msg[strlen(Msg)],"node %sx%d is available with no timelimit\n",
             N->Name,
             TC);
           }
@@ -967,8 +959,7 @@ int MBFGetWindow(
       {
       if (Msg != NULL)
         {
-        sprintf(Msg,"%snode %sx%d is available with no timelimit\n",
-          Msg,
+        sprintf(&Msg[strlen(Msg)],"node %sx%d is available with no timelimit\n",
           N->Name,
           TC);
         }

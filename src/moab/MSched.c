@@ -392,6 +392,7 @@ int MJobAllocMNL(
 
       if (MJobSelectResourceSet(
            J,
+           RQ,
            (RQ->SetType != mrstNONE) ? RQ->SetType : MPar[0].NodeSetAttribute,
            (tmpRSS != mrssOneOf) ? tmpRSS : mrssFirstOf,
            (RQ->SetList[0] != NULL) ? RQ->SetList : MPar[0].NodeSetList,
@@ -601,6 +602,7 @@ int MJobAllocMNL(
 
       if ((nsindex == 0) && (MJobSelectResourceSet(
            J,
+           RQ,
            (RQ->SetType != mrstNONE) ? RQ->SetType : MPar[0].NodeSetAttribute,
            (tmpRSS != mrssOneOf) ? tmpRSS : mrssFirstOf,
            (RQ->SetList[0] != NULL) ? RQ->SetList : MPar[0].NodeSetList,     
@@ -2023,6 +2025,7 @@ int MSchedTest()
 int MJobSelectResourceSet(
 
   mjob_t     *J,            /* I */
+  mreq_t     *RQ,           /* I */
   int         SetType,      /* I */
   int         SetSelection, /* I */
   char      **SetList,      /* I */
@@ -2065,8 +2068,6 @@ int MJobSelectResourceSet(
 
   mnode_t *N;
 
-  mreq_t  *RQ;
-
   const char *FName = "MJobSelectResourceSet";
 
   DBG(4,fSCHED) DPrint("%s(%s,%d,%d,SetList,NodeList,%d)\n",
@@ -2093,9 +2094,7 @@ int MJobSelectResourceSet(
     return(SUCCESS);
     }
 
-  RQ = J->Req[0];
-
-  TasksRequired = J->Request.TC;
+  TasksRequired = RQ->TaskCount;
   NodesRequired = RQ->NodeCount;
 
   memset(SetCount,0,sizeof(SetCount));

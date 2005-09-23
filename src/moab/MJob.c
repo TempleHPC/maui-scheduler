@@ -7298,6 +7298,7 @@ int MJobGetEStartTime(
  
           if (MJobSelectResourceSet(
                J,
+               RQ,
                (RQ->SetType != mrstNONE) ? RQ->SetType : MPar[0].NodeSetAttribute,
                (tmpRSS != mrssOneOf) ? tmpRSS : mrssFirstOf,
                (RQ->SetList[0] != NULL) ? RQ->SetList : MPar[0].NodeSetList,
@@ -8765,6 +8766,7 @@ int MReqGetFNL(
 
     MJobSelectResourceSet(
       J,
+      RQ,
       (RQ->SetType != mrstNONE) ? RQ->SetType : MPar[0].NodeSetAttribute,
       (tmpRSS != mrssFirstOf) ? tmpRSS : mrssOneOf,
       (RQ->SetList != NULL) ? RQ->SetList : MPar[0].NodeSetList,

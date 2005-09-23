@@ -201,8 +201,7 @@ char *MACLShow(
     case mcmpSNE:
     default:
  
-      sprintf(ACLString,"%s%s%s%s",
-        ACLString,
+      sprintf(&ACLString[strlen(ACLString)],"%s%s%s",
         MComp[cindex],
         ACL.Name,
         ModString);
@@ -220,16 +219,14 @@ char *MACLShow(
         {
         /* human readable */
 
-        sprintf(ACLString,"%s%s%s%s",
-          ACLString,
+        sprintf(&ACLString[strlen(ACLString)],"%s%s%s",
           MComp[cindex],
           MULToTString(ACL.Value),
           ModString);
         }
       else
         { 
-        sprintf(ACLString,"%s%s%ld%s",
-          ACLString,
+        sprintf(&ACLString[strlen(ACLString)],"%s%ld%s",
           MComp[cindex],
           ACL.Value,
           ModString);

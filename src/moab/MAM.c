@@ -2216,8 +2216,7 @@ int MAMConfigShow(
 
       if (tmpVal[0] != '\0')
         {
-        sprintf(tmpLine,"%s %s=%s",
-          tmpLine,
+        sprintf(&tmpLine[strlen(tmpLine)]," %s=%s",
           MAMAttr[aindex],
           tmpVal);
         }
