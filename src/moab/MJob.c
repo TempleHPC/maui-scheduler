@@ -469,14 +469,6 @@ int MJobGetAccount(
     return(SUCCESS);
     }
 
-  if ((MSched.DefaultU != NULL) &&
-      (MSched.DefaultU->F.ADef != NULL))
-    {
-    *A = MSched.DefaultU->F.ADef;
-
-    return(SUCCESS);
-    }
-
   if ((J->Cred.G != NULL) &&
       (J->Cred.G->F.ADef != NULL))
     {
@@ -513,6 +505,22 @@ int MJobGetAccount(
       return(FAILURE);
       }
     }    /* END if (MAM[0].Type != mamtNONE) */
+
+  if ((MSched.DefaultU != NULL) &&
+      (MSched.DefaultU->F.ADef != NULL))
+    {
+    *A = MSched.DefaultU->F.ADef;
+
+    return(SUCCESS);
+    }
+
+  if ((MSched.DefaultG != NULL) &&
+      (MSched.DefaultG->F.ADef != NULL))
+    {
+    *A = MSched.DefaultG->F.ADef;
+
+    return(SUCCESS);
+    }
  
   return(SUCCESS);
   }  /* END MJobGetAccount() */
