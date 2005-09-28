@@ -1537,6 +1537,11 @@ int MPBSLoadQueueInfo(
 
     if (IsGlobal == TRUE)
       {
+      DBG(3,fPBS) DPrint("INFO:     class to node not mapping enabled for queue '%s' adding class to all nodes\n",
+        QP->name);
+
+      IsGlobal = FALSE;
+
       /* add class to all nodes not listed in ACLHosts */
 
       for (nindex = 0;nindex < MAX_MNODE;nindex++)
