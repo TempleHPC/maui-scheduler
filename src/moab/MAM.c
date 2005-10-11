@@ -686,7 +686,7 @@ int MAMAllocRDebit(
 
   const char *FName = "MAMAllocRDebit";
  
-  MDB(3,fAM) MLog("%s(%s,SC,ErrMsg)\n",
+  MDB(3,fAM) MLog("%s(%s,RIndex,SC,ErrMsg)\n",
     FName,
     (R != NULL) ? R->Name : "NULL");
 
@@ -855,24 +855,17 @@ int MAMAllocRDebit(
         A = NULL;
         }
  
-      MXMLToString(E,AMISBuffer,sizeof(AMISBuffer),NULL,TRUE);
- 
-      rc = MAMQBDoCommand(
-        AM,
-        0,
-        AMISBuffer,
-        (void **)&E,
-        &tmpSC,
-        AMIRBuffer);
-
-      if (E != NULL)
-        MXMLDestroyE(&E);
-
-      if (rc == FAILURE)
+      if (MAMGoldDoCommand(E,&AM->P,RIndex,ErrMsg) == FAILURE)
         {
-        if (RIndex != NULL)
-          *RIndex = mhrAMFailure;
- 
+        MDB(2,fAM) MLog("ALERT:    cannot debit allocation for reservation\n");
+
+        if ((AM->JFAction == mamjfaNONE) && 
+            (RIndex != NULL) && 
+            (*RIndex != mhrNoFunds))
+          {
+          return(SUCCESS);
+          }
+
         return(FAILURE);
         }
       }    /* END BLOCK */
@@ -2793,6 +2786,9 @@ int MAMQBDoCommand(
     (A != NULL) ? A->Name : "NULL",
     CmdIndex,
     Transaction);
+
+  if (E != NULL)
+    *E = NULL;
  
   if ((A == NULL) ||
      ((A->Type != mamtQBANK) && (A->Type != mamtGOLD)))

@@ -1006,7 +1006,7 @@ const char *MBFMPolicy[]  = {
   "SECONDS", 
   NULL };
 
-const char *MJSPolicy[]    = { "MINPROC", "MAXPROC", "NDMAXPROC", NULL };
+const char *MJSPolicy[]   = { "MINPROC", "MAXPROC", "NDMAXPROC", NULL };
 const char *MResPolicy[]  = { "DEFAULT", "HIGHEST", "CURRENTHIGHEST", "NEVER" };
 const char *MHoldType[]   = { NONE, "User", "System", "Batch", "Defer", "All", NULL };
 const char *MComType[]    = { "ROUNDROBIN", "BROADCAST", "TREE", "MASTERSLAVE", NULL };
