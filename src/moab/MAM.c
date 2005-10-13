@@ -871,7 +871,7 @@ int MAMAllocRDebit(
       if (R->U != NULL)
         {
         AE = NULL;
-        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaUser]);
+        MXMLCreateE(&AE,(char *)MS3JobAttr[AM->Version][mjaUser]);
         MXMLSetVal(AE,(void *)R->U->Name,mdfString);
         MXMLAddE(JE,AE);
         }
@@ -879,7 +879,7 @@ int MAMAllocRDebit(
       if (R->A != NULL)
         {
         AE = NULL;
-        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaAccount]);
+        MXMLCreateE(&AE,(char *)MS3JobAttr[AM->Version][mjaAccount]);
         MXMLSetVal(AE,(void *)R->A->Name,mdfString);
         MXMLAddE(JE,AE);
         }
@@ -895,16 +895,16 @@ int MAMAllocRDebit(
       if (R->AllocPC > 0)
         {
         AE = NULL;
-        MXMLCreateE(&AE,(char *)MS3ReqAttr[A->Version][mrqaTCReqMin]);
+        MXMLCreateE(&AE,(char *)MS3ReqAttr[AM->Version][mrqaTCReqMin]);
         MXMLSetVal(AE,(void *)&R->AllocPC,mdfInt);
         MXMLAddE(JE,AE);
         }
 
-      if (R->DRes.Memory > 0)
+      if (R->DRes.Mem > 0)
         {
         int Memory;
 
-        Memory = R->TaskCount * R->DRes.Memory;
+        Memory = R->TaskCount * R->DRes.Mem;
 
         AE = NULL;
         MXMLCreateE(&AE,"Memory");
@@ -913,7 +913,7 @@ int MAMAllocRDebit(
         }
 
       AE = NULL;
-      MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaAWDuration]);
+      MXMLCreateE(&AE,(char *)MS3JobAttr[AM->Version][mjaAWDuration]);
       MXMLSetVal(AE,(void *)&WCTime,mdfLong);
       MXMLAddE(JE,AE);
 
@@ -933,16 +933,16 @@ int MAMAllocRDebit(
       /* submit request */
 
       {
-      enum MHoldReasonEnum RIndex;
+      enum MHoldReasonEnum tRIndex;
 
-      if (MAMGoldDoCommand(RE,&A->P,&RIndex,ErrMsg) == FAILURE)
+      if (MAMGoldDoCommand(RE,&AM->P,&tRIndex,ErrMsg) == FAILURE)
         {
         MDB(2,fAM) MLog("ALERT:    cannot debit allocation for job\n");
 
-        if (SC != NULL)
-          *SC = RIndex;
+        if (RIndex != NULL)
+          *RIndex = tRIndex;
 
-        if ((A->JFAction == mamjfaNONE) && (RIndex != mhrNoFunds))
+        if ((AM->JFAction == mamjfaNONE) && (tRIndex != mhrNoFunds))
           {
           return(SUCCESS);
           }
@@ -956,8 +956,8 @@ int MAMAllocRDebit(
       MSysEMSubmit(
         &MSched.EM,
         (char *)MS3CName[mpstAM],
-        "joballoccharge",
-        J->Name);
+        "rsvalloccharge",
+        R->Name);
 
       MUFree(&RspBuf);
       }      /* END BLOCK (GOLD) */
