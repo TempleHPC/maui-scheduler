@@ -166,8 +166,10 @@ int MResCreate(
        strcmp(CAName,NONE))
     {
     MAcctAdd(CAName,&R->A);
+
+    /* prevent checkpointed rsv's from double creating AM reservations */
  
-    if (MSched.Iteration > 0) 
+    if (MSched.Iteration >= 0) 
       {
       if (StartTime > MSched.Time)
         WallTime = MIN(MAM[0].FlushInterval,EndTime - StartTime);
