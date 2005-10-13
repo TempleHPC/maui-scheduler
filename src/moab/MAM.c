@@ -684,6 +684,8 @@ int MAMAllocRDebit(
  
   double PCRate;
 
+  mrm_t *RM = NULL;
+
   const char *FName = "MAMAllocRDebit";
  
   MDB(3,fAM) MLog("%s(%s,RIndex,SC,ErrMsg)\n",
@@ -828,40 +830,119 @@ int MAMAllocRDebit(
     case mamtGOLD:
 
       {
-      mxml_t *E  = NULL;
-      mxml_t *C1 = NULL;
-      mxml_t *C2 = NULL;
-      mxml_t *A  = NULL;
- 
-      MXMLCreateE(&E,"AllocationManagerRequests");
-      MXMLSetAttr(E,"xmlns","http://www.scidac.org/ScalableSystems/AllocationManager",mdfString);
- 
-      MXMLCreateE(&C1,"createDebitRequest");
-      MXMLAddE(E,C1);
- 
-      MXMLCreateE(&C2,"set");
-      MXMLAddE(C1,C2);
- 
-      MXMLCreateE(&A,"name");
-      MXMLSetVal(A,(void *)R->Name,mdfString);
-      MXMLAddE(C2,A);
-      A = NULL;
- 
+      mxml_t *JE = NULL;
+
+      char *RspBuf = NULL;
+
+      mxml_t *RE;
+
+      mxml_t *DE;
+      mxml_t *AE;
+
+      long    tmpL;
+
+      /* create request string, populate S->SE */
+
+      RE = NULL;
+
+      MXMLCreateE(&RE,MSON[msonRequest]);
+
+      MXMLSetAttr(RE,(char *)MSAN[msanAction],(void *)"Charge",mdfString);
+
+      MS3SetObject(RE,"Job",NULL);
+
+      DE = NULL;
+
+      MXMLCreateE(&DE,MSON[msonData]);
+
+      MXMLAddE(RE,DE);
+
+      JE = NULL;
+
+      MXMLCreateE(&JE,"Job");
+
+      MXMLAddE(DE,JE);
+
+      AE = NULL;
+      MXMLCreateE(&AE,"JobId");
+      MXMLSetVal(AE,(void *)R->Name,mdfString);
+      MXMLAddE(JE,AE);
+
+      if (R->U != NULL)
+        {
+        AE = NULL;
+        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaUser]);
+        MXMLSetVal(AE,(void *)R->U->Name,mdfString);
+        MXMLAddE(JE,AE);
+        }
+
       if (R->A != NULL)
         {
-        MXMLCreateE(&A,"account");
-        MXMLSetVal(A,(void *)R->A->Name,mdfString);
-        MXMLAddE(C2,A);
-        A = NULL;
+        AE = NULL;
+        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaAccount]);
+        MXMLSetVal(AE,(void *)R->A->Name,mdfString);
+        MXMLAddE(JE,AE);
         }
- 
-      if (MAMGoldDoCommand(E,&AM->P,RIndex,ErrMsg) == FAILURE)
-        {
-        MDB(2,fAM) MLog("ALERT:    cannot debit allocation for reservation\n");
 
-        if ((AM->JFAction == mamjfaNONE) && 
-            (RIndex != NULL) && 
-            (*RIndex != mhrNoFunds))
+      if (MSched.Name[0] != '\0')
+        {
+        AE = NULL;
+        MXMLCreateE(&AE,"MachineName");
+        MXMLSetVal(AE,(void *)MSched.Name,mdfString);
+        MXMLAddE(JE,AE);
+        }
+
+      if (R->AllocPC > 0)
+        {
+        AE = NULL;
+        MXMLCreateE(&AE,(char *)MS3ReqAttr[A->Version][mrqaTCReqMin]);
+        MXMLSetVal(AE,(void *)&R->AllocPC,mdfInt);
+        MXMLAddE(JE,AE);
+        }
+
+      if (R->DRes.Memory > 0)
+        {
+        int Memory;
+
+        Memory = R->TaskCount * R->DRes.Memory;
+
+        AE = NULL;
+        MXMLCreateE(&AE,"Memory");
+        MXMLSetVal(AE,(void *)&Memory,mdfInt);
+        MXMLAddE(JE,AE);
+        }
+
+      AE = NULL;
+      MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaAWDuration]);
+      MXMLSetVal(AE,(void *)&WCTime,mdfLong);
+      MXMLAddE(JE,AE);
+
+      if (NodeType[0] != '\0')
+        {
+        AE = NULL;
+        MXMLCreateE(&AE,"NodeType");
+        MXMLSetVal(AE,(void *)NodeType,mdfString);
+        MXMLAddE(JE,AE);
+        }
+
+      AE = NULL;
+      MXMLCreateE(&AE,"Type");
+      MXMLSetVal(AE,(void *)"Reservation",mdfString);
+      MXMLAddE(JE,AE);
+
+      /* submit request */
+
+      {
+      enum MHoldReasonEnum RIndex;
+
+      if (MAMGoldDoCommand(RE,&A->P,&RIndex,ErrMsg) == FAILURE)
+        {
+        MDB(2,fAM) MLog("ALERT:    cannot debit allocation for job\n");
+
+        if (SC != NULL)
+          *SC = RIndex;
+
+        if ((A->JFAction == mamjfaNONE) && (RIndex != mhrNoFunds))
           {
           return(SUCCESS);
           }
@@ -869,11 +950,18 @@ int MAMAllocRDebit(
         return(FAILURE);
         }
       }    /* END BLOCK */
- 
-      return(SUCCESS);
- 
-      /*NOTREACHED*/
- 
+
+      /* charge successful */
+
+      MSysEMSubmit(
+        &MSched.EM,
+        (char *)MS3CName[mpstAM],
+        "joballoccharge",
+        J->Name);
+
+      MUFree(&RspBuf);
+      }      /* END BLOCK (GOLD) */
+
       break;
 
     case mamtNONE:

@@ -2627,7 +2627,7 @@ echo "$as_me: error: Only one Allocation Manager can be specified (GOLD, $AMTYPE
    { (exit 1); exit 1; }; }
   fi
 
-  AMTYPE=SSS
+  AMTYPE=GOLD
   AMHOST=" HOST=$HOSTNAME"
   AMPORT=" PORT=7112"
   AMSOCKETPROTOCOL=" SOCKETPROTOCOL=HTTP"
