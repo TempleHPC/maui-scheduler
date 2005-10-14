@@ -884,11 +884,11 @@ int MAMAllocRDebit(
         MXMLAddE(JE,AE);
         }
 
-      if (MSched.Name[0] != '\0')
+      if (MRM[0].Name[0] != '\0')
         {
         AE = NULL;
         MXMLCreateE(&AE,"MachineName");
-        MXMLSetVal(AE,(void *)MSched.Name,mdfString);
+        MXMLSetVal(AE,(void *)MRM[0].Name,mdfString);
         MXMLAddE(JE,AE);
         }
 

@@ -594,7 +594,7 @@ int MPBSWorkloadQuery(
     else
       {
       DBG(0,fPBS) DPrint("ALERT:    queue is empty or cannot get PBS job info: %s\n",
-        ErrMsg);
+        (ErrMsg != NULL) ? ErrMsg : "N/A");
 
       R->U.PBS.ServerSDTimeStamp = 0;
 
