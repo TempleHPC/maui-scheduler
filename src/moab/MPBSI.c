@@ -56,6 +56,14 @@ extern const char *MNodeState[];
 char *getreq(int);
 #endif /* getreq */
 
+#ifndef ND_cluster
+#define ND_cluster "cluster"
+#endif /* !ND_cluster */
+
+#ifndef ND_reserve
+#define ND_reserve "reserve"
+#endif /* !ND_reserve */
+
 extern int pbs_errno; 
 
 extern int get_svrport(const char *,char *,int);
