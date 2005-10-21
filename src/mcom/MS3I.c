@@ -63,7 +63,7 @@ int MS3JobSuspend(mjob_t *,mrm_t *,char *,int *);
 int MS3JobResume(mjob_t *,mrm_t *,char *,int *); 
 int MS3JobCheckpoint(mjob_t *,mrm_t *,mbool_t,char *,int *);
 int MS3ClusterQuery(mrm_t *,int *,char *,enum MStatusCodeEnum *);
-int MS3WorkloadQuery(mrm_t *,int *,int *,char *,enum MStatusCodeEnum *);
+int MS3WorkloadQuery(mrm_t *,int *,enum MStatusCodeEnum *);
 int MS3QueueQuery(mrm_t *,int *,char *,enum MStatusCodeEnum *);
 int MS3JobLoad(char *,void *,mjob_t **,short *,mrm_t *);
 int MS3JobUpdate(void *,mjob_t **,short *,mrm_t *);
@@ -1346,8 +1346,6 @@ int MS3WorkloadQuery(
 
   mrm_t                *R,       /* I */
   int                  *WCount,  /* O (optional) */
-  int                  *NWCount, /* O (optional) */
-  char                 *EMsg,    /* O (optional,minsize=MMAX_LINE) */
   enum MStatusCodeEnum *SC)      /* O (optional) */
 
   {
@@ -1379,7 +1377,7 @@ int MS3WorkloadQuery(
   const char *FName = "MS3WorkloadQuery";
 
 #ifndef __MPROD
-  MDB(1,fS3) MLog("%s(%s,WCount,NWCount,EMsg,SC)\n",
+  MDB(1,fS3) MLog("%s(%s,WCount,SC)\n",
     FName,
     (R != NULL) ? R->Name : "NULL");
 #endif /* !__MPROD */
@@ -1387,12 +1385,6 @@ int MS3WorkloadQuery(
   if (WCount != NULL)
     *WCount = 0;
 
-  if (NWCount != NULL)
-    *NWCount = 0;
-
-  if (EMsg != NULL)
-    EMsg[0] = '\0';
- 
   if (SC != NULL)
     *SC = mscNoError;
  
@@ -1412,9 +1404,6 @@ int MS3WorkloadQuery(
  
     if (S->WorkloadBuffer == NULL)
       {
-      if (EMsg != NULL)
-        strcpy(EMsg,MWorkloadErrMsg);
-
       return(FAILURE);
       }
     }    /* END if (MISSET(R->Flags,mrmfLocalQueue) */
@@ -1826,9 +1815,6 @@ int MS3WorkloadQuery(
  
               break;
               }
-
-            if (NWCount != NULL)
-              (*NWCount)++;
 
             /* if new job, load data */
 
