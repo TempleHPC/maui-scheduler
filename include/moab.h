@@ -877,6 +877,7 @@ enum MClassAttrType {
   mclaDefReqFeature,
   mclaHostList,
   mclaName,
+  mclaNAPolicy,
   mclaMaxProcPerNode,
   mclaOCDProcFactor,
   mclaState,

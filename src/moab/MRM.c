@@ -3644,6 +3644,10 @@ int MRMJobPostLoad(
       RQ = J->Req[0];
 
       MUBMOR(RQ->ReqFBM,J->Cred.C->DefFBM,MAX_MATTR);
+
+      if (J->Cred.C->NAPolicy != 0)
+        RQ->NAccessPolicy = J->Cred.C->NAPolicy;
+
       }  /* END for (rqindex) */
     }
 

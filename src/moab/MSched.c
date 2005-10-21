@@ -4968,13 +4968,61 @@ int MSchedProcessOConfig(
 
     case mcoDirectoryServer:
 
-      /* NYI */
+      {
+      int tmpI;
+
+      char *ptr;
+      char *TokPtr;
+
+      /* FORMAT:  <HOST>[:<PORT>] */
+
+      TokPtr = NULL;
+
+      ptr = MUStrTok(SVal,": \t\n",&TokPtr);
+
+      if (ptr != NULL)
+        MUStrDup(&MSched.DS.HostName,ptr);
+
+      ptr = MUStrTok(NULL,": \t\n",&TokPtr);
+
+      if (ptr != NULL)
+        {
+        tmpI = (int)strtol(ptr,NULL,10);
+
+        if (tmpI > 0)
+          MSched.DS.Port = tmpI;
+        }
+      }    /* END BLOCK */
 
       break;
 
     case mcoEventServer:
 
-      /* NYI */
+      {
+      int tmpI;
+
+      char *ptr;
+      char *TokPtr;
+
+      /* FORMAT:  <HOST>[:<PORT>] */
+
+      TokPtr = NULL;
+
+      ptr = MUStrTok(SVal,": \t\n",&TokPtr);
+
+      if (ptr != NULL)
+        MUStrDup(&MSched.EM.HostName,ptr);
+
+      ptr = MUStrTok(NULL,": \t\n",&TokPtr);
+
+      if (ptr != NULL)
+        {
+        tmpI = (int)strtol(ptr,NULL,10);
+
+        if (tmpI > 0)
+          MSched.EM.Port = tmpI;
+        }
+      }    /* END BLOCK */
 
       break;
 

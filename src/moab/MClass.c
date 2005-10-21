@@ -19,6 +19,7 @@ extern const char *MJobFlags[];
 extern const char *MClassAttr[];
 extern const char *MCredAttr[];
 extern const char *MXO[];
+extern const char *MNAccessPolicy[];
 
 
 
@@ -407,6 +408,12 @@ int MClassProcessConfig(
 
     switch(aindex)
       {
+      case mclaNAPolicy:
+
+        C->NAPolicy = MUGetIndex(ValLine,MNAccessPolicy,FALSE,0);
+
+        break;
+
       case mclaOCNode:
       case mclaDefReqFeature:
       case mclaMaxProcPerNode:

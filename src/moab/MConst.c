@@ -578,6 +578,7 @@ const char *MClassAttr[] = {
   "DEFAULT.FEATURES",
   "HOSTLIST",
   "NAME",
+  "NODEACCESSPOLICY",
   "MAXPROCPERNODE",
   "OCDPROCFACTOR",
   "STATE",

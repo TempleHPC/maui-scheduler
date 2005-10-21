@@ -1161,6 +1161,7 @@ typedef struct {
   int        IsDisabled;       /* queue cannot execute jobs */
 
   int        DistPolicy;
+  int        NAPolicy;
 
   char     **NodeList;
   char      *OCNodeName;       /* overcommit node */
