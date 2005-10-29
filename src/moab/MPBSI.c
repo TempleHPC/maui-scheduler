@@ -1053,6 +1053,43 @@ int __MPBSSystemQuery(
             sizeof(MSched.DefaultC->Name));
           }
         }
+      else if (!strcmp(AP->name,"pbs_version"))
+        {
+        char tmpLine[MMAX_LINE];
+
+        char *ptr;
+        char *TokPtr;
+
+        int   Version;
+
+        /* FORMAT:  <PRODNAME>_X.Y.Z.<BUILDNUMBER> where <PRODNAME> is { PBSPro | TORQUE } */
+
+        if (R->Version <= 0)
+          {
+          MUStrCpy(tmpLine,AP->value,sizeof(tmpLine));
+
+          Version = 0;
+
+          ptr = MUStrTok(tmpLine,"_",&TokPtr);
+
+          ptr = MUStrTok(NULL,".",&TokPtr);
+
+          if (ptr != NULL)
+            Version += (int)strtol(ptr,NULL,10) * 100;
+
+          ptr = MUStrTok(NULL,".",&TokPtr);
+
+          if (ptr != NULL)
+            Version += (int)strtol(ptr,NULL,10) * 10;
+
+          ptr = MUStrTok(NULL,".",&TokPtr);
+
+          if (ptr != NULL)
+            Version += (int)strtol(ptr,NULL,10);
+
+          R->Version = Version;
+          }
+        }
       }    /* END for (AP) */
     }      /* END for (SP) */
 
@@ -1481,7 +1518,8 @@ int MPBSLoadQueueInfo(
         }
       else if (!strcmp(AP->name,"resources_default"))
         {
-        if (!strcmp(AP->resource,"neednodes"))
+        if (!strcmp(AP->resource,"neednodes") ||
+            !strcmp(AP->resource,"select"))
           {
           char *ptr;
 
@@ -1749,7 +1787,14 @@ int MPBSJobStart(
       return(FAILURE);
       }
 
-    if (MPBSJobModify(J,R,ATTR_l,"neednodes",HostList,NULL,NULL) == FAILURE)
+    if (MPBSJobModify(
+          J,
+          R,
+          ATTR_l,
+          (char *)(R->Version >= 710) ? "select" : "neednodes",
+          HostList,
+          NULL,
+          NULL) == FAILURE)
       {
       DBG(0,fPBS) DPrint("ERROR:    cannot set hostlist for job '%s'\n",
         J->Name);
@@ -1880,7 +1925,14 @@ int MPBSJobStart(
 
   if (J->NeedNodes != NULL)
     {
-    if (MPBSJobModify(J,R,ATTR_l,"neednodes",J->NeedNodes,NULL,NULL) == FAILURE)
+    if (MPBSJobModify(
+          J,
+          R,
+          ATTR_l,
+          (char *)(R->Version >= 710) ? "select" : "neednodes",
+          J->NeedNodes,
+          NULL,
+          NULL) == FAILURE)
       {
       DBG(7,fPBS) DPrint("WARNING:  cannot reset hostlist for job '%s')\n",
         J->Name);
@@ -4428,7 +4480,14 @@ int MPBSJobRequeue(
 
   /* restore PBS 'neednodes' value to original value */
 
-  if (MPBSJobModify(J,R,ATTR_l,"neednodes",J->NeedNodes,NULL,NULL) == FAILURE)
+  if (MPBSJobModify(
+        J,
+        R,
+        ATTR_l,
+        (char *)(R->Version >= 710) ? "select" : "neednodes",
+        J->NeedNodes,
+        NULL,
+        NULL) == FAILURE)
     {
     DBG(7,fPBS) DPrint("WARNING:  cannot reset hostlist for job '%s')\n",
       J->Name);
@@ -4864,7 +4923,7 @@ int MPBSJobMigrate(
        J,
        R,
        "Resource_List",
-       "neednodes",
+        (char *)(R->Version >= 710) ? "select" : "neednodes",
        tmpHList,
        EMsg,
        SC) == FAILURE)
@@ -5448,7 +5507,7 @@ int MPBSJobSetAttr(
 
     /* get resource information */
 
-    if (!strcmp(AP->resource,"neednodes"))
+    if (!strcmp(AP->resource,"neednodes") || !strcmp(AP->resource,"select"))
       {
       /* record PBS neednodes value */
 

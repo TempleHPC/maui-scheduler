@@ -1230,9 +1230,10 @@ int MJobUpdateFlags(
       }
     }    /* END if (RQ != NULL) */
  
-  DBG(7,fSTRUCT) DPrint("INFO:     job flags for job %s: %x\n",
+  DBG(7,fSTRUCT) DPrint("INFO:     job flags for job %s: %x, req napolicy=%s\n",
     J->Name,
-    (int)J->Flags);
+    (int)J->Flags,
+    (RQ != NULL) ? MNAccessPolicy[RQ->NAccessPolicy] : "N/A");
 
   /* update job attributes */
 
@@ -1311,17 +1312,21 @@ int MReqCheckResourceMatch(
         (J->ReqHList != NULL) &&
         (RQ->DRes.Procs != 0))
       {
+      Found = FALSE;
+
       for (index = 0;J->ReqHList[index].N != NULL;index++)
         {
         if (N == J->ReqHList[index].N)
           {
           DBG(5,fSCHED) DPrint("INFO:     node in requested hostlist\n");
 
-          return(SUCCESS);
+          Found = TRUE;
+
+          break;
           }
         }    /* END for (index) */
 
-      if ((J->ReqHList[index].N == NULL) && 
+      if ((Found == FALSE) &&  
          ((J->ReqHLMode != mhlmSubset) ||
           (MPar[0].EnableMultiNodeJobs == FALSE)))
         {
@@ -1330,6 +1335,16 @@ int MReqCheckResourceMatch(
         if (RIndex != NULL)
           *RIndex = marHostList;
  
+        return(FAILURE);
+        }
+
+      if ((Found == FALSE) && (J->ReqHLMode == mhlmExactSet))
+        {
+        DBG(5,fSCHED) DPrint("INFO:     node is not in specified hostlist\n");
+
+        if (RIndex != NULL)
+          *RIndex = marHostList;
+
         return(FAILURE);
         }
       }    /* END if ((J->Flags & (1 << mjfHostList)) && ... ) */
