@@ -587,8 +587,13 @@ int MPBSWorkloadQuery(
   if (JCount != NULL)
     *JCount = 0;
 
+/* torque-2.0.0p1 and up can limit pbs_statjob() to only return executable jobs */
+#ifndef EXECQUEONLY
+#define EXECQUEONLY NULL
+#endif
+
   if ((MSim.RMFailureTime >= MSched.Time) ||
-      (jobs = pbs_statjob(R->U.PBS.ServerSD,NULL,NULL,NULL)) == NULL)
+      (jobs = pbs_statjob(R->U.PBS.ServerSD,NULL,NULL,EXECQUEONLY)) == NULL)
     {
     if (MSim.RMFailureTime < MSched.Time)
       ErrMsg = pbs_geterrmsg(R->U.PBS.ServerSD);
