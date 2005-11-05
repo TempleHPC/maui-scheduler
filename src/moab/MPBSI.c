@@ -587,13 +587,8 @@ int MPBSWorkloadQuery(
   if (JCount != NULL)
     *JCount = 0;
 
-/* torque-2.0.0p1 and up can limit pbs_statjob() to only return executable jobs */
-#ifndef EXECQUEONLY
-#define EXECQUEONLY NULL
-#endif
-
   if ((MSim.RMFailureTime >= MSched.Time) ||
-      (jobs = pbs_statjob(R->U.PBS.ServerSD,NULL,NULL,EXECQUEONLY)) == NULL)
+      (jobs = pbs_statjob(R->U.PBS.ServerSD,NULL,NULL,"exec_queue_only")) == NULL)
     {
     if (MSim.RMFailureTime < MSched.Time)
       ErrMsg = pbs_geterrmsg(R->U.PBS.ServerSD);
@@ -630,6 +625,10 @@ int MPBSWorkloadQuery(
 
     for (cur_job = jobs;cur_job != NULL;cur_job = cur_job->next)
       {
+
+/* torque-2.0.0p1 and up can limit pbs_statjob() to only return executable jobs */
+#ifndef EXECQUEONLY
+
       /* ignore jobs that are in route queues */
 
       if (__MPBSJobChkExecutable(cur_job) == FAILURE)
@@ -639,6 +638,7 @@ int MPBSWorkloadQuery(
 
         continue;
         }
+#endif
 
       if (JCount != NULL)
         (*JCount)++;
