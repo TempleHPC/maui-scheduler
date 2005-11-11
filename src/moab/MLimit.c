@@ -63,6 +63,7 @@ int MLimitEnforceAll(
       JobWCX = J->Cred.C->F.Overrun;
  
     if ((JobWCX >= 0) &&
+        (J->WCLimit > 0) &&
         (MSched.Time > J->StartTime) &&
        ((unsigned long)(MSched.Time - J->StartTime) > (J->WCLimit + J->SWallTime + JobWCX)))
       {
