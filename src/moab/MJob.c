@@ -9628,7 +9628,7 @@ int MJobGetNRange(
     }
   else
     {
-    if (N->RM->Type == mrmtLL)
+    if ((N->RM != NULL) && (N->RM->Type == mrmtLL))
       {
       if (RQ->NodeCount > 0)
         {
