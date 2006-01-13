@@ -3560,10 +3560,6 @@ int MRMJobPreLoad(
 
 
 
-/* NOTE:  handling of tasklist information                      */
-/*        TaskList[] contains updated task ordering information */
-/*        must update both J->NodeList and J->Req[X]->NodeList  */
-/*        this call should override, not add to existing info   */
 
 int MRMJobPostLoad(
 
@@ -3588,6 +3584,7 @@ int MRMJobPostLoad(
 
   char      ErrMsg[MAX_MLINE];
   char      tmpLine[MAX_MLINE];
+  char      tmpFBAccount[MAX_MLINE];
 
   const char *FName = "MRMJobPostLoad";
 
@@ -3814,14 +3811,31 @@ int MRMJobPostLoad(
         J->Name,
         MDefReason[Reason]);
 
-      if (Reason == mhrNoFunds)
+      /* Bug in the maui-gold interaction when FALLBACKACCOUNT is enabled 
+         neccessitates this double check */
+
+      if (Reason == mhrNoFunds || Reason == mhrAMFailure)
         {
+        /* If the fallbackaccount starts with a + then append it to the 
+           primary accountname */
+
+        if (MAM[0].FallbackAccount[0] == '+')
+          {
+          snprintf(tmpFBAccount,sizeof(tmpFBAccount),"%s%s",
+            J->Cred.A->Name,
+            MAM[0].FallbackAccount + 1);
+          }
+        else
+          {
+          strcpy(tmpFBAccount,MAM[0].FallbackAccount);
+          }
+
         DBG(3,fRM) DPrint("WARNING:  insufficient allocation in account '%s' to run job '%s' (attempting fallback account '%s')\n",
           J->Cred.A->Name,
           J->Name,
-          MAM[0].FallbackAccount);
+          tmpFBAccount);
 
-        if (MAcctFind(MAM[0].FallbackAccount,&A) == SUCCESS)
+        if (MAcctFind(tmpFBAccount,&A) == SUCCESS)
           {
           J->Cred.A = A;
 
@@ -3830,7 +3844,7 @@ int MRMJobPostLoad(
         else
           {
           DBG(2,fRM) DPrint("ALERT:    cannot locate fallback account '%s'\n",
-            MAM[0].FallbackAccount);
+            tmpFBAccount);
           }
         }
       }
