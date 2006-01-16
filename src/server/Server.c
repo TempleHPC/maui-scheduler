@@ -141,6 +141,9 @@ int main(
  
   ServerProcessArgs(ArgC,tmpArgV,FALSE);
 
+  /* walk to end of ArgV[] because ServerProcessArgs() may free portions of tmpArgV[]
+     as side-affect */
+
   for (aindex = 0;aindex < ArgC;aindex++)
     {
     if (ArgV[aindex] == NULL)
@@ -590,7 +593,7 @@ int MServerConfigShow(
 int ServerProcessArgs(
  
   int    ArgC,
-  char **ArgV,
+  char **ArgV,     /* I (potentially modified) */
   int    PreLoad)  /* I (boolean) */
  
   {

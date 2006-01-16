@@ -681,7 +681,8 @@ int __MCInitialize()
  
     if ((buf = MFULoad(MASTER_CONFIGFILE,1,macmRead,&count,&SC)) != NULL)
       {
-      if ((ptr = strstr(buf,MParam[pMServerHomeDir])) != NULL)
+      if (((ptr = strstr(buf,MParam[pMServerHomeDir])) != NULL) ||
+          ((ptr = strstr(buf,"MAUIHOMEDIR")) != NULL))
         {
         MUSScanF(ptr,"%x%s %x%s", 
           sizeof(tmpLine),
