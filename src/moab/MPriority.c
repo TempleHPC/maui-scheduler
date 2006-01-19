@@ -32,7 +32,7 @@ int MJobGetStartPriority(
   int     PIndex,   /* I */
   double *Priority, /* O */
   int     Mode,     /* I */
-  char   *Buffer)   /* O (optional) */
+  char   *Buffer)   /* O (optional,minsize=MMAX_BUFFER) */
 
   {
   double        Prio;
@@ -94,6 +94,9 @@ int MJobGetStartPriority(
   char          tmpS[MAX_MNAME];
 
   unsigned long MinWCLimit;
+
+  char         *BPtr;
+  int           BSpace;
 
   const char *FName = "MJobGetStartPriority";
 
@@ -489,8 +492,9 @@ int MJobGetStartPriority(
         }
       }    /* END if (CWeight[mpcUsage] != 0) */
 
-    sprintf(Buffer,"%s%-20s %10s%c %*s%*s%*s%*s%*s%*s%*s\n",
-      Buffer,
+    MUSNInit(&BPtr,&BSpace,Buffer,MMAX_BUFFER);
+
+    MUSNPrintF(&BPtr,&BSpace,"%-20s %10s%c %*s%*s%*s%*s%*s%*s%*s\n",
       "Job",
       "PRIORITY",
       '*',
@@ -509,8 +513,7 @@ int MJobGetStartPriority(
       (int)strlen(CHeader[mpcUsage]),
       CHeader[mpcUsage]);
 
-    sprintf(Buffer,"%s%20s %10s%c %*s%*s%*s%*s%*s%*s%*s\n",
-      Buffer,
+    MUSNPrintF(&BPtr,&BSpace,"%20s %10s%c %*s%*s%*s%*s%*s%*s%*s\n",
       "Weights",
       "--------",
       ' ',
@@ -529,7 +532,7 @@ int MJobGetStartPriority(
       (int)strlen(CWLine[mpcUsage]),
       CWLine[mpcUsage]);
 
-    strcat(Buffer,"\n");
+    MUSNPrintF(&BPtr,&BSpace,"\n");
 
     DBG(5,fUI) DPrint("INFO:     %s header created\n",
       FName);
@@ -643,10 +646,9 @@ int MJobGetStartPriority(
         }
       }    /* END for (cindex) */
 
-    strcat(Buffer,"\n");
+    MUSNPrintF(&BPtr,&BSpace,"\n");
 
-    sprintf(Buffer,"%s%-20s %10s%c %*s%*s%*s%*s%*s%*s%*s\n",
-      Buffer,
+    MUSNPrintF(&BPtr,&BSpace,"%-20s %10s%c %*s%*s%*s%*s%*s%*s%*s\n",
       "Percent Contribution",
       "--------",
       ' ',
@@ -665,9 +667,9 @@ int MJobGetStartPriority(
       (int)strlen(CFooter[mpcUsage]),
       CFooter[mpcUsage]);
 
-    strcat(Buffer,"\n");
+    MUSNPrintF(&BPtr,&BSpace,"\n");
 
-    strcat(Buffer,"* indicates system prio set on job\n");
+    MUSNPrintF(&BPtr,&BSpace,"* indicates system prio set on job\n");
 
     return(SUCCESS);
     }  /* END if (Mode == 2) */
@@ -1355,8 +1357,7 @@ int MJobGetStartPriority(
         }
       }    /* END if (CWeight[mpcUsage] != 0) */
 
-    sprintf(Buffer,"%s%-20s %10.0lf%c %*s%*s%*s%*s%*s%*s%*s\n",
-      Buffer,
+    MUSNPrintF(&BPtr,&BSpace,"%-20s %10.0lf%c %*s%*s%*s%*s%*s%*s%*s\n",
       J->Name,
       Prio,
       (J->SystemPrio > 0) ? '*' : ' ',

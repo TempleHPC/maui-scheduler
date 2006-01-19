@@ -2,6 +2,7 @@ Maui 3.2.6p14
 
   Features
 
+  - Fix buffer overflow in mdiag -p
   - Fixed bug with floating generic resource tracking
   - Added support for NODEMEMOVERCOMMITFACTOR on TORQUE
   - Integrated latest DOE S3 communications library
