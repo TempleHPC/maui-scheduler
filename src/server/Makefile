@@ -14,8 +14,8 @@
 SCHEDIP=-I$(INC) -I$(TOP)/include 
 SHELL  =/bin/sh
 
-  LP   =-L$(LIB) $(SCHEDLP) $(LLLP) $(PBSLP) $(MXLP) $(REGEXLP)
-  IP   =$(SCHEDIP) $(LLIP) $(PBSIP) $(SGEIP) $(REGEXIP) $(MXIP)
+  LP   =-L$(LIB) $(SCHEDLP) $(LLLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
+  IP   =$(SCHEDIP) $(LLIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched-proto.h $(INC)msched-common.h
   DEFS =-D$(OPSYS) $(LLDEF) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) \
         $(REGEXDEF) $(RMSDEF) $(SECDEF) $(THREADDEF)
@@ -26,7 +26,7 @@ COMLIB   =mcom
 
 MBINS    =$(SERVER) mclient mprof
 LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(THREADLIB) $(MXLIB) $(LLLIB) $(SDRLIB) \
-	  $(PBSLIB) $(REGEXLIB) $(SECLIB) -lm
+	  $(REGEXLIB) $(SECLIB) -lm
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
           releaseres resetstats runjob schedctl sethold setqos setres setspri \

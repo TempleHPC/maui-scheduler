@@ -14,8 +14,8 @@
 SCHEDIP=-I$(INC) -I$(MSCHED_HOME)/include 
 SHELL  =/bin/sh
 
-  LP   =-L$(LIB) $(SCHEDLP) $(LLLP) $(PBSLP) $(MXLP) $(REGEXLP)
-  IP   =$(SCHEDIP) $(LLIP) $(PBSIP) $(REGEXIP) $(MXIP)
+  LP   =-L$(LIB) $(SCHEDLP) $(LLLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
+  IP   =$(SCHEDIP) $(LLIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched.h
   DEFS =-D$(OPSYS) $(LLDEF) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) $(REGEXDEF) \
         $(SECDEF) $(RMSDEF) $(THREADDEF)

@@ -135,7 +135,11 @@ AC_ARG_WITH(pbs,
 	[PBSTARGETDIR='FALSE'])
 if test "$PBSTARGETDIR" != 'FALSE'; then
 	if test "$PBSTARGETDIR" = 'yes'; then
-		PBSTARGETDIR='/usr/local';
+		if pbs-config --prefix 1>/dev/null 2>&1;then
+			PBSTARGETDIR=`pbs-config --prefix`
+		else
+			PBSTARGETDIR='/usr/local';
+		fi
 	fi
 	if test "$RMTYPE" = ''; then
 		RMTYPE=PBS
@@ -297,21 +301,33 @@ fi
 
 
 if test "$RMTYPE" = ''; then
-  AC_MSG_WARN([Resource Manager not specified - attempting build with pbs])
-  RMTYPE=PBS
-  AC_SUBST(RMTYPE)
-  AC_SUBST_FILE(rm_config)
-  rm_config=include/maui.cfg.dist.inc.rm
+       AC_MSG_WARN([Resource Manager not specified - attempting build with pbs])
+       RMTYPE=PBS
+       AC_SUBST(RMTYPE)
+       AC_SUBST_FILE(rm_config)
+       rm_config=include/maui.cfg.dist.inc.rm
+ 
+       if pbs-config --prefix 1>/dev/null 2>&1;then
+               PBSTARGETDIR=`pbs-config --prefix`
+       else
+               PBSTARGETDIR='/usr/local';
+       fi
+ 
+       if $PBSTARGETDIR/bin/pbs-config --cflags 1>/dev/null 2>&1;then
+               PBSCFLAGS=`$PBSTARGETDIR/bin/pbs-config --cflags`
+       else
+               PBSCFLAGS=-I$PBSTARGETDIR/include
+       fi
+       if $PBSTARGETDIR/bin/pbs-config --libs 1>/dev/null 2>&1;then
+               PBSLDFLAGS=`$PBSTARGETDIR/bin/pbs-config --libs`
+       else
+               PBSLDFLAGS="-L$PBSTARGETDIR/lib -lnet -lpbs"
+       fi
+       AC_SUBST(PBSCFLAGS)
+       AC_SUBST(PBSLDFLAGS)
+       AC_SUBST_FILE(pbs_definitions)
+       pbs_definitions=include/Makefile.inc.pbs
 
-  if test "$OS" = "OSF"; then
-    PBSLIBS="$PBSTARGETDIR/ilib/libnet.a -lpbs"
-  else
-    PBSLIBS="-lnet -lpbs"
-  fi
-  AC_SUBST(PBSTARGETDIR)
-  AC_SUBST(PBSLIBS)
-  AC_SUBST_FILE(pbs_definitions)
-  pbs_definitions=include/Makefile.inc.pbs
 fi
 
 
