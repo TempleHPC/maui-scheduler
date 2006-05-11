@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(maui, 3.2p8, help@supercluster.org)
+AC_INIT(maui, 3.2.6p15, help@supercluster.org)
 AC_CONFIG_SRCDIR([src/mcom/MConst.c])
 #AC_CONFIG_HEADER([config.h])
 
@@ -388,7 +388,7 @@ if test "$USEGOLD" != 'FALSE'; then
     AC_MSG_ERROR([Only one Allocation Manager can be specified (GOLD, $AMTYPE)])
   fi
 
-  AMTYPE=SSS
+  AMTYPE=GOLD
   AMHOST=" HOST=$HOSTNAME"
   AMPORT=" PORT=7112"
   AMSOCKETPROTOCOL=" SOCKETPROTOCOL=HTTP"
