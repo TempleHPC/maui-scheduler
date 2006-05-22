@@ -7282,7 +7282,7 @@ int MJobGetEStartTime(
           BestTaskCount,
           EP->Name,
           J->Name,
-          MULToTString(*EStartTime - MSched.Time));
+          MULToTString(BestStartTime - MSched.Time));
 
         /* apply locality constraints */
 
@@ -7518,7 +7518,7 @@ int MJobGetEStartTime(
     DBG(2,fSCHED) DPrint("INFO:     located resources for %d tasks for spanning job %s at time %s in range %d\n",
       J->Request.TC,
       J->Name,
-      MULToTString(*EStartTime - MSched.Time),
+      MULToTString(BestRange[rindex].StartTime - MSched.Time),
       rindex);
  
     if (MJobAllocMNL(
@@ -7549,6 +7549,11 @@ int MJobGetEStartTime(
       J->Name); 
  
     return(FAILURE);
+    }
+
+  if ((BestStartTime >= MAX_MTIME) && (BestRange[0].StartTime < BestStartTime))
+    {
+    BestStartTime = BestRange[0].StartTime;
     }
  
   tmpTaskCount = 0;
