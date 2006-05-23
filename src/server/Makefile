@@ -1,5 +1,5 @@
 # Makefile for Maui v3.2.6
-# Copyright 1999 - 2005  Cluster Resources, Inc, All Rights Reserved
+# Copyright 1999 - 2006  Cluster Resources, Inc, All Rights Reserved
 
    TOP =../..
    BIN =$(TOP)/bin
