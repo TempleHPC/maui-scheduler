@@ -105,6 +105,7 @@ mprof:  $(POBJECTS)
 
 clean:
 	rm -f *.o $(BIN)/maui $(BIN)/mclient $(BIN)/mprof
+	cd $(BIN) && rm -f $(MCLIENTS)
 
 remove:
 	rm $(INST_DIR)/bin/mclient

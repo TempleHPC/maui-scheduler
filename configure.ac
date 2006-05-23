@@ -513,6 +513,8 @@ AC_OUTPUT
 # Do miscellaneous configure steps
 touch maui.ck
 touch maui-private.cfg
+test -d bin || mkdir bin
+test -d lib || mkdir lib
 
 # Display final messages
 if test -z "`echo $PATH | grep \"$prefix\" 2>/dev/null`"; then
