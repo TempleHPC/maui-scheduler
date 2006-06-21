@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(maui, 3.2.6p16, help@supercluster.org)
+AC_INIT(maui, 3.2.6p17, help@supercluster.org)
 AC_CONFIG_SRCDIR([src/mcom/MConst.c])
 #AC_CONFIG_HEADER([config.h])
 
@@ -140,6 +140,16 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 		else
 			PBSTARGETDIR='/usr/local';
 		fi
+	elif test -f "$PBSTARGETDIR/bin/pbs-config"; then
+		PBSTARGETDIR=`$PBSTARGETDIR/bin/pbs-config --prefix`
+	elif test -f "$PBSTARGETDIR/../bin/pbs-config"; then
+		PBSTARGETDIR=`$PBSTARGETDIR/../bin/pbs-config --prefix`
+	elif test -f "$PBSTARGETDIR/pbs-config"; then
+		PBSTARGETDIR=`$PBSTARGETDIR/pbs-config --prefix`
+	elif test -f "$PBSTARGETDIR"; then
+		PBSTARGETDIR=`$PBSTARGETDIR --prefix`
+	else
+		PBSTARGETDIR='/usr/local';
 	fi
 	if test "$RMTYPE" = ''; then
 		RMTYPE=PBS
@@ -149,13 +159,7 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	else
 		AC_MSG_ERROR([Only one Resource Manager can be specified (PBS, $RMTYPE)])
 	fi
-	if test "$OS" = "OSF"; then
-		PBSLIBS="$PBSTARGETDIR/ilib/libnet.a -lpbs"
-	else
-		PBSLIBS="-lnet -lpbs"
-	fi
 	AC_SUBST(PBSTARGETDIR)
-	AC_SUBST(PBSLIBS)
 	AC_SUBST_FILE(pbs_definitions)
 	pbs_definitions=include/Makefile.inc.pbs
 fi
@@ -312,7 +316,9 @@ if test "$RMTYPE" = ''; then
        else
                PBSTARGETDIR='/usr/local';
        fi
- 
+fi
+
+if test "$RMTYPE" = "PBS" ;then
        if $PBSTARGETDIR/bin/pbs-config --cflags 1>/dev/null 2>&1;then
                PBSCFLAGS=`$PBSTARGETDIR/bin/pbs-config --cflags`
        else
@@ -320,8 +326,14 @@ if test "$RMTYPE" = ''; then
        fi
        if $PBSTARGETDIR/bin/pbs-config --libs 1>/dev/null 2>&1;then
                PBSLDFLAGS=`$PBSTARGETDIR/bin/pbs-config --libs`
+       elif test -f $PBSTARGETDIR/lib/libpbs.a ;then
+	       if test "$OS" = "OSF"; then
+		       PBSLIBS="$PBSTARGETDIR/ilib/libnet.a -L$PBSTARGETDIR/lib -lpbs"
+	       else
+		       PBSLIBS="-L$PBSTARGETDIR/lib -lnet -lpbs"
+	       fi
        else
-               PBSLDFLAGS="-L$PBSTARGETDIR/lib -lnet -lpbs"
+               AC_MSG_ERROR([can't find pbs-config or libnet.a])
        fi
        AC_SUBST(PBSCFLAGS)
        AC_SUBST(PBSLDFLAGS)
