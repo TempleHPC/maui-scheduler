@@ -88,11 +88,11 @@ setup:
 	$(CC) $(IP) $(DEFS) $(CFLAGS) $(SOURCE) -c $<
 
 $(SERVER): $(SOBJECTS)
-	$(LD) $(SOBJECTS) -o $(BIN)/$@ $(LP) $(LIBS) $(OSLDFLAGS) 
+	$(LD) $(SOBJECTS) -o $(BIN)/$@ $(LIBS) $(OSLDFLAGS) $(LP)
 	chmod 711 $(BIN)/$@ || true
 
 mclient: mclient.o
-	$(LD) mclient.o -o $(BIN)/$@ $(OSLDFLAGS) $(LP) $(LIBS)     
+	$(LD) mclient.o -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS)    $(LP) 
 	chmod 751 $(BIN)/$@
 	for i in $(MCLIENTS); do \
 	  ln -f $(BIN)/$@ $(BIN)/$$i; \
@@ -100,7 +100,7 @@ mclient: mclient.o
 	done
 
 mprof:  $(POBJECTS)
-	$(LD) $(POBJECTS) -o $(BIN)/$@ $(OSLDFLAGS) $(LP) $(LIBS)     
+	$(LD) $(POBJECTS) -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS)     $(LP)
 	chmod 751 $(BIN)/$@
 
 clean:
