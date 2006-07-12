@@ -2224,15 +2224,15 @@ if test "$OS" = "AIX"; then
       OPSYS="AIX43"
     else
       OPSYS="AIX43"
-			RELEASE=`uname -r`
-      { echo "$as_me:$LINENO: WARNING: Unexpected OS release 'AIX4$(RELEASE)', attempting build with OPSYS=$(OPSYS)" >&5
-echo "$as_me: WARNING: Unexpected OS release 'AIX4$(RELEASE)', attempting build with OPSYS=$(OPSYS)" >&2;}
+      RELEASE=`uname -r`
+      { echo "$as_me:$LINENO: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS" >&5
+echo "$as_me: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS" >&2;}
     fi
   else
     OPSYS=AIX43
-		OSLEVEL=`oslevel`
-    { echo "$as_me:$LINENO: WARNING: Unexpected AIX level: $(OSLEVEL), attempting build with OPSYS=$(OPSYS)" >&5
-echo "$as_me: WARNING: Unexpected AIX level: $(OSLEVEL), attempting build with OPSYS=$(OPSYS)" >&2;}
+    OSLEVEL=`oslevel`
+    { echo "$as_me:$LINENO: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&5
+echo "$as_me: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&2;}
   fi
 elif test "$OS" = "Linux"; then
   OPSYS="LINUX"
@@ -2253,8 +2253,8 @@ else
   OPSYS="LINUX"
   OS="LINUX"
 
-  { echo "$as_me:$LINENO: WARNING: Unsupported OS: $(OS), attempting build with OPSYS=$(OPSYS)" >&5
-echo "$as_me: WARNING: Unsupported OS: $(OS), attempting build with OPSYS=$(OPSYS)" >&2;}
+  { echo "$as_me:$LINENO: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" >&5
+echo "$as_me: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" >&2;}
 fi
 
 
@@ -2338,7 +2338,7 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 		if pbs-config --prefix 1>/dev/null 2>&1;then
 			PBSTARGETDIR=`pbs-config --prefix`
 		else
-			PBSTARGETDIR='/usr/local';
+			PBSTARGETDIR='/usr/local'
 		fi
 	elif test -f "$PBSTARGETDIR/bin/pbs-config"; then
 		PBSTARGETDIR=`$PBSTARGETDIR/bin/pbs-config --prefix`
@@ -2349,7 +2349,7 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	elif test -f "$PBSTARGETDIR"; then
 		PBSTARGETDIR=`$PBSTARGETDIR --prefix`
 	else
-		PBSTARGETDIR='/usr/local';
+		PBSTARGETDIR='/usr/local'
 	fi
 	if test "$RMTYPE" = ''; then
 		RMTYPE=PBS
@@ -2572,8 +2572,8 @@ if test "$RMTYPE" = "PBS" ;then
 		       PBSLIBS="-L$PBSTARGETDIR/lib -lnet -lpbs"
 	       fi
        else
-               { { echo "$as_me:$LINENO: error: can't find pbs-config or libnet.a" >&5
-echo "$as_me: error: can't find pbs-config or libnet.a" >&2;}
+               { { echo "$as_me:$LINENO: error: can't find pbs-config or libpbs.a" >&5
+echo "$as_me: error: can't find pbs-config or libpbs.a" >&2;}
    { (exit 1); exit 1; }; }
        fi
 

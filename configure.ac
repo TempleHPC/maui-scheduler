@@ -45,13 +45,13 @@ if test "$OS" = "AIX"; then
       OPSYS="AIX43"
     else
       OPSYS="AIX43"
-			RELEASE=`uname -r`
-      AC_MSG_WARN([Unexpected OS release 'AIX4$(RELEASE)', attempting build with OPSYS=$(OPSYS)])
+      RELEASE=`uname -r`
+      AC_MSG_WARN([Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS])
     fi
   else
     OPSYS=AIX43
-		OSLEVEL=`oslevel`
-    AC_MSG_WARN([Unexpected AIX level: $(OSLEVEL), attempting build with OPSYS=$(OPSYS)])
+    OSLEVEL=`oslevel`
+    AC_MSG_WARN([Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS])
   fi
 elif test "$OS" = "Linux"; then
   OPSYS="LINUX"
@@ -72,7 +72,7 @@ else
   OPSYS="LINUX"
   OS="LINUX"
 
-  AC_MSG_WARN([Unsupported OS: $(OS), attempting build with OPSYS=$(OPSYS)])
+  AC_MSG_WARN([Unsupported OS: $OS, attempting build with OPSYS=$OPSYS])
 fi
 AC_SUBST(OPSYS)
 AC_SUBST(OS)
@@ -138,7 +138,7 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 		if pbs-config --prefix 1>/dev/null 2>&1;then
 			PBSTARGETDIR=`pbs-config --prefix`
 		else
-			PBSTARGETDIR='/usr/local';
+			PBSTARGETDIR='/usr/local'
 		fi
 	elif test -f "$PBSTARGETDIR/bin/pbs-config"; then
 		PBSTARGETDIR=`$PBSTARGETDIR/bin/pbs-config --prefix`
@@ -149,7 +149,7 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	elif test -f "$PBSTARGETDIR"; then
 		PBSTARGETDIR=`$PBSTARGETDIR --prefix`
 	else
-		PBSTARGETDIR='/usr/local';
+		PBSTARGETDIR='/usr/local'
 	fi
 	if test "$RMTYPE" = ''; then
 		RMTYPE=PBS
@@ -333,7 +333,7 @@ if test "$RMTYPE" = "PBS" ;then
 		       PBSLIBS="-L$PBSTARGETDIR/lib -lnet -lpbs"
 	       fi
        else
-               AC_MSG_ERROR([can't find pbs-config or libnet.a])
+               AC_MSG_ERROR([can't find pbs-config or libpbs.a])
        fi
        AC_SUBST(PBSCFLAGS)
        AC_SUBST(PBSLDFLAGS)
