@@ -2251,10 +2251,9 @@ elif test "$OS" = "OSF1"; then
   OS="OSF"
 else
   OPSYS="LINUX"
-  OS="LINUX"
-
   { echo "$as_me:$LINENO: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" >&5
 echo "$as_me: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" >&2;}
+  OS="LINUX"
 fi
 
 

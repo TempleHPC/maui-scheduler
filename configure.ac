@@ -70,9 +70,8 @@ elif test "$OS" = "OSF1"; then
   OS="OSF"
 else
   OPSYS="LINUX"
-  OS="LINUX"
-
   AC_MSG_WARN([Unsupported OS: $OS, attempting build with OPSYS=$OPSYS])
+  OS="LINUX"
 fi
 AC_SUBST(OPSYS)
 AC_SUBST(OS)
