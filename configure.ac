@@ -147,8 +147,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 		PBSTARGETDIR=`$PBSTARGETDIR/pbs-config --prefix`
 	elif test -f "$PBSTARGETDIR"; then
 		PBSTARGETDIR=`$PBSTARGETDIR --prefix`
-	else
-		PBSTARGETDIR='/usr/local'
 	fi
 	if test "$RMTYPE" = ''; then
 		RMTYPE=PBS
