@@ -325,9 +325,9 @@ if test "$RMTYPE" = "PBS" ;then
                PBSLDFLAGS=`$PBSTARGETDIR/bin/pbs-config --libs`
        elif test -f $PBSTARGETDIR/lib/libpbs.a ;then
 	       if test "$OS" = "OSF"; then
-		       PBSLIBS="$PBSTARGETDIR/ilib/libnet.a -L$PBSTARGETDIR/lib -lpbs"
+		       PBSLDFLAGS="$PBSTARGETDIR/ilib/libnet.a -L$PBSTARGETDIR/lib -lpbs"
 	       else
-		       PBSLIBS="-L$PBSTARGETDIR/lib -lnet -lpbs"
+		       PBSLDFLAGS="-L$PBSTARGETDIR/lib -lnet -lpbs"
 	       fi
        else
                AC_MSG_ERROR([can't find pbs-config or libpbs.a])
