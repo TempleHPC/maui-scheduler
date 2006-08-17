@@ -274,6 +274,7 @@ typedef struct {
 #define DEFAULT_MRESOURCELIMITVIOLATIONACTION   mrlaRequeue
 
 #define MDEF_SPVJOBISPREEMPTIBLE                TRUE
+#define MDEF_MINSUSPENDTIME                     10
 
 /* node access policy */
 

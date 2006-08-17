@@ -1030,7 +1030,8 @@ int MJobGetRunPriority(
   *Priority = MPar[0].FSC.PCW[mpcUsage] * (
      MPar[0].FSC.PSW[mpsUCons] * ResourcesConsumed +
      MPar[0].FSC.PSW[mpsURem]  * ResourcesRemaining +
-     MPar[0].FSC.PSW[mpsUPerC] * PercentResUsage);
+     MPar[0].FSC.PSW[mpsUPerC] * PercentResUsage,
+     MPar[0].FSC.PSW[mpsUExeTime] * (MSched.Time - J->StartTime));
 
   *Priority += J->StartPriority;
 
@@ -2039,12 +2040,12 @@ int MJobPreempt(
       MJobSetState(J,mjsSuspended);
 
       /* NOTE:  to prevent thrashing, by default, suspended jobs should not *
-       * resume for 1 minute */
+       * resume for MDEF_MINSUSPENDTIME */
 
       {
       long tmpL;
 
-      tmpL = MSched.Time + 60;
+      tmpL = MSched.Time + MDEF_MINSUSPENDTIME;
 
       MJobSetAttr(J,mjaSysSMinTime,(void **)&tmpL,mdfLong,mSet);
       }  /* END BLOCK */

@@ -1752,6 +1752,7 @@ int MCfgSetVal(
     case pUConsWeight:
     case pURemWeight:
     case pUPerCWeight:
+    case pUExeTimeWeight:
     case pServCap:
     case pTargCap:
     case pCredCap:
@@ -1785,6 +1786,7 @@ int MCfgSetVal(
     case pUConsCap:
     case pURemCap:
     case pUPerCCap:
+    case pUExeTimeCap:
     case pXFMinWCLimit:
     case pFSPolicy:
     case pFSInterval:

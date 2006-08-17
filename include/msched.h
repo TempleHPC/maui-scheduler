@@ -1271,11 +1271,12 @@ enum MPrioSubComponentEnum {
   mpsRUProc,
   mpsRUJob,
   mpsUCons,
+  mpsUExeTime,
   mpsURem,
-  mpsUPerC
+  mpsUPerC,
   };
  
-#define MAX_MPRIOSUBCOMPONENT  32
+#define MAX_MPRIOSUBCOMPONENT  33
  
 /* fairshare */
  

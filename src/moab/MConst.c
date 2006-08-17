@@ -1614,6 +1614,8 @@ const mcfg_t MCfg[] = {
   { "UFSWEIGHT",                pOLDUFSWeight,                mdfInt,     mxoPar,   NULL },
   { "UJOBWEIGHT",               pRUJobWeight,                 mdfInt,     mxoPar,   NULL },
   { "UPROCWEIGHT",              pRUProcWeight,                mdfInt,     mxoPar,   NULL },
+  { "USAGEEXECUTIONTIMECAP",    pUExeTimeCap,                 mdfInt,     mxoPar,   NULL },
+  { "USAGEEXECUTIONTIMEWEIGHT", pUExeTimeWeight,              mdfInt,     mxoPar,   NULL },
   { "USAGECAP",                 pUsageCap,                    mdfInt,     mxoPar,   NULL },
   { "USAGEWEIGHT",              pUsageWeight,                 mdfString,  mxoPar,   NULL },
   { "USECPUTIME",               pUseCPUTime,                  mdfString,  mxoPar,   NULL },

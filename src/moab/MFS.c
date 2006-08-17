@@ -954,9 +954,10 @@ int MFSProcessOConfig(
     case pUConsWeight:
     case pURemWeight:
     case pUPerCWeight:
- 
+    case pUExeTimeWeight:
+
       F->PSW[PIndex - pSQTWeight + 1] = (long)IVal;
- 
+
       break;
  
     case pServCap:
@@ -997,6 +998,7 @@ int MFSProcessOConfig(
     case pUConsCap:
     case pURemCap:
     case pUPerCCap:
+    case pUExeTimeCap:
  
       F->PSC[PIndex - pSQTCap + 1] = (long)IVal;
  
