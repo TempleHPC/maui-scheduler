@@ -2462,6 +2462,11 @@ int MParConfigShow(
 
     sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pFSPolicy],MFSPolicyType[F->FSPolicy]);
 
+    sprintf(Buffer,"%s%-30s  %s%s\n",
+      Buffer,
+      MParam[pFSPolicy],MFSPolicyType[F->FSPolicy],
+      (MSched.PercentBasedFS == TRUE) ? "%" : "");
+
     if ((F->FSPolicy == fspNONE) || (VFlag || (PIndex == -1) || (PIndex == pFSPolicy)))
       {
       sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pFSInterval],MULToTString(F->FSInterval));

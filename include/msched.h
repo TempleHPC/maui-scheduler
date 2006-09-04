@@ -2160,6 +2160,7 @@ typedef struct {
   int   SPVJobIsPreemptible;        /* (config boolean) */
 
   mbool_t EnableEncryption;
+  mbool_t PercentBasedFS;
 
   char *Argv[MAX_MARG];
 

@@ -886,6 +886,9 @@ int MFSProcessOConfig(
 
     case pFSPolicy:
 
+      if (strchr(SVal,'*'))
+        MSched.PercentBasedFS = TRUE;
+
       if (MUBoolFromString(SVal,FALSE) == TRUE)
         {
         /* enable backlevel support */ 

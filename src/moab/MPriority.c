@@ -761,9 +761,18 @@ int MJobGetStartPriority(
 
       if (FSTargetUsage > 0.0)
         {
-        SFactor[mpsFU] = FSTargetUsage - 
-          (J->Cred.U->F.FSUsage[0] + J->Cred.U->F.FSFactor) / 
-          (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+        if (MSched.PercentBasedFS == TRUE)
+          {
+          SFactor[mpsFU] =  1.0 - 
+            (((J->Cred.U->F.FSUsage[0] + J->Cred.U->F.FSFactor) / 
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0)/FSTargetUsage);
+          }
+        else
+          {
+          SFactor[mpsFU] = FSTargetUsage - 
+            (J->Cred.U->F.FSUsage[0] + J->Cred.U->F.FSFactor) / 
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+          }
 
         switch(FSMode)
           {
@@ -797,9 +806,18 @@ int MJobGetStartPriority(
  
       if (FSTargetUsage > 0.0)
         {
-        SFactor[mpsFG] = FSTargetUsage -
-          (J->Cred.G->F.FSUsage[0] + J->Cred.G->F.FSFactor) /
-          (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+        if (MSched.PercentBasedFS == TRUE)
+          {
+          SFactor[mpsFU] =  1.0 - 
+            (((J->Cred.G->F.FSUsage[0] + J->Cred.G->F.FSFactor) / 
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0)/FSTargetUsage);
+          }
+        else
+          {
+          SFactor[mpsFG] = FSTargetUsage -
+            (J->Cred.G->F.FSUsage[0] + J->Cred.G->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+          }
  
         switch(FSMode)
           {
@@ -833,9 +851,18 @@ int MJobGetStartPriority(
       {
       if (J->Cred.A != NULL)
         {
-        SFactor[mpsFA] = FSTargetUsage -
-          (J->Cred.A->F.FSUsage[0] + J->Cred.A->F.FSFactor) /
-          (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+        if (MSched.PercentBasedFS == TRUE)
+          {
+          SFactor[mpsFA] = 1.0 -
+            (((J->Cred.A->F.FSUsage[0] + J->Cred.A->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0)/FSTargetUsage);
+          }
+        else
+          {
+          SFactor[mpsFA] = FSTargetUsage -
+            (J->Cred.A->F.FSUsage[0] + J->Cred.A->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+          }
         }
       else
         {
@@ -873,9 +900,18 @@ int MJobGetStartPriority(
       {
       if (J->Cred.C != NULL)
         {
-        SFactor[mpsFC] = FSTargetUsage -
-          (J->Cred.C->F.FSUsage[0] + J->Cred.C->F.FSFactor) /
-          (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+        if (MSched.PercentBasedFS == TRUE)
+          {
+          SFactor[mpsFC] = 1.0 -
+            (((J->Cred.C->F.FSUsage[0] + J->Cred.C->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0)/FSTargetUsage); 
+          }
+        else
+          {
+          SFactor[mpsFC] = FSTargetUsage -
+            (J->Cred.C->F.FSUsage[0] + J->Cred.C->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+          }
         }
       else
         {
@@ -913,9 +949,18 @@ int MJobGetStartPriority(
       {
       if (J->Cred.Q != NULL)
         {
-        SFactor[mpsFQ] = FSTargetUsage -
-          (J->Cred.Q->F.FSUsage[0] + J->Cred.Q->F.FSFactor) /
-          (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+        if (MSched.PercentBasedFS == TRUE)
+          {
+          SFactor[mpsFQ] = 1.0 - 
+            (((J->Cred.Q->F.FSUsage[0] + J->Cred.Q->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0)/FSTargetUsage);
+          }
+        else
+          {
+          SFactor[mpsFQ] = FSTargetUsage -
+            (J->Cred.Q->F.FSUsage[0] + J->Cred.Q->F.FSFactor) /
+            (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0;
+          }
         }
       else
         {
