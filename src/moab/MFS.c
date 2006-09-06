@@ -886,7 +886,7 @@ int MFSProcessOConfig(
 
     case pFSPolicy:
 
-      if (strchr(SVal,'*'))
+      if (strchr(SVal,'%'))
         MSched.PercentBasedFS = TRUE;
 
       if (MUBoolFromString(SVal,FALSE) == TRUE)
