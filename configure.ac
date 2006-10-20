@@ -38,38 +38,38 @@ OS=`uname`
 if test "$OS" = "AIX"; then
   if test `uname -v` = 4; then
     if test `uname -r` = 1; then
-      OPSYS="AIX41"
+      OPSYS="__AIX41"
     elif test `uname -r` = 2; then
-      OPSYS="AIX42"
+      OPSYS="__AIX42"
     elif test `uname -r` = 3; then
-      OPSYS="AIX43"
+      OPSYS="__AIX43"
     else
-      OPSYS="AIX43"
+      OPSYS="__AIX43"
       RELEASE=`uname -r`
       AC_MSG_WARN([Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS])
     fi
   else
-    OPSYS=AIX43
+    OPSYS=__AIX43
     OSLEVEL=`oslevel`
     AC_MSG_WARN([Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS])
   fi
 elif test "$OS" = "Linux"; then
-  OPSYS="LINUX"
+  OPSYS="__LINUX"
 elif test "$OS" = "HP-UX"; then
-  OPSYS="HPUX"
+  OPSYS="__HPUX"
 elif test "$OS" = "HP-UX"; then
-  OPSYS="HPUX"
+  OPSYS="__HPUX"
 elif test "$OS" = "IRIX" -o "$OS" = "IRIX64"; then
-  OPSYS="IRIX"
+  OPSYS="__IRIX"
   OS="IRIX"
 elif test "$OS" = "NT"; then
-  OPSYS="NT"
+  OPSYS="__NT"
   OS="NT"
 elif test "$OS" = "OSF1"; then
-  OPSYS="OSF"
+  OPSYS="__OSF"
   OS="OSF"
 else
-  OPSYS="LINUX"
+  OPSYS="__LINUX"
   AC_MSG_WARN([Unsupported OS: $OS, attempting build with OPSYS=$OPSYS])
   OS="LINUX"
 fi

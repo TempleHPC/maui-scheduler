@@ -424,6 +424,7 @@ int UIProcessCommand(
         MCKeyword[mckArgs]);
 
       HeadSize = (int)strlen(SBuffer);
+      S->SBufSize -= HeadSize + 1;
 
       if (Function[sindex] != NULL)
         scode = (*Function[sindex])(args,S->SBuffer + HeadSize,FLAGS,Auth,&S->SBufSize);
@@ -434,10 +435,7 @@ int UIProcessCommand(
 
       *ptr = scode + '0';
 
-      if (S->SBufSize != sizeof(SBuffer))
-        S->SBufSize += (long)HeadSize;
-      else
-        S->SBufSize = (long)strlen(S->SBuffer);
+      S->SBufSize = (long)strlen(S->SBuffer);
 
       MSUSendData(S,MAX_SOCKETWAIT,TRUE,TRUE);
 

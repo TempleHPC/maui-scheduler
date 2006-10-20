@@ -1563,6 +1563,7 @@ int MCfgSetVal(
     case mcoJobFBAction:
     case mcoMailAction:
     case pAdminEAction:
+    case pAdminEInterval:
     case pCheckPointFile:
     case pCheckPointInterval:
     case pCheckPointExpirationTime:

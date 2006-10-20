@@ -87,6 +87,8 @@ setup:
 .c.o:   $(INCS)
 	$(CC) $(IP) $(DEFS) $(CFLAGS) $(SOURCE) -c $<
 
+UserI.o: OUserI.c
+
 $(SERVER): $(SOBJECTS)
 	$(LD) $(SOBJECTS) -o $(BIN)/$@ $(LIBS) $(OSLDFLAGS) $(LP)
 	chmod 711 $(BIN)/$@ || true

@@ -661,7 +661,7 @@ int MPBSWorkloadQuery(
           if (MJobFind(SJID,&J,0) == SUCCESS)
             {
             if (IsExiting == TRUE)
-              IsExiting |= (1 << mjfIsExiting);
+              J->Flags |= (1 << mjfIsExiting);
 
             MRMJobPreUpdate(J);
   
@@ -674,7 +674,7 @@ int MPBSWorkloadQuery(
             /* if new job, load data */
 
             if (IsExiting == TRUE)
-              IsExiting |= (1 << mjfIsExiting);
+              J->Flags |= (1 << mjfIsExiting);
 
             MRMJobPreLoad(J,SJID,R->Index);
 
@@ -710,7 +710,7 @@ int MPBSWorkloadQuery(
           if (MJobFind(SJID,&J,0) == SUCCESS)
             {
             if (IsExiting == TRUE)
-              IsExiting |= (1 << mjfIsExiting);
+              J->Flags |= (1 << mjfIsExiting);
 
             /* if job never ran, remove record.  job cancelled externally */
   
@@ -1796,7 +1796,7 @@ int MPBSJobStart(
           J,
           R,
           ATTR_l,
-          (char *)(R->Version >= 710) ? "select" : "neednodes",
+          (char *)(R->Version >= 710 ? "select" : "neednodes"),
           HostList,
           NULL,
           NULL) == FAILURE)
@@ -1934,7 +1934,7 @@ int MPBSJobStart(
           J,
           R,
           ATTR_l,
-          (char *)(R->Version >= 710) ? "select" : "neednodes",
+          (char *)(R->Version >= 710 ? "select" : "neednodes"),
           J->NeedNodes,
           NULL,
           NULL) == FAILURE)
@@ -4489,7 +4489,7 @@ int MPBSJobRequeue(
         J,
         R,
         ATTR_l,
-        (char *)(R->Version >= 710) ? "select" : "neednodes",
+        (char *)(R->Version >= 710 ? "select" : "neednodes"),
         J->NeedNodes,
         NULL,
         NULL) == FAILURE)
@@ -4928,7 +4928,7 @@ int MPBSJobMigrate(
        J,
        R,
        "Resource_List",
-        (char *)(R->Version >= 710) ? "select" : "neednodes",
+        (char *)(R->Version >= 710 ? "select" : "neednodes"),
        tmpHList,
        EMsg,
        SC) == FAILURE)
