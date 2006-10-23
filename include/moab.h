@@ -1122,9 +1122,9 @@ typedef struct {
   int (*ResourceQuery)(mnode_t *,mrm_t *,char *,int *);
   int (*RMEventQuery)(mrm_t *,int *);
   int (*RMGetData)(mrm_t *,int *);
-  int (*RMInitialize)(mrm_t *, int *);
+  int (*RMInitialize)(mrm_t *,int *);
   int (*RMQuery)(void);
-  int (*WorkloadQuery)(mrm_t *, int *, int *);
+  int (*WorkloadQuery)(mrm_t *,int *,int *);
 
   mbool_t IsInitialized;
   } mrmfunc_t;
@@ -1827,7 +1827,7 @@ typedef struct {
   int (*JobDistributeTasks)(mjob_t *,mrm_t *,mnalloc_t *,short int *);
   int (*JobFind)(char *, mjob_t **, int);
   int (*JobGetFeasibleTasks)(mjob_t *,mreq_t *,mpar_t *,nodelist_t,nodelist_t,int *,int *,long int,long unsigned int);
-  int (*JobGetStartPriority)(mjob_t *,int,double *,int,char *);
+  int (*JobGetStartPriority)(mjob_t *,int,double *,int,char **,int *);
   int (*JobGetTasks)(mjob_t *,mpar_t *,nodelist_t,mnodelist_t,char *,int);
   int (*JobSetCreds)(mjob_t *, char *, char *, char *);
   int (*JobSetQOS)(mjob_t *, mqos_t *, int);

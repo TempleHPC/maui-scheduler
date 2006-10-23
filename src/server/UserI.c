@@ -5211,6 +5211,8 @@ int UIDiagnosePriority(
   int JobCount;
  
   double tmpD;
+  char  *BPtr;
+  int    BSpace;
  
   mjob_t *J;
  
@@ -5220,15 +5222,14 @@ int UIDiagnosePriority(
     FName,
     (P != NULL) ? P->Name : "NULL");
  
-  Buffer[0] = '\0';
- 
-  sprintf(Buffer,"%sdiagnosing job priority information (partition: %s)\n\n",
-    Buffer,
+  MUSNInit(&BPtr,&BSpace,Buffer,(int)*BufSize);
+
+  MUSNPrintF(&BPtr, &BSpace, "diagnosing job priority information (partition: %s)\n\n",
     P->Name);
  
   /* initialize priority statistics */
  
-  MJobGetStartPriority(NULL,P->Index,NULL,1,Buffer);
+  MJobGetStartPriority(NULL,P->Index,NULL,1,&BPtr,&BSpace);
  
   JobCount = 0;
  
@@ -5242,7 +5243,7 @@ int UIDiagnosePriority(
     DBG(5,fUI) DPrint("INFO:     diagnosing priority for job '%s'\n",
       J->Name);
  
-    MJobGetStartPriority(J,P->Index,&tmpD,0,Buffer); 
+    MJobGetStartPriority(J,P->Index,&tmpD,0,&BPtr,&BSpace);
  
     J->StartPriority = (long)tmpD;
  
@@ -5251,7 +5252,7 @@ int UIDiagnosePriority(
  
   if (JobCount > 0)
     {
-    MJobGetStartPriority(NULL,P->Index,NULL,2,Buffer);
+    MJobGetStartPriority(NULL,P->Index,NULL,2,&BPtr,&BSpace);
     }
   else
     {

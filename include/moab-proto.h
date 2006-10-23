@@ -298,7 +298,7 @@ int MJobSelectMNL(mjob_t *,mpar_t *,nodelist_t,mnodelist_t,char *,int);
 int MJobDistributeTasks(mjob_t *,mrm_t *,mnalloc_t *,short *);
 int MJobTrap(mjob_t *);
 char *MJobGetName(mjob_t *,char *,mrm_t *,char *,int,enum MJobNameEnum);
-int MJobGetStartPriority(mjob_t *,int,double *,int,char *);
+int MJobGetStartPriority(mjob_t *,int,double *,int,char **,int *);
 int MJobGetRunPriority(mjob_t *,int,double *,char *);
 int MJobGetBackfillPriority(mjob_t *,unsigned long,int,double *,char *);
 int MJobGetPartitionAccess(mjob_t *);

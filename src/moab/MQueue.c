@@ -91,7 +91,7 @@ int MQueuePrioritizeJobs(
       {
       J = MJob[JobIndex[jindex]];
 
-      MJobGetStartPriority(J,0,&tmpD,0,NULL);
+      MJobGetStartPriority(J,0,&tmpD,0,NULL,NULL);
  
       J->StartPriority = (unsigned long)tmpD;
 
@@ -113,7 +113,7 @@ int MQueuePrioritizeJobs(
 
     for (J = Q[0]->Next;J != Q[0];J = J->Next)
       {
-      MJobGetStartPriority(J,0,&tmpD,0,NULL);
+      MJobGetStartPriority(J,0,&tmpD,0,NULL,NULL);
 
       J->StartPriority = (unsigned long)tmpD;
 
