@@ -765,7 +765,8 @@ enum {
   pOLDAFSWeight,
   pOLDDirectSpecWeight,
   pOLDBankServer,
-  pOLDRMServer
+  pOLDRMServer,
+  pNAMaxPS
   };
 
 #endif /* __M_COMMON_H__ */

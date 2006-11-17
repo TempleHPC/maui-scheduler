@@ -898,7 +898,15 @@ int MStatUpdateActiveJobUsage(
      called from:         MQueueAddAJob()
   */
 
-  TotalProcs = MJobGetProcCount(J);
+  if ((J->Req[0]->NAccessPolicy == mnacSingleJob) && 
+      (MSched.NodeAllocMaxPS == TRUE))
+    {
+    TotalProcs = J->NodesRequested;
+    }
+  else
+    {
+    TotalProcs = MJobGetProcCount(J);
+    }
 
   if (TotalProcs == 0)
     {
@@ -914,7 +922,15 @@ int MStatUpdateActiveJobUsage(
     (double)MSched.Interval / 100.0,
     (double)MSched.Time - J->StartTime);
 
-  pesdedicated = PE * interval;
+  if ((RQ->NAccessPolicy == mnacSingleJob) && 
+      (MSched.NodeAllocMaxPS == TRUE))
+    {
+    pesdedicated = TotalProcs * interval;
+    }
+  else
+    {
+    pesdedicated = PE * interval;
+    }
 
   for (rqindex = 0;J->Req[rqindex] != NULL;rqindex++)
     { 
@@ -935,7 +951,7 @@ int MStatUpdateActiveJobUsage(
  
     if ((J->StartTime != MSched.Time) && (J->CTime != MSched.Time))
       { 
-      psdedicated = interval * MJobGetProcCount(J);
+      psdedicated = interval * TotalProcs;
 
       for (nindex = 0;nindex < MAX_MNODE_PER_JOB;nindex++)
         {

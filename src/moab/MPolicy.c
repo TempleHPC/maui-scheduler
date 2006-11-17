@@ -1538,7 +1538,16 @@ int MPolicyAdjustUsage(
     PConsumed[mptMaxJob]  = 1;    
     PConsumed[mptMaxProc] = MJobGetProcCount(J);
     PConsumed[mptMaxNode] = J->Request.NC;
-    PConsumed[mptMaxPS]   = PConsumed[mptMaxProc] * PConsumed[mptMaxWC];
+
+    if ((J->Req[0]->NAccessPolicy == mnacSingleJob) &&
+        (MSched.NodeAllocMaxPS == TRUE))
+      {
+      PConsumed[mptMaxPS] = J->NodesRequested * PConsumed[mptMaxWC];
+      }
+    else
+      {
+      PConsumed[mptMaxPS] = PConsumed[mptMaxProc] * PConsumed[mptMaxWC];
+      }
 
     MJobGetPE(J,&MPar[0],&PE);
 

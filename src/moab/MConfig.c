@@ -1580,6 +1580,7 @@ int MCfgSetVal(
     case pProcSpeedFeatureHeader:
     case pNodeTypeFeatureHeader:
     case pPartitionFeatureHeader:
+    case pNAMaxPS:
     case pNAPolicy:
     case pSchedMode:
     case pClientTimeout:

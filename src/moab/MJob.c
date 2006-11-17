@@ -2682,7 +2682,16 @@ int MJobCheckLimits(
   JUsage[mptMaxProc] = MJobGetProcCount(J);
   JUsage[mptMaxNode] = J->Request.NC;
   JUsage[mptMaxWC]   = J->WCLimit;
-  JUsage[mptMaxPS]   = JUsage[mptMaxProc] * JUsage[mptMaxWC];
+
+  if ((J->Req[0]->NAccessPolicy == mnacSingleJob) &&
+      (MSched.NodeAllocMaxPS == TRUE))
+    {
+    JUsage[mptMaxPS] = J->NodesRequested * JUsage[mptMaxWC];
+    }
+  else
+    {
+    JUsage[mptMaxPS] = JUsage[mptMaxProc] * JUsage[mptMaxWC];
+    }
 
   MJobGetPE(J,&MPar[0],&PE);      
 

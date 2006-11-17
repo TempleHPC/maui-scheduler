@@ -2191,6 +2191,7 @@ typedef struct {
   char  PartitionFeatureHeader[MAX_MNAME];
   int   PartitionFeatureIsVisible;    /* (boolean) */
   int   InitialLoad;
+  int   NodeAllocMaxPS;
 
   mgcred_t *DefaultU;
   mgcred_t *DefaultG;

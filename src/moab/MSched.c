@@ -5464,6 +5464,12 @@ int MSchedProcessOConfig(
 
       break;
 
+    case pNAMaxPS:
+
+       S->NodeAllocMaxPS = MUBoolFromString(SVal,FALSE);
+
+      break;
+
     case pSchedMode:
 
       S->Mode = MUGetIndex(SVal,MSchedMode,FALSE,S->Mode);

@@ -1432,6 +1432,7 @@ const mcfg_t MCfg[] = {
   { "MINADMINSTIME",            mcoAdminMinSTime,             mdfString,  mxoSched, NULL },
   { "MINDISPATCHTIME",          pMinDispatchTime,             mdfString,  mxoSched, NULL },
   { "NODEACCESSPOLICY",         pNAPolicy,                    mdfString,  mxoSched, NULL },
+  { "NODEALLOCMAXPS",           pNAMaxPS,                     mdfString,  mxoSched, NULL },
   { "NODEALLOCATIONPOLICY",     pNodeAllocationPolicy,        mdfString,  mxoPar,   NULL },
   { "NODECAP",                  pRNodeCap,                    mdfInt,     mxoPar,   NULL },
   { "NODECPUOVERCOMMITFACTOR",  pNodeCPUOverCommitFactor,     mdfDouble,  mxoSched, NULL }, 
