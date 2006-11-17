@@ -2302,6 +2302,12 @@ int MRMProcessConfig(
         MUStrDup(&R->P[1].HostName,ValLine);    
 
         break;
+
+      case mrmaEPort:
+
+        R->EPort = (int)strtol((char *)Value,NULL,0);
+
+        break;
  
       case mrmaPort:
 
@@ -2911,6 +2917,12 @@ int MRMSetAttr(
           }
         }    /* END if (ptr != NULL) */
       }      /* END BLOCK */
+
+      break;
+
+    case mrmaEPort:
+
+      R->EPort = (int)strtol((char *)Value,NULL,0);
 
       break;
 

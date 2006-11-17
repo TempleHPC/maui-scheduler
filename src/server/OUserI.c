@@ -284,7 +284,7 @@ int UIProcessCommand(
 
       hostcheck = FALSE;
 
-      for (index = 0;index < MAX_MADMINUSERS;index++)
+      for (index = 0;index < MAX_MADMINHOSTS;index++)
         {
         if (MSched.AdminHost[index][0] == '\0')
           break;
