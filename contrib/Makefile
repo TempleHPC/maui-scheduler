@@ -7,7 +7,7 @@ maui326:
 	ACTION=snap ; \
 	PKG=maui ; \
 	VERSION=3.2.6 ; \
-	PATCH=p10 ; \
+	PATCH=p18 ; \
 	BASEDIR=$$PKG-$$VERSION$$PATCH ; \
 	cd $$BASEDIR ; \
 	for i in src/[ms]* include; do \

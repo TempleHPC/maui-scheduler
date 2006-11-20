@@ -1,3 +1,9 @@
+Maui 3.2.6p18
+
+  - Implemented NODEALLOCMAXPS patch from Bas van der Vlies
+  - Implemented minor bug patch from Ake Sandgren
+  - Implemented NODECFG[] MAXPROC[CLASS] patch from Yaroslav Halchenko
+
 Maui 3.2.6p16
 
   - Maui's 'configure' script now compatible with latest TORQUE versions
