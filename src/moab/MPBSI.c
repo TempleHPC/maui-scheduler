@@ -1622,6 +1622,11 @@ int MPBSLoadQueueInfo(
             {
             CCount = MIN(CCount,N->MaxProcPerClass[C->Index]);
             }
+          else if ((MSched.DefaultN.MaxProcPerClass != NULL) &&
+                   (MSched.DefaultN.MaxProcPerClass[C->Index] > 0))
+            {
+            CCount = MIN(CCount,MSched.DefaultN.MaxProcPerClass[C->Index]);
+            }
 
           N->CRes.PSlot[C->Index].count += CCount;
           N->CRes.PSlot[0].count        += CCount;
