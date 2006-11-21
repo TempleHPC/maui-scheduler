@@ -922,7 +922,7 @@ int MStatUpdateActiveJobUsage(
     (double)MSched.Interval / 100.0,
     (double)MSched.Time - J->StartTime);
 
-  if ((RQ->NAccessPolicy == mnacSingleJob) && 
+  if ((J->Req[0]->NAccessPolicy == mnacSingleJob) && 
       (MSched.NodeAllocMaxPS == TRUE))
     {
     pesdedicated = TotalProcs * interval;
