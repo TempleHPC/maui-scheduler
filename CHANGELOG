@@ -1,3 +1,7 @@
+Maui 3.2.6p19
+
+  - Implemented segfault fix submitted by Ake Sandgren
+
 Maui 3.2.6p18
 
   - Implemented NODEALLOCMAXPS patch from Bas van der Vlies
