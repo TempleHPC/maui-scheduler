@@ -116,7 +116,11 @@ int MJobGetStartPriority(
 
   if (X.XJobGetStartPriority != (int (*)())0)
     {
-    return((*X.XJobGetStartPriority)(X.xd,J,Priority,*BPtr));
+    return (*X.XJobGetStartPriority)(
+             X.xd,
+             J,
+             Priority,
+             (BPtr != NULL) ? *BPtr : NULL);
     }
 
   for (index = 1;index < MAX_MPRIOCOMPONENT;index++)
