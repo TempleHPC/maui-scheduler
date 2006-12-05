@@ -1,6 +1,7 @@
 Maui 3.2.6p19
 
   - Implemented segfault fix submitted by Ake Sandgren
+  - Implemented patch in MJobProcessExtensionString to avoid dropping first token (from Peter Gardfjäll)
 
 Maui 3.2.6p18
 
