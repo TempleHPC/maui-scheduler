@@ -3324,12 +3324,12 @@ int MJobProcessExtensionString(
     {
     if ((aindex = MUGetIndex(key,MRMXAttr,TRUE,mxaNONE)) == mxaNONE)
       {
-      key = MUStrTok(NULL,";\n",&TokPtr);       
-
       if (X.XJobProcessRMXString != (int (*)())0)
         {
         (*X.XJobProcessRMXString)(X.xd,J,key);
         }
+
+      key = MUStrTok(NULL,";\n",&TokPtr);       
 
       continue;
       }
