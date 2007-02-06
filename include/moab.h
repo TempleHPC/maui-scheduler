@@ -1563,6 +1563,7 @@ enum MJobAttrEnum {
 enum MXAttrType {
   mxaNONE,
   mxaAdvRes,
+  mxaDDisk,
   mxaDistPolicy,
   mxaDMem,
   mxaFlags,

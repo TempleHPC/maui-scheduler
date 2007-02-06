@@ -809,6 +809,7 @@ const char *MJobAttr[] = {
 const char *MRMXAttr[] = {
   NONE,
   "ADVRES",
+  "DDISK",
   "DISTPOLICY",
   "DMEM",
   "FLAGS",

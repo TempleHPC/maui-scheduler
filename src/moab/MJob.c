@@ -49,6 +49,7 @@ extern const char *MRMXAttr[];
 extern const char *MAllocRejType[];
 extern const char *MRMType[];
 extern const char *MPreemptPolicy[];
+extern const char *MBool[];
 
 extern mx_t X;
 
@@ -82,9 +83,10 @@ int MJobCreate(
 
   const char *FName = "MJobCreate";
  
-  DBG(5,fSTRUCT) DPrint("%s(%s,%s)\n",
+  DBG(5,fSTRUCT) DPrint("%s(%s,%s,%s)\n",
     FName,
     JName,
+    MBool[AddJob],
     (JP != NULL) ? "JP" : "NULL");
 
   /* attempt to MJobFind() first ? */
@@ -3380,11 +3382,25 @@ int MJobProcessExtensionString(
 
         break;
 
+      case mxaDDisk:
+
+        /* dedicated disk */
+
+        RQ->DRes.Disk = (int)MURSpecToL(Value,mvmMega,mvmByte);
+
+        if (Value[0] != '0')
+          RQ->DRes.Disk = MAX(RQ->DRes.Disk,1);
+
+        DBG(5,fCONFIG) DPrint("INFO:     per task dedicated disk set to %d MB\n",
+          RQ->DRes.Disk);
+
+        break;
+
       case mxaDMem:
 
         /* dedicated memory */
  
-        RQ->DRes.Mem = (int)strtol(Value,NULL,0);
+        RQ->DRes.Mem = (int)strtol(Value,NULL,10);
  
         DBG(5,fCONFIG) DPrint("INFO:     per task dedicated memory set to %d MB\n",
           RQ->DRes.Mem);
