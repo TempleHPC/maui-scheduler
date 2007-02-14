@@ -1785,7 +1785,7 @@ int MJobSelectMNL(
 
       nindex = TotalAvailINC;  /* HACK */
 
-      NodeList = (mnalloc_t *)MNodeList[0];        
+      NodeList = (mnalloc_t *)tmpMNL[0];
 
       for (jindex = 0;PreempteeJobList[jindex] != NULL;jindex++)
         {
