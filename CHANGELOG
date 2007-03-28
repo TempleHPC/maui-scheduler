@@ -1,6 +1,6 @@
 Maui 3.2.6p19
 
-  - Implemented segfault fix submitted by Ake Sandgren
+  - Implemented fixes for a segfault, FSPOLICY loading, and workload traces submitted by Ake Sandgren
   - Implemented patch in MJobProcessExtensionString to avoid dropping first token (from Peter Gardfjäll)
   - Added SUSE service startup script (suse.maui.d) to "contrib" directory (thanks goes to Stephen Cary)
 

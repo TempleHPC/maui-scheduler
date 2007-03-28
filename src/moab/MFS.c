@@ -855,6 +855,8 @@ int MFSProcessOConfig(
   char  **SArray)  /* I */
  
   {
+  char *ptr;
+
   if (F == NULL)
     {
     return(FAILURE);
@@ -886,8 +888,14 @@ int MFSProcessOConfig(
 
     case pFSPolicy:
 
-      if (strchr(SVal,'%'))
+      if ((ptr = strchr(SVal,'%')) != NULL)
+        {
         MSched.PercentBasedFS = TRUE;
+
+        /* patch submitted by Ake Sandgren--assumes that % is always at the end of SVal */
+
+        *ptr = '\0';
+        }
 
       if (MUBoolFromString(SVal,FALSE) == TRUE)
         {

@@ -2302,6 +2302,7 @@ int MPLoadTrace(
   while (ptr < tail)
     {
     LineCount++;
+    Offset = 0;
 
     if (MTraceLoadWorkload(ptr,&Offset,&tmpJ,msmProfile,&Version) == SUCCESS)
       {
@@ -2324,7 +2325,7 @@ int MPLoadTrace(
       if ((Profile.Host[0] != '\0') && (strcmp(Profile.Host,J->MasterHostName)))
         continue;
 
-      if ((J->Cred.Q != NULL) && !strstr(Profile.QOSList,J->Cred.Q->Name))
+      if ((J->Cred.Q != NULL) && (Profile.QOSList[0] != '\0') && !strstr(Profile.QOSList,J->Cred.Q->Name))
         continue;
 
       if (Profile.UserNameList[0][0] != '\0')
