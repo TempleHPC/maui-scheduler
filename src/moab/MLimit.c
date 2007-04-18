@@ -31,7 +31,8 @@ int MLimitEnforceAll(
   mjob_t *J;
   mreq_t *RQ;
 
-  int     ResourceLimitsExceeded;  /* boolean */
+  mbool_t ResourceLimitsExceeded;
+  mbool_t JobExceedsLimits;
 
   int     VRes = -1;
   int     VLimit = -1;
@@ -105,6 +106,7 @@ int MLimitEnforceAll(
     /* enforce CRes utilization limits */
 
     ResourceLimitsExceeded = FALSE;
+    JobExceedsLimits = FALSE;
 
     RQ = J->Req[0];  /* FIXME */
 
@@ -121,6 +123,7 @@ int MLimitEnforceAll(
       VVal   = RQ->URes.Procs;
 
       ResourceLimitsExceeded = TRUE;
+      JobExceedsLimits       = TRUE;
       }
     else if ((P->ResourceLimitPolicy[mrMem] != mrlpNONE) &&
         (RQ->DRes.Mem > 0) &&
@@ -136,6 +139,7 @@ int MLimitEnforceAll(
       VVal   = RQ->URes.Mem;
 
       ResourceLimitsExceeded = TRUE;
+      JobExceedsLimits       = TRUE;
       }
     else if ((P->ResourceLimitPolicy[mrSwap] != mrlpNONE) &&
         (RQ->DRes.Swap > 0) &&		     
@@ -151,6 +155,7 @@ int MLimitEnforceAll(
       VVal   = RQ->URes.Swap;
 
       ResourceLimitsExceeded = TRUE;
+      JobExceedsLimits       = TRUE;
       }
     else if ((P->ResourceLimitPolicy[mrDisk] != mrlpNONE) &&
         (RQ->DRes.Disk > 0) &&
@@ -166,6 +171,7 @@ int MLimitEnforceAll(
       VVal   = RQ->URes.Disk;
 
       ResourceLimitsExceeded = TRUE;
+      JobExceedsLimits       = TRUE;
       }
 
     if (ResourceLimitsExceeded == FALSE)
@@ -175,7 +181,7 @@ int MLimitEnforceAll(
 
     /* job is using more resources than requested */
 
-    J->RULVTime += MSched.Iteration;
+    J->RULVTime += (mulong)((MSched.Interval + 50) / 100);
   
     switch (P->ResourceLimitPolicy[VRes])
       {
@@ -274,6 +280,13 @@ int MLimitEnforceAll(
     DBG(1,fSCHED) DPrint("ALERT:    limit violation action %s %s\n",
       MPolicyAction[P->ResourceLimitViolationAction[VRes]],
       (rc == SUCCESS) ? "succeeded" : "failed");
+
+    if (JobExceedsLimits == FALSE)
+      {
+      /* clear job violation time */
+
+      J->RULVTime = 0;
+      }
     }    /* END for (jindex) */
  
   return(SUCCESS);

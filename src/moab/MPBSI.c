@@ -5430,15 +5430,33 @@ int MPBSJobSetAttr(
       return(FAILURE);
       }
  
-    if (MUserAdd(ptr,&J->Cred.U) == FAILURE)
+    if ((J->Cred.U == NULL) || !strcmp(AP->name,ATTR_owner))
       {
-      DBG(1,fPBS) DPrint("ERROR:    cannot add user for job %s (Name: %s)\n",
-        J->Name,
-        ptr);
- 
-      MJobRemove(J);
- 
-      return(FAILURE);
+      if (MUserAdd(ptr,&J->Cred.U) == FAILURE)
+        {
+        DBG(1,fPBS) DPrint("ERROR:    cannot add user for job %s (Name: %s)\n",
+          J->Name,
+          ptr);
+   
+        MJobRemove(J);
+   
+        return(FAILURE);
+        }
+      }
+
+    if ((J->Cred.U != NULL) && (!strcmp(AP->name,ATTR_euser)))
+      {
+      if (strcmp(J->Cred.U->Name,ptr))
+        {
+        /* effective user requested which does not match job owner */
+
+        MJobSetHold(
+          J,
+          (1 << mhBatch),
+          0,
+          mhrCredAccess,
+          "job not authorized to use proxy credentials");
+        }
       }
     }
   else if (!strcmp(AP->name,ATTR_egroup))

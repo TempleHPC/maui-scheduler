@@ -341,7 +341,8 @@ enum MHoldReasonEnum {
   mhrAPIFailure,
   mhrRMReject,
   mhrPolicyViolation,
-  mhrQOSAccess };
+  mhrQOSAccess,
+  mhrCredAccess };
 
 /* node states */
 
