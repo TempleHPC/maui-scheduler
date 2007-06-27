@@ -4139,9 +4139,9 @@ int MPBSJobUpdate(
       CPUTime = 1;
       }
 
-    /* adjust 'per task limits */
+    /* adjust per task limits */
 
-    if (MaxJobMem > 0)
+    if ((MaxJobMem > 0) && (RQ->DRes.Procs > 0))
       {
       /* set job wide dedicated resources */
 
@@ -4153,7 +4153,7 @@ int MPBSJobUpdate(
       RQ->URes.Mem /= RQ->TaskCount;
       }
 
-    if (MaxJobSwap > 0)
+    if ((MaxJobSwap > 0) && (RQ->DRes.Procs > 0))
       {
       /* set both dedicated resources AND node requirements */
 
@@ -5944,10 +5944,10 @@ int MPBSJobAdjustResources(
 
     if (TA != NULL)
       {
-      if (TA->JobMemLimit > 0)
+      if ((TA->JobMemLimit > 0) && (RQ->DRes.Procs > 0))
         RQ->DRes.Mem = MAX(RQ->DRes.Mem,TA->JobMemLimit / RQ->TaskCount);
 
-      if (TA->JobSwapLimit > 0)
+      if ((TA->JobSwapLimit > 0) && (RQ->DRes.Procs > 0))
         RQ->DRes.Swap = MAX(RQ->DRes.Swap,TA->JobSwapLimit / RQ->TaskCount);
       }  /* END if (TA != NULL) */
  
@@ -5964,9 +5964,9 @@ int MPBSJobAdjustResources(
 
         RQ->RequiredMemory = J->Req[0]->RequiredMemory;
         RQ->MemCmp         = J->Req[0]->MemCmp;
-        RQ->RequiredSwap   = J->Req[0]->RequiredMemory;
+        RQ->RequiredSwap   = J->Req[0]->RequiredSwap;
         RQ->SwapCmp        = J->Req[0]->SwapCmp;
-        RQ->RequiredDisk   = J->Req[0]->RequiredMemory;
+        RQ->RequiredDisk   = J->Req[0]->RequiredDisk;
         RQ->DiskCmp        = J->Req[0]->DiskCmp;
         }
  
