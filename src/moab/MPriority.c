@@ -808,7 +808,7 @@ int MJobGetStartPriority(
         {
         if (MSched.PercentBasedFS == TRUE)
           {
-          SFactor[mpsFU] =  1.0 - 
+          SFactor[mpsFG] =  1.0 - 
             (((J->Cred.G->F.FSUsage[0] + J->Cred.G->F.FSFactor) / 
             (GP->F.FSUsage[0] + GP->F.FSFactor) * 100.0)/FSTargetUsage);
           }
