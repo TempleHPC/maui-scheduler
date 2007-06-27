@@ -3,6 +3,7 @@ Maui 3.2.6p20
   - Fixed a bug pertaining to Maui's resource policy ExtendedViolation time (thanks goes to Nick Sonneveld).
   - Fixed a bug with generic consumable floating resources which prevented them from working when a job also requested a 'mem' resource (thanks to Jeffrey Reed for the fix).
   - Fixed typos in MPBSI.c that may have caused undesirable side-effects (thanks to Jeffrey Reed for the fix).
+  - Fixed a bug where group fairshare components were being miscalculated when percent based fairshare is enabled (thanks goes to Steve Traylen for the fix).
 
 Maui 3.2.6p19
 
