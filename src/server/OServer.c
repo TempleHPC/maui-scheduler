@@ -149,6 +149,8 @@ int ServerDemonize()
   int   pid;
 #endif /* __NT */
 
+  FILE *fp;
+
   const char *FName = "ServerDemonize";
 
   DBG(2,fALL) DPrint("%s()\n",
@@ -179,6 +181,8 @@ int ServerDemonize()
       {
       /* only background if not in debug mode */
 
+      /* NOTE:  setsid() disconnects from controlling-terminal */
+
 #ifndef __NT
 
       if ((pid = fork()) == -1)
@@ -204,6 +208,28 @@ int ServerDemonize()
         {
         DBG(3,fALL) DPrint("INFO:     child process in background\n");
         }
+
+      if (setsid() == -1)
+        {
+        MDB(3,fALL) MLog("INFO:     could not disconnect from controlling-terminal, errno=%d - %s\n",
+          errno,
+          strerror(errno));
+        }
+
+      /* disconnect stdin */
+
+      fclose(stdin);
+      fp = fopen("/dev/null","r");
+
+      /* disconnect stdout */
+
+      fclose(stdout);
+      fp = fopen("/dev/null","w");
+
+      /* disconnect stderr */
+
+      fclose(stderr);
+      fp = fopen("/dev/null","w");
 
 #endif /* __NT */
       }
