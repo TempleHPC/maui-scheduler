@@ -2256,6 +2256,12 @@ echo "$as_me: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" 
   OS="LINUX"
 fi
 
+# Configure 64 bit dependent settings
+BIT64=`uname -m | grep 64`
+if test -n "$BIT64"; then
+  CFLAGS="$CFLAGS -D__M64"
+  LDFLAGS="$LDFLAGS"
+fi
 
 
 # Make generic variable Substitutions
