@@ -1665,6 +1665,9 @@ char *MCredShowAttrs(
   long   Mode)
 
   {
+  char *BPtr;
+  int   BSpace;
+
   static char Line[MAX_MLINE];
 
   char *ptr;
@@ -1673,12 +1676,12 @@ char *MCredShowAttrs(
 
   int ShowUsage;
 
-  Line[0] = '\0';
-
   if (Mode & (1 << mcsUsage))
     ShowUsage = TRUE;
   else
     ShowUsage = FALSE;
+
+  MUSNInit(&BPtr,&BSpace,Line,sizeof(Line));
 
   for (pindex = mcaPriority;pindex <= mcaJobFlags;pindex++)
     {
@@ -1688,8 +1691,7 @@ char *MCredShowAttrs(
 
         if (Priority != 0)
           {
-          sprintf(Line,"%s %s=%ld",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%ld",
             MCredAttr[pindex],
             Priority);
           }
@@ -1701,8 +1703,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxJob,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1714,8 +1715,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxNode,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1727,8 +1727,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxPE,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1740,8 +1739,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxProc,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1753,8 +1751,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxPS,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1766,8 +1763,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxWC,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1779,8 +1775,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(AP,mptMaxMem,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1792,8 +1787,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxJob,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1805,8 +1799,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxNode,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1818,8 +1811,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxPE,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1831,8 +1823,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxProc,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1844,8 +1835,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxPS,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1857,8 +1847,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxWC,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1870,8 +1859,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(IP,mptMaxMem,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1883,8 +1871,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxJob,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1896,8 +1883,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxNode,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1909,8 +1895,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxPE,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1922,8 +1907,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxProc,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1935,8 +1919,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxPS,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1948,8 +1931,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxWC,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1961,8 +1943,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OAP,mptMaxMem,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1974,8 +1955,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxJob,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -1987,8 +1967,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxNode,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2000,8 +1979,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxPE,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2013,8 +1991,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxProc,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2026,8 +2003,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxPS,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2039,8 +2015,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxWC,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2052,8 +2027,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OIP,mptMaxMem,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2065,8 +2039,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OJP,mptMaxNode,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2078,8 +2051,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OJP,mptMaxPE,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2091,8 +2063,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OJP,mptMaxProc,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2104,8 +2075,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OJP,mptMaxPS,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2117,8 +2087,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OJP,mptMaxWC,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }
@@ -2130,8 +2099,7 @@ char *MCredShowAttrs(
         if ((Mode & (1 << mcsLimits)) &&
            ((ptr = __MCredShowLimit(OJP,mptMaxMem,0,ShowUsage)) != NULL))
           {
-          sprintf(Line,"%s %s=%s",
-            Line,
+          MUSNPrintF(&BPtr,&BSpace,"%s=%s",
             MCredAttr[pindex],
             ptr);
           }

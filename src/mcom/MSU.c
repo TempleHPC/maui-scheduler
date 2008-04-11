@@ -1061,17 +1061,23 @@ int MSUSendData(
 
           default:
 
+            {
+            char *BPtr;
+            int   BSpace;
+
             sptr = S->SBuffer;
 
             S->SBuffer = tmpSBuf;
 
-            sprintf(S->SBuffer,"%s%d ",
+            MUSNInit(&BPtr,&BSpace,tmpSBuf,sizeof(tmpSBuf));
+
+            MUSNPrintF(&BPtr,&BSpace,"%s%d ",
               MCKeyword[mckStatusCode],
               scSUCCESS);
 
             Align = (int)strlen(S->SBuffer) + (int)strlen(MCKeyword[mckArgs]);
 
-            sprintf(S->SBuffer,"%s%*s%s",
+            MUSNPrintF(&BPtr,&BSpace,"%s%*s%s",
               S->SBuffer,
               16 - (Align % 16),
               " ",
@@ -1094,6 +1100,7 @@ int MSUSendData(
 
               *ptr = tmpStatus[0];
               }
+            }
 
             break;
           }  /* END switch(S->SocketProtocol) */
