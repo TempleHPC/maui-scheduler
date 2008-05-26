@@ -22,6 +22,10 @@ extern const char *MXO[];
 extern const char *MJobFlags[];
 
 
+/*
+ * HvB 
+*/
+extern int FSGroupKeys[];
 
 int MGroupLoadCP(
  
@@ -95,7 +99,104 @@ int MGroupLoadCP(
   }  /* END MGroupLoadCP() */
 
 
+/*
+ * HvB: Get all GroupNames that have a Fairshare target set
+*/
+int MGroupGetFSGroups()
+  {
+  int           gindex;
+  int		fsindex = 0;
+  mgcred_t	*G; 
 
+  const char *FName = "MGroupGetFSGroups";
+
+  DBG(5,fFS) DPrint("%s\n", FName);
+
+  for (gindex = 0;gindex < MAX_MGROUP + MAX_MHBUF;gindex++)
+    {
+    G = &MGroup[gindex];
+
+    if ((G == NULL) || (G->Name[0] == '\0') || (G->Name[0] == '\1'))
+      continue;
+
+    if (!strcmp(G->Name,ALL) || !strcmp(G->Name,"NOGROUP"))
+      continue;
+
+    if ( G->F.FSTarget > 0 )
+      {
+      DBG(5,fFS) DPrint("Found FSGroup %s(%f) with key %d \n", G->Name, G->F.FSTarget, G->Key);
+      FSGroupKeys[fsindex++] = G->Key;
+      }
+    }
+  } /* MGroupGetFSGroups */
+
+/* HvB */
+int MGroupSecondary(
+  char *UName,    /* I */
+  mjob_t  *J)     /* O */
+
+  {
+  int		i; 
+  int		gindex;
+
+  int		ng = 0;
+  int		rc;
+
+  gid_t		*groups = NULL;
+  struct	group *sec_grp;
+  struct	group grp;
+
+  mgcred_t	*GRP_cred; 
+ 
+  const char *FName = "MGroupSecondary";
+
+  DBG(5,fFS) DPrint("%s(%s)\n",
+    FName,
+    (UName != NULL) ? UName : "NULL"); 
+  
+  /*
+    MGroupGetFSGroups();
+  */
+
+  i=0;
+  while ( FSGroupKeys[i] != -1 )
+    {
+    DBG(5,fFS) DPrint("Checking if user(%s)  is member of group(%s)\n", UName, MGroup[FSGroupKeys[i]].Name);
+    if ( (sec_grp = getgrnam(MGroup[FSGroupKeys[i]].Name)) != NULL )
+      {
+      gindex=0;
+      while ( sec_grp->gr_mem[gindex] )
+        {
+        if ( !strcmp(sec_grp->gr_mem[gindex], UName) )
+          {
+          DBG(5,fFS) DPrint("Setting Group credentials for user %s to %s\n", UName, sec_grp->gr_name);
+          if ( MGroupAdd(sec_grp->gr_name, &J->Cred.G) == FAILURE )
+            {
+            DBG(1,fPBS) DPrint("ERROR:    cannot add secondary group for job %s (Name: %s)\n",
+            J->Name,
+            sec_grp->gr_name);
+
+            return(FAILURE);
+            }
+          else
+            {
+                return(SUCCESS);
+            }
+          } /* if !strcmp */
+        else
+          {
+          gindex++;
+          }
+        } /* while sec_grp */
+      } /* if sec_grp */ 
+
+    i++;
+
+    } /* while FSGroupKeys[i] */
+
+  return(SUCCESS);
+
+  } /* MGroupSecondary */
 
 
 int MGroupAdd(

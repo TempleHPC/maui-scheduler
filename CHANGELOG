@@ -1,3 +1,10 @@
+Maui 3.2.6p21
+
+  Features
+
+  - Added FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
+  - Added IGNPBSGROUPLIST to ignore 'qsub -W group_list=<value>'. Contributed by Bas van der Vlies (SARA).
+
 Maui 3.2.6p20
   - Fixed a potential security issue when Maui is used with some PBS configurations.
   - Fixed a bug pertaining to Maui's resource policy ExtendedViolation time (thanks goes to Nick Sonneveld).

@@ -5442,6 +5442,18 @@ int MPBSJobSetAttr(
    
         return(FAILURE);
         }
+
+	/* HvB 
+	 * Check the secondary groups of the user for FSTargets
+	*/
+        if ( MPar[0].FSSecondaryGroups == TRUE )
+	  {
+	  if ( MGroupSecondary(ptr,J) == FAILURE )
+	    {
+	    MJobRemove(J);
+	    return(FAILURE);
+	    }
+	  }
       }
 
     if ((J->Cred.U != NULL) && (!strcmp(AP->name,ATTR_euser)))
@@ -5461,17 +5473,45 @@ int MPBSJobSetAttr(
     }
   else if (!strcmp(AP->name,ATTR_egroup))
     {
-    /* get group name */
-
-    if (MGroupAdd(AP->value,&J->Cred.G) == FAILURE)
+    /* HvB 
+     * Only update job credentials when credentials are not set by MGroupSecondary
+    */
+    if ( J->Cred.G == NULL )
       {
-      DBG(1,fPBS) DPrint("ERROR:    cannot add group for job %s (Name: %s)\n",
+      if (MGroupAdd(AP->value,&J->Cred.G) == FAILURE)
+        {
+        DBG(1,fPBS) DPrint("ERROR:    cannot add group for job %s (Name: %s)\n",
         J->Name,
         AP->value);
-
-      MJobRemove(J);
-
-      return(FAILURE);
+        
+        MJobRemove(J); 
+        
+        return(FAILURE);
+        } /* end MGroupAdd */
+      }
+    }
+  else if (!strcmp(AP->name,ATTR_g))
+    /* HvB 
+     * set group credential to the one specified via qsub paramter -W group_list=<value>
+    */
+    {
+    if ( MPar[0].IgnPbsGroupList == FALSE )
+      {
+      if (MGroupAdd(AP->value,&J->Cred.G) == FAILURE)
+        {
+        DBG(1,fPBS) DPrint("ERROR:    cannot add group for job %s (Name: %s)\n",
+        J->Name,
+        AP->value); 
+        
+        MJobRemove(J); 
+        
+        return(FAILURE);
+        }
+      }  /* end MPar[0] .. */
+    else
+      {
+      DBG(3,fPBS) DPrint("INFO:    ignoring PBS group_list(%s) attribute as requested\n",
+        AP->value); 
       }
     }
   else if (!strcmp(AP->name,ATTR_A))

@@ -585,6 +585,16 @@ int MParSetDefaults(
 
   P->NAvailPolicy[0]      = DEFAULT_RESOURCEAVAILPOLICY;
 
+  /*
+   * HvB: default is to honour group_list parameter
+  */
+  P->IgnPbsGroupList      = 0;
+
+  /*
+   * HvB: default is to disable secondary group lookups for fairshare
+  */
+  P->FSSecondaryGroups   = 0;
+
   for (index = 0;index < MAX_MRESOURCETYPE;index++)
     {
     P->ResourceLimitPolicy[index]          = DEFAULT_MRESOURCELIMITPOLICY;
@@ -1717,6 +1727,20 @@ int MParProcessOConfig(
     case pNodeSetTolerance:
 
       P->NodeSetTolerance = DVal;
+
+      break;
+
+    /* HvB */
+    case pIgnPbsGroupList:
+
+      P->IgnPbsGroupList =  MUBoolFromString(SVal,FALSE);
+
+      break;
+
+    /* HvB */
+    case pFSSecondaryGroups:
+
+      P->FSSecondaryGroups =  MUBoolFromString(SVal,TRUE);
 
       break;
 

@@ -13,6 +13,7 @@ mjob_t   *MJob[MAX_MJOB];
 mnode_t  *MNode[MAX_MNODE];
 mgcred_t *MUser[MAX_MUSER + MAX_MHBUF];
 mgcred_t  MGroup[MAX_MGROUP + MAX_MHBUF];
+int       FSGroupKeys[MAX_MGROUP];    /* HvB holds the FairShare Group Keys */
 mgcred_t  MAcct[MAX_MACCT + MAX_MHBUF];
 mres_t   *MRes[MAX_MRES];    
 srsv_t    SRes[MAX_MSRES];
@@ -276,6 +277,11 @@ int MSysInitialize(mbool_t DoInit)
 
   MLocalInitialize();
 
+  /*
+   * HvB
+  */
+  memset(FSGroupKeys,-1,sizeof(FSGroupKeys));
+
   return(SUCCESS);
   }  /* END MSysInitialize() */
 
@@ -431,6 +437,12 @@ int MSysLoadConfig(
   MSched.UID = MOSGetEUID();
 
   MUCheckAuthFile(&MSched,MSched.DefaultCSKey,NULL,TRUE);
+
+  /*
+   * HvB: Find all hashkeys of Fairshare groups and save them 
+   *      in an array.
+  */
+  MGroupGetFSGroups();
 
   return(SUCCESS);
   }  /* END MSysLoadConfig() */

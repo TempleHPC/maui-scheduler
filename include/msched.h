@@ -1387,8 +1387,12 @@ typedef struct {
   xres_t XRes[MAX_MNODE];
 
   char  *Message;    /* event messages */
+
+  int    IgnPbsGroupList;         /* Ignore -W group_list parameter for Torque/PBS HvB */
+  int    FSSecondaryGroups;       /* To enable secondary fairshare group lookups for PBS, HvB */
+
   } mpar_t;
- 
+
 /* cred */
  
 typedef struct {

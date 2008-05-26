@@ -1714,6 +1714,8 @@ int MCfgSetVal(
     case pSystemMaxJobProc:
     case pSystemMaxJobTime:
     case pSystemMaxJobPS:
+    case pIgnPbsGroupList:
+    case pFSSecondaryGroups:
 
       MParProcessOConfig(P,PIndex,val,valf,valp,valpa);
  

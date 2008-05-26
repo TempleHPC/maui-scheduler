@@ -766,7 +766,9 @@ enum {
   pOLDDirectSpecWeight,
   pOLDBankServer,
   pOLDRMServer,
-  pNAMaxPS
+  pNAMaxPS,
+  pFSSecondaryGroups, /* To enable secondary fairshare group lookups for PBS, HvB */
+  pIgnPbsGroupList    /* ignore the -W group_list parameter for PBS, HvB */
   };
 
 #endif /* __M_COMMON_H__ */
