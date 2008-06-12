@@ -1075,10 +1075,9 @@ int MSUSendData(
               MCKeyword[mckStatusCode],
               scSUCCESS);
 
-            Align = (int)strlen(S->SBuffer) + (int)strlen(MCKeyword[mckArgs]);
+            Align = (int)strlen(tmpSBuf) + (int)strlen(MCKeyword[mckArgs]);
 
-            MUSNPrintF(&BPtr,&BSpace,"%s%*s%s",
-              S->SBuffer,
+            MUSNPrintF(&BPtr,&BSpace,"%*s%s",
               16 - (Align % 16),
               " ",
               MCKeyword[mckData]);
