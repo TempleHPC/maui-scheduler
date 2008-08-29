@@ -4002,40 +4002,58 @@ int MPBSJobUpdate(
         }
       else if (!strcmp(AP->resource,"software"))
         {
-        /* NOTE:  old hack (map software to node feature */
+        int rqindex;
+
+        int RIndex;
+
+        mreq_t *tmpRQ;
+
+        if ((RIndex = MUMAGetIndex(eGRes,AP->value,mAdd)) == 0)
+          {
+          /* cannot add support for generic res */
+
+          DBG(1,fPBS) DPrint("ALERT:    cannot add support for GRes software '%s'\n",
+            AP->value);
+  
+          continue;
+          }
+
+        /* verify software req does not already exist */
+
+        for (rqindex = 0;J->Req[rqindex] != NULL;rqindex++)
+          {
+          if (J->Req[rqindex]->DRes.GRes[RIndex].count > 0)
+            break;
+          }  /* END for (rqindex) */
+
+        if (J->Req[rqindex] != NULL)
+          {
+          /* software req already added */
+
+          continue;
+          }
+
+        /* add software req */
+
+        if (MReqCreate(J,NULL,&tmpRQ,FALSE) == FAILURE)
+          {
+          DBG(1,fPBS) DPrint("ALERT:    cannot add req to job %s for GRes software '%s'\n",
+            J->Name,
+            AP->value);
+
+          continue;
+          }
+
+        /* NOTE:  PBS currently supports only one license request per job */
+
+        tmpRQ->DRes.GRes[RIndex].count = 1;
+        tmpRQ->DRes.GRes[0].count      = 1;
+        tmpRQ->TaskCount               = 1;
+        tmpRQ->NodeCount               = 1;
+  
+        /* NOTE:  prior workaround (map software to node feature) */
 
         /* MReqSetAttr(J,RQ,mrqaReqNodeFeature,(void **)AP->value,mdfString,mAdd); */
-
-        /* NOTE:  software handled at job load time, no support for dynamic software spec */
-
-        /* Food for further ruminations:
-
-            * software licenses can be either floating or node-locked
-
-            * the above works in the situation of a node-locked license
-               for unlimited users; limiting # of concurrent uses could
-              be accomplished by forcing users to submit to a specific
-               queue/class and limit the number of concurrent jobs in
-              that class
-
-            * one can imagine future support looking something like this (from the POV
-              of the config file):
-
-              # Node-locked on a single host, unlimited concurrent usage
-               SOFTWARECFG[pkg1] HOSTLIST=node01
-
-              # Node-locked on a single host, limited to one concurrent use
-               SOFTWARECFG[pkg2] HOSTMAXCOUNT=1 HOSTLIST=node02
-
-               # Floating across several hosts, global maximum on concurrent usage
-               SOFTWARECFG[pkg3] MAXCOUNT=5 HOSTLIST=node[1-4][0-9]
-
-              # Floating across several hosts, global and per-host maxima on concurrent usage
-              SOFTWARECFG[pkg4] MAXCOUNT=10 HOSTMAXCOUNT=2 HOSTLIST=node[5-8][0-9]
-
-            * this would probably also require support in diagnose ("diagnose -S",
-              maybe?)
-        */
         }
       else
         {
