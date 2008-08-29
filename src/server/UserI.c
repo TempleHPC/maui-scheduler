@@ -4083,11 +4083,11 @@ int UIClusterShow(
     {
     F = &MFrame[findex];
 
+    if ((F == NULL) || (F->Name[0] == '\0') || (F->NodeCount <= 0)) 
+      continue;
+
     DBG(5,fUI) DPrint("INFO:     collecting status for frame %s\n",
       F->Name); 
-
-    if (F->NodeCount <= 0)
-      continue;
 
     switch(DisplayMode)
       {
@@ -4131,6 +4131,11 @@ int UIClusterShow(
 
     if (N->Name[0] == '\1')
       continue;
+
+    if (!strcmp(N->Name,"GLOBAL")) 
+      continue;
+
+    DBG(5,fUI) DPrint("INFO: checking node %s\n", N->Name);
 
     /* display failure information */
 
