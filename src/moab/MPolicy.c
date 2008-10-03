@@ -39,10 +39,20 @@ extern mres_t     *MRes[];
 
 */
 
+static int MQueueCheckSingleJob(
+
+  mjob_t	*J,
+  int		*Reason,
+  mpar_t	*P,
+  mpar_t	*GP,
+  int            PLevel,
+  int            MaxNC,
+  int            MaxPC,
+  unsigned long  MaxWCLimit,
+  int            OrigPIndex,
+  mbool_t        UpdateStats);
+
 /* NYI:  must handle effqduration */
-
-
-   
 
 int MQueueSelectJobs(
 
@@ -54,7 +64,8 @@ int MQueueSelectJobs(
   unsigned long  MaxWCLimit,    /* I */
   int            OrigPIndex,    /* I */
   int           *FReason,       /* O */
-  mbool_t        UpdateStats)   /* I:  (boolean) */
+  mbool_t        UpdateStats,   /* I:  (boolean) */
+  mbool_t        OnlyDefPart)   /* I:  (boolean) */
 
   {
   int      index;
@@ -63,27 +74,14 @@ int MQueueSelectJobs(
 
   mjob_t  *J;
 
-  char     DValue[MAX_MNAME];
-  enum MJobDependEnum DType;
-
   mpar_t  *P;
   mpar_t  *GP;
 
-  long     PS;
-
   int      LReason[MAX_MREJREASON];
-  int      PReason;
 
   int     *Reason;
 
   int      PIndex;
-  int      PReq;
-
-  mreq_t  *RQ;
-
-  double   PE;
-
-  char     tmpLine[MAX_MLINE];
 
   const char *FName = "MQueueSelectJobs";
 
@@ -159,324 +157,28 @@ int MQueueSelectJobs(
       continue;
       }
 
-    RQ = J->Req[0]; /* FIXME */
-
-    /* if job removed */
-
-    if (J->Name[0] == '\0')
+    if (OnlyDefPart == TRUE && MJobFindDefPart(J, NULL, NULL) != P)
       {
-      Reason[marCorruption]++;
-
-      continue;
-      }
-
-    if (UpdateStats == TRUE)
-      {
-      J->BlockReason = 0;
-
-      if (J->State == mjsIdle)
-        MStat.IdleJobs++;
-      }
-
-    PReq = MJobGetProcCount(J);
-    MJobGetPE(J,P,&PE);
-    PS   = (long)PReq * J->SpecWCLimit[0];
-
-    /* check partition */
-
-    if (OrigPIndex != -1)
-      {
-      if ((P->Index == 0) && !(J->Flags & (1 << mjfSpan)))
-        {
-        /* why?  what does partition '0' mean in partition mode? */
-
-        DBG(3,fSCHED) DPrint("INFO:     job %s not considered for spanning\n",
-          J->Name);
-
-        Reason[marPartitionAccess]++;
-
-        continue;
-        }
-      else if ((P->Index != 0) && (J->Flags & (1 << mjfSpan)))
-        {
-        DBG(3,fSCHED) DPrint("INFO:     spanning job %s not considered for partition scheduling\n",
-          J->Name);
-
-        Reason[marPartitionAccess]++;
-
-        continue;
-        }
-
-      if ((P->Index > 0) && (MUBMCheck(P->Index,J->PAL) == FAILURE))
-        {
-        DBG(7,fSCHED) DPrint("INFO:     job %s not considered for partition %s (allowed %s)\n",
-          J->Name,
-          P->Name,
-          MUListAttrs(ePartition,J->PAL[0]));
-
-        Reason[marPartitionAccess]++;
-
-        continue;
-        }
-      }   /* END if (OrigPIndex != -1) */
-
-    /* check job state */
-
-    if ((J->State != mjsIdle) && (J->State != mjsSuspended))
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected (job in non-idle state '%s')\n",
+      DBG(7,fSCHED) DPrint("INFO:     skipping job[%d] '%s', only default partition check requested (and current partition is %s)\n",
+        jindex,
         J->Name,
-        MJobState[J->State]);
-
-      Reason[marState]++;
-
-      if ((MaxNC == MAX_MNODE) && 
-          (MaxWCLimit == MAX_MTIME) && 
-          (J->R != NULL))
-        {
-        if ((J->State != mjsStarting) && (J->State != mjsRunning))
-          MResDestroy(&J->R);
-        }
+	P->Name);
 
       continue;
       }
 
-    /* check if job has been previously scheduled or deferred */
-
-    if ((J->EState != mjsIdle) && (J->EState != mjsSuspended))
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected (job in non-idle expected state: '%s')\n",
-        J->Name,
-        MJobState[J->EState]);
-
-      Reason[marEState]++;
-
-      if ((MaxNC == MAX_MNODE) && (MaxWCLimit == MAX_MTIME) && (J->R != NULL))
-        {
-        if ((J->EState != mjsStarting) && (J->EState != mjsRunning))
-          MResDestroy(&J->R);
-        }
-
-      continue;
-      }
-
-    /* check available procs */
-
-    if (PReq > P->CRes.Procs)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected in partition %s (exceeds configured procs: %d > %d)\n",
-        J->Name,
-        P->Name,
-        PReq,
-        P->CRes.Procs);
-
-      Reason[marNodeCount]++;
-
-      if (P->Index <= 0)
-        {
-        if (J->R != NULL)
-          MResDestroy(&J->R);
-
-        if (J->Hold == 0)
-          {
-          MJobSetHold(
-            J,
-            (1 << mhDefer),
-            MSched.DeferTime,
-            mhrNoResources,
-            "exceeds partition configured procs");
-          }
-        }
-
-      continue;
-      }
-
-    /* check partition specific limits */
-
-    if (MJobCheckLimits(
-          J,
+    if (MQueueCheckSingleJob(
+          J, 
+          Reason, 
+          P, 
+          GP, 
           PLevel,
-          P,
-          (1 << mlSystem),
-          tmpLine) == FAILURE)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (%s)\n",
-        J->Name,
-        P->Name,
-        tmpLine);
-
-      Reason[marSystemLimits]++;
-
-      if (P->Index <= 0)
-        {
-        if (J->R != NULL)
-          MResDestroy(&J->R);
-
-        MJobSetHold(
-          J,
-          (1 << mhDefer),
-          MSched.DeferTime,
-          mhrSystemLimits,
-          "exceeds system proc/job limit");
-        }
-
+	        MaxNC, 
+          MaxPC, 
+          MaxWCLimit, 
+          OrigPIndex, 
+          UpdateStats) == FAILURE)
       continue;
-      }  /* END if (MJobCheckLimits() == FAILURE) */
-
-    /* check job size */
-
-    if (PReq > MaxPC)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected in partition %s (exceeds window size: %d > %d)\n",
-        J->Name,
-        P->Name,
-        PReq,
-        MaxPC);
-
-      Reason[marNodeCount]++;
-
-      continue;
-      }
-
-    /* check job duration */
-
-    if (J->SpecWCLimit[0] > MaxWCLimit)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected in partition %s (exceeds window time: %ld > %ld)\n",
-        J->Name,
-        P->Name,
-        J->SpecWCLimit[0],
-        MaxWCLimit);
-
-      Reason[marTime]++;
-
-      continue;
-      }
-
-    /* check partition class support */
-
-    if (P->Index > 0)
-      {
-      if (MUNumListGetCount(J->StartPriority,RQ->DRes.PSlot,P->CRes.PSlot,0,NULL) == FAILURE)
-        {
-        DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (classes not supported '%s')\n",
-          J->Name,
-          P->Name,
-          MUCAListToString(RQ->DRes.PSlot,P->CRes.PSlot,NULL));
-
-        Reason[marClass]++;
-
-        if (J->R != NULL)
-          MResDestroy(&J->R);
-
-        continue;
-        }
-      }      /* END if (PIndex) */
-
-    if (MJobCheckDependency(J,&DType,DValue) == FAILURE)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected (dependent on job '%s' %s)\n",
-        J->Name,
-        DValue,
-        MJobDependType[DType]);
-
-      if (GP->JobPrioAccrualPolicy == jpapFullPolicy)
-        {
-        J->SystemQueueTime = MSched.Time;
-        }
-
-      Reason[marDepend]++;
-
-      if ((MaxNC == MAX_MNODE) &&
-          (MaxWCLimit == MAX_MTIME) &&
-          (J->R != NULL))
-        {
-        MResDestroy(&J->R);
-        }
-
-      continue;
-      }  /* END if (MJobCheckDependency(J,&JDepend) == FAILURE) */
-
-    /* check partition active job policies */
-
-    if (MJobCheckPolicies(
-          J,
-          PLevel,
-          (1 << mlActive),
-          P,   /* NOTE:  may set to &MPar[0] */
-          &PReason,
-          NULL,
-          MAX_MTIME) == FAILURE)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (policy failure: '%s')\n",
-        J->Name,
-        P->Name,
-        MPolicyRejection[PReason]);
-
-      if (PLevel == ptHARD)
-        {
-        if (GP->JobPrioAccrualPolicy == jpapFullPolicy)
-          {
-          J->SystemQueueTime = MSched.Time;
-          }
-        }
-
-      Reason[marPolicy]++;
-
-      if ((MaxNC == MAX_MNODE) && 
-          (MaxWCLimit == MAX_MTIME) && 
-          (J->R != NULL))
-        {
-        MResDestroy(&J->R);
-        }
-
-      continue;
-      }
-
-    J->Cred.U->MTime = MSched.Time;
-    J->Cred.G->MTime = MSched.Time;
-
-    if (J->Cred.A != NULL)
-      J->Cred.A->MTime = MSched.Time;
-
-    if (MPar[0].FSC.FSPolicy != fspNONE)
-      {
-      int OIndex;
-
-      if (MFSCheckCap(NULL,J,P,&OIndex) == FAILURE)
-        {
-        DBG(5,fSCHED) DPrint("INFO:     job '%s' exceeds %s FS cap\n",
-          J->Name,
-          (OIndex > 0) ? MXO[OIndex] : "NONE");
- 
-        if (GP->JobPrioAccrualPolicy == jpapFullPolicy)
-          {
-          J->SystemQueueTime = MSched.Time;
-          }
- 
-        Reason[marFairShare]++;
-
-        continue;
-        }
-      }    /* END if (FS[0].FSPolicy != fspNONE) */
-
-    /* NOTE:  idle queue policies handled in MQueueSelectAllJobs() */
-
-    if (MLocalCheckFairnessPolicy(J,MSched.Time,NULL) == FAILURE)
-      {
-      DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (violates local fairness policy)\n",
-        J->Name,
-        P->Name);
-
-      if (GP->JobPrioAccrualPolicy == jpapFullPolicy) 
-        {
-        J->SystemQueueTime = MSched.Time;
-        }
-
-      Reason[marPolicy]++;
-
-      continue;
-      }
 
     /* NOTE:  effective queue duration not yet properly supported */
 
@@ -521,6 +223,363 @@ int MQueueSelectJobs(
 
   return(SUCCESS);
   }  /* END MQueueSelectJobs() */
+
+/*
+ * Helper for MQueueSelectJobs: performs the single job evaluation.
+ * Returns SUCCESS if job can be queued and FAILURE otherwise.
+ */
+static int MQueueCheckSingleJob(
+  mjob_t	*J,
+  int		*Reason,
+  mpar_t	*P,
+  mpar_t	*GP,
+  int            PLevel,
+  int            MaxNC,
+  int            MaxPC,
+  unsigned long  MaxWCLimit,
+  int            OrigPIndex,
+  mbool_t        UpdateStats)
+
+  {
+  char     DValue[MAX_MNAME];
+  enum MJobDependEnum DType;
+
+  long     PS;
+
+  int      PReason;
+
+  int      PReq;
+
+  mreq_t  *RQ;
+
+  double   PE;
+
+  char     tmpLine[MAX_MLINE];
+
+  const char *FName = "MQueueCheckSingleJob";
+
+  RQ = J->Req[0]; /* FIXME */
+
+  /* if job removed */
+
+  if (J->Name[0] == '\0')
+    {
+    Reason[marCorruption]++;
+
+    return(FAILURE);
+    }
+
+  if (UpdateStats == TRUE)
+    {
+    J->BlockReason = 0;
+
+    if (J->State == mjsIdle)
+      MStat.IdleJobs++;
+    }
+
+  PReq = MJobGetProcCount(J);
+  /* XXX: PE is unused? */
+  MJobGetPE(J,P,&PE);
+  PS   = (long)PReq * J->SpecWCLimit[0];
+
+  /* check partition */
+
+  if (OrigPIndex != -1)
+    {
+    if ((P->Index == 0) && !(J->Flags & (1 << mjfSpan)))
+      {
+      /* why?  what does partition '0' mean in partition mode? */
+
+      DBG(3,fSCHED) DPrint("INFO:     job %s not considered for spanning\n",
+        J->Name);
+
+      Reason[marPartitionAccess]++;
+
+      return(FAILURE);
+      }
+    else if ((P->Index != 0) && (J->Flags & (1 << mjfSpan)))
+      {
+      DBG(3,fSCHED) DPrint("INFO:     spanning job %s not considered for partition scheduling\n",
+        J->Name);
+
+      Reason[marPartitionAccess]++;
+
+      return(FAILURE);
+      }
+
+    if ((P->Index > 0) && (MUBMCheck(P->Index,J->PAL) == FAILURE))
+      {
+      DBG(7,fSCHED) DPrint("INFO:     job %s not considered for partition %s (allowed %s)\n",
+        J->Name,
+        P->Name,
+        MUListAttrs(ePartition,J->PAL[0]));
+
+      Reason[marPartitionAccess]++;
+
+      return(FAILURE);
+      }
+    }   /* END if (OrigPIndex != -1) */
+
+  /* check job state */
+
+  if ((J->State != mjsIdle) && (J->State != mjsSuspended))
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected (job in non-idle state '%s')\n",
+      J->Name,
+      MJobState[J->State]);
+
+    Reason[marState]++;
+
+    if ((MaxNC == MAX_MNODE) && 
+        (MaxWCLimit == MAX_MTIME) && 
+        (J->R != NULL))
+      {
+      if ((J->State != mjsStarting) && (J->State != mjsRunning))
+        MResDestroy(&J->R);
+      }
+
+    return(FAILURE);
+    }
+
+  /* check if job has been previously scheduled or deferred */
+
+  if ((J->EState != mjsIdle) && (J->EState != mjsSuspended))
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected (job in non-idle expected state: '%s')\n",
+      J->Name,
+      MJobState[J->EState]);
+
+    Reason[marEState]++;
+
+    if ((MaxNC == MAX_MNODE) && (MaxWCLimit == MAX_MTIME) && (J->R != NULL))
+      {
+      if ((J->EState != mjsStarting) && (J->EState != mjsRunning))
+        MResDestroy(&J->R);
+      }
+
+    return(FAILURE);
+    }
+
+  /* check available procs */
+
+  if (PReq > P->CRes.Procs)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected in partition %s (exceeds configured procs: %d > %d)\n",
+      J->Name,
+      P->Name,
+      PReq,
+      P->CRes.Procs);
+
+    Reason[marNodeCount]++;
+
+    if (P->Index <= 0)
+      {
+      if (J->R != NULL)
+        MResDestroy(&J->R);
+
+      if (J->Hold == 0)
+        {
+        MJobSetHold(
+          J,
+          (1 << mhDefer),
+          MSched.DeferTime,
+          mhrNoResources,
+          "exceeds partition configured procs");
+        }
+      }
+
+    return(FAILURE);
+    }
+
+  /* check partition specific limits */
+
+  if (MJobCheckLimits(
+        J,
+        PLevel,
+        P,
+        (1 << mlSystem),
+        tmpLine) == FAILURE)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (%s)\n",
+      J->Name,
+      P->Name,
+      tmpLine);
+
+    Reason[marSystemLimits]++;
+
+    if (P->Index <= 0)
+      {
+      if (J->R != NULL)
+        MResDestroy(&J->R);
+
+      MJobSetHold(
+        J,
+        (1 << mhDefer),
+        MSched.DeferTime,
+        mhrSystemLimits,
+        "exceeds system proc/job limit");
+      }
+
+    return(FAILURE);
+    }  /* END if (MJobCheckLimits() == FAILURE) */
+
+  /* check job size */
+
+  if (PReq > MaxPC)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected in partition %s (exceeds window size: %d > %d)\n",
+      J->Name,
+      P->Name,
+      PReq,
+      MaxPC);
+
+    Reason[marNodeCount]++;
+
+    return(FAILURE);
+    }
+
+  /* check job duration */
+
+  if (J->SpecWCLimit[0] > MaxWCLimit)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected in partition %s (exceeds window time: %ld > %ld)\n",
+      J->Name,
+      P->Name,
+      J->SpecWCLimit[0],
+      MaxWCLimit);
+
+    Reason[marTime]++;
+
+    return(FAILURE);
+    }
+
+  /* check partition class support */
+
+  if (P->Index > 0)
+    {
+    if (MUNumListGetCount(J->StartPriority,RQ->DRes.PSlot,P->CRes.PSlot,0,NULL) == FAILURE)
+      {
+      DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (classes not supported '%s')\n",
+        J->Name,
+        P->Name,
+        MUCAListToString(RQ->DRes.PSlot,P->CRes.PSlot,NULL));
+
+      Reason[marClass]++;
+
+      if (J->R != NULL)
+        MResDestroy(&J->R);
+
+      return(FAILURE);
+      }
+    }      /* END if (PIndex) */
+
+  if (MJobCheckDependency(J,&DType,DValue) == FAILURE)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected (dependent on job '%s' %s)\n",
+      J->Name,
+      DValue,
+      MJobDependType[DType]);
+
+    if (GP->JobPrioAccrualPolicy == jpapFullPolicy)
+      {
+      J->SystemQueueTime = MSched.Time;
+      }
+
+    Reason[marDepend]++;
+
+    if ((MaxNC == MAX_MNODE) &&
+        (MaxWCLimit == MAX_MTIME) &&
+        (J->R != NULL))
+      {
+      MResDestroy(&J->R);
+      }
+
+    return(FAILURE);
+    }  /* END if (MJobCheckDependency(J,&JDepend) == FAILURE) */
+
+  /* check partition active job policies */
+
+  if (MJobCheckPolicies(
+        J,
+        PLevel,
+        (1 << mlActive),
+        P,   /* NOTE:  may set to &MPar[0] */
+        &PReason,
+        NULL,
+        MAX_MTIME) == FAILURE)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (policy failure: '%s')\n",
+      J->Name,
+      P->Name,
+      MPolicyRejection[PReason]);
+
+    if (PLevel == ptHARD)
+      {
+      if (GP->JobPrioAccrualPolicy == jpapFullPolicy)
+        {
+        J->SystemQueueTime = MSched.Time;
+        }
+      }
+
+    Reason[marPolicy]++;
+
+    if ((MaxNC == MAX_MNODE) && 
+        (MaxWCLimit == MAX_MTIME) && 
+        (J->R != NULL))
+      {
+      MResDestroy(&J->R);
+      }
+
+    return(FAILURE);
+    }
+
+  J->Cred.U->MTime = MSched.Time;
+  J->Cred.G->MTime = MSched.Time;
+
+  if (J->Cred.A != NULL)
+    J->Cred.A->MTime = MSched.Time;
+
+  if (MPar[0].FSC.FSPolicy != fspNONE)
+    {
+    int OIndex;
+
+    if (MFSCheckCap(NULL,J,P,&OIndex) == FAILURE)
+      {
+      DBG(5,fSCHED) DPrint("INFO:     job '%s' exceeds %s FS cap\n",
+        J->Name,
+        (OIndex > 0) ? MXO[OIndex] : "NONE");
+ 
+      if (GP->JobPrioAccrualPolicy == jpapFullPolicy)
+        {
+        J->SystemQueueTime = MSched.Time;
+        }
+ 
+      Reason[marFairShare]++;
+
+      return(FAILURE);
+      }
+    }    /* END if (FS[0].FSPolicy != fspNONE) */
+
+  /* NOTE:  idle queue policies handled in MQueueSelectAllJobs() */
+
+  if (MLocalCheckFairnessPolicy(J,MSched.Time,NULL) == FAILURE)
+    {
+    DBG(6,fSCHED) DPrint("INFO:     job %s rejected, partition %s (violates local fairness policy)\n",
+      J->Name,
+      P->Name);
+
+    if (GP->JobPrioAccrualPolicy == jpapFullPolicy) 
+      {
+      J->SystemQueueTime = MSched.Time;
+      }
+
+    Reason[marPolicy]++;
+
+    return(FAILURE);
+    }
+
+  return(SUCCESS);
+  }  /* END MQueueCheckSingleJob() */
 
 
 

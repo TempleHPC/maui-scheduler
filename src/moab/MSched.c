@@ -6737,6 +6737,52 @@ int MJobDistributeTasks(
   }  /* END MJobDistributeTasks() */
 
 
+/* Helper routine for MSchedProcessJobs() */
+static void m_schedule_on_partitions(
+
+  int OnlyDefPart, /* I */
+  int DoBackfill,  /* I */
+  int *CurrentQ)  /* I */
+
+{
+  int      PIndex;
+  int      tmpQ[MAX_MJOB];
+
+  for (PIndex = 0;PIndex < MAX_MPAR;PIndex++)
+    {
+    if (((PIndex == 0) && (MPar[2].ConfigNodes == 0)) ||
+        (MPar[PIndex].ConfigNodes == 0))
+      {
+      continue;
+      }
+
+    MOQueueInitialize(tmpQ);
+
+    if (MQueueSelectJobs(
+          CurrentQ,
+          tmpQ,
+          ptSOFT,
+          MAX_MNODE,
+          MAX_MTASK,
+          MAX_MTIME,
+          PIndex,
+          NULL,
+          TRUE,
+          OnlyDefPart) == SUCCESS)
+      {
+      MQueueScheduleIJobs(tmpQ,&MPar[PIndex]);
+
+      if (DoBackfill == TRUE && MPar[PIndex].BFPolicy != ptOFF)
+        {
+        /* backfill jobs using 'soft' policy constraints */
+
+        MQueueBackFill(tmpQ,ptSOFT,&MPar[PIndex]);
+        }
+      }
+
+    MOQueueDestroy(tmpQ,FALSE);
+    }    /* END for (PIndex) */					\
+  } /* END m_schedule_on_partitions() */
 
 
 int MSchedProcessJobs(
@@ -6841,6 +6887,7 @@ int MSchedProcessJobs(
             MAX_MTIME,
             -1,
             NULL,
+            FALSE,
             FALSE) == SUCCESS)
         {
         memcpy(MFQ,tmpQ,sizeof(MFQ));
@@ -6863,45 +6910,20 @@ int MSchedProcessJobs(
         MAX_MTIME,
         -1,
         NULL,
-        TRUE);
+        TRUE,
+        FALSE);
 
       /* schedule priority jobs */
 
       if (CurrentQ[0] != -1)
         {
-        for (PIndex = 0;PIndex < MAX_MPAR;PIndex++)
-          {
-          if (((PIndex == 0) && (MPar[2].ConfigNodes == 0)) ||
-              (MPar[PIndex].ConfigNodes == 0))
-            {
-            continue;
-            }
+        /* schedule jobs on their default partitions; skip backfilling  */
 
-          MOQueueInitialize(tmpQ);
+        m_schedule_on_partitions(TRUE, FALSE, CurrentQ);
 
-          if (MQueueSelectJobs(
-                CurrentQ,
-                tmpQ,
-                ptSOFT,
-                MAX_MNODE,
-                MAX_MTASK,
-                MAX_MTIME,
-                PIndex,
-                NULL,
-                TRUE) == SUCCESS)
-            {
-            MQueueScheduleIJobs(tmpQ,&MPar[PIndex]);
+        /* schedule jobs on all partitions; do backfilling  */
 
-            if (MPar[PIndex].BFPolicy != ptOFF)
-              {
-              /* backfill jobs using 'soft' policy constraints */
-
-              MQueueBackFill(tmpQ,ptSOFT,&MPar[PIndex]);
-              }
-            }
-
-          MOQueueDestroy(tmpQ,FALSE);
-          }    /* END for (PIndex) */
+        m_schedule_on_partitions(FALSE, TRUE, CurrentQ);
         }      /* END if (GlobalSQ[0] != -1) */
 
       MOQueueDestroy(CurrentQ,TRUE);
@@ -6915,7 +6937,8 @@ int MSchedProcessJobs(
         MAX_MTIME,
         -1,
         NULL,
-        TRUE);
+        TRUE,
+        FALSE);
 
       if (CurrentQ[0] != -1)
         {
@@ -6947,7 +6970,8 @@ int MSchedProcessJobs(
                 MAX_MTIME,
                 PIndex,
                 NULL,
-                TRUE) == SUCCESS)
+                TRUE,
+                FALSE) == SUCCESS)
             {
             MQueueBackFill(tmpQ,ptHARD,&MPar[PIndex]);
             }
@@ -6989,7 +7013,8 @@ int MSchedProcessJobs(
     MAX_MTIME,
     -1,
     NULL,
-    TRUE);
+    TRUE,
+    FALSE);
 
   /* must sort/order MUIQ */
 

@@ -239,52 +239,11 @@ int MJobGetPAL(
   if (PAL != NULL)
     MUBMCopy(PAL,tmpPAL,MAX_MPAR);
  
-  /* determine allowed partition default (precedence: U,G,A,C,S,0) */
+  /* determine allowed partition default */
  
   if (PDef != NULL)
     {
-    if ((J->Cred.U->F.PDef != NULL) &&
-        (J->Cred.U->F.PDef != &MPar[0]) &&
-         MUBMCheck(((mpar_t *)J->Cred.U->F.PDef)->Index,tmpPAL))
-      {
-      *PDef = (mpar_t  *)J->Cred.U->F.PDef;
-      }
-    else if ((J->Cred.G->F.PDef != NULL) &&
-             (J->Cred.G->F.PDef != &MPar[0]) &&
-              MUBMCheck(((mpar_t *)J->Cred.G->F.PDef)->Index,tmpPAL))
-      {
-      *PDef = (mpar_t  *)J->Cred.G->F.PDef;
-      }
-    else if ((J->Cred.A != NULL) &&
-             (J->Cred.A->F.PDef != NULL) &&
-             (J->Cred.A->F.PDef != &MPar[0]) &&
-              MUBMCheck(((mpar_t *)J->Cred.A->F.PDef)->Index,tmpPAL))
-      {
-      *PDef = (mpar_t  *)J->Cred.A->F.PDef;
-      }
-    else if ((C != NULL) &&
-             (C->F.PDef != NULL) &&
-             (C->F.PDef != &MPar[0]) &&
-              MUBMCheck(((mpar_t *)C->F.PDef)->Index,tmpPAL)) 
-      {
-      *PDef = (mpar_t  *)C->F.PDef;
-      }
-    else if ((J->Cred.Q != NULL) &&
-             (J->Cred.Q->F.PDef != NULL) &&
-             (J->Cred.Q->F.PDef != &MPar[0]) &&
-              MUBMCheck(((mpar_t *)J->Cred.Q->F.PDef)->Index,tmpPAL))
-      {
-      *PDef = (mpar_t  *)J->Cred.Q->F.PDef;
-      }
-    else if ((MPar[0].F.PDef != NULL) &&
-             (MPar[0].F.PDef != &MPar[0]))
-      {
-      *PDef = (mpar_t  *)MPar[0].F.PDef;
-      }
-    else
-      {
-      *PDef = &MPar[MDEF_SYSPDEF];
-      }
+    *PDef = MJobFindDefPart(J, C, tmpPAL);
  
     /* verify access to default partition */
  
@@ -331,7 +290,70 @@ int MJobGetPAL(
   return(SUCCESS);
   }  /* END MJobGetPAL() */
 
+/*
+ * Determines default partition for a job (precedence: U,G,A,C,S,0)
+ * 'PAL' is consulted to determine partition access if it is not NULL.
+ * 'C' is consulted for the default partition if it is not NULL.
+ */
+mpar_t *MJobFindDefPart(
 
+  mjob_t   *J,     /* I:  job                                */
+  mclass_t *C,     /* I:  job class                          */
+  int      *PAL)   /* I:  partition access list              */
+
+  {
+  mpar_t   *PDef;
+
+  if ((J->Cred.U->F.PDef != NULL) &&
+      (J->Cred.U->F.PDef != &MPar[0]) &&
+      (PAL == NULL ||
+       MUBMCheck(((mpar_t *)J->Cred.U->F.PDef)->Index,PAL)))
+    {
+    PDef = (mpar_t  *)J->Cred.U->F.PDef;
+    }
+  else if ((J->Cred.G->F.PDef != NULL) &&
+           (J->Cred.G->F.PDef != &MPar[0]) &&
+           (PAL == NULL ||
+            MUBMCheck(((mpar_t *)J->Cred.G->F.PDef)->Index,PAL)))
+    {
+    PDef = (mpar_t  *)J->Cred.G->F.PDef;
+    }
+  else if ((J->Cred.A != NULL) &&
+           (J->Cred.A->F.PDef != NULL) &&
+           (J->Cred.A->F.PDef != &MPar[0]) &&
+           (PAL == NULL ||
+            MUBMCheck(((mpar_t *)J->Cred.A->F.PDef)->Index,PAL)))
+    {
+    PDef = (mpar_t  *)J->Cred.A->F.PDef;
+    }
+  else if ((C != NULL) &&
+           (C->F.PDef != NULL) &&
+           (C->F.PDef != &MPar[0]) &&
+           (PAL == NULL ||
+            MUBMCheck(((mpar_t *)C->F.PDef)->Index,PAL)))
+    {
+    PDef = (mpar_t  *)C->F.PDef;
+    }
+  else if ((J->Cred.Q != NULL) &&
+           (J->Cred.Q->F.PDef != NULL) &&
+           (J->Cred.Q->F.PDef != &MPar[0]) &&
+           (PAL == NULL ||
+	    MUBMCheck(((mpar_t *)J->Cred.Q->F.PDef)->Index,PAL)))
+    {
+    PDef = (mpar_t  *)J->Cred.Q->F.PDef;
+    }
+  else if ((MPar[0].F.PDef != NULL) &&
+           (MPar[0].F.PDef != &MPar[0]))
+    {
+    PDef = (mpar_t  *)MPar[0].F.PDef;
+    }
+  else
+    {
+    PDef = &MPar[MDEF_SYSPDEF];
+    }
+
+  return PDef;
+  }  /* END MJobFindDefPart() */
 
 
 int MParFind(

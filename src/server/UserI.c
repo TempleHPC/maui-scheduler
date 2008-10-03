@@ -1775,6 +1775,7 @@ int UIJobShow(
           MAX_MTIME,
           P->Index,
           Reason,
+          FALSE,
           FALSE) == FAILURE) || (DstQ[0] == -1))
       {
       for (index = 0;index < MAX_MREJREASON;index++)

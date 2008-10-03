@@ -338,6 +338,7 @@ int MQueueBackFill(
           AdjBFTime,
           P->Index,
           NULL,
+          FALSE,
           FALSE) == FAILURE)
       {
       DBG(5,fSCHED) DPrint("INFO:     no jobs meet BF window criteria in partition %s\n",
@@ -1408,6 +1409,7 @@ int MQueueCheckStatus()
                 MAX_MTIME,
                 -1,
                 ReasonList,
+                FALSE,
                 FALSE) == FAILURE)
             {
             strcpy(DeferMessage,"SCHED_INFO:  job cannot run.  Reason: cannot select job\n");
