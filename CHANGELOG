@@ -1,8 +1,10 @@
-Maui 3.2.6p21
-
-  Features
-
-  - Implemented FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
+Maui 3.2.6p20
+  - Fixed a potential security issue when Maui is used with some PBS configurations.
+  - Fixed a bug pertaining to Maui's resource policy ExtendedViolation time (thanks goes to Nick Sonneveld).
+  - Fixed a bug with generic consumable floating resources which prevented them from working when a job also requested a 'mem' resource (thanks to Jeffrey Reed for the fix).
+  - Fixed typos in MPBSI.c that may have caused undesirable side-effects (thanks to Jeffrey Reed for the fix).
+  - Fixed a bug where group fairshare components were being miscalculated when percent based fairshare is enabled (thanks goes to Steve Traylen for the fix).
+ - Implemented FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
   - Implemented IGNPBSGROUPLIST to ignore 'qsub -W group_list=<value>'. Contributed by Bas van der Vlies (SARA).
   - Note for FSSECONDARYGROUPS and IGNPBSGROUPLIST:
     {{{ 
@@ -29,13 +31,6 @@ Maui 3.2.6p21
 
   - Implemented fitting of jobs into available partitions. Contributed by Eygene Ryabinkin, Russian Research Centre "Kurchatov Institute".
     ex. USERCFG[user] PLIST=par1,par2,par3 PDEF=par2 user's job will firt try to be fit in par2. If par2 doesn't work then par1 and par3 will be tried. 
-
-Maui 3.2.6p20
-  - Fixed a potential security issue when Maui is used with some PBS configurations.
-  - Fixed a bug pertaining to Maui's resource policy ExtendedViolation time (thanks goes to Nick Sonneveld).
-  - Fixed a bug with generic consumable floating resources which prevented them from working when a job also requested a 'mem' resource (thanks to Jeffrey Reed for the fix).
-  - Fixed typos in MPBSI.c that may have caused undesirable side-effects (thanks to Jeffrey Reed for the fix).
-  - Fixed a bug where group fairshare components were being miscalculated when percent based fairshare is enabled (thanks goes to Steve Traylen for the fix).
 
 Maui 3.2.6p19
 
