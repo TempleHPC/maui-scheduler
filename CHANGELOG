@@ -2,8 +2,33 @@ Maui 3.2.6p21
 
   Features
 
-  - Added FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
-  - Added IGNPBSGROUPLIST to ignore 'qsub -W group_list=<value>'. Contributed by Bas van der Vlies (SARA).
+  - Implemented FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
+  - Implemented IGNPBSGROUPLIST to ignore 'qsub -W group_list=<value>'. Contributed by Bas van der Vlies (SARA).
+  - Note for FSSECONDARYGROUPS and IGNPBSGROUPLIST:
+    {{{ 
+      Maui did not parse the PBS group_list parameter:
+        qsub -W group_list=<value>
+
+      This variable has the highest priority and will set the group credential to
+        the value specified. We at SARA want to ignore this parameter, because we
+      do not want an user to specify its own group and bypass the FairShare
+      targets. So we added an option to ignore this parameter:
+        - IGNPBSGROUPLIST          TRUE
+
+      This patch also fix some debug problems that i had when the debug level is
+      set to another value then the default one, eg:
+        - LOGLEVEL 9
+
+      Maui has a lot of keywords and the parsing of the keywords are only be
+      shown if a certain loglevel is set. Somebody thought it is nice that the
+      maui keyword table is sorted alphabetically. This is not correct because
+      now only the keywords after the LOG... definitions are shown. This patch
+      moves the LOG.. keywords definition to the beginning of keyword table and
+      fix this problem.
+    }}}
+
+  - Implemented fitting of jobs into available partitions. Contributed by Eygene Ryabinkin, Russian Research Centre "Kurchatov Institute".
+    ex. USERCFG[user] PLIST=par1,par2,par3 PDEF=par2 user's job will firt try to be fit in par2. If par2 doesn't work then par1 and par3 will be tried. 
 
 Maui 3.2.6p20
   - Fixed a potential security issue when Maui is used with some PBS configurations.
