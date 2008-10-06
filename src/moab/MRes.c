@@ -5869,25 +5869,28 @@ int MRLMerge(
 
   if (IsCorrupt == TRUE)
     {
-    for (index1 = 0;R1[index1].EndTime != 0;index1++)
+    DBG(3,fALL)
       {
-      DPrint("INFO:     R1[%d]  S: %ld  E: %ld  T: %d  N: %d\n",
-        index1,
-        R1[index1].StartTime,
-        R1[index1].EndTime,
-        R1[index1].TaskCount,
-        R1[index1].NodeCount);
-      }
+      for (index1 = 0;R1[index1].EndTime != 0;index1++)
+        {
+        DPrint("INFO:     R1[%d]  S: %ld  E: %ld  T: %d  N: %d\n",
+          index1,
+          R1[index1].StartTime,
+          R1[index1].EndTime,
+          R1[index1].TaskCount,
+          R1[index1].NodeCount);
+        }
 
-    for (index1 = 0;R2[index1].EndTime != 0;index1++)
-      {
-      DPrint("INFO:     R2[%d]  S: %ld  E: %ld  T: %d  N: %d\n",
-        index1,
-        R2[index1].StartTime,
-        R2[index1].EndTime,
-        R2[index1].TaskCount,
-        R2[index1].NodeCount);
-      }  /* END for (index1) */
+      for (index1 = 0;R2[index1].EndTime != 0;index1++)
+        {
+        DPrint("INFO:     R2[%d]  S: %ld  E: %ld  T: %d  N: %d\n",
+          index1,
+          R2[index1].StartTime,
+          R2[index1].EndTime,
+          R2[index1].TaskCount,
+          R2[index1].NodeCount);
+        }  /* END for (index1) */
+      }
     }    /* END if (IsCorrupt == TRUE) */
 
   memcpy(R1,C,sizeof(mrange_t) * (cindex + 1));
