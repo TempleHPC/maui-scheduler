@@ -4,7 +4,7 @@ Maui 3.2.6p20
   - Fixed a bug with generic consumable floating resources which prevented them from working when a job also requested a 'mem' resource (thanks to Jeffrey Reed for the fix).
   - Fixed typos in MPBSI.c that may have caused undesirable side-effects (thanks to Jeffrey Reed for the fix).
   - Fixed a bug where group fairshare components were being miscalculated when percent based fairshare is enabled (thanks goes to Steve Traylen for the fix).
- - Implemented FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
+  - Implemented FSSECONDARYGROUPS to map unix groups to fair share groups. Contributed by Bas van der Vlies (SARA).
   - Implemented IGNPBSGROUPLIST to ignore 'qsub -W group_list=<value>'. Contributed by Bas van der Vlies (SARA).
   - Note for FSSECONDARYGROUPS and IGNPBSGROUPLIST:
     {{{ 
@@ -31,6 +31,7 @@ Maui 3.2.6p20
 
   - Implemented fitting of jobs into available partitions. Contributed by Eygene Ryabinkin, Russian Research Centre "Kurchatov Institute".
     ex. USERCFG[user] PLIST=par1,par2,par3 PDEF=par2 user's job will firt try to be fit in par2. If par2 doesn't work then par1 and par3 will be tried. 
+  - Added DBG(3,fALL) to lone DPrint statements in src/moab/MRes.c because it was flooding the log file for Michael Barnes when working with 32k jobs.
 
 Maui 3.2.6p19
 
