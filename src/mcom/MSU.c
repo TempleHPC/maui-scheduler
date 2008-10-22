@@ -2021,6 +2021,8 @@ int MSURecvData(
 
       ptr = tmpLine;
 
+      ptr[0] = '\0';
+
       if (TimeLimit != 0)
         {
         /* allow polling */
@@ -2383,7 +2385,7 @@ int MSURecvData(
           {
           MSecGetChecksum(
             ptr,
-            (S->RBufSize - (ptr - S->RBuffer)),
+            strlen(ptr),
             CKSum,
             NULL,
             S->CSAlgo,
