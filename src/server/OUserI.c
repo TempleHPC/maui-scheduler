@@ -33,6 +33,8 @@ int UIProcessCommand(
 
   long      tmpL;
 
+  char     tmpLine[MMAX_LINE];
+
   const char *FName = "UIProcessCommand";
 
   DBG(3,fUI) DPrint("%s(S)\n",
@@ -411,16 +413,16 @@ int UIProcessCommand(
 
       S->SBufSize = (long)sizeof(SBuffer);
 
-      sprintf(S->SBuffer,"%s%d ",
-	MCKeyword[mckStatusCode],
-	scFAILURE);
+      sprintf(tmpLine,"%s%d ",
+        MCKeyword[mckStatusCode],
+        scFAILURE);
 
-      Align = (int)strlen(S->SBuffer) + (int)strlen(MCKeyword[mckArgs]);
+      Align = (int)strlen(tmpLine) + (int)strlen(MCKeyword[mckArgs]);
 
       sprintf(S->SBuffer,"%s%*s%s",
-        S->SBuffer,
-	16 - (Align % 16), 
-	" ",
+        tmpLine,
+	      16 - (Align % 16), 
+	      " ",
         MCKeyword[mckArgs]);
 
       HeadSize = (int)strlen(SBuffer);
@@ -429,7 +431,7 @@ int UIProcessCommand(
       if (Function[sindex] != NULL)
         scode = (*Function[sindex])(args,S->SBuffer + HeadSize,FLAGS,Auth,&S->SBufSize);
       else
-	scode = FAILURE;
+        scode = FAILURE;
 
       ptr = S->SBuffer + strlen(MCKeyword[mckStatusCode]);
 

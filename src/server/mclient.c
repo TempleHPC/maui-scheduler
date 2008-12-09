@@ -10,6 +10,7 @@
 #define MAX_MCARGS  128
 
 extern mattrlist_t MAList;
+extern m64_t       M64;
 
 int MCResCreate(char *);
 int MCJobShow(char *);
@@ -562,6 +563,8 @@ int __MCInitialize()
  
   DBG(2,fALL) DPrint("%s()\n",
     FName);
+
+  M64Init(&M64);
 
   MUBuildPList(MCfg,MParam);
  

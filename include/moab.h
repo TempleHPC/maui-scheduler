@@ -125,6 +125,7 @@ enum MActivePolicyTypeEnum {
 #define M32UINT4     unsigned long
 #define M32UINT8     unsigned long long
 
+/* ints on x86_64 are still 4 bytes */
 #ifdef __M64
 #define MINTBITS   64
 #define MINTLBITS  6

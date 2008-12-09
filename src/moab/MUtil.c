@@ -23,6 +23,7 @@ extern const char *MComp[];
 extern const char *MNodeState[];
 extern const char *MHRObj[];
 extern const char *MResourceType[];
+extern m64_t       M64;
 
 extern mx_t      X;
 
@@ -788,7 +789,7 @@ int MUGetMAttr(
     return(SUCCESS);
     }
 
-  if ((AttrValue == NULL) || (MapSize < MINTSIZE))
+  if ((AttrValue == NULL) || (MapSize < M64.INTSIZE))
     {
     return(FAILURE);
     }
@@ -805,7 +806,7 @@ int MUGetMAttr(
     if (!strcmp(MAList[AttrIndex][index],AttrValue))
       {
       if (AttrMap != NULL)
-        AttrMap[index >> MINTLBITS] |= 1 << (index % MINTBITS);
+        AttrMap[index >> M64.INTLBITS] |= 1 << (index % M64.INTBITS);
 
       return(SUCCESS);
       }
@@ -822,7 +823,7 @@ int MUGetMAttr(
 
     MUStrCpy(MAList[AttrIndex][index],AttrValue,sizeof(MAList[0][0]));
 
-    AttrMap[index >> MINTLBITS] |= 1 << (index % MINTBITS);
+    AttrMap[index >> M64.INTLBITS] |= 1 << (index % M64.INTBITS);
 
     DBG(5,fSTRUCT) DPrint("INFO:     added MAList[%s][%d]: '%s'\n",
       MAttrType[AttrIndex],
@@ -1069,7 +1070,7 @@ char *MUListAttrs(
 
   Line[0] = '\0';
 
-  for (i = 1;i < MINTBITS;i++)
+  for (i = 1;i < M64.INTBITS;i++)
     {
     if ((Value & (1 << i)) && (MAList[Attr][i][0] != '\0'))
       {
@@ -1097,7 +1098,7 @@ char *MUMAList(
   int         index;
   int         findex;
 
-  if ((ValueMap == NULL) || (MapSize < MINTSIZE))
+  if ((ValueMap == NULL) || (MapSize < M64.INTSIZE))
     {
     strcpy(Line,NONE);
 
@@ -1106,16 +1107,16 @@ char *MUMAList(
 
   Line[0] = '\0';
 
-  for (findex = 0;findex < (MapSize >> MINTSHIFT);findex++)
+  for (findex = 0;findex < (MapSize >> M64.INTSHIFT);findex++)
     {
-    for (index = 0;index < MINTBITS;index++)
+    for (index = 0;index < M64.INTBITS;index++)
       {
       if ((ValueMap[findex] & (1 << index)) && 
           (MAList[AttrIndex][index][0] != '\0'))
         {
         sprintf(Line,"%s[%s]",
           Line,
-          MAList[AttrIndex][index + findex * MINTBITS]);
+          MAList[AttrIndex][index + findex * M64.INTBITS]);
         }
       }    /* END for (index) */
     }      /* END for (findex) */
@@ -1152,7 +1153,7 @@ char *MAttrFind(
     return(NULL);
     }
  
-  if ((ValueMap == NULL) || (MapSize < MINTSIZE))
+  if ((ValueMap == NULL) || (MapSize < M64.INTSIZE))
     {
     return(NULL);
     }
@@ -1162,7 +1163,7 @@ char *MAttrFind(
  
   for (findex = 0;findex < (MapSize >> 2);findex++)
     {
-    for (index = 0;index < MINTBITS;index++)
+    for (index = 0;index < M64.INTBITS;index++)
       {
       if ((ValueMap[findex] & (1 << index)) &&
           (MAList[AttrIndex][index][0] != '\0'))
@@ -1217,7 +1218,7 @@ char *MUBListAttrs(
     return(Line);
     }
 
-  for (i = 1;i < MINTBITS;i++)
+  for (i = 1;i < M64.INTBITS;i++)
     {
     if ((Value & (1 << i)) && (MAList[Attr][i][0] != '\0'))
       {
@@ -4121,7 +4122,7 @@ char *MUBMToString(
 
   ptr[0] = '\0';
 
-  for (i = 1;i < MINTBITS;i++)
+  for (i = 1;i < M64.INTBITS;i++)
     {
     if ((BM & (1 << i)) && (AList[i] != NULL) && (AList[i][0] != '\0'))
       {
@@ -4252,7 +4253,7 @@ int MUBMOR(
   int mindex;
   int len;
 
-  len = MAX(1,(MapSize >> MINTLBITS));
+  len = MAX(1,(MapSize >> M64.INTLBITS));
 
   for (mindex = 0;mindex < len;mindex++)
     {
@@ -4275,7 +4276,7 @@ int MUBMAND(
   int mindex;
   int len;
 
-  len = MAX(1,(MapSize >> MINTLBITS));
+  len = MAX(1,(MapSize >> M64.INTLBITS));
  
   for (mindex = 0;mindex < len;mindex++)
     {
@@ -5413,7 +5414,7 @@ char *MUMAToString(
 
   char        *ptr;
 
-  if ((ValueMap == NULL) || (MapSize < MINTSIZE))
+  if ((ValueMap == NULL) || (MapSize < M64.INTSIZE))
     {
     strcpy(Line,NONE);
 
@@ -5422,14 +5423,14 @@ char *MUMAToString(
 
   Line[0] = '\0';
 
-  for (findex = 0;findex < (MapSize >> MINTSHIFT);findex++)
+  for (findex = 0;findex < (MapSize >> M64.INTSHIFT);findex++)
     {
-    for (index = 0;index < MINTBITS;index++)
+    for (index = 0;index < M64.INTBITS;index++)
       {
       if ((ValueMap[findex] & (1 << index)) &&
           (MAList[AttrIndex][index][0] != '\0'))
         {
-        ptr = MAList[AttrIndex][index + findex * MINTBITS];
+        ptr = MAList[AttrIndex][index + findex * M64.INTBITS];
 
         if (Delim != '\0')
           {

@@ -1303,9 +1303,11 @@ int MSUSendData(
 
       if (DoSocketLayerAuth == TRUE)
         {
+        char tmpStr[MMAX_BUFFER];
+
         time(&Now);
 
-        sprintf(TSLine,"%s%ld %s%s",
+        sprintf(tmpStr,"%s%ld %s%s",
           MCKeyword[mckTimeStamp],
           (long)Now,
           MCKeyword[mckAuth],
@@ -1320,7 +1322,7 @@ int MSUSendData(
           }
 
         sprintf(TSLine,"%s %s",
-          TSLine,
+          tmpStr,
           MCKeyword[mckData]);
         
         MSecGetChecksum2(

@@ -453,6 +453,7 @@ void MSysShutdown(int);
 int MSysDestroyObjects(void);
 int MSysDiagnose(char *,int,long);
 int MSysStartServer(int);
+int M64Init(m64_t *);
 
 
 

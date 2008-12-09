@@ -19,6 +19,7 @@ extern msys_t      MSystem;
 extern mframe_t    MFrame[];
 extern mckpt_t     MCP;
 extern mres_t     *MRes[];
+extern m64_t       M64;
 
 extern int         MAQ[];
 extern int         MUIQ[];
@@ -2256,8 +2257,8 @@ int MJobSelectResourceSet(
 
         for (sindex = 0;sindex < MaxSet;sindex++)
           {
-          if (N->FBM[SetIndex[sindex] >> MINTLBITS] & 
-             (1 << (SetIndex[sindex] % MINTBITS)))
+          if (N->FBM[SetIndex[sindex] >> M64.INTLBITS] & 
+             (1 << (SetIndex[sindex] % M64.INTBITS)))
             {
             SetCount[sindex] += TC;
             SetNC[sindex] ++;
@@ -2422,8 +2423,8 @@ int MJobSelectResourceSet(
             {
             case mrstFeature:
 
-              if (N->FBM[SetIndex[sindex] >> MINTLBITS] & 
-                 (1 << (SetIndex[sindex] % MINTBITS)))
+              if (N->FBM[SetIndex[sindex] >> M64.INTLBITS] & 
+                 (1 << (SetIndex[sindex] % M64.INTBITS)))
                 {  
                 /* node is feasible */
 
@@ -2576,8 +2577,8 @@ int MJobSelectResourceSet(
           {
           case mrstFeature:
  
-            if (N->FBM[SetIndex[BestSet] >> MINTLBITS] & 
-               (1 << (SetIndex[BestSet] % MINTBITS)))
+            if (N->FBM[SetIndex[BestSet] >> M64.INTLBITS] & 
+               (1 << (SetIndex[BestSet] % M64.INTBITS)))
               {
               /* node is in set */
  

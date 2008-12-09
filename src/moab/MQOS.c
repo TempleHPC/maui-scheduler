@@ -17,6 +17,7 @@ extern mgcred_t   *MUser[];
 extern mgcred_t    MGroup[];
 extern mgcred_t    MAcct[];
 extern mclass_t    MClass[];
+extern m64_t       M64;
 
 extern const char *MQOSFlags[];
 extern const char *MQALType[];
@@ -896,7 +897,7 @@ char *MQOSBMToString(
 
   for (bindex = 0;bindex < MAX_MQOS;bindex++)
     {
-    if (!(BM[bindex >> MINTLBITS] & (1 << (bindex % MINTBITS))))
+    if (!(BM[bindex >> M64.INTLBITS] & (1 << (bindex % M64.INTBITS))))
       continue;
 
     Q = &MQOS[bindex];

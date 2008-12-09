@@ -38,6 +38,7 @@ mjob_t   *MJobTraceBuffer;
 mrmfunc_t MRMFunc[MAX_MRMTYPE];
 msim_t    MSim;
 msys_t    MSys;                   /* cluster layout */
+m64_t     M64;
 
 mx_t      X;
 int       MFQ[MAX_MJOB];          /* terminated by '-1' value      */
@@ -97,6 +98,8 @@ int MSysInitialize(mbool_t DoInit)
   S->Time = (long)tmpTime;
 
   S->X    = (void *)&X;
+
+  M64Init(&M64);
 
   MOSSyslogInit(S);
 

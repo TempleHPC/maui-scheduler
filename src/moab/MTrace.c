@@ -25,6 +25,7 @@ extern mnode_t    *MNode[];
 extern mqos_t      MQOS[];
 extern mpar_t      MPar[];
 extern mrm_t       MRM[];
+extern m64_t       M64;
 
 extern mframe_t    MFrame[];
 
@@ -1219,7 +1220,7 @@ int MTraceLoadWorkload(
 
       J->SpecFlags |= MSim.TraceDefaultJobFlags;
 
-      for (index = 0;index < MINTBITS;index++)
+      for (index = 0;index < M64.INTBITS;index++)
         {
         if (!(MSim.TraceIgnoreJobFlags & (1 << index)))
           continue;

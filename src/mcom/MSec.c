@@ -130,7 +130,6 @@ int MSecMD5GetDigest(char *,int,char *,int,char *,int);
 
 
 
-#ifndef __M32COMPAT
 
 int M64Init(
 
@@ -143,10 +142,10 @@ int M64Init(
 
     M->Is64     = FALSE;
 
-    M->INTBC    = M32INTBITS;
-    M->INTLBC   = M32INTLBITS;
-    M->MIntSize = M32INTSIZE;
-    M->IntShift = M32INTSHIFT;
+    M->INTBITS  = M32INTBITS;
+    M->INTLBITS = M32INTLBITS;
+    M->INTSIZE  = M32INTSIZE;
+    M->INTSHIFT = M32INTSHIFT;
     }
   else
     {
@@ -154,10 +153,10 @@ int M64Init(
 
     M->Is64     = TRUE;
 
-    M->INTBC    = M64INTBITS;
-    M->INTLBC   = M64INTLBITS;
-    M->MIntSize = M64INTSIZE;
-    M->IntShift = M64INTSHIFT;
+    M->INTBITS  = M64INTBITS;
+    M->INTLBITS = M64INTLBITS;
+    M->INTSIZE  = M64INTSIZE;
+    M->INTSHIFT = M64INTSHIFT;
     }
 
   MDB(5,fSTRUCT) MLog("INFO:     64Bit enabled: %s  UINT4[%d]  UINT8[%d]\n",
@@ -168,7 +167,6 @@ int M64Init(
   return(SUCCESS);
   }  /* END M64Init() */
 
-#endif /* !__M32COMPAT */
 
 
 

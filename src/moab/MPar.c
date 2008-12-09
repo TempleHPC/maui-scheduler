@@ -23,6 +23,7 @@ extern mckpt_t      MCP;
 extern mrm_t        MRM[];
 extern mstat_t      MStat;
 extern mattrlist_t  MAList;
+extern m64_t        M64;
  
 extern const char *MQALType[];
 extern const char *MResourceType[];
@@ -1252,7 +1253,7 @@ char *MParBMToString(
     {
     P = &MPar[pindex];    
 
-    if (!(BM[pindex >> MINTLBITS] & (1 << (pindex % MINTBITS))))
+    if (!(BM[pindex >> M64.INTLBITS] & (1 << (pindex % M64.INTBITS))))
       continue;
 
     if (P->Name[0] == '\0')
