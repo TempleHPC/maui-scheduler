@@ -2885,8 +2885,8 @@ int MPBSQueryMOM(
 
   /* NOTE:  PBS totmem = swap + RAM */
 
-  if ((TotMem > 0) && (N->CRes.Mem > 0))
-    N->CRes.Swap = TotMem - N->CRes.Mem;
+  if (TotMem > 0)
+    N->CRes.Swap = TotMem; 
 
   closerm(sd);
 
@@ -6278,8 +6278,8 @@ int __MPBSIGetSSSStatus(
 
   /* NOTE:  PBS totmem = swap + RAM */
 
-  if ((TotMem > 0) && (N->CRes.Mem > 0))
-    N->CRes.Swap = TotMem - N->CRes.Mem;
+  if (TotMem > 0) 
+    N->CRes.Swap = TotMem; 
 
   return(SUCCESS);
   }  /* END __MPBSIGetSSSStatus() */
