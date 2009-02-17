@@ -1,4 +1,5 @@
 Maui 3.2.6p21
+  - Fixed a nodes configured swap from changing in a maui+pbs setup. (Thanks goes to Gareth Williams of CSIRO)
   - Fixed CHECKSUM authentication for maui + slurm. Thanks goes to Eyegene Ryabinkin.
   - Fixed 64bit issue. Maui assumed ints were always 8 bytes for 64bit systems even though x86_64 ints are still 4 bytes. This lead to aliasing of large indexed node properties to smaller indexed properties. Maui now triggers off of sizeof(int). Thanks goes to Alexis Cousein.
   - Fixed an optimiztion issue with x86_64 systems. -O2 was optimizing out parts of the communication strings.
