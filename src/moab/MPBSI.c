@@ -2902,8 +2902,8 @@ int MPBSQueryMOM(
     N->CRes.Mem = (int)(N->CRes.Mem * MSched.NodeMemOverCommitFactor);
     N->ARes.Mem = (int)(N->CRes.Mem * MSched.NodeMemOverCommitFactor);   
 
-    N->CRes.Swap = (int)(N->CRes.Mem * MSched.NodeMemOverCommitFactor);
-    N->ARes.Swap = (int)(N->CRes.Mem * MSched.NodeMemOverCommitFactor);
+    N->CRes.Swap = (int)(N->CRes.Swap * MSched.NodeMemOverCommitFactor);
+    N->ARes.Swap = (int)(N->CRes.Swap * MSched.NodeMemOverCommitFactor);
 
     /* memory factor not applied to node load */
     }
@@ -6263,6 +6263,11 @@ int __MPBSIGetSSSStatus(
       }  /* END else if (!strcmp(Name,"message")) */
     }    /* END while (ptr != NULL) */
 
+  /* NOTE:  PBS totmem = swap + RAM */
+
+  if (TotMem > 0) 
+    N->CRes.Swap = TotMem; 
+
   if (MSched.NodeMemOverCommitFactor > 0.0)
     {
     /* NOTE:  both real memory and swap overcommitted */
@@ -6270,16 +6275,11 @@ int __MPBSIGetSSSStatus(
     N->CRes.Mem = (int)(N->CRes.Mem * MSched.NodeMemOverCommitFactor);
     N->ARes.Mem = (int)(N->ARes.Mem * MSched.NodeMemOverCommitFactor);   
 
-    N->CRes.Swap = (int)(N->CRes.Mem * MSched.NodeMemOverCommitFactor);
-    N->ARes.Swap = (int)(N->ARes.Mem * MSched.NodeMemOverCommitFactor);
+    N->CRes.Swap = (int)(N->CRes.Swap * MSched.NodeMemOverCommitFactor);
+    N->ARes.Swap = (int)(N->ARes.Swap * MSched.NodeMemOverCommitFactor);
 
     /* memory factor not applied to node load */
     }
-
-  /* NOTE:  PBS totmem = swap + RAM */
-
-  if (TotMem > 0) 
-    N->CRes.Swap = TotMem; 
 
   return(SUCCESS);
   }  /* END __MPBSIGetSSSStatus() */
