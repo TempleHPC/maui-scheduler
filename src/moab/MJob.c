@@ -10301,7 +10301,10 @@ int MJobGetSNRange(
 
         if ((J->Req[0]->NAccessPolicy == mnacSingleUser) &&
             (tmpJ != NULL) &&
-            (tmpJ->Cred.U != J->Cred.U))
+            (tmpJ->Cred.U != NULL) &&
+            (J->Cred.U != NULL) &&
+            (tmpJ->Cred.U != J->Cred.U) &&
+            (strcmp(J->Cred.U->Name,"[ALL]")))
           {
           /* user dedicated resources removed */
 
