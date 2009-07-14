@@ -1,4 +1,5 @@
 Maui 3.2.6p21
+  - Added StartTime and CompletionTime to Gold Charge.
   - Fixed backfill issue with SINGLEUSER NODEACCESSPOLICY. (Thanks goes to Roy Dragseth)
   - N->{A|C}Res.Swap is overcommitted with N->CRes.Swap instead of N->CRes.Mem. (Thanks goes to Roy Dragseth)
   - Fixed a nodes configured swap from changing in a maui+pbs setup. (Thanks goes to Gareth Williams of CSIRO)

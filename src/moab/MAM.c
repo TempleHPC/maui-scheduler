@@ -577,6 +577,22 @@ int MAMAllocJDebit(
         MXMLAddE(JE,AE);
         }
 
+      if (J->StartTime > 0)
+        {
+        AE = NULL;
+        MXMLCreateE(&AE,(char *)MS3JobAttr[A->Version][mjaStartTime]);
+        MXMLSetVal(AE,&J->StartTime,mdfLong);
+        MXMLAddE(JE,AE);
+        }
+
+      if (J->CompletionTime > 0)
+        {
+        AE = NULL;
+        MXMLCreateE(&AE,"EndTime");  /* change to (char *)MS3JobAttr[A->Version][mjaCompletion]); */
+        MXMLSetVal(AE,&J->CompletionTime,mdfLong);
+        MXMLAddE(JE,AE);
+        }
+
       if (J->Cred.C != NULL)
         {
         AE = NULL;
