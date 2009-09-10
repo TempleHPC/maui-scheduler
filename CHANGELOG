@@ -1,4 +1,5 @@
 Maui 3.2.6p21
+  - Added RMCFG[] ASYNCJOBSTART=TRUE for asynchronous job starts in pbs. (Thanks to Bas van der Vlies and the community)
   - Added StartTime and CompletionTime to Gold Charge.
   - Fixed backfill issue with SINGLEUSER NODEACCESSPOLICY. (Thanks goes to Roy Dragseth)
   - N->{A|C}Res.Swap is overcommitted with N->CRes.Swap instead of N->CRes.Mem. (Thanks goes to Roy Dragseth)

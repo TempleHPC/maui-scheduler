@@ -1136,6 +1136,8 @@ typedef struct {
   void *S;  /* resource manager specific data */
 
   void *xd;
+
+  mbool_t ASyncJobStart; /* asynchronous job start */
   } mrm_t;
 
 enum MClassStateEnum {

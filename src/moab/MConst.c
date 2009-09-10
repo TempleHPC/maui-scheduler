@@ -441,6 +441,7 @@ const char *MFSAttr[] = {
 const char *MRMAttr[] = {
   NONE,
   "AUTHTYPE",
+  "ASYNCJOBSTART",
   "CONFIGFILE",
   "CSALGO",
   "CSKEY",

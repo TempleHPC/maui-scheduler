@@ -1771,7 +1771,7 @@ int MRMLoadConfig(
 
         MRMSetDefaults(R);
 
-	MOLoadPvtConfig((void **)R,mxoRM,NULL,NULL,NULL);
+        MOLoadPvtConfig((void **)R,mxoRM,NULL,NULL,NULL);
         }
  
       /* load RM specific attributes */
@@ -2032,6 +2032,8 @@ int MRMSetDefaults(
 
     R->JobCounter = 0;
     
+    R->ASyncJobStart = FALSE;
+
     return(SUCCESS);
     }
  
@@ -2242,7 +2244,7 @@ int MRMProcessConfig(
           ptr,
           (const char **)MRMAttr,
           &aindex,
-	  NULL,
+          NULL,
           TRUE,
           NULL,
           ValLine,
@@ -2264,6 +2266,12 @@ int MRMProcessConfig(
 
         R->AuthType = MUGetIndex(ValLine,MRMAuthType,FALSE,0); 
 
+        break;
+
+      case mrmaASyncJobStart:
+
+        R->ASyncJobStart = MUBoolFromString(ValLine,FALSE);
+        
         break;
 
       case mrmaConfigFile:

@@ -1796,41 +1796,6 @@ int MPBSJobStart(
 
       return(FAILURE);
       }
-
-    if (MPBSJobModify(
-          J,
-          R,
-          ATTR_l,
-          (char *)(R->Version >= 710 ? "select" : "neednodes"),
-          HostList,
-          NULL,
-          NULL) == FAILURE)
-      {
-      DBG(0,fPBS) DPrint("ERROR:    cannot set hostlist for job '%s'\n",
-        J->Name);
-
-      if (R->FailIteration != MSched.Iteration)
-        {
-        R->FailIteration = MSched.Iteration;
-        R->FailCount     = 0;
-        }
-
-      R->FailCount++;
-
-      if (Msg != NULL)
-        strcpy(Msg,"job cannot be started - cannot set hostlist");
-
-      if (SC != NULL)
-        *SC = mscRemoteFailure;
-
-      return(FAILURE);
-      }
-    else
-      {
-      DBG(7,fPBS) DPrint("INFO:     hostlist for job '%s' set to '%s'\n",
-        J->Name,
-        HostList);
-      }
     }
   else
     {
@@ -1909,7 +1874,16 @@ int MPBSJobStart(
 
   MJobGetName(J,NULL,R,tmpJobName,sizeof(tmpJobName),mjnRMName);       
 
-  rc = pbs_runjob(R->U.PBS.ServerSD,tmpJobName,MasterHost,NULL);
+  if (R->ASyncJobStart == FALSE )
+    {
+    DBG(7,fPBS) DPrint("INFO:     use pbs_runjob\n");
+    rc = pbs_runjob(R->U.PBS.ServerSD,tmpJobName,HostList,NULL);
+    }
+  else
+    {
+    DBG(7,fPBS) DPrint("INFO:     use pbs_asyrun\n");
+    rc = pbs_asyrunjob(R->U.PBS.ServerSD,tmpJobName,HostList,NULL);
+    }
 
   if (rc != 0)
     {
@@ -1931,28 +1905,6 @@ int MPBSJobStart(
       HostList);
 
     JobStartFailed = TRUE;
-    }
-
-  if (J->NeedNodes != NULL)
-    {
-    if (MPBSJobModify(
-          J,
-          R,
-          ATTR_l,
-          (char *)(R->Version >= 710 ? "select" : "neednodes"),
-          J->NeedNodes,
-          NULL,
-          NULL) == FAILURE)
-      {
-      DBG(7,fPBS) DPrint("WARNING:  cannot reset hostlist for job '%s')\n",
-        J->Name);
-      }
-    else
-      {
-      DBG(7,fPBS) DPrint("INFO:     hostlist for job '%s' set to '%s'\n",
-        J->Name,
-        J->NeedNodes);
-      }
     }
 
   if (JobStartFailed == TRUE)

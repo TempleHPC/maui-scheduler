@@ -1013,6 +1013,7 @@ enum MLimitAttrType {
 enum MRMAttrType {
   mrmaNONE = 0,
   mrmaAuthType,
+  mrmaASyncJobStart, /* asynchronous job start */
   mrmaConfigFile,
   mrmaCSAlgo,
   mrmaCSKey,
