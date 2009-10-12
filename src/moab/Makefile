@@ -1,5 +1,5 @@
 # Makefile for Moab 2.2.3
-# Copyright 1999 - 2006  Cluster Resources Inc, All Rights Reserved
+# Copyright 1999 - 2009  Cluster Resources Inc, All Rights Reserved
 
    TOP =../..
    BIN =$(TOP)/bin/

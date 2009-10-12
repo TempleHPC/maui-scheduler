@@ -1,1 +1,1 @@
-#define MSCHED_VERSION "maui-3.2.6p21"
+#define MSCHED_VERSION "4.0"
