@@ -7,7 +7,7 @@
 #include "moab-local.h"
 #include "mcom.h"
 
-#define MOAB_VERSION "4.0"
+#define MOAB_VERSION "3.3"
 
 /* elemental objects */
 

@@ -1062,7 +1062,7 @@ int ServerProcessArgs(
 int ServerShowCopy()
 
   {
-  fprintf(stderr,"Copyright 2000-2009 Cluster Resources, Inc, All Rights Reserved\n");
+  fprintf(stderr,"Copyright 2000-2010 Cluster Resources, Inc, All Rights Reserved\n");
   fprintf(stderr,"  for the latest release, see http://clusterresources.com/maui\n");
 
   fprintf(stderr,"This software includes the Maui Server Module, Copyright 1996 MHPCC, All Rights Reserved\n");

@@ -4902,7 +4902,7 @@ int MUShowCopy()
   fprintf(stderr,"This software utilizes the Moab Scheduling Library, version %s\n",
     MOAB_VERSION);
 
-  fprintf(stderr,"Copyright 2000-2009 Cluster Resources, Inc, All Rights Reserved\n");
+  fprintf(stderr,"Copyright 2000-2010 Cluster Resources, Inc, All Rights Reserved\n");
 
   return(SUCCESS);
   }  /* END MUShowCopy() */

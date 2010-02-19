@@ -1,5 +1,5 @@
 # Makefile for libmcom 
-# Copyright 1999 - 2009  Cluster Resources, Inc, All Rights Reserved
+# Copyright 1999 - 2010  Cluster Resources, Inc, All Rights Reserved
 
    TOP =../..
    BIN =$(TOP)/bin/
