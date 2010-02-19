@@ -47,8 +47,8 @@ CFLAGS = $(OSCCFLAGS)
 all:    $(MBINS)
 
 install: all
-	mkdir -p $(INST_DIR)/{bin,sbin,include,lib}
-	mkdir -p $(MSCHED_HOME)/{log,traces,stats,spool,tools}
+	mkdir -p $(INST_DIR)/bin $(INST_DIR)/sbin $(INST_DIR)/include $(INST_DIR)/lib
+	mkdir -p $(MSCHED_HOME)/log $(MSCHED_HOME)/traces $(MSCHED_HOME)/stats $(MSCHED_HOME)/spool $(MSCHED_HOME)/tools
 
 	chmod 1777 $(MSCHED_HOME)/spool
 
@@ -74,7 +74,7 @@ install: all
           then cp $(TOP)/maui-private.cfg.dist $(MSCHED_HOME)/maui-private.cfg; \
         fi
 
-	(cd ../..;ln -sf etc/maui.cfg;ln -sf etc/maui-private.cfg)
+#	(cd ../..;ln -sf etc/maui.cfg;ln -sf etc/maui-private.cfg)
 
 uninstall:
 	rm -f $(INST_DIR)/include/moab.h
