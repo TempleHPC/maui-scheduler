@@ -1,3 +1,6 @@
+Maui 3.3
+  - Fixed configure script. Was putting RMCFG[name] TYPE=PBS@RMNMHOST@.
+
 Maui 3.2.6p21
   - Added RMCFG[] ASYNCJOBSTART=TRUE for asynchronous job starts in pbs. (Thanks to Bas van der Vlies and the community)
   - Added StartTime and CompletionTime to Gold Charge.
