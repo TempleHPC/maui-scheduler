@@ -5557,7 +5557,7 @@ int MUIJobSetAttr(
       {
       mqos_t *Q;
 
-      int QAL[MAX_MQOS >> 5];
+      int QAL[(MAX_MQOS >> 5) + 1];
 
       if (!(CFlags & ((1 << fAdmin1) | (1 << fAdmin2))) &&
          (JobOwner == FALSE))

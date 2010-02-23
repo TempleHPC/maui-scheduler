@@ -2706,7 +2706,7 @@ int MSRProcessOConfig(
       char *TokPtr;
 
       int index;
-      int FMap[MAX_MATTR >> 5];
+      int FMap[(MAX_MATTR >> 5) + 1];
 
       MUBMClear(FMap,MAX_MATTR);
 
