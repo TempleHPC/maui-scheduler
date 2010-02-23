@@ -7702,7 +7702,7 @@ int MJobWriteStats(
  
   if (MJobToTString(J,DEFAULT_WORKLOAD_TRACE_VERSION,Buf,sizeof(Buf)) == SUCCESS)
     {
-    fprintf(MSched.statfp,Buf);
+    fprintf(MSched.statfp,"%s",Buf);
  
     fflush(MSched.statfp);
  

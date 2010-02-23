@@ -1501,7 +1501,7 @@ int Mode)
         }
       else
         {
-        fprintf(stdout,
+        fprintf(stdout,"%s",
           (Mode & (1 << mMatrix)) ? MNull : Null);
         }
       }
@@ -1517,7 +1517,7 @@ int Mode)
       }
     else
       {
-      fprintf(stdout,
+      fprintf(stdout,"%s",
         (Mode & (1 << mMatrix)) ? MNull : Null);
 
       fprintf(stdout,"\n");
@@ -1541,7 +1541,7 @@ int Mode)
       }
     else
       {
-      fprintf(stdout,
+      fprintf(stdout,"%s",
         (Mode & (1 << mMatrix)) ? MNull : Null);
       }
     }
