@@ -6250,6 +6250,7 @@ int __MPBSNLToTaskString(
   int tindex;
 
   char tmpHostName[MAX_MLINE];
+  char tmpTaskList[MAX_MLINE+10];
 
   mnode_t *N;
 
@@ -6302,10 +6303,11 @@ int __MPBSNLToTaskString(
       }
     else
       {
-      sprintf(TSBuf,"%s%s:ppn=%d",
-        TSBuf,
+      snprintf(tmpTaskList,sizeof(tmpTaskList),"%s:ppn=%d",
         tmpHostName,
         NL[tindex].TC);
+
+      MUStrCat(TSBuf,tmpTaskList,BufSize);
       }
     }  /* END for (tindex) */
 
