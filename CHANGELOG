@@ -1,5 +1,6 @@
 Maui 3.3.1
   - Fixed issue where hostlist was being overwritten resulting in broken $PBS_NODEFILE. (Alexis Cousein)
+  - Fixed issue where users could set system priority on their own jobs. (Bas van der Vlies)
 
 Maui 3.3
   - Fixed configure script. Was putting RMCFG[name] TYPE=PBS@RMNMHOST@.

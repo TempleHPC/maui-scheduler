@@ -5521,7 +5521,14 @@ int MUIJobSetAttr(
       {
       long tmpPrio;
 
-      tmpPrio = strtol(Val,NULL,0);
+      if (!(CFlags & ((1 << fAdmin1) | (1 << fAdmin2))))
+        {
+        sprintf(Msg,"ERROR:  not authorized to run this command");
+
+        return(FAILURE);
+        }
+
+      tmpPrio = strtol(Val,NULL,0); 
 
       if ((tmpPrio < 0) || (tmpPrio > 1000))
         {
