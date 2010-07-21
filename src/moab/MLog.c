@@ -82,7 +82,7 @@ int MLogInitialize(
 
   if (SigSet == 0)
     {
-#   if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__HPUX) || defined(__SOLARIS)
+#   if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS)
       signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
       signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
 #   else 
@@ -414,7 +414,7 @@ void MLogLevelAdjust(
         mlog.Threshold);
       }
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__HPUX) || defined(__SOLARIS)
+#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS)
 
     signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
 
@@ -441,7 +441,7 @@ void MLogLevelAdjust(
         mlog.Threshold);
       }
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF)
+#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF)
 
     signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
 

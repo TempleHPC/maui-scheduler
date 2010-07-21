@@ -5,7 +5,7 @@ int ServerSetSignalHandlers()
   {
   /* trap TERM(15) QUIT(3) INT(2) HUP(1) */
  
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__IRIX) || defined(__LINUX) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
+#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
  
   signal(SIGINT,   SIG_IGN);
   signal(SIGTERM,  (void(*)(int))MSysShutdown);
@@ -120,7 +120,7 @@ int ServerSetSignalHandlers()
     }
   }    /* END BLOCK */ 
 
-#elif defined(__LINUX) || defined(__IRIX) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF)
+#elif defined(__LINUX) || defined(__CYGWIN) || defined(__IRIX) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF)
 
   ServerLoadSignalConfig();
  
@@ -143,8 +143,9 @@ int ServerSetSignalHandlers()
 
 
 int ServerDemonize()
+{
+#ifndef __CYGRUNSRV
 
-  {
 #ifndef __NT
   int   pid;
 #endif /* __NT */
@@ -235,6 +236,7 @@ int ServerDemonize()
       }
     }    /* END if (MSched.Mode != msmSim) */
 
+#endif /* __CYGRUNSRV */
   return(SUCCESS);
   }  /* END ServerDemonize() */
 
@@ -305,7 +307,7 @@ int CrashMode(
 
   if (signo == SIGSEGV)
     {
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
+#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__CYGWIN) || defined(__CYGWIN) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
 
     signal(SIGSEGV,(void(*)(int))CrashMode);
 
@@ -317,7 +319,7 @@ int CrashMode(
     }
   else if (signo == SIGILL)
     {
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
+#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
 
     signal(SIGILL,(void(*)(int))CrashMode);
 
@@ -378,7 +380,7 @@ int ReloadConfig(
 
   MSched.Reload = TRUE;
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
+#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
 
   signal(SIGHUP,(void(*)(int))ReloadConfig);
 

@@ -2,6 +2,9 @@ Maui 3.3.1
   - Fixed issue where hostlist was being overwritten resulting in broken $PBS_NODEFILE. (Alexis Cousein)
   - Fixed issue where users could set system priority on their own jobs. (Bas van der Vlies)
   - Made showgrid's, and other's, arguments case-insensitive. (David Chin)
+  - Added build system changes to support Cygwin (Yauheni Charniauski, UIIP Minsk)
+  - Added the --with-cygrunsrv configure option for start maui as Windows service (doesn't use a background daemon).
+    Cygwin utility cygrunsrv.exe goes it into background independently (Igor Ilyenko, UIIP Minsk)
 
 Maui 3.3
   - Fixed configure script. Was putting RMCFG[name] TYPE=PBS@RMNMHOST@.

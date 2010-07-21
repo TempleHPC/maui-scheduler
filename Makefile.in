@@ -6,6 +6,7 @@
 BUILDROOT=
 export MSCHED_HOME=${BUILDROOT}@SPOOLDIR@
 export INST_DIR=${BUILDROOT}@prefix@
+export DAEMONDEF=@DAEMONDEF@
 export OPSYS=@OPSYS@
 export OS=@OS@
 export CC=@CC@

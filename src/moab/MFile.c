@@ -1184,7 +1184,7 @@ int MFULock(
   char *LockFile)   /* I */
 
   {
-#if !defined(__LINUX) && !defined(__HPUX) && !defined(__NT)
+#if !defined(__LINUX) && !defined(__CYGWIN) && !defined(__HPUX) && !defined(__NT)
   int          fd;
   struct flock lock;
   char         Name[MAX_MLINE];
@@ -1197,7 +1197,7 @@ int MFULock(
     Directory,
     LockFile);
 
-#if !defined(__LINUX) && !defined(__HPUX) && !defined(__NT)
+#if !defined(__LINUX) && !defined(__CYGWIN) && !defined(__HPUX) && !defined(__NT)
 
   if (!strstr(LockFile,Directory))
     {

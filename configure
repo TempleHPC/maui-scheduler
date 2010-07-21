@@ -311,7 +311,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT LN_S SPOOLDIR MACHINE SEED OPSYS OS HOSTNAME USER BUILDDATE BUILDDIR RMTYPE LLDIR LLDEF PBSTARGETDIR SGEBUILDDIR SGEOSDIR LSFDIR LSFLIBS LSFDEFS PBSCFLAGS PBSLDFLAGS RMPORT RMHOST RMSOCKETPROTOCOL RMWIREPROTOCOL RMVERSION RMNMPORT RMNMHOST AMTYPE AMHOST AMPORT AMSOCKETPROTOCOL AMWIREPROTOCOL AMOTHER PCREDIR CPP EGREP LIBOBJS POW_LIB LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT LN_S SPOOLDIR MACHINE SEED DAEMONDEF OPSYS OS HOSTNAME USER BUILDDATE BUILDDIR RMTYPE LLDIR LLDEF PBSTARGETDIR SGEBUILDDIR SGEOSDIR LSFDIR LSFLIBS LSFDEFS PBSCFLAGS PBSLDFLAGS RMPORT RMHOST RMSOCKETPROTOCOL RMWIREPROTOCOL RMVERSION RMNMPORT RMNMHOST AMTYPE AMHOST AMPORT AMSOCKETPROTOCOL AMWIREPROTOCOL AMOTHER PCREDIR CPP EGREP LIBOBJS POW_LIB LTLIBOBJS'
 ac_subst_files='rm_config ll_definitions sdr_definitions pbs_definitions sge_definitions lsf_definitions mx_definitions pcre_definitions'
 
 # Initialize some variables set by options.
@@ -862,6 +862,7 @@ Optional Packages:
   --with-sss-am[=PORT]    use SSS Allocation Manager (default port [8865])
   --with-mx               use MX
   --with-pcre[=DIR]       use PCRE (pcre dir (location of PCRE include and lib directories) [/path/to/pcre]
+  --with-cygrunsrv        run as Windows service for Cygwin (do not use a background daemon)
 
 Some influential environment variables:
   CC          C compiler command
@@ -2234,6 +2235,8 @@ echo "$as_me: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build wi
     { echo "$as_me:$LINENO: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&5
 echo "$as_me: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&2;}
   fi
+elif echo "$OS" | grep -q "CYGWIN"; then
+  OPSYS="__CYGWIN"
 elif test "$OS" = "Linux"; then
   OPSYS="__LINUX"
 elif test "$OS" = "HP-UX"; then
@@ -2742,6 +2745,17 @@ if test "$PCREDIR" != 'FALSE'; then
 
 	pcre_definitions=include/Makefile.inc.pcre
 fi
+
+# CYGRUNSRV
+
+# Check whether --with-cygrunsrv or --without-cygrunsrv was given.
+if test "${with_cygrunsrv+set}" = set; then
+  withval="$with_cygrunsrv"
+  DAEMONDEF="-D__CYGRUNSRV"
+else
+  DAEMONDEF=""
+fi;
+
 
 # Make sure one RM was specified
 if test "$RMTYPE" = ''; then
@@ -7201,6 +7215,7 @@ s,@LN_S@,$LN_S,;t t
 s,@SPOOLDIR@,$SPOOLDIR,;t t
 s,@MACHINE@,$MACHINE,;t t
 s,@SEED@,$SEED,;t t
+s,@DAEMONDEF@,$DAEMONDEF,;t t
 s,@OPSYS@,$OPSYS,;t t
 s,@OS@,$OS,;t t
 s,@HOSTNAME@,$HOSTNAME,;t t

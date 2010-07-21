@@ -13,7 +13,7 @@ SHELL  =/bin/sh
   LP   =-L$(LIB) $(SCHEDLP) $(MXLP) $(REGEXLP)
   IP   =$(SCHEDIP) $(REGEXIP) $(MXIP)
   INCS =$(INC)moab.h $(INC)moab-proto.h 
-  DEFS =-D$(OPSYS) $(OSDEF) $(MXDEF) $(REGEXDEF) $(SECDEF)
+  DEFS =-D$(OPSYS) $(OSDEF) $(MXDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 LIBMCOM  =libmcom.a
 LOBJECTS =MSU.o MSec.o MS3I.o MXML.o MConst.o MTComm.o MComm.o

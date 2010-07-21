@@ -53,6 +53,8 @@ if test "$OS" = "AIX"; then
     OSLEVEL=`oslevel`
     AC_MSG_WARN([Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS])
   fi
+elif echo "$OS" | grep -q "CYGWIN"; then
+  OPSYS="__CYGWIN"
 elif test "$OS" = "Linux"; then
   OPSYS="__LINUX"
 elif test "$OS" = "HP-UX"; then
@@ -465,6 +467,15 @@ if test "$PCREDIR" != 'FALSE'; then
 	AC_SUBST_FILE(pcre_definitions)
 	pcre_definitions=include/Makefile.inc.pcre
 fi
+
+
+# CYGRUNSRV
+AC_ARG_WITH(cygrunsrv,
+	[  --with-cygrunsrv        run as Windows service for Cygwin (do not use a background daemon)],
+	[DAEMONDEF="-D__CYGRUNSRV"],
+	[DAEMONDEF=""])
+AC_SUBST(DAEMONDEF)
+
 
 # Make sure one RM was specified
 if test "$RMTYPE" = ''; then
