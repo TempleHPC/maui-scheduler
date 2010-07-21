@@ -57,15 +57,15 @@ int ServerSetSignalHandlers()
     {
     act.sa_handler = (void(*)(int))SIG_DFL;
     }
-  else if (!strcmp(ptr,"TRAP") || !strcmp(ptr,"trap"))
+  else if (!strcasecmp(ptr,"trap"))
     {
     act.sa_handler = (void(*)(int))CrashMode;
     }
-  else if (!strcmp(ptr,"IGNORE") || !strcmp(ptr,"ignore"))
+  else if (!strcasecmp(ptr,"ignore"))
     {
     act.sa_handler = (void(*)(int))SIG_IGN;
     }
-  else if (!strcmp(ptr,"DIE") || !strcmp(ptr,"die"))
+  else if (!strcasecmp(ptr,"die"))
     {
     act.sa_handler = (void(*)(int))SIG_DFL;
     }
@@ -93,15 +93,15 @@ int ServerSetSignalHandlers()
     {
     act.sa_handler = (void(*)(int))SIG_DFL;
     }
-  else if (!strcmp(ptr,"TRAP") || !strcmp(ptr,"trap"))
+  else if (!strcasecmp(ptr,"trap"))
     {
     act.sa_handler = (void(*)(int))CrashMode;
     }
-  else if (!strcmp(ptr,"IGNORE") || !strcmp(ptr,"ignore"))
+  else if (!strcasecmp(ptr,"ignore"))
     {
     act.sa_handler = (void(*)(int))SIG_IGN;
     }
-  else if (!strcmp(ptr,"DIE") || !strcmp(ptr,"die"))
+  else if (!strcasecmp(ptr,"die"))
     {
     act.sa_handler = (void(*)(int))SIG_DFL;
     }

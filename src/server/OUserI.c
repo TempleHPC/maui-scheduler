@@ -291,14 +291,14 @@ int UIProcessCommand(
         if (MSched.AdminHost[index][0] == '\0')
           break;
 
-        if (!strcmp(MSched.AdminHost[index],S->Host))
+        if (!strcasecmp(MSched.AdminHost[index],S->Host))
           {
           hostcheck = TRUE;
 
           break;
           }
 
-        if (!strcmp(MSched.AdminHost[index],"ALL"))
+        if (!strcasecmp(MSched.AdminHost[index],"ALL"))
           {
           hostcheck = TRUE;
 
@@ -565,7 +565,7 @@ int SetJobUserPrio(
 
   if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2))))
     {
-    if (strcmp(J->Cred.U->Name,Auth) != 0)
+    if (strcasecmp(J->Cred.U->Name,Auth) != 0)
       {
       DBG(2,fUI) DPrint("INFO:     user %s is not authorized to set user priority on job %s\n",
         Auth,
@@ -618,7 +618,7 @@ int UIShowGrid(
 
   for (sindex = 0;MStatType[sindex] != 0;sindex++)
     {
-    if (!strcmp(MStatType[sindex],GStat))
+    if (!strcasecmp(MStatType[sindex],GStat))
       break;
     }  /* END for (sindex) */
 
@@ -777,7 +777,7 @@ int ShowBackfillWindow(
       {
       for (mindex = 0;MComp[mindex] != NULL;mindex++)
         {
-        if (!strcmp(MComp[mindex],MemCmp))
+        if (!strcasecmp(MComp[mindex],MemCmp))
           break;
         }
 
@@ -858,9 +858,9 @@ int ShowBackfillWindow(
             (BFNodeCount >= RequiredNodes) && 
             (BFProcCount >= RequiredProcs))
           {
-          if (strcmp(P->Name,CurrentPName) != 0)
+          if (strcasecmp(P->Name,CurrentPName) != 0)
             {
-            if ((strcmp(CurrentPName,GLOBAL_MPARNAME)) && (index == 0))
+            if ((strcasecmp(CurrentPName,GLOBAL_MPARNAME)) && (index == 0))
               {
               sprintf(Buffer,"%sno %s available\n",
                 Buffer,
