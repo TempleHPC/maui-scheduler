@@ -7133,19 +7133,23 @@ int MResAdjustDRes(
   /* where possible using memcmp.  Insert all container reservation  */
   /* events at BRes calculation completion                           */
 
-  if (CRE == NULL)
+  if (CRE == NULL || ORE == NULL || NRE == NULL || JRE == NULL )
     {
     memset(&ZRes,0,sizeof(ZRes));
 
-    CRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
-    ORE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
-    NRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
-    JRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
+    if (CRE == NULL )
+    	CRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
+    if (ORE == NULL )
+    	ORE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
+    if (NRE == NULL )
+    	NRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
+    if (JRE == NULL )
+    	JRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
 
     DRSize = sizeof(mcres_t);
     }  /* END if (CRE == NULL) */
 
-  if (CRE == NULL)
+  if (CRE == NULL || ORE == NULL || NRE == NULL || JRE == NULL )
     {
     DBG(4,fCORE) DPrint("ALERT:    cannot allocate memory in %s\n",
       FName);
