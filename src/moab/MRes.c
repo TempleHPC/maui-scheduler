@@ -7137,14 +7137,20 @@ int MResAdjustDRes(
     {
     memset(&ZRes,0,sizeof(ZRes));
 
-    if (CRE == NULL )
-    	CRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
-    if (ORE == NULL )
-    	ORE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
-    if (NRE == NULL )
-    	NRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
-    if (JRE == NULL )
-    	JRE = (mre_t *)malloc(sizeof(mre_t) * (MSched.ResDepth << 1));
+    /* changed the mallocs to callocs because there is code below */
+    /* that requires things to be zero'ed                         */
+    if (CRE == NULL ) {
+    	CRE = (mre_t *)calloc((MSched.ResDepth << 1),sizeof(mre_t));
+    }
+    if (ORE == NULL ){
+    	ORE = (mre_t *)calloc((MSched.ResDepth << 1),sizeof(mre_t));
+    }
+    if (NRE == NULL ){
+    	NRE = (mre_t *)calloc((MSched.ResDepth << 1),sizeof(mre_t));
+  	}
+    if (JRE == NULL ){
+    	JRE = (mre_t *)calloc((MSched.ResDepth << 1),sizeof(mre_t));
+    }
 
     DRSize = sizeof(mcres_t);
     }  /* END if (CRE == NULL) */

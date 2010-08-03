@@ -5746,10 +5746,11 @@ int MNodeGetLocation(
   int   nindex;
  
   char  tmpName[MAX_MNAME];
+  tmpName[0]='\0';
  
   char *ptr;
  
-  long  Address;
+  long  Address=0;
 
   mhost_t *S;
  

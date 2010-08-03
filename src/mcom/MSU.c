@@ -956,6 +956,9 @@ int MSUSendData(
 #endif /* !__MPROD */
 
   /* initialize */
+  TSLine[0]='\0';
+  CKLine[0]='\0';
+  SHeader[0]='\0';
 
   tmpSBuf[0] = '\0';  /* tmpSBuf is global (not threadsafe) */
 
