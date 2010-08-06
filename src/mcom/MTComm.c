@@ -43,8 +43,7 @@ comm_thread_t* comm_thread_new(
 
   {
   comm_thread_t* thread;
-
-  if ((thread = (comm_thread_t *)malloc(sizeof(comm_thread_t))) == NULL)
+  if ((thread = (comm_thread_t *)calloc(1,sizeof(comm_thread_t))) == NULL)
     {
     return(NULL);
     }
@@ -53,8 +52,7 @@ comm_thread_t* comm_thread_new(
   thread->read_handler = NULL;
   thread->close_handler = NULL;
   thread->error_handler = NULL;
-
-  thread->connection = (communication_t **)malloc(max_connections * sizeof(void*));
+  thread->connection = (communication_t **)calloc(max_connections, sizeof(void*));
 
   thread->connections = 0;
   thread->max_connections = max_connections;
@@ -244,8 +242,7 @@ communication_t *communication_new(
   
   {
   communication_t *comm;
-
-  if ((comm = (communication_t *)malloc(sizeof(communication_t))) == NULL)
+  if ((comm = (communication_t *)calloc(1, sizeof(communication_t))) == NULL)
     {
     return(NULL);
     }

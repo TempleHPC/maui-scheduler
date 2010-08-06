@@ -2900,11 +2900,19 @@ int MNodeBuildRE(
 
   memset(&ZRes,0,sizeof(ZRes));
  
-  CRE = (mre_t *)malloc(sizeof(mre_t) * ((MAX_MRES_DEPTH << 1) + 1));
-  ORE = (mre_t *)malloc(sizeof(mre_t) * ((MAX_MRES_DEPTH << 1) + 1));
-  NRE = (mre_t *)malloc(sizeof(mre_t) * ((MAX_MRES_DEPTH << 1) + 1));
-  JRE = (mre_t *)malloc(sizeof(mre_t) * ((MAX_MRES_DEPTH << 1) + 1));
+  CRE = (mre_t *)calloc(((MAX_MRES_DEPTH << 1) + 1), sizeof(mre_t));
+  ORE = (mre_t *)calloc(((MAX_MRES_DEPTH << 1) + 1), sizeof(mre_t));
+  NRE = (mre_t *)calloc(((MAX_MRES_DEPTH << 1) + 1), sizeof(mre_t));
+  JRE = (mre_t *)calloc(((MAX_MRES_DEPTH << 1) + 1), sizeof(mre_t));
  
+  if (CRE == NULL || ORE == NULL || NRE == NULL || JRE == NULL )
+    {
+    DBG(4,fCORE) DPrint("ALERT:    cannot allocate memory in %s\n",
+      FName);
+
+    return(FAILURE);
+  }
+
   CRI[0] = -1;
  
   ResFound = FALSE;

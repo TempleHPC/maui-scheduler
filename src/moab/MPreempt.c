@@ -232,7 +232,7 @@ int MJobSelectPJobList(
 
     if (PreempteeTaskList != NULL)
       {
-      pJ[index].TL = (nodelist_t *)malloc(sizeof(nodelist_t));
+      pJ[index].TL = (nodelist_t *)calloc(1, sizeof(nodelist_t));
 
       memcpy(pJ[index].TL,&tmpTaskList,sizeof(mnalloc_t) * (tindex + 1));
       }

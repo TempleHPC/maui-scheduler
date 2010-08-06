@@ -1760,8 +1760,7 @@ int MSURecvData(
 
         return(FAILURE);
         }
-
-      if ((S->RBuffer = (char *)malloc(S->RBufSize + 1)) == NULL)
+      if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
         {
         MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
           S->RBufSize,
@@ -1812,8 +1811,7 @@ int MSURecvData(
         /* allocate large receive space */
 
         S->RBufSize = MMAX_BUFFER << 4;
-
-        if ((S->RBuffer = (char *)malloc(S->RBufSize + 1)) == NULL)
+        if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
           {
           MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
             S->RBufSize,
@@ -1969,8 +1967,7 @@ int MSURecvData(
       if (S->RBuffer == NULL) 
         {
         /* allocate receive space */
-
-        if ((S->RBuffer = (char *)malloc(S->RBufSize + 1)) == NULL)
+        if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
           {
           MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
             S->RBufSize,
@@ -2123,8 +2120,7 @@ int MSURecvData(
 
         return(FAILURE);
         }
-
-      if ((S->RBuffer = (char *)malloc(S->RBufSize + 1)) == NULL)
+      if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
         {
         MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
           S->RBufSize,
@@ -3919,7 +3915,7 @@ int MSUAdjustSBuffer(
 
   if (S->SBIsDynamic == FALSE)
     {
-    ptr = (char *)malloc(NewSize);
+    ptr = (char *)calloc(NewSize, 1);
 
     memcpy(ptr,S->SBuffer,S->SBufSize);
     }
@@ -4055,8 +4051,7 @@ int MSUDup(
     }
 
   /* do shallow memcpy first */
-
-  S = (msocket_t *)malloc(sizeof(msocket_t));
+  S = (msocket_t *)calloc(1,sizeof(msocket_t));
 
   memcpy(S,Src,sizeof(msocket_t));
 

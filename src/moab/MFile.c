@@ -107,15 +107,14 @@ char *MFULoad(
     else
       {
       /* copy cached data */
-
-      if ((ptr = (char *)malloc(BufSize + 1)) == NULL)
+      if ((ptr = (char *)calloc(BufSize + 1, 1)) == NULL)
         {
-        MOSSyslog(LOG_ERR,"cannot malloc buffer for file '%s', errno: %d (%s)",
+        MOSSyslog(LOG_ERR,"cannot calloc buffer for file '%s', errno: %d (%s)",
           FileName,
           errno,
           strerror(errno));
 
-        DBG(2,fCORE) DPrint("ERROR:    cannot malloc file buffer for file '%s', errno: %d (%s)\n",
+        DBG(2,fCORE) DPrint("ERROR:    cannot calloc file buffer for file '%s', errno: %d (%s)\n",
           FileName,
           errno,
           strerror(errno));
@@ -127,7 +126,7 @@ char *MFULoad(
         }
       else
         {
-        /* fill malloc'd buffer */
+        /* fill calloc'd buffer */
 
         memcpy(ptr,buf,BufSize + 1);
 
@@ -190,16 +189,15 @@ char *MFULoad(
     FileName,
     BufSize,
     ReadCount);
-
-  if ((ptr = (char *)malloc(BufSize + 1)) == NULL)
+  if ((ptr = (char *)calloc(BufSize + 1,1)) == NULL)
     {
-    MOSSyslog(LOG_ERR,"cannot malloc %d byte buffer for file '%s', errno: %d (%s)",
+    MOSSyslog(LOG_ERR,"cannot calloc %d byte buffer for file '%s', errno: %d (%s)",
       BufSize,
       FileName,
       errno,
       strerror(errno));
 
-    DBG(2,fCORE) DPrint("ERROR:    cannot malloc file buffer for file '%s', errno: %d (%s)\n",
+    DBG(2,fCORE) DPrint("ERROR:    cannot calloc file buffer for file '%s', errno: %d (%s)\n",
       FileName,
       errno,
       strerror(errno));
@@ -405,15 +403,14 @@ int __MFUCacheFile(
 
       MFileCache[index].Buffer = NULL;
       }
-
-    if ((MFileCache[index].Buffer = (char *)malloc(BufSize + 1)) == NULL)
+    if ((MFileCache[index].Buffer = (char *)calloc(BufSize + 1, 1)) == NULL)
       {
-      MOSSyslog(LOG_ERR,"cannot malloc cache buffer for file '%s', errno: %d (%s)",
+      MOSSyslog(LOG_ERR,"cannot calloc cache buffer for file '%s', errno: %d (%s)",
         FileName,
         errno,
         strerror(errno));
 
-      DBG(2,fSTRUCT) DPrint("ERROR:    cannot malloc file buffer for file '%s', errno: %d (%s)\n",
+      DBG(2,fSTRUCT) DPrint("ERROR:    cannot calloc file buffer for file '%s', errno: %d (%s)\n",
         FileName,
         errno,
         strerror(errno));
@@ -447,16 +444,16 @@ int __MFUCacheFile(
     {
     if (MFileCache[index].FileName[0] == '\0')
       {
-      /* malloc space for buffer */
+      /* calloc space for buffer */
 
-      if ((MFileCache[index].Buffer = (char *)malloc(BufSize + 1)) == NULL)
+      if ((MFileCache[index].Buffer = (char *)calloc(BufSize + 1, 1)) == NULL)
         {
-        MOSSyslog(LOG_ERR,"cannot malloc cache buffer for file '%s', errno: %d (%s)",
+        MOSSyslog(LOG_ERR,"cannot calloc cache buffer for file '%s', errno: %d (%s)",
           FileName,
           errno,
           strerror(errno));
 
-        DBG(2,fSTRUCT) DPrint("ERROR:    cannot malloc cache buffer for file '%s', errno: %d (%s)\n",
+        DBG(2,fSTRUCT) DPrint("ERROR:    cannot calloc cache buffer for file '%s', errno: %d (%s)\n",
           FileName,
           errno,
           strerror(errno));
@@ -752,14 +749,14 @@ int MFUGetRecord(
       }
     else if (!strcmp(Index[index].Key,Key))
       {
-      if ((*Buffer = (char *)malloc(RecSize)) == NULL)
+      if ((*Buffer = (char *)calloc(RecSize, 1)) == NULL)
         {
-        MOSSyslog(LOG_ERR,"cannot malloc buffer for record '%s', errno: %d (%s)",
+        MOSSyslog(LOG_ERR,"cannot calloc buffer for record '%s', errno: %d (%s)",
           Key,
           errno,
           strerror(errno));
 
-        DBG(2,fCORE) DPrint("ERROR:    cannot malloc %d buffer for record '%s', errno: %d (%s)\n",
+        DBG(2,fCORE) DPrint("ERROR:    cannot calloc %d buffer for record '%s', errno: %d (%s)\n",
           RecSize,
           Key,
           errno,
@@ -790,13 +787,13 @@ int MFUGetRecord(
     return(SUCCESS);
     }
 
-  if ((*Buffer = (char *)malloc(rcount * RecSize)) == NULL)
+  if ((*Buffer = (char *)calloc(rcount, RecSize)) == NULL)
     {
-    MOSSyslog(LOG_ERR,"cannot malloc buffer for all records, errno: %d (%s)",
+    MOSSyslog(LOG_ERR,"cannot calloc buffer for all records, errno: %d (%s)",
       errno,
       strerror(errno));
 
-    DBG(2,fCORE) DPrint("ERROR:    cannot malloc %d byte buffer for all records, errno: %d (%s)\n",
+    DBG(2,fCORE) DPrint("ERROR:    cannot calloc %d byte buffer for all records, errno: %d (%s)\n",
       rcount * RecSize,
       errno,
       strerror(errno));

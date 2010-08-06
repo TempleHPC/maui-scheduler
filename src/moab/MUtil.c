@@ -3923,9 +3923,9 @@ int MUDStatInitialize(
   D->DSize = DSize;
   D->Count = 0;
 
-  if ((D->Data = (char *)malloc(DSize * DSTAT_STEPSIZE)) == NULL)
+  if ((D->Data = (char *)calloc(DSTAT_STEPSIZE, DSize)) == NULL)
     {
-    DBG(0,fCORE) DPrint("ALERT:    cannot malloc memory for dstat\n");
+    DBG(0,fCORE) DPrint("ALERT:    cannot calloc memory for dstat\n");
 
     return(FAILURE);
     }
@@ -5269,7 +5269,7 @@ char *MUURLCreate(
     BPtr   = Buf;
     BSpace = BufSize;
     }
-  else if ((BPtr = malloc(MAX_MLINE)) != NULL)
+  else if ((BPtr = calloc(MAX_MLINE, 1)) != NULL)
     {
     BSpace = BufSize;
     }

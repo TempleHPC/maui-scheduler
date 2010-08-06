@@ -350,7 +350,7 @@ int MSecGetChecksum2(
 
       /* NOTE:  merge header and data */
 
-      ptr = (char *)malloc(BufSize1 + BufSize2);
+      ptr = (char *)calloc(BufSize1 + BufSize2, 1);
 
       strcpy(ptr,Buf1);
       strcpy(ptr + BufSize1,Buf2);
@@ -378,7 +378,8 @@ int MSecGetChecksum2(
 
       /* NOTE:  merge header and data */
 
-      ptr = (char *)malloc(BufSize1 + BufSize2);
+
+      ptr = (char *)calloc(BufSize1 + BufSize2, 1);
 
       strcpy(ptr,Buf1);
       strcpy(ptr + BufSize1,Buf2);
@@ -406,7 +407,8 @@ int MSecGetChecksum2(
 
       /* NOTE:  merge header and data */
 
-      ptr = (char *)malloc(BufSize1 + BufSize2);
+
+      ptr = (char *)calloc(BufSize1 + BufSize2, 1);
 
       strcpy(ptr,Buf1);
       strcpy(ptr + BufSize1,Buf2);
@@ -1628,7 +1630,7 @@ int MSecCompress(
 
     if (LocalDstString == NULL)
       {
-      LocalDstString = (char *)malloc(NewLength);
+      LocalDstString = (char *)calloc(NewLength, 1);
 
       LocalDstSize   = NewLength;
       }
@@ -1789,7 +1791,7 @@ int MSecDecompress(
   else if (DDstBuf != NULL)
     {
     if ((OutBuf == NULL) && 
-       ((OutBuf = (unsigned char *)malloc(MMAX_BUFFER)) == NULL))
+       ((OutBuf = (unsigned char *)calloc(MMAX_BUFFER, 1)) == NULL))
       {
       return(FAILURE);
       }
@@ -1814,7 +1816,7 @@ int MSecDecompress(
 
   if (tmpBuf == NULL)
     {
-    if ((tmpBuf = (unsigned char *)malloc(NewLength)) == NULL)
+    if ((tmpBuf = (unsigned char *)calloc(NewLength, 1)) == NULL)
       {
       return(FAILURE);
       }

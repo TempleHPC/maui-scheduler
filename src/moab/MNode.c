@@ -86,7 +86,7 @@ int MNodeCreate(
 
   if (*NP == NULL)
     {
-    *NP = (mnode_t *)malloc(sizeof(mnode_t));
+    *NP = (mnode_t *)calloc(1, sizeof(mnode_t));
 
     N = *NP;      
 

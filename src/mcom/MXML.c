@@ -632,8 +632,7 @@ int MXMLToXString(
   if (*Buf == NULL)
     {
     NewSize = MMAX_BUFFER;
-
-    if ((*Buf = (char *)malloc(NewSize)) == NULL)
+    if ((*Buf = (char *)calloc(NewSize, 1)) == NULL)
       {
       /* cannot allocate buffer */
 

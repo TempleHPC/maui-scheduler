@@ -285,8 +285,9 @@ int __MGSSGetToken(
   len |= ((size_t) buffer[1]) << 16;
   len |= ((size_t) buffer[2]) <<  8;
   len |= ((size_t) buffer[3]);
-                                                                                
-  tok = malloc(len);
+
+
+  tok = calloc(len, 1);
                                                                                 
   if (!tok)
     {

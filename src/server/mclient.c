@@ -2598,7 +2598,7 @@ int MCShowCStats(
       case mxoUser:
 
         if (OCount == 0)     
-          tmpU = (mgcred_t *)malloc(sizeof(mgcred_t) * MAX_MUSER);
+          tmpU = (mgcred_t *)calloc(MAX_MUSER, sizeof(mgcred_t));
  
         O = &tmpU[OCount + 1];
 
@@ -2609,7 +2609,7 @@ int MCShowCStats(
       case mxoGroup:
 
         if (OCount == 0)
-          tmpG = (mgcred_t *)malloc(sizeof(mgcred_t) * MAX_MGROUP);
+          tmpG = (mgcred_t *)calloc(MAX_MGROUP,sizeof(mgcred_t));
 
         O = &tmpG[OCount + 1];               
 
@@ -2618,7 +2618,7 @@ int MCShowCStats(
       case mxoAcct:
 
         if (OCount == 0)
-          tmpA = (mgcred_t *)malloc(sizeof(mgcred_t) * MAX_MACCT);
+          tmpA = (mgcred_t *)calloc(MAX_MACCT, sizeof(mgcred_t));
 
         O = &tmpA[OCount + 1];
  
@@ -2627,7 +2627,7 @@ int MCShowCStats(
       case mxoClass:
 
         if (OCount == 0)
-          tmpC = (mclass_t *)malloc(sizeof(mclass_t) * MAX_MCLASS);
+          tmpC = (mclass_t *)calloc(MAX_MCLASS, sizeof(mclass_t));
 
         O = &tmpC[OCount + 1];
  
@@ -2636,7 +2636,7 @@ int MCShowCStats(
       case mxoQOS:
 
         if (OCount == 0)
-          tmpQ = (mqos_t *)malloc(sizeof(mqos_t) * MAX_MQOS);
+          tmpQ = (mqos_t *)calloc(MAX_MQOS, sizeof(mqos_t));
 
         O = &tmpQ[OCount + 1];
  
