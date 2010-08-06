@@ -13,6 +13,8 @@ Maui 3.3.1
     code to vsnprintf to be in accordance with glibc >=2.1, if installed. (Jason Williams)
   - Changed top-level Makefile BUILDROOT assignment to allow RPM builds (Jason Williams)
   - Minor changes to fix a few valgrind errors about uninitialized values (Jason Williams)
+  - Patch to fix SYSTEMMAXJOBWALLTIME, SYSTEMMAXPROCPERJOB, and SYSTEMMAXPROCSECONDPERJOB
+    which previously no-op'ed (Jason Williams)
 
 Maui 3.3
   - Fixed configure script. Was putting RMCFG[name] TYPE=PBS@RMNMHOST@.
