@@ -5,6 +5,14 @@ Maui 3.3.1
   - Added build system changes to support Cygwin (Yauheni Charniauski, UIIP Minsk)
   - Added the --with-cygrunsrv configure option for start maui as Windows service (doesn't use a background daemon).
     Cygwin utility cygrunsrv.exe goes it into background independently (Igor Ilyenko, UIIP Minsk)
+  - changed all remaining mallocs to callocs which zeros memory on allocation.  Fixes a crash due 
+    to the way some whiel loops in MResAdjustDRes() expect things to be. (Jason Williams)
+  - Added proper memory allocation checks to accompany the callocs in MRes.c to avoid
+    missing memory errors. (Jason Williams)
+  - Added debug print messages to MUSNPrintF() and added a proper check of the return
+    code to vsnprintf to be in accordance with glibc >=2.1, if installed. (Jason Williams)
+  - Changed top-level Makefile BUILDROOT assignment to allow RPM builds (Jason Williams)
+  - Minor changes to fix a few valgrind errors about uninitialized values (Jason Williams)
 
 Maui 3.3
   - Fixed configure script. Was putting RMCFG[name] TYPE=PBS@RMNMHOST@.

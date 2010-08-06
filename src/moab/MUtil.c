@@ -5089,7 +5089,7 @@ int MUSNPrintF(
 
   {
   int len;
-
+  const char *FName = "MUSNPrintF";
   va_list Args;
 
   if ((BPtr == NULL) || 
@@ -5097,6 +5097,8 @@ int MUSNPrintF(
       (Format == NULL) || 
       (*BSpace <= 0))
     {
+	DBG(4,fCORE) DPrint("ALERT:    Memory Error in %s\n",
+	        FName);
     return(FAILURE);
     }
 
@@ -5108,8 +5110,22 @@ int MUSNPrintF(
 
   if (len <= 0)
     {
+	DBG(4,fCORE) DPrint("ALERT:    vsnprintf Error in %s\n",
+	        FName);
     return(FAILURE);
     }
+
+#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
+  /* XXX: The following is true for glibc > 2.1 */
+
+  /* if vsnprintf returns the same value as size or greater */
+  /* then the output is truncated. see man vsnprintf. */
+  if (len == *BSpace || len > *BSpace) {
+	  DBG(1,fCORE) DPrint("ALERT:    Possible vsnprintf truncation in %s\n",
+	  	        FName);
+	  return(FAILURE);
+  }
+#endif
 
   *BPtr += len;
   *BSpace -= len;
