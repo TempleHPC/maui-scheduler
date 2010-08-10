@@ -844,6 +844,10 @@ int MStatUpdateActiveJobUsage(
   double   psdedicated;
   double   psutilized;
 
+  /* HvB */
+  double   psutilized_cpu; 
+  double   psutilized_load;
+
   double   msdedicated;
   double   msutilized;
 
@@ -943,6 +947,10 @@ int MStatUpdateActiveJobUsage(
     psdedicated = 0.0;
     psutilized  = 0.0;
 
+    /* HvB */
+    psutilized_cpu  = 0.0;
+    psutilized_load  = 0.0;
+
     msdedicated = 0.0;
     msutilized  = 0.0;
 
@@ -967,30 +975,67 @@ int MStatUpdateActiveJobUsage(
 
         msdedicated += (double)(interval * TC * RQ->DRes.Mem);
 
-        if (RQ->URes.Procs > 0)
+	/*
+	 *  HvB: There is a difference between shared nodes and NodeAllocMaxPS (exclusive)
+	 *    exclusive : nodes * interval
+	 *     shared   : total cores * interval
+	 *
+	 *  Load and cpu time is calculated for all cores in a node. So we have to normalize
+	 *  for psutilized. if singlejob per node is set
+	*/
+	if ( (J->Req[0]->NAccessPolicy == mnacSingleJob) && 
+	    (MSched.NodeAllocMaxPS == TRUE))	
           {
-          psutilized      += interval * TC * RQ->URes.Procs / 100.0;
-          RQ->MURes.Procs  = MAX(RQ->MURes.Procs,RQ->URes.Procs);
-          }
-        else if (N->CRes.Procs > 1)
-          {
-          /* cannot properly determine efficiency with available information */
-          /* make job 100% efficient                                         */
-
-          psutilized += (interval * TC * RQ->DRes.Procs);
-          }
-        else
-          { 
-          if (N->Load >= 1.0)
-            {
-            psutilized += (interval * 1.0);
+	  psutilized_cpu      += interval * RQ->URes.Procs / (100.0 * TotalProcs * N->CRes.Procs) ;
+	  psutilized_load     += interval * (double)N->Load / N->CRes.Procs;
+	  }
+	else
+	  /* Old calculation */
+	  {
+          if (RQ->URes.Procs > 0)
+	    {
+	    psutilized      += interval * TC * RQ->URes.Procs / 100.0;
+	    RQ->MURes.Procs  = MAX(RQ->MURes.Procs,RQ->URes.Procs);
+	    }
+          else if (N->CRes.Procs > 1)
+	    {
+            /* cannot properly determine efficiency with available information */
+	    /* make job 100% efficient                                         */ 
+	    psutilized += (interval * TC * RQ->DRes.Procs);
             }
           else
-            {
-            psutilized += (interval * (double)N->Load);
-            }
-          }
+	    { 
+            if (N->Load >= 1.0)
+	      {
+	      psutilized += (interval * 1.0);
+              }
+	    else
+              {
+	      psutilized += (interval * (double)N->Load);
+              }
+             }
+	   }
         }     /* END for (nindex) */
+
+      /* HvB 
+       * Some Jobs do not update the cputime properly , but the load is high. Then use this factor
+       * for jobs that uses a single node exclusive
+      */
+      if ( (J->Req[0]->NAccessPolicy == mnacSingleJob) && 
+	  (MSched.NodeAllocMaxPS == TRUE))	
+        {
+	DBG(8,fSTAT) DPrint("INFO:     psutilized_cpu = %f, psutilized_load = %f\n",
+		psutilized_cpu, psutilized_load);
+
+	if ( (psutilized_cpu * 10) < psutilized_load)
+	  {
+	  psutilized = psutilized_load;
+	  }
+	else
+	  {
+	  psutilized = psutilized_cpu;
+	  }
+	}
 
       if (RQ->URes.Mem > 0)
         {
