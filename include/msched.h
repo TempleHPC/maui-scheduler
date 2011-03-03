@@ -205,6 +205,7 @@
 #define DEFAULT_SRPERIOD                       mpDay
 
 #define DEFAULT_USEMACHINESPEED                FALSE
+#define DEFAULT_USEMACHINESPEEDFORFS           FALSE
 #define DEFAULT_USESYSTEMQUEUETIME             ptOFF
 #define DEFAULT_JOBPRIOACCRUALPOLICY           jpapQueuePolicy
 #define DEFAULT_RESOURCEAVAILPOLICY            mrapCombined
@@ -1356,6 +1357,7 @@ typedef struct {
   /* booleans */
   
   int UseMachineSpeed;
+  int UseMachineSpeedForFS;
   int UseSystemQueueTime;
   int UseCPUTime;
   int RejectNegPrioJobs;

@@ -881,6 +881,10 @@ int MStatUpdateActiveJobUsage(
 
   mreq_t  *RQ;
   mpar_t  *P;
+  
+  double   averagenodespeed = 0.0;
+  double   totalnodespeed = 0.0;
+  int      speedcounter = 0;
 
   const char *FName = "MStatUpdateActiveJobUsage";
 
@@ -940,9 +944,13 @@ int MStatUpdateActiveJobUsage(
 
   for (rqindex = 0;J->Req[rqindex] != NULL;rqindex++)
     { 
+
     RQ = J->Req[rqindex];
 
     P  = &MPar[RQ->PtIndex];
+
+    totalnodespeed = 0.0;
+    speedcounter   = 0;
 
     psdedicated = 0.0;
     psutilized  = 0.0;
@@ -972,6 +980,9 @@ int MStatUpdateActiveJobUsage(
           {
           break;
           }
+	
+        speedcounter++;
+        totalnodespeed += N->Speed;
 
         msdedicated += (double)(interval * TC * RQ->DRes.Mem);
 
@@ -1149,6 +1160,23 @@ int MStatUpdateActiveJobUsage(
 
     MPolicyAdjustUsage(NULL,J,NULL,mlActive,NULL,-1,1,NULL);
 
+    if (speedcounter == 0)
+	    averagenodespeed = 1.0;
+    else
+      averagenodespeed = totalnodespeed / speedcounter;
+
+    if (P->UseMachineSpeedForFS == TRUE) 
+      {
+      fsusage *= averagenodespeed;
+      psdedicated *= averagenodespeed;
+      psutilized *= averagenodespeed;
+      msdedicated *= averagenodespeed;
+      msutilized *= averagenodespeed;
+      }
+    
+    if ((J != NULL) && (J->Cred.C != NULL))
+    	DBG(1,fSTAT) DPrint("INFO: Average nodespeed for Job %s is  %f, %f, %i  \n",J->Name,averagenodespeed,totalnodespeed,speedcounter);
+	  
     U = J->Cred.U;
 
     if (U != NULL)

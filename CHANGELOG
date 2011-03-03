@@ -17,6 +17,13 @@ Maui 3.3.1
     which previously no-op'ed (Jason Williams)
   - Patch for 'showq -r' to show the correct values between 0 - 100 percent if NODEALLOCMAXPS is set
     to TRUE (Bas van der Vlies)
+  - Added UseMachineSpeedForFS patch. (Robin Roth)
+    "When using Fairshare it weights the Fairshareusage with the speed of 
+    the nodes used by the job. Up to now the nodespeed is only used to allow 
+    jobs to run longer, but with fairshare users on slower nodes are punished, 
+    as their fs-usage is higher than on fast nodes. Additionally this allows 
+    single nodes to be taken out of the fairshare-system by setting their speed 
+    to very low numbers."
 
 Maui 3.3
   - Fixed configure script. Was putting RMCFG[name] TYPE=PBS@RMNMHOST@.

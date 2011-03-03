@@ -1627,6 +1627,7 @@ const mcfg_t MCfg[] = {
   { "USEJOBREGEX",              mcoUseJobRegEx,               mdfString,  mxoSched, NULL },
   { "USELOCALMACHINEPRIORITY",  pUseLocalMachinePriority,     mdfString,  mxoSched, NULL },
   { "USEMACHINESPEED",          pUseMachineSpeed,             mdfString,  mxoSched, NULL },
+  { "USEMACHINESPEEDFORFS",     pUseMachineSpeedForFS,        mdfString,  mxoSched, NULL },
   { "USERCAP",                  pCUCap,                       mdfInt,     mxoPar,   NULL },
   { "USERWEIGHT",               pCUWeight,                    mdfInt,     mxoPar,   NULL },
   { "USESYSLOG",                mcoUseSyslog,                 mdfString,  mxoSched, NULL },

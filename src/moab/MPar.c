@@ -602,6 +602,7 @@ int MParSetDefaults(
   P->BFProcFactor         = DEFAULT_BACKFILLNODEFACTOR;
   P->BFMaxSchedules       = DEFAULT_MAXBACKFILLSCHEDULES;
  
+  P->UseMachineSpeedForFS = DEFAULT_USEMACHINESPEEDFORFS;
   P->UseMachineSpeed      = DEFAULT_USEMACHINESPEED;
   P->UseSystemQueueTime   = DEFAULT_USESYSTEMQUEUETIME;
   P->JobPrioAccrualPolicy = DEFAULT_JOBPRIOACCRUALPOLICY;
@@ -1667,6 +1668,12 @@ int MParProcessOConfig(
 
       break;
 
+    case pUseMachineSpeedForFS:
+
+      P->UseMachineSpeedForFS = MUBoolFromString(SVal,FALSE);
+
+      break;
+
     case pUseMachineSpeed:
 
       P->UseMachineSpeed = MUBoolFromString(SVal,FALSE);
@@ -2070,6 +2077,15 @@ int MParConfigShow(
 
   if (P->Index == 0)
     {
+    if ((P->UseMachineSpeedForFS == TRUE) || 
+        (VFlag || (PIndex == -1) || (PIndex == pUseMachineSpeedForFS)))
+      {
+      sprintf(Buffer,"%s%-30s  %s\n",
+        Buffer,
+        MParam[pUseMachineSpeedForFS],
+        (P->UseMachineSpeedForFS == TRUE) ? "TRUE" : "FALSE");
+      }
+
     if ((P->UseMachineSpeed == TRUE) || 
         (VFlag || (PIndex == -1) || (PIndex == pUseMachineSpeed)))
       {

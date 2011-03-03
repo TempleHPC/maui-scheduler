@@ -1697,6 +1697,7 @@ int MCfgSetVal(
     case pJobSizePolicy:
     case pJobNodeMatch:
     case pUseMachineSpeed:
+    case pUseMachineSpeedForFS:
     case pNodeAllocationPolicy:
     case pBFMetric:
     case mcoAdminMinSTime:

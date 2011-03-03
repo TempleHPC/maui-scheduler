@@ -495,6 +495,7 @@ enum {
   pSimJobSubmissionPolicy,
   pSimNCPolicy,
   pUseMachineSpeed,
+  pUseMachineSpeedForFS,
   pUseSystemQueueTime,
   pNodeAvailPolicy,
   mcoResourceLimitPolicy,
