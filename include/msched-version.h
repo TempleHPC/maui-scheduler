@@ -1,1 +1,1 @@
-#define MSCHED_VERSION "3.3"
+#define MSCHED_VERSION "3.3.1"
