@@ -1,4 +1,4 @@
-# Makefile for Maui 3.3.1
+# Makefile for Maui 3.3.2
 # Copyright 1999 - 2010  Cluster Resources, Inc, All Rights Reserved
 
    TOP =../..

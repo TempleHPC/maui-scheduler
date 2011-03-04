@@ -1,3 +1,5 @@
+Maui 3.3.2
+
 Maui 3.3.1
   - Fixed issue where hostlist was being overwritten resulting in broken $PBS_NODEFILE. (Alexis Cousein)
   - Fixed issue where users could set system priority on their own jobs. (Bas van der Vlies)
