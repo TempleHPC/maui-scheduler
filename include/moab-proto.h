@@ -485,7 +485,8 @@ int MFSInitialize(mfsc_t *);
 double MFSCalcFactor(mfsc_t *,double *);
 char *MFSTargetToString(double,int);
 int MFSShutdown(mfsc_t *);
-int MFSShow(char *,int,int);
+/* Added the DiagOpt, of type char */
+int MFSShow(char *,int,char *,int);
 
 
 

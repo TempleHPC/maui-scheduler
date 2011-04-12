@@ -1038,6 +1038,8 @@ int MFSShow(
 
   char *Buf,      /* O */
   int   BufSize,  /* I */
+  /* Added this so we can asked what we want to see */
+  char *Opts,
   int   Mode)     /* I */
 
   {
@@ -1075,6 +1077,34 @@ int MFSShow(
     FName,
     BufSize,
     Mode);
+
+  /** DsT Show the given option in the logfile **/
+  DBG(3,fFS) DPrint("%s(Opts,%s)\n",
+    FName,
+    Opts);
+
+  /** DsT Begin check if given option is supported, else just skip and show all  **/
+  int LIMITOUTPUT = FALSE;
+
+  if ( strcmp( Opts, "user" ) == 0 ) {
+    LIMITOUTPUT = TRUE;
+  } else if( strcmp( Opts, "group" ) == 0 ) {
+	LIMITOUTPUT = TRUE;
+  } else if( strcmp( Opts, "acct" ) == 0 ) {
+	LIMITOUTPUT = TRUE;
+  } else if( strcmp( Opts, "class" ) == 0 ) {
+	LIMITOUTPUT = TRUE;
+  } else if( strcmp( Opts, "qos" ) == 0 ) {
+	LIMITOUTPUT = TRUE;
+  }
+
+  /** DsT Always show if we are going to LIMIT the output **/
+  DBG(3,fFS) DPrint("%s(LIMIT,%d),(WHAT,%s)\n",
+	FName,
+	LIMITOUTPUT,
+	Opts);
+
+  /** Dst End check options **/
 
   if (Buf == NULL)
     {
@@ -1184,12 +1214,20 @@ int MFSShow(
         {
         case mxoUser:
 
+		  /** DsT if limit is true but Opts does not compare to users, skip **/
+          if (LIMITOUTPUT == TRUE && strcmp( Opts, "user" ) != 0 )
+			continue;
+
           if (MSched.DefaultU != NULL)
             DF = &MSched.DefaultU->F;
 
           break;
 
         case mxoGroup:
+
+		  /** DsT if limit is true but Opts does not compare to group, skip **/
+          if (LIMITOUTPUT == TRUE && strcmp( Opts, "group" ) != 0 )
+			continue;
 
           if (MSched.DefaultG != NULL)
             DF = &MSched.DefaultG->F;
@@ -1198,6 +1236,10 @@ int MFSShow(
 
         case mxoAcct:
 
+		  /** DsT if limit is true but Opts does not compare to acct, skip **/
+          if (LIMITOUTPUT == TRUE && strcmp( Opts, "acct" ) != 0 )
+			continue;
+
           if (MSched.DefaultA != NULL)
             DF = &MSched.DefaultA->F;
 
@@ -1205,12 +1247,20 @@ int MFSShow(
 
         case mxoClass:
 
+		  /** DsT if limit is true but Opts does not compare to class, skip **/
+          if (LIMITOUTPUT == TRUE && strcmp( Opts, "class" ) != 0 )
+			continue;
+
           if (MSched.DefaultC != NULL)
             DF = &MSched.DefaultC->F;
 
           break;
 
         case mxoQOS:
+
+		  /** DsT if limit is true but Opts does not compare to qos, skip **/
+          if (LIMITOUTPUT == TRUE && strcmp( Opts, "qos" ) != 0 )
+			continue;
 
           if (MSched.DefaultQ != NULL)
             DF = &MSched.DefaultQ->F;

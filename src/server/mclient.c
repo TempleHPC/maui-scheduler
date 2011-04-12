@@ -4236,7 +4236,8 @@ int MCShowUsage(
  
       fprintf(stderr,"  -a [ACCOUNTID]\n");
       fprintf(stderr,"  -c [CLASSID]\n");
-      fprintf(stderr,"  -f // fairshare\n");
+	  /** DsT added the possible options for f **/
+      fprintf(stderr,"  -f [user|group|acct|class|qos] // fairshare\n");
       fprintf(stderr,"  -g [GROUPID]\n");
       fprintf(stderr,"  -j [JOBID]\n");
       fprintf(stderr,"  -m // frame\n");

@@ -6157,7 +6157,8 @@ int UIDiagnose(
       {
       int BufSize = MAX_MBUFFER;
 
-      MFSShow(SBuffer,BufSize,IFlags);
+      /* DsT Added DiagOpt, so we can limit the output */
+      MFSShow(SBuffer,BufSize,DiagOpt,IFlags);
 
       *SBufSize = strlen(SBuffer);
       }  /* END BLOCK */
