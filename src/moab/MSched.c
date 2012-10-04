@@ -3981,9 +3981,6 @@ int MSchedStatToString(
 
       /* build stat buffer */
 
-      sprintf(Buf,"%ld\n",
-        S->Time);
-
       /* set up scheduler run time */
 
       RunTime = MStat.SchedRunTime;
@@ -3991,10 +3988,10 @@ int MSchedStatToString(
       GP = &MPar[0];
       T  = &GP->S;
 
-      /*            STM ITM RTM IJ EJ AJ UN UP UM IN IP IM CT SJ TPA TPB SPH TMA TMD QP AQP NJA JAC PSX IT RPI WEF WI MXF ABP MBP AQT MQT PSR PSD PSU MSA MSD JE */
+      /*            CTM STM ITM RTM IJ EJ AJ UN UP UM IN IP IM CT SJ TPA TPB SPH TMA TMD QP AQP NJA JAC PSX IT RPI WEF WI MXF ABP MBP AQT MQT PSR PSD PSU MSA MSD JE */
 
-      sprintf(Buf,"%s%ld %ld %ld %d %d %d %d %d %d %d %d %d %d %d %lf %lf %lf %lf %lf %d %lu %lf %lf %lf %d %ld %lf %d %lf %lf %d %lf %lu %lf %lf %lf %lf %lf %d %d %lf\n",
-        Buf,
+      sprintf(Buf,"%ld\n%ld %ld %ld %d %d %d %d %d %d %d %d %d %d %d %lf %lf %lf %lf %lf %d %lu %lf %lf %lf %d %ld %lf %d %lf %lf %d %lf %lu %lf %lf %lf %lf %lf %d %d %lf\n",
+        S->Time,
         S->StartTime,
         MStat.InitTime,
         RunTime,

@@ -2,6 +2,7 @@ Maui 3.3.2
   - Patch for 'diagnose -f'. Allow to specify what section of fairshare you want to see, default is 
     everything (-f [user|group|acct|class|qos]). To show fairshare for a group, use:
      * diagnose -f group (Author: Dennis Stam and applied by Bas van der Vlies)
+  - Showstats segfaults when using compiler optimization (Author: Andrew Savchenko, applied by Bas van der Vlies)
 
 Maui 3.3.1
   - Fixed issue where hostlist was being overwritten resulting in broken $PBS_NODEFILE. (Alexis Cousein)
