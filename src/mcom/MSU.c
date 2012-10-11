@@ -809,6 +809,11 @@ int MSUAcceptClient(
 
   if ((sd = accept(S->sd,(struct sockaddr *)&c_sockaddr,&addrlen)) == -1)
     { 
+    if (errno == EAGAIN || errno == EWOULDBLOCK)
+      {
+      return(FAILURE);
+      }
+
     MDB(9,fSOCK) MLog("INFO:     accept call failed, errno: %d (%s)\n",
       errno,
       strerror(errno));

@@ -3,6 +3,9 @@ Maui 3.3.2
     everything (-f [user|group|acct|class|qos]). To show fairshare for a group, use:
      * diagnose -f group (Author: Dennis Stam and applied by Bas van der Vlies)
   - Showstats segfaults when using compiler optimization (Author: Andrew Savchenko, applied by Bas van der Vlies)
+  - catch socket errors for MSUAcceptClient. So no errors in the log file (Author: Jonathan Barber, applied 
+    by Bas van der Vlies): 
+     * accept call failed, errno: 11 (Resource temporarily unavailable)
 
 Maui 3.3.1
   - Fixed issue where hostlist was being overwritten resulting in broken $PBS_NODEFILE. (Alexis Cousein)
