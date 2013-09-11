@@ -6,7 +6,9 @@ Maui 3.3.2
   - catch socket errors for MSUAcceptClient. So no errors in the log file (Author: Jonathan Barber, applied 
     by Bas van der Vlies): 
      * accept call failed, errno: 11 (Resource temporarily unavailable)
-
+  - Fixed an segv for showq -r, when user submit a job without specifying how many nodes, just a node property, eg:
+     * qsub -lnodes=infiniband -Ii (Authors: Bas van der Vlies/Dennis Stam, SURFsara)
+    
 Maui 3.3.1
   - Fixed issue where hostlist was being overwritten resulting in broken $PBS_NODEFILE. (Alexis Cousein)
   - Fixed issue where users could set system priority on their own jobs. (Bas van der Vlies)

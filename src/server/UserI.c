@@ -10139,7 +10139,7 @@ int UIQueueShowAJobs(
       J->PSUtilized,
       P->Name,
       RQ->TaskCount * RQ->DRes.Mem,
-      ((J->NodeList != NULL) && (J->NodeList[0].N->Name[0] != '\0')) ?
+      ((J->NodeList != NULL) && (J->NodeList[0].N != NULL) && (J->NodeList[0].N->Name[0] != '\0')) ?
         MNodeAdjustName(J->NodeList[0].N->Name,0) : NONE,
       J->Flags,
       J->AWallTime,
