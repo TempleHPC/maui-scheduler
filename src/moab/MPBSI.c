@@ -2375,30 +2375,22 @@ int MPBSNodeLoad(
 
       while (ptr != NULL)
         {
-        char *tail;
+        char *cptr;
 
-        /* job list specified as virtual tasks, '<JOBID>/<TASKID>' */
-        /*  or <TASKID>/<JOBID> */
-
-        strtol(ptr,&tail,10);
-
-        if ((tail > ptr) && 
-           ((tail[0] == '/') || (tail[0] == '\0')))
+        /* job list specified as virtual tasks, */
+        /* FORMAT:  [<VP>/]<JOBID>] */
+         
+        if ((cptr = strchr(ptr,'/')) != NULL)
           {
-          /* FORMAT:  <TASKID>/<JOBID> */
+          /* FORMAT:  <VP>/<JOBID>] */
 
-          MUStrCpy(JobID,tail + 1,MAX_MNAME);
+          MUStrCpy(JobID,cptr + 1,MMAX_NAME);
           }
         else
           {
-          /* FORMAT:  <JOBID>[/<TASKID>] */
+          /* FORMAT:  <JOBID> */
 
-          if ((tail = strchr(ptr,'/')) == NULL)
-            {
-            tail = ptr + strlen(ptr);
-            }
-
-          MUStrCpy(JobID,ptr,MIN(MAX_MNAME,tail - ptr + 1));
+          MUStrCpy(JobID,ptr,MMAX_NAME);
           }
 
         N->TaskCount ++;
@@ -3016,6 +3008,7 @@ int MPBSNodeUpdate(
     N->ARes.Mem = 1;
     N->CRes.Mem = 1;
     }
+    
 
   if (N->CRes.Swap > 0)
     {
@@ -3072,30 +3065,22 @@ int MPBSNodeUpdate(
 
       while (ptr != NULL)
         {
-        char *tail;
+        char *cptr;
 
-        /* job list specified as virtual tasks, '<JOBID>/<TASKID>' */
-        /*  or <TASKID>/<JOBID> */
-
-        strtol(ptr,&tail,10);
-
-        if ((tail > ptr) &&
-           ((tail[0] == '/') || (tail[0] == '\0')))
+        /* job list specified as virtual tasks, */
+        /* FORMAT:  [<VP>/]<JOBID>] */
+         
+        if ((cptr = strchr(ptr,'/')) != NULL)
           {
-          /* FORMAT:  <TASKID>/<JOBID> */
+          /* FORMAT:  <VP>/<JOBID>] */
 
-          MUStrCpy(JobID,tail + 1,MAX_MNAME);
+          MUStrCpy(JobID,cptr + 1,MMAX_NAME);
           }
         else
           {
-          /* FORMAT:  <JOBID>[/<TASKID>] */
+          /* FORMAT:  <JOBID> */
 
-          if ((tail = strchr(ptr,'/')) == NULL)
-            {
-            tail = ptr + strlen(ptr);
-            }
-
-          MUStrCpy(JobID,ptr,MIN(MAX_MNAME,tail - ptr + 1));
+          MUStrCpy(JobID,ptr,MMAX_NAME);
           }
 
         N->TaskCount ++;
@@ -5150,6 +5135,264 @@ int MPBSNodeSetAttr(
 
 
 
+/*
+ * MCountIntegersInRangeString
+ * Counts the number of integers specified by the range
+ *
+ * @pre-cond: receive a range string in the format: 
+ * number_range1[,number_range2[...]]
+ * number_range = int[-int]
+ * @return a count of the numbers specified by the range string. Always at least 1
+ * because the value returned is only used with a valid node name, and we are always
+ * using at least one execution slot per node.
+ */
+
+int MCountIntegersInRangeString(
+
+  const char *range_str)
+
+  {
+  const char *ptr = range_str;
+  char       *next;
+  int         count = 0;
+
+  if (range_str == NULL)
+    return(1);
+
+  if (!isdigit(*range_str))
+    {
+    return(1);
+    }
+
+  const char *end = range_str + strlen(range_str);
+
+  while (ptr < end)
+    {
+    int range_start = strtol(ptr, &next, 10);
+
+    // if next isn't advanced beyond ptr then the string is invalid
+    if (ptr == next)
+      break;
+
+    ptr = next;
+
+    if (*ptr == '-')
+      {
+      ptr++;
+      int range_end = strtol(ptr, &next, 10);
+      count += range_end - range_start + 1;
+      ptr = next;
+      }
+    else
+      count++;
+      
+    if (*ptr == ',')
+      ptr++;
+    }
+
+  if (count == 0)
+    count = 1;
+
+  return(count);
+  } /* END MCountIntegersInRangeString() */
+
+
+
+
+
+
+
+/**
+ * Parses the PBS exec_host.
+ *  
+ * @see MJobGetSelectPBSTaskList() - peer
+ * @see MPBSJobUpdate() - parent
+ * @see MPBSJobSetAttr() - parent
+ *
+ * NOTE:  does not set J->Request correctly for multi-req jobs
+ * FIXME: the return code is not checked - result: when this routine fails 
+ *        there are no constraints on the job
+ *
+ * @param J (I) [modified]
+ * @param RM (I) (optional)
+ * @param TaskString (I)
+ * @param TaskList (I) [minsize=MSched.JobMaxTaskCount]
+ * @param EMsg (O) [optional,minsize=MMAX_LINE]
+ */
+
+int MJobParsePBSExecHost(
+
+  mjob_t  *J,
+  char    *TaskString,
+  short   *TaskList,
+  char    *EMsg)
+
+  {
+  int     index;
+  int     tindex;
+
+  char   *ptr;
+
+  char   *TokPtr;
+  char   *TokPtr2 = NULL;
+
+  mnode_t *N;
+  char    tmpHostName[MMAX_NAME];
+  char    tmpName[MMAX_NAME];
+
+  mreq_t *RQ;
+  int     rqindex;
+
+  int     TC;
+  int     OldTC;
+
+  mbool_t NodeLocated = FALSE;
+
+  /* FORMAT:  <HOSTNAME>[:{ppn|cpp}=<X>][<HOSTNAME>[:{ppn|cpp}=<X>]][#excl]... */
+  /* or       <COUNT>[:{ppn|cpp}=<X>][#excl]                                   */
+
+  const char *FName = "MJobGetPBSTaskList";
+
+  DBG(5,fPBS) DPrint("INFO:     %s(%s,%s,%s,EMsg)\n",
+    FName,
+    (J != NULL) ? J->Name : "NULL",
+    (TaskString != NULL) ? TaskString : "NULL",
+    (TaskList != NULL) ? "TaskList" : "NULL");
+
+  if (EMsg != NULL)
+    EMsg[0] = '\0';
+
+  if ((J == NULL) || (J->Req[0] == NULL) || (TaskString == NULL) || (TaskList == NULL))
+    {
+    MUStrCpy(EMsg,"invalid arguments\n",MMAX_LINE);
+
+    return(FAILURE);
+    }
+
+  tindex = 0;
+
+  /* NOTE:  ppn is 'processes per node' -> number of threads launched per node/virtual node allocated */
+  /* NOTE:  cpp is 'cpus per processor' -> task's DRes.Procs */
+
+  /* NOTE:  only handles one 'ppn' distribution per job (same for gpus) */
+
+  rqindex = 0;
+
+  /* NOTE:  initial support enabled for multiple reqs */
+
+  RQ = J->Req[0];
+
+  OldTC = RQ->TaskCount;
+
+  RQ->TaskCount = 0;
+
+  RQ->DRes.Procs = 1;
+
+  /* NOTE:  collect all host requests into single req */
+  /* NOTE:  PPNSet is 'per req' variable */
+
+  /* job is multi-req if
+        TCCount > 1
+
+     or
+
+        TCCount == 1 and HLIndex > -1 */
+
+  ptr = MUStrTok(TaskString,"+ \t",&TokPtr);
+
+  while (ptr != NULL)
+    {
+    mbool_t NoLoad = FALSE;
+
+    /* Format: exec_host = <node_id>/<proccessor>[+<node_id>/<proccessor>...] */
+
+    MUStrCpy(tmpHostName,ptr,sizeof(tmpHostName));
+
+    MUStrTok(tmpHostName,"/",&TokPtr2);
+
+    /* determine hostname/nodecount */
+
+    if (MNodeFind(tmpHostName,&N) == FAILURE)
+      {
+      DBG(1,fPBS) DPrint("ALERT:    cannot locate host '%s' for job hostlist\n",
+        tmpHostName);
+
+      if (EMsg != NULL)
+        MUStrCpy(EMsg,"cannot locate host for job hostlist\n",MMAX_LINE);
+
+      return(FAILURE);
+      }  /* END if ((NodeLocated == FALSE) && ...) */
+    
+    /* As of Kilby, format is <node_id>/<processor_range>[+<node_id>/<processor_range[...]] 
+       processor range is defined in comments for MCountIntegersInRangeString */
+    int ExecutionSlotCount = MCountIntegersInRangeString(TokPtr2);
+
+    /* load task list info */
+
+    for (index = 0;index < tindex;index++)
+      {
+      if (TaskList[index] == N->Index)
+        {
+        NoLoad = TRUE;
+
+        break;
+        }
+      }
+
+    if (NoLoad == FALSE)
+      {
+      int i;
+
+      /* FIXME: for RequestIsProcCentric == FALSE same hosts belong in the same task */
+      for (i = 0; i < ExecutionSlotCount; i++)
+        {
+        TaskList[tindex] = N->Index;
+        tindex++;
+        }
+      }
+
+    if (NoLoad == FALSE)
+      {
+      RQ->TaskCount += ExecutionSlotCount;
+      }
+    else
+      {
+      RQ->DRes.Procs += ExecutionSlotCount;
+      }
+
+    ptr = MUStrTok(NULL,"+ \t",&TokPtr);
+    }    /* END while (ptr != NULL) */
+
+  TaskList[tindex] = -1;
+
+  if ((RQ->TaskCount == 0) && (OldTC != 0))
+    RQ->TaskCount = OldTC;
+
+  /* sync Req TaskCounts (NOTE: Req nodecounts not modified) */
+
+  TC = 0;
+
+  for (rqindex = 0;rqindex < MMAX_REQ_PER_JOB;rqindex++)
+    {
+    RQ = J->Req[rqindex];
+
+    if (RQ == NULL)
+      break;
+
+    RQ->TaskRequestList[0] = RQ->TaskCount;
+    RQ->TaskRequestList[1] = RQ->TaskCount; 
+
+    TC += RQ->TaskCount;
+    }    /* END for (rqindex) */
+
+  J->Request.TC = MAX(J->Request.TC,TC);
+
+  return(SUCCESS);
+  }    /* END MJobParsePBSExecHost() */
+
+
+
+
 int MPBSJobSetAttr(
 
   mjob_t  *J,        /* I (modified) */
@@ -5256,7 +5499,7 @@ int MPBSJobSetAttr(
         J->Name,
         AP->value);
  
-      __MPBSGetTaskList(J,AP->value,TaskList,TRUE);
+      MJobParsePBSExecHost(J,AP->value,TaskList,NULL);
       }
     }
   else if (!strcmp(AP->name,ATTR_r))

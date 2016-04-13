@@ -3781,6 +3781,15 @@ int MRMJobPostLoad(
 
     if (J->Req[0] != NULL)
       {
+      if (tindex == 0)
+        {
+        for (tindex = 0;tindex < MAX_MNODE_PER_JOB;tindex++)
+          {
+          if (J->NodeList[tindex].N == NULL)
+            break;
+          }
+        }
+
       memcpy(
         J->Req[0]->NodeList,
         J->NodeList,
