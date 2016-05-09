@@ -2762,8 +2762,8 @@ int MSysStartServer(
     FName);
 
   DBG(0,fALL) DPrint("starting %s version %s (PID: %d) on %s",
-    MSCHED_VERSION,
     MSCHED_NAME,
+    MSCHED_VERSION,
     MSched.PID,
     MULToDString(&MSched.Time));
 
