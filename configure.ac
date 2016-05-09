@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Maui Cluster Scheduler, 3.3.2-TempleHPC, hpc@temple.edu, maui-scheduler, https://github.com/TempleHPC/maui-scheduler)
+AC_INIT(Maui Cluster Scheduler, 3.4-TempleHPC, hpc@temple.edu, maui-scheduler, https://github.com/TempleHPC/maui-scheduler)
 AC_CONFIG_SRCDIR([src/mcom/MConst.c])
 #AC_CONFIG_HEADER([config.h])
 
