@@ -1,12 +1,10 @@
 language: c
 
-sudo: false
+sudo: true
 
-addons:
-  apt:
-    packages:
-      - ccache
-      - libtorque-dev
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libtorque2-dev
 
 notifications:
   email:
@@ -20,7 +18,5 @@ compiler:
   - gcc
 
 script:
-  - ccache -z
   - ./configure --with-pbs CFLAGS="-Wall -O2 -g -fno-strict-aliasing"
   - make
-  - ccache -s
