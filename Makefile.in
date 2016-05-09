@@ -20,9 +20,9 @@ export OSLDFLAGS=@LDFLAGS@
 # Resource Manager section
 # ============================
 # We only want PBS/Torque support...
+@pbs_definitions@
 #@ll_definitions@
 #@sdr_definitions@
-@pbs_definitions@
 #@sge_definitions@
 #@lsf_definitions@
 #@mx_definitions@
