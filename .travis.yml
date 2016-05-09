@@ -16,6 +16,7 @@ notifications:
 
 compiler:
   - gcc
+  - clang
 
 script:
   - ./configure --with-pbs CFLAGS="-Wall -O2 -g -fno-strict-aliasing"
