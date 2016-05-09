@@ -6,7 +6,7 @@ addons:
   apt:
     packages:
       - ccache
-      - libtorque2-dev
+      - libtorque-dev
 
 notifications:
   email:
@@ -14,6 +14,7 @@ notifications:
       - akohlmey@gmail.com
     on_successs: change
     on_failure: always
+  slack: templehpc:DkATySl5C1CNkbgOb5yE4zsq
 
 compiler:
   - gcc
