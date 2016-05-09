@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
       - ccache
+      - libtorque2-dev
 
 notifications:
   email:
@@ -19,7 +20,6 @@ compiler:
 
 script:
   - ccache -z
-  - ./configure --with-pbs CFLAGS="-Wall -O -g"
+  - ./configure --with-pbs CFLAGS="-Wall -O -g -fno-strict-aliasing"
   - make
   - ccache -s
-
