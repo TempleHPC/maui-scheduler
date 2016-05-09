@@ -139,15 +139,8 @@ int MGroupSecondary(
   int		i; 
   int		gindex;
 
-  int		ng = 0;
-  int		rc;
-
-  gid_t		*groups = NULL;
   struct	group *sec_grp;
-  struct	group grp;
 
-  mgcred_t	*GRP_cred; 
- 
   const char *FName = "MGroupSecondary";
 
   DBG(5,fFS) DPrint("%s(%s)\n",
