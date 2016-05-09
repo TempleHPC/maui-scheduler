@@ -692,15 +692,12 @@ int MAMAllocRDebit(
  
   int   rc;
   int   StatusCode;
-  int   tmpSC;
  
   char *ptr;
 
   long  WCTime;
  
   double PCRate;
-
-  mrm_t *RM = NULL;
 
   const char *FName = "MAMAllocRDebit";
  
@@ -855,7 +852,6 @@ int MAMAllocRDebit(
       mxml_t *DE;
       mxml_t *AE;
 
-      long    tmpL;
 
       /* create request string, populate S->SE */
 
@@ -2676,9 +2672,9 @@ int MAMAccountGetDefault(
 
           if (!strcmp(NE->Val,"$ANY") ||
               !strcmp(NE->Val,"$NONE"),
-              !strcmp(NE->Val,"$MEMBER"),
-              !strcmp(NE->Val,"$DEFINED"),
-              !strcmp(NE->Val,"$SPECIFIED"))
+              !strcmp(NE->Val,"$MEMBER"),    /* XXX: is currently ignored */
+              !strcmp(NE->Val,"$DEFINED"),   /* XXX: is currently ignored */
+              !strcmp(NE->Val,"$SPECIFIED")) /* XXX: is currently ignored */
             {
             continue;
             }
