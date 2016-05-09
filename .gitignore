@@ -27,6 +27,28 @@
 *.i*86
 *.x86_64
 *.hex
+bin/*
 
 # Debug files
 *.dSYM/
+
+# autoconf and configure output
+Makefile
+autom4te.cache
+config.log
+config.status
+etc/maui.csh
+etc/maui.sh
+include/Makefile.inc.ll
+include/Makefile.inc.lsf
+include/Makefile.inc.mx
+include/Makefile.inc.pbs
+include/Makefile.inc.pcre
+include/Makefile.inc.sdr
+include/Makefile.inc.sge
+include/maui.cfg.dist.inc.rm
+include/moab-local.h
+maui-private.cfg
+maui-private.cfg.dist
+maui.cfg.dist
+maui.ck
