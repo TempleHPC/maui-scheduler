@@ -1,0 +1,25 @@
+language: c
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - ccache
+
+notifications:
+  email:
+    recipients:
+      - akohlmey@gmail.com
+    on_successs: change
+    on_failure: always
+
+compiler:
+  - gcc
+
+script:
+  - ccache -z
+  - ./configure --with-pbs CFLAGS="-Wall -O -g"
+  - make
+  - ccache -s
+
