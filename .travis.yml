@@ -20,6 +20,6 @@ compiler:
 
 script:
   - ccache -z
-  - ./configure --with-pbs CFLAGS="-Wall -O -g -fno-strict-aliasing"
+  - ./configure --with-pbs CFLAGS="-Wall -O2 -g -fno-strict-aliasing"
   - make
   - ccache -s
