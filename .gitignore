@@ -48,6 +48,7 @@ include/Makefile.inc.sdr
 include/Makefile.inc.sge
 include/maui.cfg.dist.inc.rm
 include/moab-local.h
+include/msched-version.h
 maui-private.cfg
 maui-private.cfg.dist
 maui.cfg.dist
