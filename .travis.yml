@@ -1,12 +1,10 @@
 language: c
 
-sudo: false
+sudo: true
 
-addons:
-  apt:
-    packages:
-      - ccache
-      - libtorque2-dev
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libtorque2-dev
 
 notifications:
   email:
@@ -14,12 +12,11 @@ notifications:
       - akohlmey@gmail.com
     on_successs: change
     on_failure: always
+  slack: templehpc:DkATySl5C1CNkbgOb5yE4zsq
 
 compiler:
   - gcc
 
 script:
-  - ccache -z
-  - ./configure --with-pbs CFLAGS="-Wall -O -g -fno-strict-aliasing"
+  - ./configure --with-pbs CFLAGS="-Wall -O2 -g -fno-strict-aliasing"
   - make
-  - ccache -s
