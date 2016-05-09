@@ -1063,7 +1063,8 @@ int ServerShowCopy()
 
   {
   fprintf(stderr,"Copyright 2000-2010 Cluster Resources, Inc, All Rights Reserved\n");
-  fprintf(stderr,"  for the latest release, see http://clusterresources.com/maui\n");
+  fprintf(stderr,"This software includes modifications by the Temple HPC Team, Copyright 2016\n");
+  fprintf(stderr,"  for the latest release, see https://github.com/TempleHPC/maui-scheduler\n");
 
   fprintf(stderr,"This software includes the Maui Server Module, Copyright 1996 MHPCC, All Rights Reserved\n");
  
