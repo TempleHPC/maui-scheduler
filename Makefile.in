@@ -59,6 +59,7 @@ setup:
 
 distclean: clean
 	rm -f Makefile maui.cfg.dist include/Makefile.inc.*[!i][!n] include/maui.cfg.dist.inc.*[!i][!n]
+	rm -f maui.ck maui-private.cfg maui.cfg maui-private.cfg.dist
 	rm -f etc/maui.sh etc/maui.csh include/moab-local.h config.log config.status include/msched-version.h
 
 config.status: configure Makefile.in include/moab-local.h.in include/msched-version.h.in \
