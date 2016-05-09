@@ -19,7 +19,14 @@ export OSLDFLAGS=@LDFLAGS@
 # ============================
 # Resource Manager section
 # ============================
-@ll_definitions@@sdr_definitions@@pbs_definitions@@sge_definitions@@lsf_definitions@@mx_definitions@@pcre_definitions@
+# We only want PBS/Torque support...
+#@ll_definitions@
+#@sdr_definitions@
+@pbs_definitions@
+#@sge_definitions@
+#@lsf_definitions@
+#@mx_definitions@
+#@pcre_definitions@
 
 # ============================
 # Master Makefile for @PACKAGE_NAME@-@PACKAGE_VERSION@
