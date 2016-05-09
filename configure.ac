@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(maui, 3.3.2, help@supercluster.org)
+AC_INIT(maui, 3.3.2-TempleHPC, hpc@temple.edu)
 AC_CONFIG_SRCDIR([src/mcom/MConst.c])
 #AC_CONFIG_HEADER([config.h])
 
@@ -528,6 +528,7 @@ AC_CONFIG_FILES([include/maui.cfg.dist.inc.rm
                  maui-private.cfg.dist])
 AC_CONFIG_FILES([etc/maui.sh etc/maui.csh])
 AC_CONFIG_FILES([include/moab-local.h], [chmod 600 include/moab-local.h])
+AC_CONFIG_FILES([include/msched-version.h], [chmod 600 include/msched-version.h])
 AC_OUTPUT
 
 # Do miscellaneous configure steps

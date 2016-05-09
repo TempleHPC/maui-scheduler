@@ -58,4 +58,4 @@ setup:
 
 distclean: clean
 	rm -f Makefile maui.cfg.dist include/Makefile.inc.*[!i][!n] include/maui.cfg.dist.inc.*[!i][!n]
-	rm -f etc/maui.sh etc/maui.csh include/moab-local.h config.log config.status
+	rm -f etc/maui.sh etc/maui.csh include/moab-local.h config.log config.status include/msched-version.h
