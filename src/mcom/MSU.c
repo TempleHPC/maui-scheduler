@@ -1323,10 +1323,10 @@ int MSUSendData(
 
         if (S->Name[0] != '\0')
           {
-          sprintf(TSLine,"%s %s%s",
-            TSLine,
+          sprintf(temp_str," %s%s",
             MCKeyword[mckClient],
             S->Name);
+          strcat(TSLine,temp_str);
           }
 
         sprintf(TSLine,"%s %s",

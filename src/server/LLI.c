@@ -1842,9 +1842,9 @@ int MLLJobLoad(
       {
       strncpy(DValue,J->Name,ptr - J->Name);
 
-      sprintf(DValue,"%s%d",
-        DValue,
+      sprintf(temp_str,"%d",
         SIndex - 1);
+      strcat(DValue,temp_str);
 
       MJobSetDependency(J,mjdJobCompletion,DValue);
       }

@@ -933,9 +933,9 @@ int MSecMD5GetDigest(
 
   for (index = 0;index < MMD5_DIGESTSIZE;index++)
     {
-    sprintf(CSString,"%s%02x",
-      CSString,
+    sprintf(temp_str,"%02x",
       (unsigned char)MD5Sum[index]);
+    strcat(CSString,temp_str);
     }  /* END for (index) */
 
   strcat(CSString,"\n");
@@ -1097,9 +1097,9 @@ int MSecBufToHexEncoding(
 
   for (index = 0;index < IBufLen;index++)
     {
-    sprintf(OBuf,"%s%02x",
-      OBuf,
+    sprintf(temp_str,"%02x",
       (unsigned char)IBuf[index]);
+    strcat(OBuf,temp_str);
     }  /* END for (index) */
 
   return(SUCCESS);

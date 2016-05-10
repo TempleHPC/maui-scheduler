@@ -1236,30 +1236,30 @@ int MSRShow(
       continue;
       }
 
-    sprintf(SRLine,"%s%s=%s  ",
-      SRLine,
+    sprintf(temp_str,"%s=%s  ",
       MSResAttr[AList[index].PIndex],
       tmpLine);
+    strcat(SRLine,temp_str);
     }  /* END for (index) */
 
   /* show general attributes */
 
   if (SR->TaskCount != 0)
     {
-    sprintf(SRLine,"%s%s=%d  ",
-      SRLine,
+    sprintf(temp_str,"%s=%d  ",
       MSResAttr[msraTaskCount],
       SR->TaskCount);
+    strcat(SRLine,temp_str);
     }  /* END if (SR->TaskCount != 0) */
 
   /* show hostlist */
 
   if (SR->HostExpression[0] != '\0')
     {
-    sprintf(SRLine,"%s%s=%s  ",
-      SRLine,
+    sprintf(temp_str,"%s=%s  ",
       MSResAttr[msraHostList],
       SR->HostExpression);
+    strcat(SRLine,temp_str);
     }  /* END if (SR->HostExpression[0] != '\0') */
 
   /* show all flags */
@@ -1268,20 +1268,20 @@ int MSRShow(
     {
     char tmpLine[MAX_MLINE];
 
-    sprintf(SRLine,"%s%s=%s  ",
-      SRLine,
+    sprintf(temp_str,"%s=%s  ",
       MSResAttr[msraFlags],
       MUBMToString(SR->Flags,MResFlags,' ',tmpLine,NONE));
+    strcat(SRLine,temp_str);
     }
 
   strcpy(tmpLine,MUMAList(eFeature,SR->FeatureMap,sizeof(SR->FeatureMap)));
  
   if (strcmp(tmpLine,NONE))
     {
-    sprintf(SRLine,"%s%s=%s  ",
-      SRLine,
+    sprintf(temp_str,"%s=%s  ",
       MSResAttr[msraNodeFeatures],
       tmpLine);
+    strcat(SRLine,temp_str);
     }
 
   MUShowSSArray(MSRCfgParm,SR->Name,SRLine,Buffer);      
@@ -1903,9 +1903,9 @@ int MSRSetRes(
     strcpy(J->Name,SR->Name);
     }
 
-  sprintf(J->Name,"%s.%d",
-    J->Name,
+  sprintf(temp_str,".%d",
     DIndex);
+  strcat(J->Name,temp_str);
 
   J->SpecFlags |= (1 << mjfResMap);
 
@@ -2439,9 +2439,9 @@ int MSRUpdate(
           strcpy(ResName,SR->Name);
           }
 
-        sprintf(ResName,"%s.%d",
-          ResName,
+        sprintf(temp_str,".%d",
           DIndex);
+        strcat(ResName,temp_str);
 
         /* determine unique reservation name */
 

@@ -862,16 +862,16 @@ int ShowBackfillWindow(
             {
             if ((strcasecmp(CurrentPName,GLOBAL_MPARNAME)) && (index == 0))
               {
-              sprintf(Buffer,"%sno %s available\n",
-                Buffer,
+              sprintf(temp_str,"no %s available\n",
                 (MSched.DisplayFlags & (1 << dfNodeCentric)) ? "nodes" : "procs");
               }
+            strcat(Buffer,temp_str);
 
             strcpy(CurrentPName,P->Name);
 
-            sprintf(Buffer,"%s\npartition %s:\n",
-              Buffer,
+            sprintf(temp_str,"\npartition %s:\n",
               P->Name);
+            strcat(Buffer,temp_str);
 
             index = 0;
             }
@@ -882,23 +882,23 @@ int ShowBackfillWindow(
 
             if (BFNodeCount == 0)
               {
-              sprintf(Buffer,"%sno nodes available\n",
-                Buffer);
+              sprintf(temp_str,"no nodes available\n");
+              strcat(Buffer,temp_str);
               }
             else if (BFTime < 100000000)
               {
-              sprintf(Buffer,"%s%3d node%s available for   %11s\n",
-                Buffer,
+              sprintf(temp_str,"%3d node%s available for   %11s\n",
                 BFNodeCount,
                 (BFNodeCount > 1) ? "s" : "",
                 MULToTString(BFTime));
+              strcat(Buffer,temp_str);
               }
             else
               {
-              sprintf(Buffer,"%s%3d node%s available with no timelimit\n",
-                Buffer,
+              sprintf(temp_str,"%3d node%s available with no timelimit\n",
                 BFNodeCount,
                 (BFNodeCount > 1) ? "s" : "");
+              strcat(Buffer,temp_str);
               }
             }
           else
@@ -907,23 +907,23 @@ int ShowBackfillWindow(
 
             if (BFProcCount == 0)
               {
-              sprintf(Buffer,"%sno procs available\n",
-                Buffer);
+              sprintf(temp_str,"no procs available\n");
+              strcat(Buffer,temp_str);
               }
             else if (BFTime < 100000000)
               {
-              sprintf(Buffer,"%s%3d proc%s available for   %11s\n",
-                Buffer,
+              sprintf(temp_str,"%3d proc%s available for   %11s\n",
                 BFProcCount,
                 (BFProcCount > 1) ? "s" : "",
                 MULToTString(BFTime));
+              strcat(Buffer,temp_str);
               }
             else
               {
-              sprintf(Buffer,"%s%3d proc%s available with no timelimit\n",
-                Buffer,
+              sprintf(temp_str,"%3d proc%s available with no timelimit\n",
                 BFProcCount,
                 (BFProcCount > 1) ? "s" : "");
+              strcat(Buffer,temp_str);
               }
             }
 
@@ -942,8 +942,8 @@ int ShowBackfillWindow(
 
     if (index == 0)
       {
-      sprintf(Buffer,"%sno procs available\n",
-        Buffer);
+      sprintf(temp_str,"no procs available\n");
+      strcat(Buffer,temp_str);
       }
 
     strcat(Buffer,"\n\n");
@@ -986,23 +986,23 @@ int ShowBackfillWindow(
 
     MJobBuildCL(J);
 
-    sprintf(Buffer,"%s%20s %5s %6s %7s %7s   %14s\n",
-      Buffer,
+    sprintf(temp_str,"%20s %5s %6s %7s %7s   %14s\n",
       "HostName",
       "Procs",
       "Memory",
       "Disk",
       "Swap",
       "Time Available");
+    strcat(Buffer,temp_str);
 
-    sprintf(Buffer,"%s%20s %5s %6s %7s %7s   %14s\n",
-      Buffer,
+    sprintf(temp_str,"%20s %5s %6s %7s %7s   %14s\n",
       "----------",
       "-----",
       "------",
       "-------",
       "-------",
       "--------------");
+    strcat(Buffer,temp_str);
 
     for (nindex = 0;nindex < MAX_MNODE;nindex++)
       {
@@ -1050,14 +1050,14 @@ int ShowBackfillWindow(
             NodeHeaderPrinted = TRUE;
             }
 
-          sprintf(Buffer,"%s%20s %5d %6d %7d %7d   %14s\n",
-            Buffer,
+          sprintf(temp_str,"%20s %5d %6d %7d %7d   %14s\n",
             N->Name,
             DRes.Procs,
             DRes.Mem,
             DRes.Disk,
             DRes.Swap,
             MULToTString(ARange[0].EndTime - MSched.Time));
+          strcat(Buffer,temp_str);
           }
         else
           {
@@ -1123,8 +1123,7 @@ int UINodeStatShow(
 
   sprintf(Buffer,"Memory Requirement Breakdown:\n\n");
 
-  sprintf(Buffer,"%s%8s %5s %7s %9s %7s %10s %7s\n",
-    Buffer,
+  sprintf(temp_str,"%8s %5s %7s %9s %7s %10s %7s\n",
     "Memory",
     "Proc",
     "Percent",
@@ -1132,6 +1131,7 @@ int UINodeStatShow(
     "Percent",
     "ProcHours",
     "Percent");
+  strcat(Buffer,temp_str);
 
   totalnodes = 0;
   totalworkload = 0;
@@ -1172,8 +1172,7 @@ int UINodeStatShow(
       IAverage = (double)MRClass[cindex].InitialWorkload / MRClass[cindex].Nodes / averageload * 100.0;
       }
 
-    sprintf(Buffer,"%s%8d %5d %7.2f %9ld %7.2f %10ld %7.2f\n",
-      Buffer,
+    sprintf(temp_str,"%8d %5d %7.2f %9ld %7.2f %10ld %7.2f\n",
       MRClass[cindex].Memory,
       MRClass[cindex].Nodes,
       (double)MRClass[cindex].Nodes / totalnodes * 100.0,
@@ -1181,10 +1180,10 @@ int UINodeStatShow(
       IAverage,
       MRClass[cindex].Workload / 3600,
       Average);
+    strcat(Buffer,temp_str);
     }  /* END for (cindex) */
 
-  sprintf(Buffer,"%s%8s %5d %7.2f %9d %7.2f %10d %7.2f\n\n",
-    Buffer,
+  sprintf(temp_str,"%8s %5d %7.2f %9d %7.2f %10d %7.2f\n\n",
     "TOTAL",
     totalnodes,
     100.0,
@@ -1192,6 +1191,7 @@ int UINodeStatShow(
     100.0,
     (int)(totalworkload / 3600),
     100.0);
+  strcat(Buffer,temp_str);
 
   strcat(Buffer,"\nNode Statistics\n\n");
 
@@ -1238,16 +1238,16 @@ int UINodeStatShow(
 
           if (mode == 0)
             {
-            sprintf(Buffer,"%s%4dMB Nodes\n",
-              Buffer,
+            sprintf(temp_str,"%4dMB Nodes\n",
               mem);
+            strcat(Buffer,temp_str);
 
-            sprintf(Buffer,"%s%20s %9s %9s %9s\n",
-              Buffer,
+            sprintf(temp_str,"%20s %9s %9s %9s\n",
               "NodeName",
               "Available",
               "Busy",
               "NodeState");
+            strcat(Buffer,temp_str);
             }
           }
 
@@ -1268,23 +1268,23 @@ int UINodeStatShow(
           {
           if (N->SUTime != 0)
             {
-            sprintf(Buffer,"%s%20s %8.2f%s %8.2f%s %9s\n",
-              Buffer,
+            sprintf(temp_str,"%20s %8.2f%s %8.2f%s %9s\n",
               N->Name,
               (double)N->SUTime / N->STTime * 100.0,
               "%",
               (double)N->SATime / N->SUTime * 100.0,
               "%",
               MNodeState[N->State]);
+            strcat(Buffer,temp_str);
             }
           else
             {
-            sprintf(Buffer,"%s%20s %9.2f %9.2f %9s\n",
-              Buffer,
+            sprintf(temp_str,"%20s %9.2f %9.2f %9s\n",
               N->Name,
               0.0,
               0.0,
               MNodeState[N->State]);
+            strcat(Buffer,temp_str);
             }
           }    /* END if (mode == 0) */
         }      /* END if (N->CRes.Mem == mem) */
@@ -1301,8 +1301,7 @@ int UINodeStatShow(
 
     if (MemTotalNodeCount != 0)
       {
-      sprintf(Buffer,"%sSummary:  %3d %4dMB Nodes  %6.2f%s Avail  %6.2f%s Busy  (Current: %6.2f%s Avail  %6.2f%s Busy)\n",
-        Buffer,
+      sprintf(temp_str,"Summary:  %3d %4dMB Nodes  %6.2f%s Avail  %6.2f%s Busy  (Current: %6.2f%s Avail  %6.2f%s Busy)\n",
         MemTotalNodeCount,
         mem,
         (double)MemTotalUpTime / MemTotalTotalTime * 100.0,
@@ -1313,6 +1312,7 @@ int UINodeStatShow(
         "%",
         (double)MemTotalBusyCount / MemTotalNodeCount * 100.0,
         "%");
+      strcat(Buffer,temp_str);
  
       if (mode == 0)
         strcat(Buffer,"\n");
@@ -1323,8 +1323,7 @@ int UINodeStatShow(
 
   if (SystemTotalTotalTime != 0)
     {
-    sprintf(Buffer,"%sSystem Summary:  %3d Nodes  %6.2f%s Avail  %6.2f%s Busy  (Current: %6.2f%s Avail  %6.2f%s Busy)\n",
-      Buffer,
+    sprintf(temp_str,"System Summary:  %3d Nodes  %6.2f%s Avail  %6.2f%s Busy  (Current: %6.2f%s Avail  %6.2f%s Busy)\n",
       SystemTotalNodeCount,
       (double)SystemTotalUpTime / SystemTotalTotalTime * 100.0,
       "%",
@@ -1334,6 +1333,7 @@ int UINodeStatShow(
       "%",
       (double)SystemTotalBusyCount / SystemTotalNodeCount * 100.0,
       "%");
+    strcat(Buffer,temp_str);
     }
 
   strcat(Buffer,"\n");

@@ -3816,9 +3816,9 @@ int MCShowSchedulerStatistics(
 
       TimeString[strlen(TimeString) - 1] = '\0';
 
-      sprintf(TimeString,"%s (%ld)\n",
-        TimeString,
+      sprintf(temp_str," (%ld)\n",
         Time);
+      strcat(TimeString,temp_str);
 
       fprintf(stdout,"%s",
         TimeString);

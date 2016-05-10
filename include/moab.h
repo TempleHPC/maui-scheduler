@@ -1302,6 +1302,8 @@ enum {
   msimfIgnFrame,
   msimfIgnAll };
 
+char temp_str[MMAX_LINE];	      /* Fix the sprintf bug					  */
+
 typedef struct {
   char  WorkloadTraceFile[MAX_MLINE + 1]; /* File Containing Workload Traces  */
   char  ResourceTraceFile[MAX_MLINE + 1]; /* File Containing Resource Traces  */

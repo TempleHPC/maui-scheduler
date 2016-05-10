@@ -473,10 +473,10 @@ int MClassConfigLShow(
       continue;
       }
 
-    sprintf(Buffer,"%s %s=%s",
-      Buffer,
+    sprintf(temp_str," %s=%s",
       MClassAttr[AList[aindex]],
       tmpString);
+    strcat(Buffer,temp_str);
     }  /* END for (aindex) */
 
   return(SUCCESS);
@@ -712,10 +712,10 @@ int MClassConfigShow(
 
       if (tmpVal[0] != '\0')
         {
-        sprintf(tmpLine,"%s %s=%s",
-          tmpLine,
+        sprintf(temp_str," %s=%s",
           MClassAttr[aindex],
           tmpVal);
+        strcat(tmpLine,temp_str);
         }
       }    /* END for (aindex) */
 

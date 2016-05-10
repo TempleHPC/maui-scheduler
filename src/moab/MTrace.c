@@ -478,10 +478,10 @@ int MTraceBuildResource(
       for (cindex = 1;cindex < MAX_MCLASS;cindex++)
         {
         if (N->CRes.PSlot[cindex].count > 0) 
-          sprintf(Classes,"%s[%s:%d]",
-            Classes,
+          sprintf(temp_str,"[%s:%d]",
             MAList[eClass][cindex],
             N->CRes.PSlot[cindex].count);
+        strcat(Classes,temp_str);
         }  /* END for (cindex) */
 
       if (Classes[0] == '\0')

@@ -960,10 +960,10 @@ int MQueueDiagnose(
 
   /* NOTE:  must be synchronized with MQueueSelectJobs() and MJobCheckPolicies() */
  
-  sprintf(Buffer,"%sDiagnosing blocked jobs (policylevel %s  partition %s)\n\n",
-    Buffer,
+  sprintf(temp_str,"Diagnosing blocked jobs (policylevel %s  partition %s)\n\n",
     MPolicyMode[PLevel],
     PS->Name);
+  strcat(Buffer,temp_str);
  
   if ((FullQ[0]->Next == NULL) || (FullQ[0]->Next == FullQ[0]))
     {
@@ -1021,10 +1021,10 @@ int MQueueDiagnose(
  
     if ((J->State != mjsIdle) && (J->State != mjsHold))
       {
-      sprintf(Buffer,"%sjob %-20s has non-idle state (state: '%s')\n",
-        Buffer,
+      sprintf(temp_str,"job %-20s has non-idle state (state: '%s')\n",
         J->Name,
         MJobState[J->State]);
+      strcat(Buffer,temp_str);
  
       continue;
       }
@@ -1033,10 +1033,9 @@ int MQueueDiagnose(
  
     if (J->Hold != 0)
       {
-      sprintf(Buffer,"%sjob %-20s has the following hold(s) in place: ",
-        Buffer,
+      sprintf(temp_str,"job %-20s has the following hold(s) in place: ",
         J->Name);
- 
+      strcat(Buffer,temp_str);
       for (index = 0;MHoldType[index] != NULL;index++)
         {
         if (J->Hold & (1 << index))
@@ -1055,11 +1054,10 @@ int MQueueDiagnose(
  
     if (J->EState != mjsIdle)
       {
-      sprintf(Buffer,"%sjob %-20s has non-idle expected state (expected state: %s)\n",
-        Buffer,
+      sprintf(temp_str,"job %-20s has non-idle expected state (expected state: %s)\n",
         J->Name,
         MJobState[J->EState]);
- 
+      strcat(Buffer,temp_str);
       IsBlocked = TRUE;
       }
  
@@ -1067,10 +1065,10 @@ int MQueueDiagnose(
  
     if (J->SMinTime > MSched.Time)
       {
-      sprintf(Buffer,"%sjob %-20s has not reached its start date (%s to startdate)\n",
-        Buffer,
+      sprintf(temp_str,"job %-20s has not reached its start date (%s to startdate)\n",
         J->Name,
         MULToTString(J->SMinTime - MSched.Time));
+      strcat(Buffer,temp_str);
  
       IsBlocked = TRUE;
       }
@@ -1079,11 +1077,11 @@ int MQueueDiagnose(
  
     if (MJobCheckDependency(J,&DType,DValue) == FAILURE)
       {
-      sprintf(Buffer,"%sjob %s requires %s of job '%s')\n",
-        Buffer,
+      sprintf(temp_str,"job %s requires %s of job '%s')\n",
         J->Name, 
         MJobDependType[DType],
         DValue);
+      strcat(Buffer,temp_str);
  
       IsBlocked = TRUE;
       }  /* END if (MJobCheckDependency(J,&DType,DValue) == FAILURE) */
@@ -1094,9 +1092,9 @@ int MQueueDiagnose(
         J->Name,
         PS->Name);
  
-      sprintf(Buffer,"%sjob %-20s would violate 'local' fairness policies\n",
-        Buffer,
+      sprintf(temp_str,"job %-20s would violate 'local' fairness policies\n",
         J->Name);
+      strcat(Buffer,temp_str);
  
       IsBlocked = TRUE;
       }
@@ -1121,12 +1119,11 @@ int MQueueDiagnose(
         {
         /* required classes not configured in partition */
  
-        sprintf(Buffer,"%sjob %-20s requires classes not configured in partition %s (%s)\n",
-          Buffer,
+        sprintf(temp_str,"job %-20s requires classes not configured in partition %s (%s)\n",
           J->Name,
           P->Name,
           MUCAListToString(RQ->DRes.PSlot,P->CRes.PSlot,NULL));
-
+        strcat(Buffer,temp_str);
         IsBlocked = TRUE;
  
         continue;
@@ -1134,11 +1131,11 @@ int MQueueDiagnose(
  
       if (MUBMCheck(P->Index,J->PAL) == FAILURE)
         { 
-        sprintf(Buffer,"%sjob %-20s not allowed to run in partition %s  (partitions allowed: %s)\n",
-          Buffer,
+        sprintf(temp_str,"job %-20s not allowed to run in partition %s  (partitions allowed: %s)\n",
           J->Name,
           P->Name,
           MUListAttrs(ePartition,J->PAL[0]));
+        strcat(Buffer,temp_str);
 
         IsBlocked = TRUE;
  
@@ -1173,11 +1170,11 @@ int MQueueDiagnose(
             J->Name,
             MXO[OIndex]);
  
-          sprintf(Buffer,"%sjob %-20s would violate %s FS cap in partition %s\n",
-            Buffer,
+          sprintf(temp_str,"job %-20s would violate %s FS cap in partition %s\n",
             J->Name,
             MXO[OIndex],
             P->Name);
+          strcat(Buffer,temp_str);
 
           IsBlocked = TRUE;
  
@@ -1192,9 +1189,9 @@ int MQueueDiagnose(
         {
         case mjneIdlePolicy:
 
-          sprintf(Buffer,"%sjob %-20s is blocked by idle job policy\n",
-            Buffer,
+          sprintf(temp_str,"job %-20s is blocked by idle job policy\n",
             J->Name);
+          strcat(Buffer,temp_str);
 
           break;
 
@@ -1202,9 +1199,9 @@ int MQueueDiagnose(
 
           if ((PLevel == ptHARD) || (PLevel == ptOFF))
             {
-            sprintf(Buffer,"%sjob %-20s is not blocked at this policy level\n",
-              Buffer,
+            sprintf(temp_str,"job %-20s is not blocked at this policy level\n",
               J->Name);
+            strcat(Buffer,temp_str);
             }
 
           break;

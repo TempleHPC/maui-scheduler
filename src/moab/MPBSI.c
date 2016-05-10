@@ -189,9 +189,9 @@ int MPBSInitialize(
 
   if (R->P[0].Port > 0)
     {
-    sprintf(PBSServer,"%s:%d",
-      PBSServer,
+    sprintf(temp_str,":%d",
       R->P[0].Port);
+    strcat(PBSServer,temp_str);
     }
 
   if (InitialAttempt == TRUE)

@@ -874,15 +874,15 @@ int MParShow(
  
   MUStrCpy(PList,MParBMToString(MPar[0].F.PAL),sizeof(PList));
  
-  sprintf(Buffer,"%sSystem Partition Settings:  PList: %s PDef: %s\n\n",
-    Buffer,
+  sprintf(temp_str,"System Partition Settings:  PList: %s PDef: %s\n\n",
     PList,
     (MPar[0].F.PDef != NULL) ? ((mpar_t  *)MPar[0].F.PDef)->Name : NONE);
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%s%-20s %8s\n\n",
-    Buffer,
+  sprintf(temp_str,"%-20s %8s\n\n",
     "Name",
     "Procs");
+  strcat(Buffer,temp_str);
  
   for (pindex = 0;pindex < MAX_MPAR;pindex++)
     {
@@ -902,10 +902,10 @@ int MParShow(
  
     Line[0] = '\0';
  
-    sprintf(Buffer,"%s%-20s %8d\n",
-      Buffer,
+    sprintf(temp_str,"%-20s %8d\n",
       (P->Name[0] != '\0') ? P->Name : NONE,
       P->CRes.Procs);
+    strcat(Buffer,temp_str);
  
     /* check user access */
  
@@ -920,18 +920,18 @@ int MParShow(
  
       if (MUBMCheck(pindex,U->F.PAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           U->Name,
           MQALType[U->F.PALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */ 
  
     if (Line[0] != '\0')
       {
-      sprintf(Buffer,"%s  Users:    %s\n",
-        Buffer,
+      sprintf(temp_str,"  Users:    %s\n",
         Line);
+      strcat(Buffer,temp_str);
       }
  
     /* check group access */
@@ -947,18 +947,18 @@ int MParShow(
  
       if (MUBMCheck(pindex,G->F.PAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           G->Name,
           MQALType[G->F.PALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
  
     if (Line[0] != '\0')
       {
-      sprintf(Buffer,"%s  Groups:   %s\n",
-        Buffer,
+      sprintf(temp_str,"  Groups:   %s\n",
         Line);
+      strcat(Buffer,temp_str);
       }
  
     /* check account access */
@@ -974,18 +974,18 @@ int MParShow(
  
       if (MUBMCheck(pindex,A->F.PAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           A->Name,
           MQALType[A->F.PALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
  
     if (Line[0] != '\0')
       {
-      sprintf(Buffer,"%s  Accounts: %s\n",
-        Buffer,
+      sprintf(temp_str,"  Accounts: %s\n",
         Line);
+      strcat(Buffer,temp_str);
       }
 
        /* check class access */
@@ -1001,32 +1001,31 @@ int MParShow(
 
       if (MUBMCheck(pindex,C->F.PAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           C->Name,
           MQALType[C->F.PALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
 
     if (Line[0] != '\0')
       {
-      sprintf(Buffer,"%s  Classes: %s\n",
-        Buffer,
+      sprintf(temp_str,"  Classes: %s\n",
         Line);
+      strcat(Buffer,temp_str);
       }
 
     if (P->Message != NULL)
       {
-      sprintf(Buffer,"%s  Message: %s\n",
-        Buffer,
+      sprintf(temp_str,"  Message: %s\n",
         P->Message);
+      strcat(Buffer,temp_str);
       }  /* END if (P->Message) */
     }  /* END for (pindex) */
 
   /* show resource state */
 
-  sprintf(Buffer,"%s\n%-12s %10s %10s %7s %10s %7s %10s %7s\n\n",
-    Buffer,
+  sprintf(temp_str,"\n%-12s %10s %10s %7s %10s %7s %10s %7s\n\n",
     "Partition",
     "Configured",
     "Up",
@@ -1035,6 +1034,7 @@ int MParShow(
     "D/U",
     "Active",
     "A/U");
+  strcat(Buffer,temp_str);
 
   for (rindex = mrNode;rindex <= mrDisk;rindex++)
     {
@@ -1125,8 +1125,7 @@ int MParShow(
         strcat(Buffer,"----------------------------------------------------------------------------\n");
         }
 
-      sprintf(Buffer,"%s%-12s %10d %10d %6.2f%c %10d %6.2f%c %10d %6.2f%c\n",
-        Buffer,
+      sprintf(temp_str,"%-12s %10d %10d %6.2f%c %10d %6.2f%c %10d %6.2f%c\n",
         P->Name,
         CRes,
         URes,
@@ -1138,6 +1137,7 @@ int MParShow(
         (URes - ARes),
         (double)((URes > 0) ? (URes - ARes) * 100.0 / URes : 0.0),
         '%');
+      strcat(Buffer,temp_str);
       } /* END for (pindex) */
     }    /* END for (rindex) */
 
@@ -1145,9 +1145,9 @@ int MParShow(
  
   strcat(Buffer,"\nClass/Queue State\n\n");
  
-  sprintf(Buffer,"%s%12s [<CLASS> <AVAIL>:<UP>]...\n\n",
-    Buffer,
+  sprintf(temp_str,"%12s [<CLASS> <AVAIL>:<UP>]...\n\n",
     " ");
+  strcat(Buffer,temp_str);
  
   for (pindex = 0;pindex < MAX_MPAR;pindex++)
     {
@@ -1163,10 +1163,10 @@ int MParShow(
       continue;
       }
  
-    sprintf(Buffer,"%s%12s %s\n",
-      Buffer,
+    sprintf(temp_str,"%12s %s\n",
       P->Name,
       MUCAListToString(P->ARes.PSlot,P->URes.PSlot,NULL));
+    strcat(Buffer,temp_str);
     }   /* END for (pindex) */
  
   return(SUCCESS);
@@ -1263,9 +1263,9 @@ char *MParBMToString(
     if (tmpLine[0] != '\0')
       strcat(tmpLine,":");
 
-    sprintf(tmpLine,"%s%s",
-      tmpLine,
+    sprintf(temp_str,"%s",
       P->Name);
+    strcat(tmpLine,temp_str);
     }  /* END for (pindex) */
  
   return(tmpLine);
@@ -1997,9 +1997,9 @@ int MParConfigShow(
     }
   else
     {
-    sprintf(Buffer,"%s\n# partition %s policies\n\n",
-      Buffer,
+    sprintf(temp_str,"\n# partition %s policies\n\n",
       P->Name);
+    strcat(Buffer,temp_str);
     }
 
   if ((P->RejectNegPrioJobs != DEFAULT_MREJECTNEGPRIOJOBS) ||
@@ -2060,19 +2060,19 @@ int MParConfigShow(
   if ((P->JobPrioAccrualPolicy != jpapNONE) || 
       (VFlag || (PIndex == -1) || (PIndex == pJobPrioAccrualPolicy)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",
-      Buffer,
+    sprintf(temp_str,"%-30s  %s\n",
       MParam[pJobPrioAccrualPolicy],
       (char *)MJobPrioAccrualPolicyType[P->JobPrioAccrualPolicy]);
+    strcat(Buffer,temp_str);
     }
 
   if ((P->NodeLoadPolicy != nlpNONE) || 
       (VFlag || (PIndex == -1) || (PIndex == pNodeLoadPolicy)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",
-      Buffer,
+    sprintf(temp_str,"%-30s  %s\n",
       MParam[pNodeLoadPolicy],
       (char *)MNodeLoadPolicyType[P->NodeLoadPolicy]);
+    strcat(Buffer,temp_str);
     }
 
   if (P->Index == 0)
@@ -2080,46 +2080,46 @@ int MParConfigShow(
     if ((P->UseMachineSpeedForFS == TRUE) || 
         (VFlag || (PIndex == -1) || (PIndex == pUseMachineSpeedForFS)))
       {
-      sprintf(Buffer,"%s%-30s  %s\n",
-        Buffer,
+      sprintf(temp_str,"%-30s  %s\n",
         MParam[pUseMachineSpeedForFS],
         (P->UseMachineSpeedForFS == TRUE) ? "TRUE" : "FALSE");
+      strcat(Buffer,temp_str);
       }
 
     if ((P->UseMachineSpeed == TRUE) || 
         (VFlag || (PIndex == -1) || (PIndex == pUseMachineSpeed)))
       {
-      sprintf(Buffer,"%s%-30s  %s\n",
-        Buffer,
+      sprintf(temp_str,"%-30s  %s\n",
         MParam[pUseMachineSpeed],
         (P->UseMachineSpeed == TRUE) ? "TRUE" : "FALSE");
+      strcat(Buffer,temp_str);
       }
 
     if ((P->UseSystemQueueTime == FALSE) || 
         (VFlag || (PIndex == -1) || (PIndex == pUseSystemQueueTime)))
       {
-      sprintf(Buffer,"%s%-30s  %s\n",
-        Buffer,
+      sprintf(temp_str,"%-30s  %s\n",
         MParam[pUseSystemQueueTime],
         (P->UseSystemQueueTime == TRUE) ? "TRUE" : "FALSE");
+      strcat(Buffer,temp_str);
       }
 
     if ((P->UseLocalMachinePriority != TRUE) || 
         (VFlag || (PIndex == -1) || (PIndex == pUseLocalMachinePriority)))
       {
-      sprintf(Buffer,"%s%-30s  %s\n",
-        Buffer,
+      sprintf(temp_str,"%-30s  %s\n",
         MParam[pUseLocalMachinePriority],
         (P->UseLocalMachinePriority == TRUE) ? "TRUE" : "FALSE");
+      strcat(Buffer,temp_str);
       }
 
     if ((P->UntrackedProcFactor > 0.0) || 
         (VFlag || (PIndex == -1) || (PIndex == pNodeUntrackedProcFactor)))
       {
-      sprintf(Buffer,"%s%-30s  %.1lf\n",
-        Buffer,
+      sprintf(temp_str,"%-30s  %.1lf\n",
         MParam[pNodeUntrackedProcFactor],
         P->UntrackedProcFactor);
+      strcat(Buffer,temp_str);
       }
     }    /* END if (P->Index == 0) */
 
@@ -2202,9 +2202,9 @@ int MParConfigShow(
 
     for (index = 0;P->NodeSetList[index] != NULL;index++)
       {
-      sprintf(tmpLine,"%s%s ",
-        tmpLine,
+      sprintf(temp_str,"%s ",
         P->NodeSetList[index]);
+      strcat(tmpLine,temp_str);
       }  /* END for (index) */
 
     strcat(
@@ -2343,20 +2343,20 @@ int MParConfigShow(
           {
           if (P->ResourceLimitMaxViolationTime[index] > 0)
             {
-            sprintf(tmpLine,"%s%s:%s:%s:%s ",
-              tmpLine,
+            sprintf(temp_str,"%s:%s:%s:%s ",
               MResourceType[index],
               MResourceLimitPolicyType[P->ResourceLimitPolicy[index]],
               MPolicyAction[P->ResourceLimitViolationAction[index]],
               MULToTString(P->ResourceLimitMaxViolationTime[index]));
+            strcat(tmpLine,temp_str);
             }
           else
             {
-            sprintf(tmpLine,"%s%s:%s:%s ",
-              tmpLine,
+            sprintf(temp_str,"%s:%s:%s ",
               MResourceType[index],
               MResourceLimitPolicyType[P->ResourceLimitPolicy[index]],
               MPolicyAction[P->ResourceLimitViolationAction[index]]);
+            strcat(tmpLine,temp_str);
             }
           }
         }    /* END for (index) */
@@ -2388,10 +2388,10 @@ int MParConfigShow(
         if (tmpLine[0] != '\0')
           strcat(tmpLine," ");
 
-        sprintf(tmpLine,"%s%s:%s",
-          tmpLine,
+        sprintf(temp_str,"%s:%s",
           MNAvailPolicy[policyindex],
           (rindex == 0) ? DEFAULT : MResourceType[rindex]);
+        strcat(tmpLine,temp_str);
         }  /* END for (rindex) */
 
       strcat(
@@ -2473,15 +2473,15 @@ int MParConfigShow(
             {
             if (P->ResQOSList[index][qindex] == (mqos_t *)MAX_MQOS)
               {
-              sprintf(tmpLine,"%s%s ",
-                tmpLine,
+              sprintf(temp_str,"%s ",
                 ALL);
+              strcat(tmpLine,temp_str);
               }
             else
               {
-              sprintf(tmpLine,"%s%s ",
-                tmpLine,
+              sprintf(temp_str,"%s ",
                 P->ResQOSList[index][qindex]->Name);
+              strcat(tmpLine,temp_str);
               }
             }
           }
@@ -2523,18 +2523,22 @@ int MParConfigShow(
 
     /* FS policies */
 
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pFSPolicy],MFSPolicyType[F->FSPolicy]);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pFSPolicy],MFSPolicyType[F->FSPolicy]);
+    strcat(Buffer,temp_str);
 
-    sprintf(Buffer,"%s%-30s  %s%s\n",
-      Buffer,
+    sprintf(temp_str,"%-30s  %s%s\n",
       MParam[pFSPolicy],MFSPolicyType[F->FSPolicy],
       (MSched.PercentBasedFS == TRUE) ? "%" : "");
+    strcat(Buffer,temp_str);
 
     if ((F->FSPolicy == fspNONE) || (VFlag || (PIndex == -1) || (PIndex == pFSPolicy)))
       {
-      sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pFSInterval],MULToTString(F->FSInterval));
-      sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pFSDepth],F->FSDepth);
-      sprintf(Buffer,"%s%-30s  %-6.2f\n",Buffer,MParam[pFSDecay],F->FSDecay);
+      sprintf(temp_str,"%-30s  %s\n",MParam[pFSInterval],MULToTString(F->FSInterval));
+      strcat(Buffer,temp_str);
+      sprintf(temp_str,"%-30s  %d\n",MParam[pFSDepth],F->FSDepth);
+      strcat(Buffer,temp_str);
+      sprintf(temp_str,"%-30s  %-6.2f\n",MParam[pFSDecay],F->FSDecay);
+      strcat(Buffer,temp_str);
 
       strcat(Buffer,"\n");
       }

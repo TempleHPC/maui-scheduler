@@ -195,9 +195,9 @@ int MJobGetStartPriority(
           case mpsCQ: strcat(tmpHeader,"  QOS"); break;        
           }
 
-        sprintf(tmpCWLine,"%s%5ld",
-          tmpCWLine,
+        sprintf(temp_str,"%5ld",
           (long)SWeight[index]);
+        strcat(tmpCWLine,temp_str);
         }  /* END for (index) */
 
       if (tmpHeader[0] != '\0')
@@ -236,9 +236,9 @@ int MJobGetStartPriority(
           case mpsFQ: strcat(tmpHeader,"  QOS"); break;
           }  /* END switch(index) */
  
-        sprintf(tmpCWLine,"%s%5ld",
-          tmpCWLine,
+        sprintf(temp_str,"%5ld",
           SWeight[index]);
+        strcat(tmpCWLine,temp_str);
         }  /* END for (index) */
  
       if (tmpHeader[0] != '\0')
@@ -355,9 +355,9 @@ int MJobGetStartPriority(
           case mpsSBP:  strcat(tmpHeader,"Bypas"); break;
           }
  
-        sprintf(tmpCWLine,"%s%5ld",
-          tmpCWLine,
+        sprintf(temp_str,"%5ld",
           SWeight[index]);
+        strcat(tmpCWLine,temp_str);
         }  /* END for (index) */
  
       if (tmpHeader[0] != '\0')
@@ -393,9 +393,9 @@ int MJobGetStartPriority(
           case mpsTXF: strcat(tmpHeader,"XFctr"); break;
           }
  
-        sprintf(tmpCWLine,"%s%5ld",
-          tmpCWLine,
+        sprintf(temp_str,"%5ld",
           SWeight[index]);
+        strcat(tmpCWLine,temp_str);
         }  /* END for (index) */
  
       if (tmpHeader[0] != '\0')
@@ -439,9 +439,9 @@ int MJobGetStartPriority(
           case mpsRWallTime: strcat(tmpHeader,"WTime"); break;  
           }
  
-        sprintf(tmpCWLine,"%s%5ld",
-          tmpCWLine,
+        sprintf(temp_str,"%5ld",
           SWeight[index]);
+        strcat(tmpCWLine,temp_str);
         }  /* END for (index) */
  
       if (tmpHeader[0] != '\0')
@@ -478,9 +478,9 @@ int MJobGetStartPriority(
           case mpsUPerC:     strcat(tmpHeader,"PerC "); break;
           }
  
-        sprintf(tmpCWLine,"%s%5ld",
-          tmpCWLine,
+        sprintf(temp_str,"%5ld",
           SWeight[index]);
+        strcat(tmpCWLine,temp_str);
         }  /* END for (index) */
  
       if (tmpHeader[0] != '\0')
@@ -627,9 +627,9 @@ int MJobGetStartPriority(
               ABS(((double)TotalSFactor[sindex] * SWeight[sindex] * CWeight[cindex] * 100.0 / TotalPriority)) :
               0.0);
 
-          sprintf(tmpLine,"%s%5.5s",
-            tmpLine,
+          sprintf(temp_str,"%5.5s",
             tmpS);
+          strcat(tmpLine,temp_str);
           }  /* END for (sindex) */
  
         if (tmpLine[0] != '\0')
@@ -1176,9 +1176,9 @@ int MJobGetStartPriority(
 
         sprintf(tmpS,"%3.1lf",ABS(SFactor[index]));
          
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS); 
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
  
       if (tmpLine[0] != '\0')
@@ -1211,9 +1211,9 @@ int MJobGetStartPriority(
         sprintf(tmpS,"%3.1lf",
           tmpD);
  
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS); 
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
  
       if (tmpLine[0] != '\0')
@@ -1246,9 +1246,9 @@ int MJobGetStartPriority(
         sprintf(tmpS,"%3.1lf",
           tmpD);
 
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS);
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
 
       if (tmpLine[0] != '\0')
@@ -1281,9 +1281,9 @@ int MJobGetStartPriority(
         sprintf(tmpS,"%3.1lf",
           tmpD);
  
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS);
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
  
       if (tmpLine[0] != '\0')
@@ -1316,9 +1316,9 @@ int MJobGetStartPriority(
         sprintf(tmpS,"%3.1lf",
           CP[mpcTarg]);
  
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS);
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
  
       if (tmpLine[0] != '\0')
@@ -1351,9 +1351,9 @@ int MJobGetStartPriority(
         sprintf(tmpS,"%3.1lf",
           tmpD);
  
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS);
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
  
       if (tmpLine[0] != '\0')
@@ -1386,9 +1386,9 @@ int MJobGetStartPriority(
         sprintf(tmpS,"%3.1lf", 
           tmpD);
  
-        sprintf(tmpLine,"%s%5.5s",
-          tmpLine,
+        sprintf(temp_str,"%5.5s",
           tmpS);
+        strcat(tmpLine,temp_str);
         }  /* END for (index) */
  
       if (tmpLine[0] != '\0')

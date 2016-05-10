@@ -2649,23 +2649,23 @@ int MNodeShowState(
 
   if (N->MaxLoad > 0.01)
     {
-    sprintf(tmpLine,"%s (MaxLoad: %.2lf)",
-      tmpLine,
+    sprintf(temp_str," (MaxLoad: %.2lf)",
       N->MaxLoad);
+    strcat(tmpLine,temp_str);
     }
 
   if (N->ExtLoad > 0.01)
     {
-    sprintf(tmpLine,"%s (ExtLoad: %.2lf)",
-      tmpLine,
+    sprintf(temp_str," (ExtLoad: %.2lf)",
       N->ExtLoad);
+    strcat(tmpLine,temp_str);
     }
 
   if (N->ProcSpeed > 0)
     {
-    sprintf(tmpLine,"%s (ProcSpeed: %d)",
-      tmpLine,
+    sprintf(temp_str," (ProcSpeed: %d)",
       N->ProcSpeed);
+    strcat(tmpLine,temp_str);
     }
 
   strcat(tmpLine,"\n");
@@ -6262,18 +6262,18 @@ char *MNodePrioFToString(
 
     if (N->P->CW[aindex] == 1.0)
       {
-      sprintf(ptr,"%s%s%s",
-        ptr,
+      sprintf(temp_str,"%s%s",
         ((N->P->CW[aindex] > 0.0) && (ptr[0] != '\0')) ? "+" : "",
         MNPComp[aindex]);
+      strcat(ptr,temp_str);
       }
     else
       {
-      sprintf(ptr,"%s%s%.2lf*%s",
-        ptr,
+      sprintf(temp_str,"%s%.2lf*%s",
         ((N->P->CW[aindex] > 0.0) && (ptr[0] != '\0')) ? "+" : "",
         N->P->CW[aindex],
         MNPComp[aindex]);
+      strcat(ptr,temp_str);
       }
     }    /* END for (aindex) */
   
@@ -6344,11 +6344,11 @@ int MNodeConfigShow(
         continue;
         }
 
-      sprintf(NLine,"%s%s%s=%s",
-        NLine,
+      sprintf(temp_str,"%s%s=%s",
         (NLine[0] != '\0') ? " " : "",
         MNodeAttr[AList[aindex]],
         tmpLine);
+      strcat(NLine, temp_str);
       }    /* END for (aindex) */
 
     if ((VFlag == TRUE) || (NLine[0] != '\0'))

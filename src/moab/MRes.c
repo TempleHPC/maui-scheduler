@@ -1031,20 +1031,19 @@ int MResAToString(
           case mcmpSSUB:
           case mcmpSNE:
 
-            sprintf(Buf,"%s%s=%s",
-              Buf,
+            sprintf(temp_str,"%s=%s",
               MAttrO[(int)R->CL[aindex].Type],
               R->CL[aindex].Name);
+            strcat(Buf,temp_str);
 
             break;
 
           default:
 
-            sprintf(Buf,"%s%s=%ld",
-              Buf,
+            sprintf(temp_str,"%s=%ld",
               MAttrO[(int)R->CL[aindex].Type],
               R->CL[aindex].Value);
- 
+            strcat(Buf,temp_str);
             break;
           }  /* END switch(R->CL[aindex].Cmp) */
         }    /* END for (aindex) */
@@ -6908,9 +6907,9 @@ int MResShowState(
 
   if (R->Priority > 0)
     {
-    sprintf(tmpLine,"%s   Priority=%ld",
-      tmpLine,
+    sprintf(temp_str,"   Priority=%ld",
       R->Priority);
+    strcat(tmpLine,temp_str);
     }
 
   if (R->SystemID != NULL)
@@ -6922,9 +6921,9 @@ int MResShowState(
 
   if (R->MaxTasks > 0)
     {
-    sprintf(tmpLine,"%s   MaxTasks=%d",
-      tmpLine,
+    sprintf(temp_str,"   MaxTasks=%d",
       R->MaxTasks);
+    strcat(tmpLine,temp_str);
     }
 
   if (R->CBHost[0] != '\0')
@@ -6946,11 +6945,11 @@ int MResShowState(
         }
       }   /* END for (index) */
 
-    sprintf(tmpLine,"%s   CBServer=%s:%d/%s",
-      tmpLine,
+    sprintf(temp_str,"   CBServer=%s:%d/%s",
       R->CBHost,
       R->CBPort,
       tmpCBLine);
+    strcat(tmpLine,temp_str);
     }  /* END if (R->CBHost[0] != '\0') */
 
   if (tmpLine[0] != '\0')

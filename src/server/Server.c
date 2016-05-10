@@ -473,50 +473,59 @@ int MServerConfigShow(
 
   /* display modules */
 
-  sprintf(Buffer,"%s# SERVER MODULES: ",
-    Buffer);
+  sprintf(temp_str,"# SERVER MODULES: ");
+  strcat(Buffer,temp_str);
 
 #ifdef __MX
-  sprintf(Buffer,"%s MX",
-    Buffer);
+  sprintf(temp_str," MX");
+  strcat(Buffer,temp_str);
 #endif /* __MX */
 
 #ifdef __MMD5
-  sprintf(Buffer,"%s MD5",
-    Buffer);
+  sprintf(temp_str," MD5");
+  strcat(Buffer,temp_str);
 #endif /* __MMD5 */
 
-  sprintf(Buffer,"%s\n",
-    Buffer);
+  sprintf(temp_str,"\n");
+  strcat(Buffer,temp_str);
 
   /* display parameters */
 
-  sprintf(Buffer,"%s%-30s  %s\n",
-    Buffer,
+  sprintf(temp_str,"%-30s  %s\n",
     MParam[pSchedMode],
     MSchedMode[MSched.Mode]); 
+  strcat(Buffer,temp_str);
 
   if ((VFlag || (PIndex == -1) || (PIndex == pServerName)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pServerName],MSched.Name);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pServerName],MSched.Name);
+    strcat(Buffer,temp_str);
     }
  
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pServerHost],MSched.ServerHost);
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pServerPort],MSched.ServerPort);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pServerHost],MSched.ServerHost);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pServerPort],MSched.ServerPort);
+  strcat(Buffer,temp_str);
 
   if (MSched.LogFile[0] == '\0')
     {
-    sprintf(Buffer,"%s# NO LOGFILE SPECIFIED\n",Buffer);
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSchedLogFile],MSched.LogFile);
+    sprintf(temp_str,"# NO LOGFILE SPECIFIED\n");
+    strcat(Buffer,temp_str);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pSchedLogFile],MSched.LogFile);
+    strcat(Buffer,temp_str);
     }
   else
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSchedLogFile],MSched.LogFile);
-    sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pLogFileMaxSize],MSched.LogFileMaxSize);
-    sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pLogFileRollDepth],MSched.LogFileRollDepth);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pSchedLogFile],MSched.LogFile);
+    strcat(Buffer,temp_str);
+    sprintf(temp_str,"%-30s  %d\n",MParam[pLogFileMaxSize],MSched.LogFileMaxSize);
+    strcat(Buffer,temp_str);
+    sprintf(temp_str,"%-30s  %d\n",MParam[pLogFileRollDepth],MSched.LogFileRollDepth);
+    strcat(Buffer,temp_str);
     }
 
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pLogLevel],mlog.Threshold);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pLogLevel],mlog.Threshold);
+  strcat(Buffer,temp_str);
  
   if ((mlog.FacilityList != fALL) || 
       (VFlag || 
@@ -539,47 +548,68 @@ int MServerConfigShow(
     if (mlog.FacilityList == fALL)
       strcpy(Line,MLogFacilityType[dfALL]);
  
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pLogFacility],Line);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pLogFacility],Line);
+    strcat(Buffer,temp_str);
     }
 
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pMServerHomeDir],MSched.HomeDir);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSchedToolsDir],MSched.ToolsDir);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSchedLogDir],MSched.LogDir);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pStatDir],MStat.StatDir);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pMServerHomeDir],MSched.HomeDir);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSchedToolsDir],MSched.ToolsDir);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSchedLogDir],MSched.LogDir);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pStatDir],MStat.StatDir);
+  strcat(Buffer,temp_str);
  
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSchedLockFile],MSched.LockFile);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSchedConfigFile],MSched.ConfigFile);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSchedLockFile],MSched.LockFile);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSchedConfigFile],MSched.ConfigFile);
+  strcat(Buffer,temp_str);
 
   if ((MSched.Action[mactAdminEvent][0] != '\0') || VFlag)
     { 
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pAdminEAction],MSched.Action[mactAdminEvent]);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pAdminEAction],MSched.Action[mactAdminEvent]);
+    strcat(Buffer,temp_str);
     }
 
   if ((MSched.Action[mactJobFB][0] != '\0') || VFlag)
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[mcoJobFBAction],MSched.Action[mactJobFB]);
+    sprintf(temp_str,"%-30s  %s\n",MParam[mcoJobFBAction],MSched.Action[mactJobFB]);
+    strcat(Buffer,temp_str);
     }
 
   if ((MSched.Action[mactMail][0] != '\0') || VFlag)
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[mcoMailAction],MSched.Action[mactMail]);
+    sprintf(temp_str,"%-30s  %s\n",MParam[mcoMailAction],MSched.Action[mactMail]);
+    strcat(Buffer,temp_str);
     }
  
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pCheckPointFile],MCP.CPFileName);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pCheckPointInterval],MULToTString(MCP.CPInterval));
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pCheckPointExpirationTime],MULToTString(MCP.CPExpirationTime));
+  sprintf(temp_str,"%-30s  %s\n",MParam[pCheckPointFile],MCP.CPFileName);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pCheckPointInterval],MULToTString(MCP.CPInterval));
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pCheckPointExpirationTime],MULToTString(MCP.CPExpirationTime));
+  strcat(Buffer,temp_str);
 
-  if ((MSched.MonitoredJob[0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == pMonitoredJob)))
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pMonitoredJob],MSched.MonitoredJob);
+  if ((MSched.MonitoredJob[0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == pMonitoredJob))){
+    sprintf(temp_str,"%-30s  %s\n",MParam[pMonitoredJob],MSched.MonitoredJob);
+    strcat(Buffer,temp_str);
+  }
  
-  if ((MSched.MonitoredNode[0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == pMonitoredNode)))
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pMonitoredNode],MSched.MonitoredNode);
+  if ((MSched.MonitoredNode[0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == pMonitoredNode))){
+    sprintf(temp_str,"%-30s  %s\n",MParam[pMonitoredNode],MSched.MonitoredNode);
+    strcat(Buffer,temp_str);
+  }
  
-  if ((MSched.MonitoredFunction[0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == pMonitoredFunction)))
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pMonitoredFunction],MSched.MonitoredFunction);
+  if ((MSched.MonitoredFunction[0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == pMonitoredFunction))){
+    sprintf(temp_str,"%-30s  %s\n",MParam[pMonitoredFunction],MSched.MonitoredFunction);
+    strcat(Buffer,temp_str);
+  }
 
-  if ((MSched.ResDepth != DEFAULT_RES_DEPTH) || (VFlag || (PIndex == -1) || (PIndex == pResDepth)))
-    sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pResDepth],MSched.ResDepth);
+  if ((MSched.ResDepth != DEFAULT_RES_DEPTH) || (VFlag || (PIndex == -1) || (PIndex == pResDepth))){
+    sprintf(temp_str,"%-30s  %d\n",MParam[pResDepth],MSched.ResDepth);
+    strcat(Buffer,temp_str);
+  }
 
   strcat(Buffer,"\n");      
 

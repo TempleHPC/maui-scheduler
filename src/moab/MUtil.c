@@ -1074,9 +1074,9 @@ char *MUListAttrs(
     {
     if ((Value & (1 << i)) && (MAList[Attr][i][0] != '\0'))
       {
-      sprintf(Line,"%s[%s]",
-        Line,
+      sprintf(temp_str,"[%s]",
         MAList[Attr][i]);
+      strcat(Line,temp_str);
       }
     }    /* for (i) */
 
@@ -1114,9 +1114,9 @@ char *MUMAList(
       if ((ValueMap[findex] & (1 << index)) && 
           (MAList[AttrIndex][index][0] != '\0'))
         {
-        sprintf(Line,"%s[%s]",
-          Line,
+        sprintf(temp_str,"[%s]",
           MAList[AttrIndex][index + findex * M64.INTBITS]);
+        strcat(Line,temp_str);
         }
       }    /* END for (index) */
     }      /* END for (findex) */
@@ -1267,21 +1267,21 @@ char *MUCAListToString(
       if ((CClass[cindex].count > 0) || 
           (AClass[cindex].count > 0)) 
         {
-        sprintf(ptr,"%s[%s %d:%d]",
-          ptr,
+        sprintf(temp_str,"[%s %d:%d]",
           MAList[eClass][cindex],
           AClass[cindex].count,
           CClass[cindex].count); 
         }
+      strcat(ptr,temp_str);
       }
     else
       {
       if (AClass[cindex].count > 0) 
         {
-        sprintf(ptr,"%s[%s %d]",
-          ptr,
+        sprintf(temp_str,"[%s %d]",
           MAList[eClass][cindex],
           AClass[cindex].count);
+        strcat(ptr,temp_str);
         }
       }
     }   /* END for(cindex) */
@@ -1953,19 +1953,19 @@ char *MUCResToString(
         {
         /* human readable - percent */
 
-        sprintf(Line,"%s%s: %0.2lf",
-          Line,
+        sprintf(temp_str,"%s: %0.2lf",
           N,
           (double)tmpI / 100.0);
+        strcat(Line,temp_str);
         }
       else if (DisplayMode == 2)
         {
         /* machine readable */
 
-        sprintf(Line,"%s%s=%d",
-          Line,
+        sprintf(temp_str,"%s=%d",
           N,
           tmpI);
+        strcat(Line,temp_str);
         }
       else
         {
@@ -1973,17 +1973,17 @@ char *MUCResToString(
 
         if (index > 0)
           {
-          sprintf(Line,"%s%s: %s",
-            Line,
+          sprintf(temp_str,"%s: %s",
             N,
             MULToRSpec((long)tmpI,mvmMega,NULL));
+          strcat(Line,temp_str);
           }
         else
           {
-          sprintf(Line,"%s%s: %d",
-            Line,
+          sprintf(temp_str,"%s: %d",
             N,
             tmpI);
+          strcat(Line,temp_str);
           }
         }
       }
@@ -1991,17 +1991,17 @@ char *MUCResToString(
       {
       if (DisplayMode == 2)
         {
-        sprintf(Line,"%s%s=%s",
-          Line,
+        sprintf(temp_str,"%s=%s",
           N,
           ALL);
+        strcat(Line,temp_str);
         }
       else
         {
-        sprintf(Line,"%s%s: %s",
-          Line,
+        sprintf(temp_str,"%s: %s",
           N,
           ALL);
+        strcat(Line,temp_str);
         }
       }
     }    /* END for (index)   */
@@ -2016,10 +2016,10 @@ char *MUCResToString(
     if (Line[0] != '\0')
       MUStrCat(Line,"  ",MAX_MLINE);
 
-    sprintf(Line,"%s%s: %d",
-      Line,
+    sprintf(temp_str,"%s: %d",
       MAList[eGRes][index],
       R->GRes[index].count);
+    strcat(Line,temp_str);
     }  /* END for (index) */
 
   if (Line[0] == '\0')
@@ -2407,9 +2407,9 @@ int MUREToList(
  
             if (Buffer != NULL)
               {
-              sprintf(Buffer,"%snode '%s' found\n",
-                Buffer,
+              sprintf(temp_str,"node '%s' found\n",
                 N->Name);
+              strcat(Buffer,temp_str);
               }
  
             break;
@@ -2443,9 +2443,9 @@ int MUREToList(
  
             if (Buffer != NULL)
               {
-              sprintf(Buffer,"%snode '%s' found\n",
-                Buffer,
+              sprintf(temp_str,"node '%s' found\n",
                 N->Name);
+              strcat(Buffer,temp_str);
               }
             }
           else if (!strcmp(N->Name,Match))
@@ -2490,8 +2490,8 @@ int MUREToList(
  
         if (Buffer != NULL)
           {
-          sprintf(Buffer,"%sERROR:    no matches found for node expression\n",
-            Buffer);
+          sprintf(temp_str,"ERROR:    no matches found for node expression\n");
+          strcat(Buffer,temp_str);
           }
  
         return(FAILURE);
@@ -2532,6 +2532,7 @@ int MUREToList(
               sprintf(Buffer,"%sjob '%s' found\n",
                 Buffer,
                 J->Name);
+              strcat(Buffer,temp_str);
               }
             }
           else if (!strcmp(J->Name,Match))
@@ -2574,8 +2575,8 @@ int MUREToList(
  
         if (Buffer != NULL)
           {
-          sprintf(Buffer,"%sERROR:    no matches found for job expression\n",
-            Buffer);
+          sprintf(temp_str,"ERROR:    no matches found for job expression\n");
+          strcat(Buffer,temp_str);
           }
  
         return(FAILURE);
@@ -2615,9 +2616,9 @@ int MUREToList(
 
             if (Buffer != NULL)
               {
-              sprintf(Buffer,"%sres '%s' found\n",
-                Buffer,
+              sprintf(temp_str,"res '%s' found\n",
                 R->Name);
+              strcat(Buffer,temp_str);
               }
             }
           else if (!strcmp(R->Name,Match))
@@ -2660,8 +2661,8 @@ int MUREToList(
 
         if (Buffer != NULL)
           {
-          sprintf(Buffer,"%sERROR:    no matches found for job expression\n",
-            Buffer);
+          sprintf(temp_str,"ERROR:    no matches found for job expression\n");
+          strcat(Buffer,temp_str);
           }
 
         return(FAILURE);
@@ -4128,9 +4129,9 @@ char *MUBMToString(
       {
       if (Delim == '[')
         {
-        sprintf(ptr,"%s[%s]",
-          ptr,
+        sprintf(temp_str,"[%s]",
           AList[i]);
+        strcat(ptr,temp_str);
         }
       else
         {
@@ -4424,13 +4425,13 @@ char *MUCResRatioToString(
       if (Line[0] != '\0')
         MUStrCat(Line,"  ",sizeof(Line));
 
-      sprintf(Line,"%s%s: %d/%d (%.2f%c)",
-        Line,
+      sprintf(temp_str,"%s: %d/%d (%.2f%c)",
         N,
         BVal,
         TotalRes,
         (double)BVal * 100.0 / TotalRes,
         '%');
+      strcat(Line,temp_str);
       }
     }  /* END for (index) */
  
@@ -4727,13 +4728,13 @@ int MUShowSSArray(
   char       *Buffer)    /* I/O */
  
   { 
-  sprintf(Buffer,"%s%s[%s]%-.*s  %s\n",
-    Buffer,
+  sprintf(temp_str,"%s[%s]%-.*s  %s\n",
     Param,
     IndexName,
     MCFG_HDR_LEN - 2 - (int)(strlen(Param) + strlen(IndexName)),
     "                                        ",
     (ValLine != NULL) ? ValLine : "");
+  strcat(Buffer,temp_str);
  
   return(SUCCESS);
   }  /* END MUShowSSArray() */
@@ -5452,10 +5453,10 @@ char *MUMAToString(
           {
           if (Line[0] != '\0')
             {
-            sprintf(Line,"%s%c%s",
-              Line,
+            sprintf(temp_str,"%c%s",
               Delim,
               ptr);
+            strcat(Line,temp_str);
             }
           else
             {
@@ -5464,9 +5465,9 @@ char *MUMAToString(
           }
         else
           {
-          sprintf(Line,"%s[%s]",
-            Line,
+          sprintf(temp_str,"[%s]",
             ptr);
+          strcat(Line,temp_str);
           }
         }
       }    /* END for (index) */

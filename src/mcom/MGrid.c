@@ -563,12 +563,13 @@ int MGlobusJobToRSL(
         sprintf(PreString,"%s://%s",
           MDSProtocol[DS->Protocol],
           (DS->HostName != NULL) ? DS->HostName : "localhost");
-                                                                                
+
+
         if (DS->Port > 0)
           {
-          sprintf(PreString,"%s:%d",
-            PreString,
+          sprintf(temp_str,":%d",
             DS->Port);
+          strcat(PreString,temp_str);
           }
         }
      
