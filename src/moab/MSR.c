@@ -2390,7 +2390,7 @@ int MSRUpdate(
           memcpy(
             SRes[SRIndex].HostList,
             SR->HostList,
-            sizeof(SRes[SRIndex].HostList));
+            sizeof(*SRes[SRIndex].HostList));
           }
         }
       else
