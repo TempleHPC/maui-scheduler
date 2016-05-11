@@ -279,8 +279,6 @@ int MASDefaultCreate(
   char *ptr;
   char *TokPtr;
 
-  char *ptr2;
-  char *TokPtr2;
 
   char  ValLine[MAX_MLINE];
   
@@ -288,7 +286,6 @@ int MASDefaultCreate(
 
   mreq_t *RQ;
 
-  masdefdata_t *D;
 
   if (J == NULL)
     return(FAILURE);
@@ -305,7 +302,6 @@ int MASDefaultCreate(
     J->ASData = calloc(1,sizeof(masdefdata_t));
     }
 
-  D = (masdefdata_t *)J->ASData;
 
   if (ConfigString != NULL)
     {
@@ -386,15 +382,12 @@ int MASDefaultConfig(
   char *ptr;
   char *TokPtr;
  
-  char *ptr2;
-  char *TokPtr2;
  
   char  ValLine[MAX_MLINE];
  
   int   aindex;
   int   index;
  
-  mreq_t *RQ;
  
   masdefdata_t *D;
  
@@ -479,7 +472,6 @@ int MASDefaultDestroy(
   mjob_t *J)
  
   {
-  masdefdata_t *D;
  
   J->ASFunc = NULL;
  
@@ -487,7 +479,6 @@ int MASDefaultDestroy(
  
   if (J->ASData != NULL)
     {
-    D = (masdefdata_t *)J->ASData;
  
     MUFree((char **)J->ASData);
     }
@@ -504,8 +495,6 @@ int MASDefaultUpdate(
   mjob_t       *J)
 
   {
-  long Now;
-
   mreq_t *RQ;
 
   masdefdata_t *D;

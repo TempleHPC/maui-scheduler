@@ -2513,7 +2513,6 @@ int MSchedProcessConfig(
   char *TokPtr;
 
   char  ValLine[MAX_MLINE];
-  char *ValList[2];
 
   if ((S == NULL) ||
       (Value == NULL) ||
@@ -2548,9 +2547,6 @@ int MSchedProcessConfig(
 
       continue;
       }
-
-    ValList[0] = ValLine;
-    ValList[1] = NULL;
 
     switch(aindex)
       {

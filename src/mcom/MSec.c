@@ -887,7 +887,6 @@ int MSecMD5GetDigest(
 
   {
   int index;
-  int len;
 
   char tmpBuf[MMAX_BUFFER];
 
@@ -912,8 +911,6 @@ int MSecMD5GetDigest(
   /* NOTE:  MD5(SrcBuf,strlen(SrcBuf),tmpLine); */
 
   CSString[0] = '\0';
-
-  len = strlen(CSKeyString) + 1 + strlen(DataString);
 
   sprintf(tmpBuf,"%s%s",
     DataString,

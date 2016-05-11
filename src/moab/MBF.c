@@ -1106,7 +1106,6 @@ int MBFBestFit(
   char         NodeMap[MAX_MNODE];
 
   int          APC;
-  int          ANC;
 
   int          PC;
 
@@ -1127,7 +1126,6 @@ int MBFBestFit(
 
   memcpy(LBFQueue,BFQueue,sizeof(LBFQueue));
 
-  ANC = BFNodeCount;
   APC = BFProcCount;
 
   while (1)

@@ -150,8 +150,6 @@ int ServerDemonize()
   int   pid;
 #endif /* __NT */
 
-  FILE *fp;
-
   const char *FName = "ServerDemonize";
 
   DBG(2,fALL) DPrint("%s()\n",
@@ -220,17 +218,14 @@ int ServerDemonize()
       /* disconnect stdin */
 
       fclose(stdin);
-      fp = fopen("/dev/null","r");
 
       /* disconnect stdout */
 
       fclose(stdout);
-      fp = fopen("/dev/null","w");
 
       /* disconnect stderr */
 
       fclose(stderr);
-      fp = fopen("/dev/null","w");
 
 #endif /* __NT */
       }

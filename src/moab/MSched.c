@@ -144,7 +144,6 @@ int MJobAllocMNL(
   char                AffinityLevel;
 
   int                 AffinityAvailNodeCount[10];
-  int                 AffinityAllocNodeCount[10];
 
   int                 AllocComplete;  /* boolean */
 
@@ -673,7 +672,6 @@ int MJobAllocMNL(
         break;
       }  /* END switch(ResourceIteration) */
 
-    AffinityAllocNodeCount[ResourceIteration] = 0;
 
     for (rqindex = 0;J->Req[rqindex] != NULL;rqindex++)
       {
@@ -1295,11 +1293,9 @@ int MJobSelectMNL(
   {
   int           ITC;
   int           INC;
-  int           IPC;
 
   int           PTC;
   int           PNC;
-  int           tmpPPC;
 
   int           AvailableTaskCount[MAX_MREQ_PER_JOB];
 
@@ -1309,7 +1305,6 @@ int MJobSelectMNL(
 
   int           TotalAvailPNC = 0;
   int           TotalAvailPTC = 0;
-  int           TotalAvailPPC = 0;
 
   int           PreempteeTCList[MAX_MJOB];
   int           PreempteeNCList[MAX_MJOB];
@@ -1418,7 +1413,6 @@ int MJobSelectMNL(
       &INC,
       &ITC);    
 
-    IPC = ITC * RQ->DRes.Procs;
 
     /* early feasibility check: feasible idle nodes found */
 
@@ -1564,11 +1558,9 @@ int MJobSelectMNL(
 
   PNC = 0;
   PTC = 0;
-  tmpPPC = 0;
 
   TotalAvailPNC = 0;
   TotalAvailPTC = 0;   
-  TotalAvailPPC = 0;
 
   if (PreemptNodesRequired == TRUE) 
     {
@@ -1730,7 +1722,6 @@ int MJobSelectMNL(
 
       TotalAvailPTC = 0;
       TotalAvailPNC = 0;
-      TotalAvailPPC = 0;
 
       /* inadequate feasible idle nodes located */
 
@@ -1741,7 +1732,6 @@ int MJobSelectMNL(
 
       TotalAvailPTC = TotalAvailITC;
       TotalAvailPNC = TotalAvailINC;
-      TotalAvailPPC = TotalAvailIPC;
 
       /* preempt tasks required */
 
@@ -2045,7 +2035,6 @@ int MJobSelectResourceSet(
   int EffSetCount[MAX_MATTR];
 
   double SetDistance[MAX_MATTR];
-  double MinDistance[MAX_MATTR];
 
   int    MinSetLoss[MAX_MATTR];
 
@@ -2316,7 +2305,6 @@ int MJobSelectResourceSet(
           {
           EffSetCount[sindex] = SetCount[sindex];
 
-          MinDistance[sindex] = 0.0;
           MinSetLoss[sindex]  = 0;
 
           for (sindex2 = sindex + 1;sindex2 < MaxSet;sindex2++)
@@ -7178,15 +7166,12 @@ int MSchedDiag(
 
   {
   char *BPtr;
-  int   BSpace;
-
   if ((S == NULL) || (SBuffer == NULL))
     {
     return(FAILURE);
     }
 
   BPtr   = SBuffer;
-  BSpace = SBufSize;
  
   BPtr[0] = '\0';
 
