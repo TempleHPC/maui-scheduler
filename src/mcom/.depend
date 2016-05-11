@@ -1,38 +1,13 @@
-MComm.o: MComm.c ../../include/moab.h ../../include/moab-local.h \
-  ../../include/mcom.h ../../include/msched.h \
-  ../../include/msched-version.h ../../include/msched-common.h \
-  ../../include/msched-llapi.h ../../include/moab-wiki.h \
-  ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
-  ../../include/mcom-proto.h
-MConst.o: MConst.c ../../include/moab.h ../../include/moab-local.h \
-  ../../include/mcom.h ../../include/msched.h \
-  ../../include/msched-version.h ../../include/msched-common.h \
-  ../../include/msched-llapi.h ../../include/moab-wiki.h \
-  ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
-  ../../include/mcom-proto.h
-MGrid.o: MGrid.c ../../include/moab.h ../../include/moab-local.h \
-  ../../include/mcom.h ../../include/msched.h \
-  ../../include/msched-version.h ../../include/msched-common.h \
-  ../../include/msched-llapi.h ../../include/moab-wiki.h \
-  ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
-  ../../include/mcom-proto.h
-MS3I.o: MS3I.c ../../include/moab.h ../../include/moab-local.h \
-  ../../include/mcom.h ../../include/msched.h \
-  ../../include/msched-version.h ../../include/msched-common.h \
-  ../../include/msched-llapi.h ../../include/moab-wiki.h \
-  ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
-  ../../include/mcom-proto.h
-MSec.o: MSec.c ../../include/moab.h ../../include/moab-local.h \
-  ../../include/mcom.h ../../include/msched.h \
-  ../../include/msched-version.h ../../include/msched-common.h \
-  ../../include/msched-llapi.h ../../include/moab-wiki.h \
-  ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
-  ../../include/mcom-proto.h
-MSU.o: MSU.c ../../include/moab.h ../../include/moab-local.h \
-  ../../include/mcom.h ../../include/msched.h \
-  ../../include/msched-version.h ../../include/msched-common.h \
-  ../../include/msched-llapi.h ../../include/moab-wiki.h \
-  ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
-  ../../include/mcom-proto.h
-MTComm.o: MTComm.c
-MXML.o: MXML.c ../../include/mcom.h
+# FastDep v2.1 for LAMMPS
+# Search path: .:..:../../include:/usr/local/maui/include
+#     8 sources
+#    11 includes
+#    13 depfiles
+MComm.o : MComm.c ../../include/msu.h ../../include/msched-common.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mg2.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MConst.o : MConst.c ../../include/msu.h ../../include/msched-common.h ../../include/moab-wiki.h ../../include/msched.h ../../include/moab-proto.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mg2.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MGrid.o : MGrid.c ../../include/msu.h ../../include/msched-common.h ../../include/moab-wiki.h ../../include/msched.h ../../include/moab-proto.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mg2.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MS3I.o : MS3I.c ../../include/msu.h ../../include/msched-common.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mg2.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MSec.o : MSec.c ../../include/msu.h ../../include/msched-common.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mg2.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MSU.o : MSU.c ../../include/msu.h ../../include/msched-common.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mg2.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MTComm.o : MTComm.c ../../include/msu.h
+MXML.o : MXML.c ../../include/mcom.h

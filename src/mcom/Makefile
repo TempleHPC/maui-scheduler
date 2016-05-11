@@ -39,7 +39,7 @@ uninstall:
 	$(CC) $(IP) $(DEFS) $(CFLAGS) $(SOURCE) -c $<
 
 dep .depend:
-	$(CC) -MM $(IP) $(DEFS) $(SOURCE) *.c > .depend
+	$(TOP)/tools/fastdep.exe $(IP) -- *.c > .depend
 
 sinclude .depend
 
