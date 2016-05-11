@@ -3353,18 +3353,20 @@ int MSchedOConfigShow(
 
   S = &MSched;
 
-  sprintf(Buffer,"%s%-30s  %s\n",
-    Buffer,
+  sprintf(temp_str,"%-30s  %s\n",
     MParam[pRMPollInterval],
-    MULToTString(S->RMPollInterval));    
+    MULToTString(S->RMPollInterval));
+  strcat(Buffer,temp_str);
 
   if (S->ComputeHost[0] != NULL)
     {
-    sprintf(Buffer,"%s%-30s  %s",Buffer,MParam[mcoComputeHosts],S->ComputeHost[0]);
+    sprintf(temp_str,"%-30s  %s",MParam[mcoComputeHosts],S->ComputeHost[0]);
+    strcat(Buffer,temp_str);
 
     for (index = 1;S->ComputeHost[index] != NULL;index++)
       {
-      sprintf(Buffer,"%s %s",Buffer,S->ComputeHost[index]);
+      sprintf(temp_str," %s",S->ComputeHost[index]);
+      strcat(Buffer,temp_str);
       }  /* END for (index) */
 
     strcat(Buffer,"\n");
@@ -3376,52 +3378,57 @@ int MSchedOConfigShow(
 
   if ((S->RMJobAggregationTime > 0) || VFlag)
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pJobAggregationTime],
+    sprintf(temp_str,"%-30s  %s\n",MParam[pJobAggregationTime],
       MULToTString(S->RMJobAggregationTime));    
+    strcat(Buffer,temp_str);
     }
 
   if (VFlag || (PIndex == -1) || (PIndex == pNAPolicy))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",
-      Buffer,
+    sprintf(temp_str,"%-30s  %s\n",
       MParam[pNAPolicy],
       MNAccessPolicy[MSched.DefaultNAccessPolicy]);
+    strcat(Buffer,temp_str);
     }
 
   if (VFlag || (PIndex == -1) || (MSched.AllocLocalityPolicy != malpNONE))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",
-      Buffer,
+    sprintf(temp_str,"%-30s  %s\n",
       MParam[mcoAllocLocalityPolicy],
       MAllocLocalityPolicy[MSched.AllocLocalityPolicy]);
+    strcat(Buffer,temp_str);
     }
 
   if (VFlag || (PIndex == -1) || (MSched.TimePolicy != mtpNONE))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",
-      Buffer,
+    sprintf(temp_str,"%-30s  %s\n",
       MParam[mcoTimePolicy],
       MTimePolicy[MSched.TimePolicy]);
+    strcat(Buffer,temp_str);
     }
 
   /* display security parameters */
 
-  sprintf(Buffer,"%s%-30s  %s",Buffer,MParam[mcoAdmin1Users],S->Admin1User[0]);
+  sprintf(temp_str,"%-30s  %s",MParam[mcoAdmin1Users],S->Admin1User[0]);
+  strcat(Buffer,temp_str);
 
   for (index = 1;S->Admin1User[index][0] != '\0';index++)
     {
-    sprintf(Buffer,"%s %s",Buffer,S->Admin1User[index]);
+    sprintf(temp_str," %s",S->Admin1User[index]);
+    strcat(Buffer,temp_str);
     }  /* END for (index) */
 
   strcat(Buffer,"\n");
 
   if (S->Admin2User[0][0] != '\0')
     {
-    sprintf(Buffer,"%s%-30s  %s",Buffer,MParam[mcoAdmin2Users],S->Admin2User[0]);
+    sprintf(temp_str,"%-30s  %s",MParam[mcoAdmin2Users],S->Admin2User[0]);
+    strcat(Buffer,temp_str);
 
     for (index = 1;S->Admin2User[index][0] != '\0';index++)
       {
-      sprintf(Buffer,"%s %s",Buffer,S->Admin2User[index]);
+      sprintf(temp_str," %s",S->Admin2User[index]);
+      strcat(Buffer,temp_str);
       }  /* END for (index) */
 
     strcat(Buffer,"\n");
@@ -3429,11 +3436,13 @@ int MSchedOConfigShow(
 
   if (S->Admin3User[0][0] != '\0')
     {
-    sprintf(Buffer,"%s%-30s  %s",Buffer,MParam[mcoAdmin3Users],S->Admin3User[0]);
+    sprintf(temp_str,"%-30s  %s",MParam[mcoAdmin3Users],S->Admin3User[0]);
+    strcat(Buffer,temp_str);
 
     for (index = 1;S->Admin3User[index][0] != '\0';index++)
       {
-      sprintf(Buffer,"%s %s",Buffer,S->Admin3User[index]);
+      sprintf(temp_str," %s",S->Admin3User[index]);
+      strcat(Buffer,temp_str);
       }  /* END for (index) */
 
     strcat(Buffer,"\n");
@@ -3441,11 +3450,13 @@ int MSchedOConfigShow(
 
   if (S->Admin4User[0][0] != '\0')
     {
-    sprintf(Buffer,"%s%-30s  %s",Buffer,MParam[mcoAdmin4Users],S->Admin4User[0]);
+    sprintf(temp_str,"%-30s  %s",MParam[mcoAdmin4Users],S->Admin4User[0]);
+    strcat(Buffer,temp_str);
 
     for (index = 1;S->Admin4User[index][0] != '\0';index++)
       {
-      sprintf(Buffer,"%s %s",Buffer,S->Admin4User[index]);
+      sprintf(temp_str," %s",S->Admin4User[index]);
+      strcat(Buffer,temp_str);
       }  /* END for (index) */
 
     strcat(Buffer,"\n");
@@ -3453,20 +3464,23 @@ int MSchedOConfigShow(
 
   if ((S->AdminHost[0][0] != '\0') || (VFlag || (PIndex == -1) || (PIndex == mcoAdminHosts)))
     {
-    sprintf(Buffer,"%s%-30s  %s",Buffer,MParam[mcoAdminHosts],S->AdminHost[0]);
+    sprintf(temp_str,"%-30s  %s",MParam[mcoAdminHosts],S->AdminHost[0]);
+    strcat(Buffer,temp_str);
 
     for (index = 1;index < MAX_MADMINHOSTS;index++)
       {
       if (S->AdminHost[index][0] == '\0')
         break;
 
-      sprintf(Buffer,"%s  %s",Buffer,S->AdminHost[index]);
+      sprintf(temp_str,"  %s",S->AdminHost[index]);
+      strcat(Buffer,temp_str);
       }  /* END for (index) */
 
     strcat(Buffer,"\n");
     }
 
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pNodePollFrequency],S->NodePollFrequency);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pNodePollFrequency],S->NodePollFrequency);
+  strcat(Buffer,temp_str);
 
   if ((PIndex == pDisplayFlags) || 
       (S->DisplayFlags != 0) || (VFlag || (PIndex == -1)))
@@ -3486,71 +3500,93 @@ int MSchedOConfigShow(
         }
       }
 
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pDisplayFlags],tmpLine);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pDisplayFlags],tmpLine);
+    strcat(Buffer,temp_str);
     }  /* END if ((PIndex == pDisplayFlags) || ...) */
 
   if ((S->DefaultDomain[0] != '\0') || 
       (VFlag || (PIndex == -1) || (PIndex == pDefaultDomain)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pDefaultDomain],S->DefaultDomain);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pDefaultDomain],S->DefaultDomain);
+    strcat(Buffer,temp_str);
     }
 
   if (!strcmp(S->DefaultClassList,DEFAULT_CLASSLIST) || 
      (VFlag || (PIndex == -1) || (PIndex == pDefaultClassList)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pDefaultClassList],S->DefaultClassList);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pDefaultClassList],S->DefaultClassList);
+    strcat(Buffer,temp_str);
     }
 
   if ((S->NodeTypeFeatureHeader[0] != '\0') || 
       (VFlag || (PIndex == -1) || (PIndex == pNodeTypeFeatureHeader)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pNodeTypeFeatureHeader],S->NodeTypeFeatureHeader);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pNodeTypeFeatureHeader],S->NodeTypeFeatureHeader);
+    strcat(Buffer,temp_str);
     }
 
   if ((S->ProcSpeedFeatureHeader[0] != '\0') || 
       (VFlag || (PIndex == -1) || (PIndex == pProcSpeedFeatureHeader)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pProcSpeedFeatureHeader],S->ProcSpeedFeatureHeader);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pProcSpeedFeatureHeader],S->ProcSpeedFeatureHeader);
+    strcat(Buffer,temp_str);
     }
 
   if ((S->PartitionFeatureHeader[0] != '\0') || 
       (VFlag || (PIndex == -1) || (PIndex == pPartitionFeatureHeader)))
     {
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pPartitionFeatureHeader],S->PartitionFeatureHeader);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pPartitionFeatureHeader],S->PartitionFeatureHeader);
+    strcat(Buffer,temp_str);
     }
 
   /* general sched config */
 
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[mcoDeferTime],MULToTString(S->DeferTime));
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pDeferCount],S->DeferCount);
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pDeferStartCount],S->DeferStartCount);
+  sprintf(temp_str,"%-30s  %s\n",MParam[mcoDeferTime],MULToTString(S->DeferTime));
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pDeferCount],S->DeferCount);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pDeferStartCount],S->DeferStartCount);
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pJobPurgeTime],S->JobPurgeTime);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pNodePurgeTime],S->NodePurgeTime);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pJobPurgeTime],S->JobPurgeTime);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pNodePurgeTime],S->NodePurgeTime);
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pAPIFailureThreshhold],S->APIFailureThreshhold);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pAPIFailureThreshhold],S->APIFailureThreshhold);
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pNodeSyncDeadline],S->NodeSyncDeadline);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pJobSyncDeadline],S->JobSyncDeadline);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pJobMaxOverrun],MULToTString(S->JobMaxOverrun));
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pNodeSyncDeadline],S->NodeSyncDeadline);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pJobSyncDeadline],S->JobSyncDeadline);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pJobMaxOverrun],MULToTString(S->JobMaxOverrun));
+  strcat(Buffer,temp_str);
 
   if ((PIndex == pNodeMaxLoad) ||
      (S->DefaultN.MaxLoad > 0.0) || VFlag || (PIndex == -1))
     {
-    sprintf(Buffer,"%s%-30s  %.1lf\n",Buffer,MParam[pNodeMaxLoad],S->DefaultN.MaxLoad);
+    sprintf(temp_str,"%-30s  %.1lf\n",MParam[pNodeMaxLoad],S->DefaultN.MaxLoad);
+    strcat(Buffer,temp_str);
     }
 
   strcat(Buffer,"\n");
 
   /* display stat graph parameters */
 
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pPlotMinTime],MStat.P.MinTime);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pPlotMaxTime],MStat.P.MaxTime);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pPlotTimeScale],MStat.P.TimeStepCount);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMinTime],MStat.P.MinTime);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMaxTime],MStat.P.MaxTime);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotTimeScale],MStat.P.TimeStepCount);
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pPlotMinNode],MStat.P.MinNode);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pPlotMaxNode],MStat.P.MaxNode);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pPlotNodeScale],MStat.P.NodeStepCount);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMinNode],MStat.P.MinNode);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMaxNode],MStat.P.MaxNode);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotNodeScale],MStat.P.NodeStepCount);
+  strcat(Buffer,temp_str);
 
   DBG(4,fUI) DPrint("INFO:     plot parameters displayed\n");
 

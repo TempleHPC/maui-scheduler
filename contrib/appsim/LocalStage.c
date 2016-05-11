@@ -13,6 +13,7 @@ int MASLSJobDestroy(mjob_t *);
 int MASLSJobShow(mjob_t *,char *);
 int MASLSJobCreate(mjob_t *,char *);
 int MASLSJobConfig(mjob_t *,char *);
+char temp_str[1024];
 
 
 
@@ -300,20 +301,20 @@ int MASLSJobShow(
 
   if (D->IFileName[0] != '\0')
     {
-    sprintf(Buffer,"%sINPUT:   File: %s:%d over %s\n",
-      Buffer,
+    sprintf(temp_str,"INPUT:   File: %s:%d over %s\n",
       D->IFileName,
       D->IFileSize,
       (D->INetRes != NULL) ? D->INetRes->Name : "DEFAULT");
+    strcat(Buffer,temp_str);
     }
 
   if (D->OFileName[0] != '\0')
     {
-    sprintf(Buffer,"%sOUTPUT:  File: %s:%d over %s\n",
-      Buffer,
+    sprintf(temp_str,"OUTPUT:  File: %s:%d over %s\n",
       D->OFileName,
       D->OFileSize,
       (D->ONetRes != NULL) ? D->ONetRes->Name : "DEFAULT");
+    strcat(Buffer,temp_str);
     }
 
   return(SUCCESS);

@@ -973,9 +973,9 @@ int UIJobShow(
       if (tindex > 0)
         strcat(Line,",");
  
-      sprintf(Line,"%s %ld",
-        Line,
+      sprintf(temp_str," %ld",
         J->SpecWCLimit[tindex]);
+      strcat(Line,temp_str);
       }  /* END for (tindex) */
  
     MUSNPrintF(&BPtr,&BSpace,"%s",
@@ -1034,9 +1034,9 @@ int UIJobShow(
         if (tindex > 0)
           strcat(Line,",");
  
-        sprintf(Line,"%s %d",
-          Line,
+        sprintf(temp_str," %d",
           RQ->TaskRequestList[tindex]);
+        strcat(Line,temp_str);
         }  /* END for (tindex) */
  
       MUSNPrintF(&BPtr,&BSpace,"%s",
@@ -1868,10 +1868,10 @@ int UIJobShow(
  
         if (Flags & (1 << mcmVerbose))
           {
-          sprintf(MsgBuf,"%s%-24s rejected : %s\n",
-            MsgBuf,
+          sprintf(temp_str,"%-24s rejected : %s\n",
             N->Name,
             MAllocRejType[marState]);
+          strcat(MsgBuf,temp_str);
           }
         }
       else
@@ -1897,10 +1897,10 @@ int UIJobShow(
  
           if (Flags & (1 << mcmVerbose))
             {
-            sprintf(MsgBuf,"%s%-24s accepted : %d tasks supported\n",
-              MsgBuf,
+            sprintf(temp_str,"%-24s accepted : %d tasks supported\n",
               N->Name,
               TasksAllowed);
+            strcat(MsgBuf,temp_str);
             }
           }
         else
@@ -1909,10 +1909,10 @@ int UIJobShow(
  
           if (Flags & (1 << mcmVerbose))
             {
-            sprintf(MsgBuf,"%s%-24s rejected : %s\n",
-              MsgBuf,
+            sprintf(temp_str,"%-24s rejected : %s\n",
               N->Name,
               MAllocRejType[rindex]); 
+            strcat(MsgBuf,temp_str);
             }
           }
         }
@@ -2901,8 +2901,8 @@ int MUIGridCtl(
             {
             MACLClear(SR->ACL,maDuration);
  
-            sprintf(S->SBuffer,"%sMAXTIME set to DEFAULT\n",
-              S->SBuffer);
+            sprintf(temp_str,"MAXTIME set to DEFAULT\n");
+            strcat(S->SBuffer,temp_str);
             }
           else
             {
@@ -2919,9 +2919,9 @@ int MUIGridCtl(
               (1 << maclRequired),
               0);
  
-            sprintf(S->SBuffer,"%sMAXTIME set to %ld\n",
-              S->SBuffer,
+            sprintf(temp_str,"MAXTIME set to %ld\n",
               MaxTime);
+            strcat(S->SBuffer,temp_str);
             }
           }
         else if (!strncmp(ptr,"DAYS=",strlen("DAYS="))) 
@@ -2930,8 +2930,8 @@ int MUIGridCtl(
             {
             SR->Days = 0;
  
-            sprintf(S->SBuffer,"%sDAYS set to DEFAULT\n",
-              S->SBuffer);
+            sprintf(temp_str,"DAYS set to DEFAULT\n");
+            strcat(S->SBuffer,temp_str);
             }
           else
             {
@@ -2949,9 +2949,9 @@ int MUIGridCtl(
                 }
               }   /* END for (vindex) */
  
-            sprintf(S->SBuffer,"%sDAYS set to %s\n",
-              S->SBuffer,
+            sprintf(temp_str,"DAYS set to %s\n",
               ptr + strlen("DAYS="));
+            strcat(S->SBuffer,temp_str);
             }
           }
         else if (!strncmp(ptr,"STARTTIME=",strlen("STARTTIME=")))
@@ -2960,16 +2960,16 @@ int MUIGridCtl(
             {
             SR->StartTime = 0;
  
-            sprintf(S->SBuffer,"%sSTARTTIME set to DEFAULT\n",
-              S->SBuffer);
+            sprintf(temp_str,"STARTTIME set to DEFAULT\n");
+            strcat(S->SBuffer,temp_str);
             }
           else
             {
             SR->StartTime = MUTimeFromString(ptr + strlen("STARTTIME=")); 
  
-            sprintf(S->SBuffer,"%sSTARTTIME set to %s\n",
-              S->SBuffer,
+            sprintf(temp_str,"STARTTIME set to %s\n",
               MULToTString(SR->StartTime));
+            strcat(S->SBuffer,temp_str);
             }
           }
         else if (!strncmp(ptr,"ENDTIME=",strlen("ENDTIME=")))
@@ -2978,16 +2978,16 @@ int MUIGridCtl(
             {
             SR->EndTime = 0;
  
-            sprintf(S->SBuffer,"%sENDTIME set to DEFAULT\n",
-              S->SBuffer);
+            sprintf(temp_str,"ENDTIME set to DEFAULT\n");
+            strcat(S->SBuffer,temp_str);
             }
           else
             {
             SR->EndTime = MUTimeFromString(ptr + strlen("ENDTIME="));
  
-            sprintf(S->SBuffer,"%sENDTIME set to %s\n",
-              S->SBuffer,
+            sprintf(temp_str,"ENDTIME set to %s\n",
               MULToTString(SR->EndTime));
+            strcat(S->SBuffer,temp_str);
             }
           }
         else if (!strncmp(ptr,"TASKCOUNT=",strlen("TASKCOUNT=")))
@@ -2996,16 +2996,16 @@ int MUIGridCtl(
             {
             SR->TaskCount = 0;
  
-            sprintf(S->SBuffer,"%sTASKCOUNT set to DEFAULT\n",
-              S->SBuffer);
+            sprintf(temp_str,"TASKCOUNT set to DEFAULT\n");
+            strcat(S->SBuffer,temp_str);
             }
           else
             {
             SR->TaskCount = atoi(ptr + strlen("TASKCOUNT="));
  
-            sprintf(S->SBuffer,"%sTASKCOUNT set to %d\n",
-              S->SBuffer,
+            sprintf(temp_str,"TASKCOUNT set to %d\n",
               SR->TaskCount);
+            strcat(S->SBuffer,temp_str);
             }
           }
         else if (!strncmp(ptr,"CHARGEACCOUNT=",strlen("CHARGEACCOUNT="))) 
@@ -3039,16 +3039,16 @@ int MUIGridCtl(
             {
             SR->A = NULL;
  
-            sprintf(S->SBuffer,"%sCHARGEACCOUNT set to DEFAULT\n",
-              S->SBuffer);
+            sprintf(temp_str,"CHARGEACCOUNT set to DEFAULT\n");
+            strcat(S->SBuffer,temp_str);
             }
           else
             {
             MAcctAdd(ptr + strlen("CHARGEACCOUNT="),&SR->A);
  
-            sprintf(S->SBuffer,"%sCHARGEACCOUNT set to %s\n",
-              S->SBuffer,
+            sprintf(temp_str,"CHARGEACCOUNT set to %s\n",
               (SR->A != NULL) ? SR->A->Name : NONE);
+            strcat(S->SBuffer,temp_str);
             } 
           }    /* END else if () */
  
@@ -3068,9 +3068,9 @@ int MUIGridCtl(
  
         if (SRes[srindex].R[dindex] != NULL)
           {
-          sprintf(S->SBuffer,"%sINFO:     reservation %s recycled\n",
-            S->SBuffer,
+          sprintf(temp_str,"INFO:     reservation %s recycled\n",
             SRes[srindex].R[dindex]->Name);
+          strcat(S->SBuffer,temp_str);
  
           MResDestroy(&SRes[srindex].R[dindex]);
  
@@ -3443,8 +3443,8 @@ int MUINodeCtl(
         return(FAILURE);
         }
 
-      sprintf(tmpLine,"%ssuccessfully processed node create request\n",
-        tmpLine);
+      sprintf(temp_str,"successfully processed node create request\n");
+      strcat(tmpLine,temp_str);
  
       break;
 
@@ -3460,15 +3460,15 @@ int MUINodeCtl(
 
         if (MNodeRemove(N) == FAILURE)
           {
-          sprintf(tmpLine,"%sERROR:    cannot remove node '%s'\n",
-            tmpLine,
+          sprintf(temp_str,"ERROR:    cannot remove node '%s'\n",
             NodeName);
+          strcat(tmpLine,temp_str);
           }
         else
           {
-          sprintf(tmpLine,"%ssuccessfully removed node '%s'\n",
-            tmpLine,
+          sprintf(temp_str,"successfully removed node '%s'\n",
             NodeName);
+          strcat(tmpLine,temp_str);
           }
         }  /* END for (nindex) */
 
@@ -3490,9 +3490,9 @@ int MUINodeCtl(
 
             if ((aindex = MUGetIndex(ptr,MNodeAttr,FALSE,mnaNONE)) == mnaNONE)
               {
-              sprintf(tmpLine,"%sERROR:    invalid argument received (%s)\n",
-                tmpLine,
+              sprintf(temp_str,"ERROR:    invalid argument received (%s)\n",
                 ptr);
+              strcat(tmpLine,temp_str);
 
               MUISMsgAdd(S,tmpLine);
 
@@ -3507,22 +3507,22 @@ int MUINodeCtl(
 
               if (MNodeSetAttr(N,aindex,(void *)ptr,mdfString,mSet) == FAILURE)
                 {
-                sprintf(tmpLine,"%sERROR:    cannot set attribute '%s' to '%s' on node '%s'\n",
-                  tmpLine,
+                sprintf(temp_str,"ERROR:    cannot set attribute '%s' to '%s' on node '%s'\n",
                   MNodeAttr[aindex],
                   ptr, 
                   N->Name);
+                strcat(tmpLine,temp_str);
 
                 MUISMsgAdd(S,tmpLine);
 
                 return(FAILURE);
                 }
 
-              sprintf(tmpLine,"%sattribute '%s' set to '%s' on node '%s'\n",
-                tmpLine,
+              sprintf(temp_str,"attribute '%s' set to '%s' on node '%s'\n",
                 MNodeAttr[aindex],
                 ptr,
                 N->Name);
+              strcat(tmpLine,temp_str);
               }    /* END for (nindex) */
 
             ptr = MUStrTok(NULL,"=;",&TokPtr);
@@ -3530,9 +3530,9 @@ int MUINodeCtl(
             continue;
             }      /* END if (MSched.Mode == msmSim) */
 
-          sprintf(tmpLine,"%sERROR:    invalid argument received (%s)\n",
-            tmpLine,
+          sprintf(temp_str,"ERROR:    invalid argument received (%s)\n",
             ptr);
+          strcat(tmpLine,temp_str);
 
           MUISMsgAdd(S,tmpLine);
  
@@ -3582,8 +3582,8 @@ int MUINodeCtl(
 
             if ((ResID = MUStrTok(ptr,".",&TokPtr2)) == NULL)
               {
-              sprintf(S->SBuffer,"%sERROR:    no resource ID specified\n",
-                S->SBuffer);
+              sprintf(temp_str,"ERROR:    no resource ID specified\n");
+              strcat(S->SBuffer,temp_str);
  
               return(FAILURE);
               }
@@ -3592,17 +3592,17 @@ int MUINodeCtl(
 
             if ((ptr2 = MUStrTok(NULL,".",&TokPtr2)) == NULL)
               {
-              sprintf(S->SBuffer,"%sERROR:    no subcommand specified\n",
-                S->SBuffer);
+              sprintf(temp_str,"ERROR:    no subcommand specified\n");
+              strcat(S->SBuffer,temp_str);
  
               return(FAILURE);
               }
 
             if ((cindex = MUGetIndex(ptr2,NCModSubC,FALSE,ncmodscNONE)) == ncmodscNONE)
               {
-              sprintf(S->SBuffer,"%sERROR:    invalid modify subcommand specified (%s)\n",
-                S->SBuffer,
+              sprintf(temp_str,"ERROR:    invalid modify subcommand specified (%s)\n",
                 ptr2);
+              strcat(S->SBuffer,temp_str);
  
               return(FAILURE);
               }     
@@ -3634,8 +3634,8 @@ int MUINodeCtl(
                 {
                 /* generic resource overflow */
 
-                sprintf(S->SBuffer,"%sERROR:    generic resource overflow\n",
-                  S->SBuffer);
+                sprintf(temp_str,"ERROR:    generic resource overflow\n");
+                strcat(S->SBuffer,temp_str);
  
                 return(FAILURE);
                 }
@@ -3680,9 +3680,9 @@ int MUINodeCtl(
  
             if ((vindex = MUGetIndex(ptr,MNodeState,FALSE,mnsNONE)) == mnsNONE)
               {
-              sprintf(S->SBuffer,"%sERROR:    invalid node state received (%s)\n",
-                S->SBuffer,
+              sprintf(temp_str,"ERROR:    invalid node state received (%s)\n",
                 ptr);
+              strcat(S->SBuffer,temp_str);
  
               return(FAILURE);
               }
@@ -3775,11 +3775,11 @@ int MUISMsgClear(
  
     Align = (int)strlen(S->SBuffer) + (int)strlen(MCKeyword[mckArgs]);
  
-    sprintf(S->SBuffer,"%s%*s%s",
-      S->SBuffer,
+    sprintf(temp_str,"%*s%s",
       16 - (Align % 16),
       " ",
       MCKeyword[mckArgs]);
+    strcat(S->SBuffer,temp_str);
  
     S->SPtr = &S->SBuffer[strlen(S->SBuffer)];
     }
@@ -4923,10 +4923,10 @@ int UIJobStart(
  
   if (J->State != mjsIdle)
     {
-    sprintf(Buffer,"%sjob '%s' is in state '%s'  (state must be idle)\n",
-      Buffer,
+    sprintf(temp_str,"job '%s' is in state '%s'  (state must be idle)\n",
       J->Name,
       MJobState[J->State]); 
+    strcat(Buffer,temp_str);
  
     return(SUCCESS);
     }
@@ -4935,10 +4935,10 @@ int UIJobStart(
  
   if (J->EState != mjsIdle)
     {
-    sprintf(Buffer,"%sjob '%s' is in expected state '%s' (expected state must be idle)\n",
-      Buffer,
+    sprintf(temp_str,"job '%s' is in expected state '%s' (expected state must be idle)\n",
       J->Name,
       MJobState[J->EState]);
+    strcat(Buffer,temp_str);
  
     return(SUCCESS);
     }
@@ -4949,10 +4949,10 @@ int UIJobStart(
     {
     if (RQ->DRes.Procs * J->Request.TC > MPar[0].ARes.Procs)
       {
-      sprintf(Buffer,"%sjob cannot run  (insufficient idle procs:  %d needed  %d available)\n",
-        Buffer,
+      sprintf(temp_str,"job cannot run  (insufficient idle procs:  %d needed  %d available)\n",
         J->Request.TC * RQ->DRes.Procs,
         MPar[0].ARes.Procs);
+      strcat(Buffer,temp_str);
  
       return(SUCCESS);
       }
@@ -4971,9 +4971,9 @@ int UIJobStart(
           NULL,
           MSched.Time) == FAILURE)
       {
-      sprintf(Buffer,"%sjob cannot run (rejected by policy %s)\n",
-        Buffer,
+      sprintf(temp_str,"job cannot run (rejected by policy %s)\n",
         MPolicyRejection[PReason]); 
+      strcat(Buffer,temp_str);
  
       return(SUCCESS);
       }
@@ -5085,8 +5085,8 @@ int UIJobStart(
  
     if (pindex == MAX_MPAR)
       {
-      sprintf(Buffer,"%sjob cannot run (available nodes do not meet requirements in any partition)\n",
-        Buffer);
+      sprintf(temp_str,"job cannot run (available nodes do not meet requirements in any partition)\n");
+      strcat(Buffer,temp_str);
  
       return(SUCCESS);
       }
@@ -5108,15 +5108,15 @@ int UIJobStart(
 
         /* append domain and try again */
  
-        sprintf(tmpName,"%s%s",
-          tmpName,
+        sprintf(temp_str,"%s",
           MSched.DefaultDomain);
+        strcat(tmpName,temp_str);
  
         if (MNodeFind(tmpName,&N) != SUCCESS)
           {
-          sprintf(Buffer,"%sERROR:  cannot locate node '%s' in specified nodelist\n",
-            Buffer,
+          sprintf(temp_str,"ERROR:  cannot locate node '%s' in specified nodelist\n",
             ptr);
+          strcat(Buffer,temp_str);
  
           return(FAILURE);
           }
@@ -5138,10 +5138,10 @@ int UIJobStart(
  
     if (nodeindex < (int)(RQ->DRes.Procs * J->Request.TC))
       {
-      sprintf(Buffer,"%sERROR:  incorrect number of procs in hostlist. (%d requested  %d specified)\n",
-        Buffer,
+      sprintf(temp_str,"ERROR:  incorrect number of procs in hostlist. (%d requested  %d specified)\n",
         J->Request.TC * RQ->DRes.Procs,
         nodeindex);
+      strcat(Buffer,temp_str);
  
       return(FAILURE);
       }
@@ -5160,9 +5160,9 @@ int UIJobStart(
     DBG(2,fUI) DPrint("INFO:     cannot allocate nodes for job '%s'\n",
       J->Name);
  
-    sprintf(Buffer,"%sERROR:    cannot allocate nodes for job '%s'\n",
-      Buffer,
+    sprintf(temp_str,"ERROR:    cannot allocate nodes for job '%s'\n",
       J->Name);
+    strcat(Buffer,temp_str);
  
     return(SUCCESS);
     }
@@ -5175,11 +5175,11 @@ int UIJobStart(
       J->Name,
       Auth);
  
-    sprintf(Buffer,"%sjob '%s' cannot be started on %d proc%s\n",
-      Buffer, 
+    sprintf(temp_str,"job '%s' cannot be started on %d proc%s\n",
       J->Name,
       PC,
       (PC == 1) ? "" : "s");
+    strcat(Buffer,temp_str);
  
     return(SUCCESS);
     }
@@ -5188,11 +5188,11 @@ int UIJobStart(
     J->Name,
     Auth);
  
-  sprintf(Buffer,"%sjob '%s' started on %d proc%s\n",
-    Buffer,
+  sprintf(temp_str,"job '%s' started on %d proc%s\n",
     J->Name,
     PC,
     (PC == 1) ? "" : "s");
+  strcat(Buffer,temp_str);
  
   if (MSched.Mode == msmNormal)
     {
@@ -6461,8 +6461,8 @@ int UIResCreate(
     {
     DBG(3,fUI) DPrint("WARNING:  cannot create reservation (invalid timeframe)\n");
 
-    sprintf(SBuffer,"%scannot create reservation (invalid timeframe)\n",
-      SBuffer);
+    sprintf(temp_str,"cannot create reservation (invalid timeframe)\n");
+    strcat(SBuffer,temp_str);
 
     return(FAILURE);
     }
@@ -6573,9 +6573,9 @@ int UIResCreate(
           *SBufSize,
           &tmpRQ) == FAILURE)
       {
-      sprintf(SBuffer,"%sERROR:    cannot select requested tasks for '%s'\n",
-        SBuffer,
+      sprintf(temp_str,"ERROR:    cannot select requested tasks for '%s'\n",
         Pattern);
+      strcat(SBuffer,temp_str);
 
       return(FAILURE);
       }
@@ -6594,9 +6594,9 @@ int UIResCreate(
           &NodeCount,
           SBuffer) == FAILURE)
       {
-      sprintf(SBuffer,"%sERROR:    cannot determine nodelist for '%s'\n",
-        SBuffer,
+      sprintf(temp_str,"ERROR:    cannot determine nodelist for '%s'\n",
         Pattern);
+      strcat(SBuffer,temp_str);
 
       return(FAILURE);
       }
@@ -6885,17 +6885,17 @@ int UIResCreate(
           ResPLevel,
           &tmpTime) == FAILURE)
       {
-      sprintf(SBuffer,"%sERROR:    limits prevent reservation creation\n",
-        SBuffer);
+      sprintf(temp_str,"ERROR:    limits prevent reservation creation\n");
+      strcat(SBuffer,temp_str);
 
       return(FAILURE);
       }
 
     if (tmpTime != StartTime)
       {
-      sprintf(SBuffer,"%sERROR:    cannot reserve requested resources until %s\n",
-        SBuffer,
+      sprintf(temp_str,"ERROR:    cannot reserve requested resources until %s\n",
         MULToTString(tmpTime - MSched.Time));
+      strcat(SBuffer,temp_str);
 
       return(FAILURE);
       }
@@ -6935,11 +6935,11 @@ int UIResCreate(
       NodeCount,
       (NodeCount == 1) ? "" : "s");
 
-    sprintf(SBuffer,"%scannot create reservation for '%s' on %d node%s\n",
-      SBuffer,
+    sprintf(temp_str,"cannot create reservation for '%s' on %d node%s\n",
       Name,
       NodeCount,
       (NodeCount == 1) ? "" : "s");
+    strcat(SBuffer,temp_str);
 
     return(FAILURE);
     }  /* END if (MResCreate() == FAILURE) */
@@ -6987,10 +6987,10 @@ int UIResCreate(
 
   for (nindex = 0;nindex < NodeCount;nindex++)
     {
-    sprintf(SBuffer,"%s%s:%d\n",
-      SBuffer,
+    sprintf(temp_str,"%s:%d\n",
       NodeList[nindex].N->Name,
       NodeList[nindex].TC);
+    strcat(SBuffer,temp_str);
     }  /* END for (nindex) */
 
   sprintf(Message,"RESERVATIONCREATION:  %s USER %s %ld %ld %d %d\n",
@@ -7371,10 +7371,10 @@ int __MUIJobToXML(
       {
       N = J->NodeList[nindex].N;
 
-      sprintf(tmpLine,"%s%d:%d;",
-        tmpLine,
+      sprintf(temp_str,"%d:%d;",
         N->FrameIndex,
         N->SlotIndex);
+      strcat(tmpLine,temp_str);
 
       DBG(4,fUI) DPrint("INFO:     adding node '%s' of job '%s' to buffer\n",
         N->Name,
@@ -7891,8 +7891,8 @@ int MUIJobDiagnose(
 
   Truncated = FALSE;
 
-  sprintf(Buffer,"%sDiagnosing Jobs\n",
-    Buffer);
+  sprintf(temp_str,"Diagnosing Jobs\n");
+  strcat(Buffer,temp_str);
 
   /* FORMAT:       NAME STATE PARTI PROCS QOS WCLI RESER MPR USR GRP ACC QTIM NET OPS ARC MEM DSK CLAS FEAT */
 
@@ -7972,8 +7972,7 @@ int MUIJobDiagnose(
           }
         }
 
-      sprintf(Buffer,"%s%-18s %8.8s %3.3s %4d %3.3s %11s %1d %4d %8.8s %8.8s %8.8s %11s %8s %6s %6s %6s %6s %6s %11s ",
-        Buffer,
+      sprintf(temp_str,"%-18s %8.8s %3.3s %4d %3.3s %11s %1d %4d %8.8s %8.8s %8.8s %11s %8s %6s %6s %6s %6s %6s %11s ",
         J->Name,
         MJobState[J->State],
         MAList[ePartition][RQ->PtIndex],
@@ -7993,10 +7992,11 @@ int MUIJobDiagnose(
         DiskLine,
         ProcLine,
         ClassLine);
+      strcat(Buffer,temp_str);
 
-      sprintf(Buffer,"%s%s\n",
-        Buffer,
+      sprintf(temp_str,"%s\n",
         MUMAList(eFeature,RQ->ReqFBM,sizeof(RQ->ReqFBM)));
+      strcat(Buffer,temp_str);
       }  /* END if (Truncated == FALSE) */
 
     TotalJobCount++;
@@ -8014,11 +8014,11 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  job '%s' utilizes more procs than dedicated (%.2lf > %d)\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' utilizes more procs than dedicated (%.2lf > %d)\n",
             J->Name,
             RQ->URes.Procs / 100.0,
             RQ->DRes.Procs);
+          strcat(Buffer,temp_str);
           }
         }
 
@@ -8026,11 +8026,11 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  job '%s' utilizes more memory than dedicated (%d > %d)\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' utilizes more memory than dedicated (%d > %d)\n",
             J->Name,
             RQ->URes.Mem,
             RQ->DRes.Mem);
+          strcat(Buffer,temp_str);
           }
         }
 
@@ -8041,11 +8041,11 @@ int MUIJobDiagnose(
         if (Truncated == FALSE)
           {
 /*
-          sprintf(Buffer,"%sWARNING:  job '%s' unsynchronized proc usage stats (RM: %ld  Sample: %ld)\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' unsynchronized proc usage stats (RM: %ld  Sample: %ld)\n",
             J->Name,
             (long)RQ->LURes.Procs,
             (long)J->PSUtilized);
+          strcat(Buffer,temp_str);
  */
           }
         }
@@ -8055,13 +8055,13 @@ int MUIJobDiagnose(
         if (Truncated == FALSE)
           {
 /*
-          sprintf(Buffer,"%sWARNING:  job '%s' walltime tracking is corrupt (W:%ld + S:%ld) != (P:%ld - S:%ld)\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' walltime tracking is corrupt (W:%ld + S:%ld) != (P:%ld - S:%ld)\n",
             J->Name,
             J->AWallTime,
             J->SWallTime,
             MSched.Time,
             J->StartTime);
+          strcat(Buffer,temp_str);
  */
           }
         }
@@ -8076,11 +8076,11 @@ int MUIJobDiagnose(
         {
         if ((J->State != mjsRunning) || (J->EState != mjsStarting))
           {
-          sprintf(Buffer,"%sWARNING:  job '%s' state '%s' does not match expected state '%s'\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' state '%s' does not match expected state '%s'\n",
             J->Name,
             MJobState[J->State],
             MJobState[J->EState]);
+          strcat(Buffer,temp_str);
           }
         }
       }
@@ -8091,9 +8091,9 @@ int MUIJobDiagnose(
       {
       if (Truncated == FALSE)
         {
-        sprintf(Buffer,"%sWARNING:  job '%s' has invalid pmask\n",
-          Buffer,
+        sprintf(temp_str,"WARNING:  job '%s' has invalid pmask\n",
           J->Name);
+        strcat(Buffer,temp_str);
         }
       }
 
@@ -8109,9 +8109,9 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  active job '%s' has no reservation\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  active job '%s' has no reservation\n",
             J->Name);
+          strcat(Buffer,temp_str);
           }
         }
 
@@ -8127,9 +8127,9 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  active job '%s' is not in MAQ table\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  active job '%s' is not in MAQ table\n",
             J->Name);
+          strcat(Buffer,temp_str);
           }
         }
 
@@ -8141,11 +8141,11 @@ int MUIJobDiagnose(
           {
           strcpy(WCLimit,MULToTString(J->WCLimit));
 
-          sprintf(Buffer,"%sWARNING:  job '%s' has exceeded wallclock limit (%s > %s) \n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' has exceeded wallclock limit (%s > %s) \n",
             J->Name,
             MULToTString(MSched.Time - J->StartTime),
             WCLimit);
+          strcat(Buffer,temp_str);
           }
         }    /* END if MSched.Time */
       }      /* END if J->State    */
@@ -8157,10 +8157,10 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  job '%s' has failed to start %d times\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  job '%s' has failed to start %d times\n",
             J->Name,
             J->StartCount);
+          strcat(Buffer,temp_str);
           }
         }    /* END if J->StartCount */
       }      /* END else if J->State */
@@ -8201,9 +8201,9 @@ int MUIJobDiagnose(
 
     if ((Truncated == FALSE) && (Flags & (1 << mcmVerbose)))
       {
-      sprintf(Buffer,"%s\n\nMAQ table (%d job slots)\n",
-        Buffer,
+      sprintf(temp_str,"\n\nMAQ table (%d job slots)\n",
         MSched.M[mxoJob]);
+      strcat(Buffer,temp_str);
       }
 
     RunListCount = 0;
@@ -8225,11 +8225,11 @@ int MUIJobDiagnose(
 
       if ((Truncated == FALSE) && (Flags & (1 << mcmVerbose)))
         {
-        sprintf(Buffer,"%sMAQ[%02d] --> Job[%03d] '%s'\n",
-          Buffer,
+        sprintf(temp_str,"MAQ[%02d] --> Job[%03d] '%s'\n",
           jindex,
           MAQ[jindex],
           J->Name);
+        strcat(Buffer,temp_str);
         }
 
       /* verify node consistency */
@@ -8265,13 +8265,13 @@ int MUIJobDiagnose(
             {
             if (Truncated == FALSE)
               {
-              sprintf(Buffer,"%sWARNING:  job '%s' with partition mask %s has node %s allocated from partition %s\n",
-                Buffer,
+              sprintf(temp_str,"WARNING:  job '%s' with partition mask %s has node %s allocated from partition %s\n",
                 J->Name,
                 (J->PAL[0] == 0) ?
                   ALL : MUListAttrs(ePartition,J->PAL[0]),
                 N->Name,
                 MAList[ePartition][N->PtIndex]);
+              strcat(Buffer,temp_str);
               }
             }
 
@@ -8283,12 +8283,12 @@ int MUIJobDiagnose(
             {
             if (Truncated == FALSE)
               {
-              sprintf(Buffer,"%sWARNING:  active job '%s' has inactive node %s allocated for %s (node state: '%s')\n",
-                Buffer,
+              sprintf(temp_str,"WARNING:  active job '%s' has inactive node %s allocated for %s (node state: '%s')\n",
                 J->Name,
                 N->Name,
                 MULToTString(MSched.Time - J->StartTime),
                 MAList[eNodeState][N->State]);
+              strcat(Buffer,temp_str);
               }
             }    /* END if N->State != mnsBusy) */
           }      /* END for (nindex)            */
@@ -8300,11 +8300,11 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  active job '%s' has inconsistent node allocation  (nodes: %d  nodelist size: %d)\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  active job '%s' has inconsistent node allocation  (nodes: %d  nodelist size: %d)\n",
             J->Name,
             J->NodeCount,
             NodeCount);
+          strcat(Buffer,temp_str);
           }
         }
 
@@ -8312,36 +8312,36 @@ int MUIJobDiagnose(
         {
         if (Truncated == FALSE)
           {
-          sprintf(Buffer,"%sWARNING:  active job %s has inconsistent proc allocation  (procs: %d  nodelist procs: %d)\n",
-            Buffer,
+          sprintf(temp_str,"WARNING:  active job %s has inconsistent proc allocation  (procs: %d  nodelist procs: %d)\n",
             J->Name,
             MJobGetProcCount(J),
             pcount);
+          strcat(Buffer,temp_str);
           }
         }
 
       RunListCount++;
       }  /* END for (jindex) */
 
-    sprintf(Buffer,"%s\n\nTotal Jobs: %d  Active Jobs: %d\n",
-      Buffer,
+    sprintf(temp_str,"\n\nTotal Jobs: %d  Active Jobs: %d\n",
       TotalJobCount,
       ActiveJobCount);
+    strcat(Buffer,temp_str);
 
     if (TotalJobCount != LinkJobCount)
       {
-      sprintf(Buffer,"%sWARNING:  job table is corrupt (total jobs (%d) != linked jobs (%d))\n",
-        Buffer,
+      sprintf(temp_str,"WARNING:  job table is corrupt (total jobs (%d) != linked jobs (%d))\n",
         TotalJobCount,
         LinkJobCount);
+      strcat(Buffer,temp_str);
       }
 
     if (ActiveJobCount != RunListCount)
       {
-      sprintf(Buffer,"%sWARNING:  active job table is corrupt (active jobs (%d) != active queue size (%d))\n",
-        Buffer,
+      sprintf(temp_str,"WARNING:  active job table is corrupt (active jobs (%d) != active queue size (%d))\n",
         ActiveJobCount,
         RunListCount);
+      strcat(Buffer,temp_str);
       }
 
     /* verify reservations ??? */
@@ -9446,17 +9446,17 @@ int ConfigShow(
 
   ptr[0] = '\0';
 
-  sprintf(ptr,"%s# %s version %s (PID: %d)\n",
-    ptr,
+  sprintf(temp_str,"# %s version %s (PID: %d)\n",
     MSCHED_NAME,
     MSCHED_VERSION,
     MOSGetPID()
     );
+  strcat(ptr,temp_str);
 
   if (MSched.CrashMode == TRUE)
     {
-    sprintf(ptr,"%s# CRASHMODE initiated\n\n",
-      ptr);
+    sprintf(temp_str,"# CRASHMODE initiated\n\n");
+    strcat(ptr,temp_str);
     }
 
   /* policies */
@@ -9686,9 +9686,9 @@ int UIResDestroy(
       DBG(3,fUI) DPrint("ALERT:    cannot locate reservation '%s'\n",
         RID);
 
-      sprintf(Buffer,"%sERROR:    cannot locate reservation '%s'\n",
-        Buffer,
+      sprintf(temp_str,"ERROR:    cannot locate reservation '%s'\n",
         RID);
+      strcat(Buffer,temp_str);
 
       continue;
       }
@@ -9724,10 +9724,10 @@ int UIResDestroy(
         Auth,
         RID);
 
-      sprintf(Buffer,"%sERROR:     user %s is not authorized to release reservation '%s'\n",
-        Buffer,
+      sprintf(temp_str,"ERROR:     user %s is not authorized to release reservation '%s'\n",
         Auth,
         RID);
+      strcat(Buffer,temp_str);
 
       continue;
       }
@@ -9740,10 +9740,10 @@ int UIResDestroy(
       MResType[rtype],
       RID);
 
-    sprintf(Buffer,"%sreleased %s reservation '%s'\n",
-      Buffer,
+    sprintf(temp_str,"released %s reservation '%s'\n",
       MResType[rtype],
       RID);
+    strcat(Buffer,temp_str);
 
     if (MSched.Mode != msmSim)
       {
@@ -10197,8 +10197,8 @@ int UIResDiagnose(
   DBG(4,fUI) DPrint("INFO:     diagnosing reservation table (%d slots)\n",
     MAX_MRES);
 
-  sprintf(SBuffer,"%sDiagnosing Reservations\n",
-    SBuffer);
+  sprintf(temp_str,"Diagnosing Reservations\n");
+  strcat(SBuffer,temp_str);
 
   MResShowState(NULL,Flags,SBuffer,*SBufSize,mAdd);
 
@@ -10298,23 +10298,22 @@ int UIResDiagnose(
 
   if (!strcmp(DiagOpt,NONE))
     {
-    sprintf(SBuffer,"%s\nActive Reserved Processors: %d\n",
-      SBuffer,
+    sprintf(temp_str,"\nActive Reserved Processors: %d\n",
       TotalResAPC);
+    strcat(SBuffer,temp_str);
 
     if ((TotalResAPC + TotalResStatePC) != MPar[0].DRes.Procs)
       {
-      sprintf(SBuffer,"%sWARNING:  reservation table is corrupt:  active procs reserved does not equal active procs detected (%d != %d)\n",
-        SBuffer,
+      sprintf(temp_str,"WARNING:  reservation table is corrupt:  active procs reserved does not equal active procs detected (%d != %d)\n",
         TotalResAPC + TotalResStatePC,
         MPar[0].DRes.Procs);
       }
 
     if (ResLast > ResEnd)
       {
-      sprintf(SBuffer,"%sWARNING:  reservation table is corrupt:  empty slot detected (slot: %d) before end of table\n",
-        SBuffer,
+      sprintf(temp_str,"WARNING:  reservation table is corrupt:  empty slot detected (slot: %d) before end of table\n",
         ResEnd);
+      strcat(SBuffer,temp_str);
       }
 
     MResDiagGrid(SBuffer,(int)*SBufSize,0);

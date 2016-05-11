@@ -147,7 +147,8 @@ int MSUCommWrapMessage(
     msg);
 
   backup = buffer[9];
-  sprintf(buffer, "%08ld\n", (long)strlen(buffer+9));
+  long len = (long)strlen(buffer+9);
+  sprintf(buffer, "%08ld\n", len);
   buffer[9] = backup;
 
   return(strlen(buffer));

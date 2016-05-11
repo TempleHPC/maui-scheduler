@@ -2182,16 +2182,16 @@ char *__MCredShowLimit(
   if ((P->SLimit[PlIndex][PtIndex] == 0) || 
       (P->SLimit[PlIndex][PtIndex] == P->HLimit[PlIndex][PtIndex]))
     {
-    sprintf(Line,"%s%d",
-      Line,
+    sprintf(temp_str,"%d",
       P->HLimit[PlIndex][PtIndex]);
+    strcat(Line,temp_str);
     }
   else
     {
-    sprintf(Line,"%s%d,%d",
-      Line,
+    sprintf(temp_str,"%d,%d",
       P->SLimit[PlIndex][PtIndex],
       P->HLimit[PlIndex][PtIndex]);
+    strcat(Line,temp_str);
     }
 
   return(Line);
@@ -3268,12 +3268,12 @@ int MCredConfigShow(
 
     MOGetName(O,OIndex,&OName);
 
-    sprintf(Buffer,"%s%s[%s] %s%s\n",
-      Buffer,
+    sprintf(temp_str,"%s[%s] %s%s\n",
       MCredCfgParm[OIndex],
       OName,
       tmpLineC,
       tmpLineS);
+    strcat(Buffer,temp_str);
     }
  
   return(SUCCESS);
@@ -3320,10 +3320,10 @@ int MCredConfigLShow(
       continue;
       }
 
-    sprintf(Buf,"%s %s=%s",
-      Buf,
+    sprintf(temp_str," %s=%s",
       MCredAttr[AList[aindex]],
       tmpString);
+    strcat(Buf,temp_str);
     }  /* END for (aindex) */
 
   return(SUCCESS);

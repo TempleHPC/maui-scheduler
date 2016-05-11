@@ -42,7 +42,7 @@ typedef struct {
   int   AvgTransferDelay;
   } masnet1_t;
 
-
+char temp_str[1024];
 
 const char *MASNet1AttributeType[] = {
   NONE,
@@ -137,29 +137,29 @@ int MASNet1Show(
 
   Buffer[0] = '\0';
 
-  sprintf(Buffer,"%sResource %s  Type:  %s\n\n",
-    Buffer,
+  sprintf(temp_str,"Resource %s  Type:  %s\n\n",
     N->Name,
     "Network");
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%sState:  %s\n\n",
-    Buffer,
+  sprintf(temp_str,"State:  %s\n\n",
     (N->State == 1) ? "Active" : "Down");
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%sBandwidth:  %d MB/s\n",
-    Buffer,
+  sprintf(temp_str,"Bandwidth:  %d MB/s\n",
     N->Bandwidth);
+  strcat(Buffer,temp_str);
 
-  sprintf(Buffer,"%sUpTime:  %s    Data Transferred:  %d MB   Transfers Completed: %d\n",
-    Buffer,
+  sprintf(temp_str,"UpTime:  %s    Data Transferred:  %d MB   Transfers Completed: %d\n",
     MULToTString(N->Duration),
     N->MBTransferred,
     N->TransfersCompleted);
+  strcat(Buffer,temp_str);
   
-  sprintf(Buffer,"%sAvg Effective BW/Job: %6.2lf   Avg Delay/Job: %6.2lf\n",
-    Buffer,
+  sprintf(temp_str,"Avg Effective BW/Job: %6.2lf   Avg Delay/Job: %6.2lf\n",
     (N->TransfersCompleted > 0) ? N->AvgTransferBW / N->TransfersCompleted : 0.0,
     (N->TransfersCompleted > 0) ? (double)N->AvgTransferDelay / N->TransfersCompleted : 0.0);
+  strcat(Buffer,temp_str);
 
   strcat(Buffer,"\n");
 
@@ -184,14 +184,14 @@ int MASNet1Show(
       strcpy(tmpString,"N/A");
       }
 
-    sprintf(Buffer,"%s  Transaction[%d]  %s  %d of %d KB   %s -> %s\n",
-      Buffer,
+    sprintf(temp_str,"  Transaction[%d]  %s  %d of %d KB   %s -> %s\n",
       tindex,
       T->FileName,
       T->DataStaged,     
       T->FileSize,
       MULToTString((T->StartTime > 0) ? T->StartTime - MSched.Time : 0),
       tmpString);
+    strcat(Buffer,temp_str);
     }  /* END for tindex) */
 
   strcat(Buffer,"\n");            

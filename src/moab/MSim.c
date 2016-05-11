@@ -2501,12 +2501,17 @@ int MSimShow(
  
   char tmpLine[MAX_MLINE];
  
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pWorkloadTraceFile],S->WorkloadTraceFile);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pResourceTraceFile],S->ResourceTraceFile);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSimAutoShutdown],MPolicyMode[S->AutoShutdown]);
-  sprintf(Buffer,"%s%-30s  %ld\n",Buffer,MParam[pSimStartTime],S->StartTime);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSimScaleJobRunTime],(S->ScaleJobRunTime == TRUE) ?
+  sprintf(temp_str,"%-30s  %s\n",MParam[pWorkloadTraceFile],S->WorkloadTraceFile);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pResourceTraceFile],S->ResourceTraceFile);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSimAutoShutdown],MPolicyMode[S->AutoShutdown]);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %ld\n",MParam[pSimStartTime],S->StartTime);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSimScaleJobRunTime],(S->ScaleJobRunTime == TRUE) ?
     "TRUE" : "FALSE");
+  strcat(Buffer,temp_str);
  
   tmpLine[0] = '\0';
  
@@ -2521,27 +2526,41 @@ int MSimShow(
       }
     }   /* END for (index) */
  
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSimFlags],tmpLine);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSimFlags],tmpLine);
+  strcat(Buffer,temp_str);
  
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSimJobSubmissionPolicy],MSimQPolicy[S->JobSubmissionPolicy]);
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pSimInitialQueueDepth],S->InitialQueueDepth);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSimJobSubmissionPolicy],MSimQPolicy[S->JobSubmissionPolicy]);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pSimInitialQueueDepth],S->InitialQueueDepth);
+  strcat(Buffer,temp_str);
  
-  sprintf(Buffer,"%s%-30s  %.2lf\n",Buffer,MParam[pSimWCAccuracy],S->WCAccuracy);
-  sprintf(Buffer,"%s%-30s  %.2lf\n",Buffer,MParam[pSimWCAccuracyChange],S->WCAccuracyChange);
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pSimNodeCount],S->NodeCount);
-  sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pSimNCPolicy],MSimNCPolicy[S->NCPolicy]);
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pSimWCScalingPercent],S->WCScalingPercent);
+  sprintf(temp_str,"%-30s  %.2lf\n",MParam[pSimWCAccuracy],S->WCAccuracy);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %.2lf\n",MParam[pSimWCAccuracyChange],S->WCAccuracyChange);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pSimNodeCount],S->NodeCount);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %s\n",MParam[pSimNCPolicy],MSimNCPolicy[S->NCPolicy]);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pSimWCScalingPercent],S->WCScalingPercent);
+  strcat(Buffer,temp_str);
  
   if (S->ComRate != 0.0)
     {
-    sprintf(Buffer,"%s%-30s  %4.2f\n",Buffer,MParam[pComRate],S->ComRate);
-    sprintf(Buffer,"%s%-30s  %s\n",Buffer,MParam[pCommunicationType],MComType[S->CommunicationType]);
-    sprintf(Buffer,"%s%-30s  %4.2f\n",Buffer,MParam[pIntraFrameCost],S->IntraFrameCost);
-    sprintf(Buffer,"%s%-30s  %4.2f\n",Buffer,MParam[pInterFrameCost],S->InterFrameCost);
+    sprintf(temp_str,"%-30s  %4.2f\n",MParam[pComRate],S->ComRate);
+    strcat(Buffer,temp_str);
+    sprintf(temp_str,"%-30s  %s\n",MParam[pCommunicationType],MComType[S->CommunicationType]);
+    strcat(Buffer,temp_str);
+    sprintf(temp_str,"%-30s  %4.2f\n",MParam[pIntraFrameCost],S->IntraFrameCost);
+    strcat(Buffer,temp_str);
+    sprintf(temp_str,"%-30s  %4.2f\n",MParam[pInterFrameCost],S->InterFrameCost);
+    strcat(Buffer,temp_str);
     }
  
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pStopIteration],S->StopIteration);
-  sprintf(Buffer,"%s%-30s  %d\n",Buffer,MParam[pExitIteration],S->ExitIteration);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pStopIteration],S->StopIteration);
+  strcat(Buffer,temp_str);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pExitIteration],S->ExitIteration);
+  strcat(Buffer,temp_str);
  
   DBG(4,fSIM) DPrint("INFO:     simulation parameters displayed\n");
  

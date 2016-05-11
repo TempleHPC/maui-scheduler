@@ -4399,9 +4399,9 @@ int MJobReserve(
           J->Name,
           sindex,
           RQ->TaskRequestList[sindex]);
- 
-        sprintf(Message,"%s (intital reservation attempt)\n",
-          Message);
+
+        sprintf(temp_str," (intital reservation attempt)\n");
+        strcat(Message,temp_str);
         }
       }    /* END if (MJobGetEStartTime() == FAILURE) */
     else
@@ -4432,17 +4432,17 @@ int MJobReserve(
         J->Name,
         IStringTime);
  
-      sprintf(Message,"%s (job previously reserved to start in %s)\n",
-        Message,
+      sprintf(temp_str," (job previously reserved to start in %s)\n",
         IStringTime);
+      strcat(Message,temp_str);
       }
     else
       {
       DBG(1,fSCHED) DPrint("ALERT:    cannot create new reservation for job %s\n",
         J->Name); 
  
-      sprintf(Message,"%s (intital reservation attempt)\n",
-        Message);
+      sprintf(temp_str," (intital reservation attempt)\n");
+      strcat(Message,temp_str);
       }
  
     if (MSched.Mode != msmTest)
@@ -12364,10 +12364,10 @@ int MJobToTString(
         {
         if (RQ[0]->DRes.PSlot[cindex].count > 0)
           {
-          sprintf(Classes,"%s[%s:%d]",
-            Classes,
+          sprintf(temp_str,"[%s:%d]",
             MAList[eClass][cindex],
             RQ[0]->DRes.PSlot[cindex].count);
+          strcat(Classes, temp_str);
           }
         }    /* END for (cindex) */
 

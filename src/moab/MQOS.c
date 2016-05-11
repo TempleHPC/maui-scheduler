@@ -907,15 +907,15 @@ char *MQOSBMToString(
 
     if (Q->Name[0] != '\0')
       { 
-      sprintf(tmpLine,"%s%s",
-        tmpLine,
+      sprintf(temp_str,"%s",
         Q->Name);
+      strcat(tmpLine,temp_str);
       }
     else
       {
-      sprintf(tmpLine,"%s%d",
-        tmpLine,
+      sprintf(temp_str,"%d",
         Q->Index);
+      strcat(tmpLine,temp_str);
       }
     }  /* END for (bindex) */
  
@@ -1048,10 +1048,10 @@ int MQOSShow(
  
       if (MUBMCheck(qindex,U->F.QAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           U->Name,
           MQALType[U->F.QALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
  
@@ -1074,10 +1074,10 @@ int MQOSShow(
  
       if (MUBMCheck(qindex,G->F.QAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           G->Name,
           MQALType[G->F.QALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
  
@@ -1100,10 +1100,10 @@ int MQOSShow(
  
       if (MUBMCheck(qindex,A->F.QAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           A->Name,
           MQALType[A->F.QALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
  
@@ -1126,10 +1126,10 @@ int MQOSShow(
 
       if (MUBMCheck(qindex,C->F.QAL))
         {
-        sprintf(Line,"%s %s%s",
-          Line,
+        sprintf(temp_str," %s%s",
           C->Name,
           MQALType[C->F.QALType]);
+        strcat(Line,temp_str);
         }
       }  /* END for (index) */
 
@@ -1811,9 +1811,9 @@ char *MQOSFlagsToString(
           break; 
           }
 
-        sprintf(Line,"%s:%s",
-          Line,
+        sprintf(temp_str,":%s",
           Q->ResName[rindex]);
+        strcat(Line,temp_str);
         }  /* END for (rindex) */
       }
     }
@@ -1863,10 +1863,10 @@ int MQOSConfigLShow(
       continue;
       }
 
-    sprintf(Buffer,"%s %s=%s",
-      Buffer,
+    sprintf(temp_str," %s=%s",
       MQOSAttr[AList[aindex]],
       tmpString);
+    strcat(Buffer,temp_str);
     }  /* END for (aindex) */
 
   return(SUCCESS);

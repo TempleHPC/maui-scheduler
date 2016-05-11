@@ -1427,18 +1427,18 @@ int MStatOpenFile(
  
     ptr = MUStrTok(NULL," \t\n",&TokPtr);
  
-    sprintf(tmpfile,"%s_%s",
-      tmpfile,
+    sprintf(temp_str,"_%s",
       ptr);
+    strcat(tmpfile,temp_str);
  
     /* get day of month */
  
     ptr = MUStrTok(NULL," \t\n",&TokPtr);
  
-    sprintf(tmpfile,"%s_%02d",
-      tmpfile,
+    sprintf(temp_str,"_%02d",
       atoi(ptr));
- 
+    strcat(tmpfile,temp_str);
+
     /* ignore time */
  
     ptr = MUStrTok(NULL," \t\n",&TokPtr);
@@ -1447,9 +1447,9 @@ int MStatOpenFile(
  
     ptr = MUStrTok(NULL," \t\n",&TokPtr); 
  
-    sprintf(tmpfile,"%s_%s",
-      tmpfile,
+    sprintf(temp_str,"_%s",
       ptr);
+    strcat(tmpfile,temp_str);
     }
   else
     {
@@ -1631,42 +1631,42 @@ int MStatBuildGrid(
 
   if (Mode & 8)
     {
-    sprintf(Buffer,"%s         ",
-      Buffer);
+    sprintf(temp_str,"         ");
+    strcat(Buffer,temp_str);
     }
   else
     {
-    sprintf(Buffer,"%s[ %5s ]",
-      Buffer,
+    sprintf(temp_str,"[ %5s ]",
       "PROCS");
+    strcat(Buffer,temp_str);
     }
 
   for (timeindex = 0;timeindex <= MStat.P.TimeStepCount;timeindex++)
     {
     if (Mode & 8)
       {
-      sprintf(Buffer,"%s   %8s   ",
-        Buffer,
+      sprintf(temp_str,"   %8s   ",
         MUBStringTime(MStat.P.TimeStep[timeindex]));
+      strcat(Buffer,temp_str);
       }
     else
       {
-      sprintf(Buffer,"%s[  %8s  ]",
-        Buffer,
+      sprintf(temp_str,"[  %8s  ]",
         MUBStringTime(MStat.P.TimeStep[timeindex]));
+      strcat(Buffer,temp_str);
       }
     }    /* END for (timeindex) */
 
   if (Mode & 8)
     {
-    sprintf(Buffer,"%s              \n",
-    Buffer);
+    sprintf(temp_str,"              \n");
+    strcat(Buffer,temp_str);
     }
   else
     {
-    sprintf(Buffer,"%s[  %8s  ]\n",
-      Buffer,
+    sprintf(temp_str,"[  %8s  ]\n",
       "TOTAL");
+    strcat(Buffer,temp_str);
     }
 
   DBG(3,fSTAT) DPrint("INFO:     stat header created\n");
@@ -1679,15 +1679,15 @@ int MStatBuildGrid(
     {
     if (Mode & 8)
       {
-      sprintf(Buffer,"%s  %4ld   ",
-        Buffer,
+      sprintf(temp_str,"  %4ld   ",
         MStat.P.NodeStep[procindex]);
+      strcat(Buffer,temp_str);
       }
     else
       {
-      sprintf(Buffer,"%s[ %4ld  ]",
-        Buffer,
+      sprintf(temp_str,"[ %4ld  ]",
         MStat.P.NodeStep[procindex]);
+      strcat(Buffer,temp_str);
       }
 
     R = &MStat.RTotal[procindex];
@@ -1750,154 +1750,154 @@ int MStatBuildGrid(
     {
     case stAvgXFactor:
 
-      sprintf(Buffer,"%s%-26s %8.4f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f\n",
         "Job Weighted XFactor:",
         (T->Count > 0) ? (double)T->XFactor / T->Count : 0.0);
+      strcat(Buffer,temp_str);
 
-      sprintf(Buffer,"%s%-26s %8.4f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f\n",
         "Proc Weighted XFactor:",
         (T->NCount > 0) ? T->NXFactor / T->NCount : 0.0);
+      strcat(Buffer,temp_str);
 
-      sprintf(Buffer,"%s%-26s %8.4f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f\n",
         "PS Weighted XFactor:",
         (T->PSRun > 0.0) ? T->PSXFactor / T->PSRun : 0.0);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stMaxXFactor:
 
-      sprintf(Buffer,"%s%-26s %8.4f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f\n",
         "Overall Max XFactor:",
         (double)T->MaxXFactor);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stAvgQTime:
 
-      sprintf(Buffer,"%s%-26s %8.4f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f\n",
         "Job Weighted QueueTime:",
         (T->Count > 0) ? (double)T->TotalQTS / T->Count / 3600.0 : 0.0);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stAvgBypass:
 
-      sprintf(Buffer,"%s%-26s %8.4f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f\n",
         "Job Weighted X Bypass:",
         (T->Count > 0) ? (double)T->Bypass / T->Count : 0.0);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stMaxBypass:
 
-      sprintf(Buffer,"%s%-26s %8d\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8d\n",
         "Overall Max Bypass:",
         T->MaxBypass);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stJobCount:
 
-      sprintf(Buffer,"%s%-26s %8d\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8d\n",
         "Total Jobs:",
         T->Count);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stPSRequest:
 
-      sprintf(Buffer,"%s%-26s %8.2f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.2f\n",
         "Total PH Requested:",
         (double)T->PSRequest / 3600.0);
+      strcat(Buffer,temp_str);
     
       break;
 
     case stPSRun:
 
-      sprintf(Buffer,"%s%-26s %8.2f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.2f\n",
         "Total PH Run",
         (double)T->PSRun / 3600.0);
+      strcat(Buffer,temp_str);
     
       break;
 
     case stWCAccuracy:
 
-      sprintf(Buffer,"%s%-26s %8.3f\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.3f\n",
         "Overall WallClock Accuracy:",
         (T->PSRequest > 0.0) ? (double)T->PSRun / T->PSRequest * 100.0 : 0.0);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stBFCount:
 
-      sprintf(Buffer,"%s%-26s %8.4f (%d / %d)\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f (%d / %d)\n",
         "Job Weighted BackFill Job Percent:",
         (double)T->BFCount / T->Count * 100.0,
         T->BFCount,
         T->Count);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stBFPSRun:
 
-      sprintf(Buffer,"%s%-26s %8.4f (%6.2f / %6.2f)\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f (%6.2f / %6.2f)\n",
         "PS Weighted BackFill PS Percent:",
         T->BFPSRun / T->PSRun * 100.0,
         T->BFPSRun,
         T->PSRun);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stJobEfficiency:
 
-      sprintf(Buffer,"%s%-26s %8.4f (%6.2f / %6.2f)\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f (%6.2f / %6.2f)\n",
         "PS Weighted Job Efficiency Percent:",
         (T->PSDedicated > 0.0) ? T->PSUtilized / T->PSDedicated * 100.0 : 0.0,
         T->PSUtilized / 3600.0,
         T->PSDedicated / 3600.0);
+      strcat(Buffer,temp_str);
 
       break;
 
     case stQOSDelivered:
 
-      sprintf(Buffer,"%s%-26s %8.4f (%d / %d)\n",
-        Buffer,
+      sprintf(temp_str,"%-26s %8.4f (%d / %d)\n",
         "Job Weighted QOS Success Rate:",
         (T->Count > 0) ? (double)T->QOSMet / T->Count * 100.0 : 0.0,
         T->QOSMet,
         T->Count);
+      strcat(Buffer,temp_str);
 
       break;
 
     default:
 
-      sprintf(Buffer,"%sERROR:  stat type %d totals not handled\n",
-        Buffer,
+      sprintf(temp_str,"ERROR:  stat type %d totals not handled\n",
         SIndex);
+      strcat(Buffer,temp_str);
 
       break;
     }  /* END Switch(SIndex) */
 
   DBG(4,fSTAT) DPrint("INFO:     buildgrid() complete\n");
 
-  sprintf(Buffer,"%s%-26s %8d\n",
-    Buffer,
+  sprintf(temp_str,"%-26s %8d\n",
     "Total Samples:",
     T->Count);
+  strcat(Buffer,temp_str);
 
   strcat(Buffer,"\n\n");
 

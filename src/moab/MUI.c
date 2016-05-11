@@ -89,14 +89,14 @@ int UIFormatShowAllJobs(
  
   strcpy(DstBuffer,"ACTIVE JOBS--------------------\n");
  
-  sprintf(DstBuffer,"%s%18s %8s %10s %5s %11s %20s\n\n",
-    DstBuffer,
+  sprintf(temp_str,"%18s %8s %10s %5s %11s %20s\n\n",
     "JOBNAME",
     "USERNAME",
     "STATE",
     "PROC",
     "REMAINING",
     "STARTTIME");
+  strcat(DstBuffer,temp_str);
  
   /* read all running jobs */
  
@@ -128,51 +128,51 @@ int UIFormatShowAllJobs(
  
     /* display job */
  
-    sprintf(DstBuffer,"%s%18s %8s %10s %5d %11s  %19s",
-      DstBuffer,
+    sprintf(temp_str,"%18s %8s %10s %5d %11s  %19s",
       name,
       UserName,
       MJobState[state],
       procs,
       MULToTString(cpulimit - (Now - stime)),
       MULToDString((mulong *)&stime));
+    strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
  
   sprintf(tmp,"%d Active Job%c   ",
     acount,
     (acount == 1) ? ' ' : 's');
  
-  sprintf(DstBuffer,"%s\n%21s %4d of %4d Processors Active (%.2f%c)\n",
-    DstBuffer,
+  sprintf(temp_str,"\n%21s %4d of %4d Processors Active (%.2f%c)\n",
     tmp, 
     BusyProcs,
     UpProcs,
     (UpProcs > 0) ? (double)BusyProcs / UpProcs * 100.0 : 0.0,
     '%');
+  strcat(DstBuffer,temp_str);
  
   if (UpProcs != UpNodes)
     {
-    sprintf(DstBuffer,"%s%21s %4d of %4d Nodes Active      (%.2f%c)\n",
-      DstBuffer,
+    sprintf(temp_str,"%21s %4d of %4d Nodes Active      (%.2f%c)\n",
       " ",
       BusyNodes,
       UpNodes,
       (UpNodes > 0) ? (double)BusyNodes / UpNodes * 100.0 : 0.0,
       '%');
+    strcat(DstBuffer,temp_str);
     }
  
   /* display list of idle jobs */
  
   strcat(DstBuffer,"\nIDLE JOBS----------------------\n");
  
-  sprintf(DstBuffer,"%s%18s %8s %10s %5s %11s %20s\n\n",
-    DstBuffer,
+  sprintf(temp_str,"%18s %8s %10s %5s %11s %20s\n\n",
     "JOBNAME",
     "USERNAME",
     "STATE",
     "PROC",
     "WCLIMIT",
     "QUEUETIME");
+  strcat(DstBuffer,temp_str);
  
   /* read all idle jobs */
  
@@ -221,14 +221,14 @@ int UIFormatShowAllJobs(
  
   strcat(DstBuffer,"\nBLOCKED JOBS-------------------\n");
  
-  sprintf(DstBuffer,"%s%18s %8s %10s %5s %11s %20s\n\n",
-    DstBuffer,
+  sprintf(temp_str,"%18s %8s %10s %5s %11s %20s\n\n",
     "JOBNAME",
     "USERNAME",
     "STATE",
     "PROC",
     "WCLIMIT",
     "QUEUETIME");
+  strcat(DstBuffer,temp_str);
  
   /* read all non-queued jobs */
  
@@ -262,28 +262,28 @@ int UIFormatShowAllJobs(
  
     /* display job */
  
-    sprintf(DstBuffer,"%s%18s %8s %10s %5d %11s  %19s",
-      DstBuffer,
+    sprintf(temp_str,"%18s %8s %10s %5d %11s  %19s",
       name,
       UserName,
       MJobState[state],
       procs,
       MULToTString(cpulimit),
       MULToDString((mulong *)&qtime));
+    strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
  
-  sprintf(DstBuffer,"%s\nTotal Jobs: %d   Active Jobs: %d   Idle Jobs: %d   Non-Queued Jobs: %d\n",
-    DstBuffer,
+  sprintf(temp_str,"\nTotal Jobs: %d   Active Jobs: %d   Idle Jobs: %d   Non-Queued Jobs: %d\n",
     count,
     acount,
     icount,
     ncount);
+  strcat(DstBuffer,temp_str);
  
   while ((ptr = MUStrTok(NULL,"\n",&TokPtr)) != NULL)
     {
-    sprintf(DstBuffer,"%s\n%s\n",
-      DstBuffer,
+    sprintf(temp_str,"\n%s\n",
       ptr);
+    strcat(DstBuffer,temp_str);
     }
  
   return(SUCCESS);
@@ -369,14 +369,14 @@ int UIFormatHShowAllJobs(
       {
       strcat(DstBuffer,"<TABLE BORDER=1>");
  
-      sprintf(DstBuffer,"%s<TR><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>",
-        DstBuffer,
+      sprintf(temp_str,"<TR><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>",
         "Active Jobs",
         "User Name",
         "Job State",
         "Processors",
         "Time Remaining",
         "Start Time");
+      strcat(DstBuffer,temp_str);
       }
  
     acount++;
@@ -400,40 +400,40 @@ int UIFormatHShowAllJobs(
  
     /* display job */
 
-    sprintf(DstBuffer,"%s<TR><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%s</TD><TD>%s</TD></TR>",  
-      DstBuffer,
+    sprintf(temp_str,"<TR><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%s</TD><TD>%s</TD></TR>",
       name,
       UserName,
       MJobState[state],
       procs,
       MULToTString(cpulimit - (Now - stime)),
       MULToDString((mulong *)&stime));
+    strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
 
   if (acount > 0)
     {
     strcat(DstBuffer,"</TABLE><p>");
  
-    sprintf(DstBuffer,"%s%d Active Job%c<br>",
-      DstBuffer,
+    sprintf(temp_str,"%d Active Job%c<br>",
       acount,
       (acount == 1) ? ' ' : 's');
+    strcat(DstBuffer,temp_str);
  
-    sprintf(DstBuffer,"%s%d of %d Processors Active (%.2f%c)<br>",
-      DstBuffer,
+    sprintf(temp_str,"%d of %d Processors Active (%.2f%c)<br>",
       BusyProcs,
       UpProcs,
       (UpProcs > 0) ? (double)BusyProcs / UpProcs * 100.0 : 0.0,
       '%');
+    strcat(DstBuffer,temp_str);
  
     if (UpProcs != UpNodes)
       {
-      sprintf(DstBuffer,"%s%d of %d Nodes Active (%.2f%c)<br>",
-        DstBuffer,
+      sprintf(temp_str,"%d of %d Nodes Active (%.2f%c)<br>",
         BusyNodes,
         UpNodes,
         (UpNodes > 0) ? (double)BusyNodes / UpNodes * 100.0 : 0.0,
         '%');
+      strcat(DstBuffer,temp_str);
       }
 
     strcat(DstBuffer,"<p>");
@@ -452,14 +452,14 @@ int UIFormatHShowAllJobs(
       {
       strcat(DstBuffer,"<TABLE BORDER=1>");
 
-      sprintf(DstBuffer,"%s<TR><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>", 
-        DstBuffer,
+      sprintf(temp_str,"<TR><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>",
         "Idle Jobs",
         "User Name",
         "Job State",
         "Processors",
         "WallClock Limit",
         "Submission Time");
+      strcat(DstBuffer,temp_str);
       }
   
     count++;
@@ -483,24 +483,24 @@ int UIFormatHShowAllJobs(
  
     /* display job */
 
-    sprintf(DstBuffer,"%s<TR><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%s</TD><TD>%s</TD></TR>",      
-      DstBuffer,
+    sprintf(temp_str,"<TR><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%s</TD><TD>%s</TD></TR>",
       name,
       UserName,
       MJobState[state],
       procs,
       MULToTString(cpulimit),
       MULToDString((mulong *)&qtime));
+    strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
 
   if (icount > 0)
     {
     strcat(DstBuffer,"</TABLE><p>"); 
 
-    sprintf(DstBuffer,"%s%d Idle Job%c<p>",
-      DstBuffer,
+    sprintf(temp_str,"%d Idle Job%c<p>",
       icount,
       (icount == 1) ? ' ' : 's');
+    strcat(DstBuffer,temp_str);
     }
 
   /* display ineligible jobs */
@@ -518,8 +518,7 @@ int UIFormatHShowAllJobs(
       {
       strcat(DstBuffer,"<TABLE BORDER=1>");
 
-      sprintf(DstBuffer,"%s<TR><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>", 
-        DstBuffer,
+      sprintf(temp_str,"<TR><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>",
         "Ineligible Jobs",
         "User Name",
         "Job State",
@@ -527,6 +526,7 @@ int UIFormatHShowAllJobs(
         "WallClock Limit",
         "Submission Time",
         "Reason");
+      strcat(DstBuffer,temp_str);
       }
  
     count++;
@@ -550,8 +550,7 @@ int UIFormatHShowAllJobs(
  
     /* display job */
 
-   sprintf(DstBuffer,"%s<TR><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD></TR>",    
-      DstBuffer,
+   sprintf(temp_str,"<TR><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%d</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD></TR>",
       name,
       UserName,
       MJobState[state],
@@ -559,6 +558,7 @@ int UIFormatHShowAllJobs(
       MULToTString(cpulimit),
       MULToDString((mulong *)&qtime),
       "N/A");
+   strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
 
   if (ncount > 0)
@@ -566,18 +566,18 @@ int UIFormatHShowAllJobs(
     strcat(DstBuffer,"</TABLE><p>");     
     }
  
-  sprintf(DstBuffer,"%s<p>Total Jobs: %d &nbsp; Active Jobs: %d &nbsp; Idle Jobs: %d &nbsp; Ineligible Jobs: %d<p>",
-    DstBuffer,
+  sprintf(temp_str,"<p>Total Jobs: %d &nbsp; Active Jobs: %d &nbsp; Idle Jobs: %d &nbsp; Ineligible Jobs: %d<p>",
     count,
     acount,
     icount,
     ncount);
+  strcat(DstBuffer,temp_str);
  
   while ((ptr = MUStrTok(NULL,"\n",&TokPtr)) != NULL)
     {
-    sprintf(DstBuffer,"%s<p>%s<p>",
-      DstBuffer,
+    sprintf(temp_str,"<p>%s<p>",
       ptr);
+    strcat(DstBuffer,temp_str);
     }
 
   strcat(DstBuffer,"</FONT>");         

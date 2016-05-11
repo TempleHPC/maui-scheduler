@@ -1563,16 +1563,17 @@ int MCClusterShow(
  
       if (S->Failures & (1 << probMemory))
         {
-        sprintf(Warnings,"%scheck memory on node %s\n",
-          Warnings,
+        sprintf(temp_str,"check memory on node %s\n",
           S->NetName[mnetEN0]);
+        strcat(Warnings,temp_str);
         }
  
       if (S->Failures & (1 << probLocalDisk))
         {
-        sprintf(Warnings,"%scheck local disk on node %s\n",
+        sprintf(temp_str,"%scheck local disk on node %s\n",
           Warnings,
           S->NetName[mnetEN0]);
+        strcat(Warnings,temp_str);
         }
  
       if ((S->State == mnsIdle) ||
@@ -1583,18 +1584,18 @@ int MCClusterShow(
  
         if (S->Failures & (1 << probEthernet))
           {
-          sprintf(Warnings,"%scheck ethernet on node %s\n",
-            Warnings,
+          sprintf(temp_str,"check ethernet on node %s\n",
             S->NetName[mnetEN0]);
+          strcat(Warnings,temp_str);
           }
  
         /* report missing HPS_IP adapter */
  
         if (S->Failures & (1 << probHPS_IP))
           {
-          sprintf(Warnings,"%scheck HPS_IP on node %s\n",
-            Warnings,
+          sprintf(temp_str,"check HPS_IP on node %s\n",
             S->NetName[mnetEN0]);
+          strcat(Warnings,temp_str);
           }
         } 
  
@@ -1603,9 +1604,9 @@ int MCClusterShow(
       if ((S->Failures & (1 << probHPS_User)) &&
          (S->State == mnsIdle))
         {
-        sprintf(Warnings,"%scheck HPS_USER on node %s (node is idle)\n",
-          Warnings,
+        sprintf(temp_str,"check HPS_USER on node %s (node is idle)\n",
           S->NetName[mnetEN0]);
+        strcat(Warnings,temp_str);
         }
  
       /* if node is associated with a job */
@@ -1626,10 +1627,10 @@ int MCClusterShow(
  
             SChar = '*';
  
-            sprintf(Warnings,"%sjob %s requires node %s (node is down)\n",
-              Warnings,
+            sprintf(temp_str,"job %s requires node %s (node is down)\n",
               JName[mapj[findex][sindex]],
               S->NetName[mnetEN0]);
+            strcat(Warnings,temp_str);
  
             break;
  
@@ -1639,11 +1640,11 @@ int MCClusterShow(
  
             SChar = JID[mapj[findex][sindex] % MAX_MJOBINDEX]; 
  
-            sprintf(Warnings,"%sjob %s has allocated node %s (node is in state %s)\n",
-              Warnings,
+            sprintf(temp_str,"job %s has allocated node %s (node is in state %s)\n",
               JName[mapj[findex][sindex]],
               S->NetName[mnetEN0],
               MNodeState[System[findex][sindex].State]);
+            strcat(Warnings,temp_str);
  
             break;
  
@@ -1668,9 +1669,9 @@ int MCClusterShow(
  
             SChar = '#';
  
-            sprintf(Warnings,"%snode %s is down\n",
-              Warnings,
+            sprintf(temp_str,"node %s is down\n",
               S->NetName[mnetEN0]);
+            strcat(Warnings,temp_str);
  
             break;
  
@@ -1686,9 +1687,9 @@ int MCClusterShow(
           case mnsIdle:
  
             if (S->Failures & probLocalDisk)
-              sprintf(Warnings,"%snode %s is idle and local disk space is low\n",
-                Warnings,
+              sprintf(temp_str,"node %s is idle and local disk space is low\n",
                 S->NetName[mnetEN0]);
+            strcat(Warnings,temp_str);
  
             SChar = ' ';
  
@@ -1704,9 +1705,9 @@ int MCClusterShow(
  
             SChar = '@';
  
-            sprintf(Warnings,"%snode %s has no job scheduled (node is busy)\n",
-              Warnings,
+            sprintf(temp_str,"node %s has no job scheduled (node is busy)\n",
               S->NetName[mnetEN0]);
+            strcat(Warnings,temp_str);
  
             break;
  
@@ -1722,12 +1723,12 @@ int MCClusterShow(
 
             if (S->SlotsUsed > 0)
               { 
-              sprintf(Warnings,"%snode[%d,%d] %s has unexpected state '%s'\n",
-                Warnings,
+              sprintf(temp_str,"node[%d,%d] %s has unexpected state '%s'\n",
                 findex,
                 sindex,
                 S->NetName[mnetEN0],  
                 MNodeState[S->State]);
+              strcat(Warnings,temp_str);
               }
  
             break;

@@ -2722,8 +2722,7 @@ int MSysDiagnose(
 
   SBuf[0] = '\0';
 
-  sprintf(SBuf,"%sInitialized: S:%s/I:%s  CCount: %d  FCount: %d  QCount: %d  JCount: %d  RCount: %d\n",
-    SBuf,
+  sprintf(temp_str,"Initialized: S:%s/I:%s  CCount: %d  FCount: %d  QCount: %d  JCount: %d  RCount: %d\n",
     (MSched.G.SIsInitialized == TRUE) ? "TRUE" : "FALSE",
     (MSched.G.IIsInitialized == TRUE) ? "TRUE" : "FALSE",
     MSched.G.CCount,
@@ -2731,18 +2730,19 @@ int MSysDiagnose(
     MSched.G.QCount,
     MSched.G.JCount,
     MSched.G.RCount);
+  strcat(SBuf,temp_str);
 
   if (MSim.StopIteration == MSched.Iteration)
     {
-    sprintf(SBuf,"%s\nNOTE:  scheduler is currently stopped\n",
-      SBuf);
+    sprintf(temp_str,"\nNOTE:  scheduler is currently stopped\n");
+    strcat(SBuf,temp_str);
     }
 
   if (MSched.G.Messages != NULL)
     {
-    sprintf(SBuf,"%s\nMessages:\n  %s\n",
-      SBuf,
+    sprintf(temp_str,"\nMessages:\n  %s\n",
       MSched.G.Messages);
+    strcat(SBuf,temp_str);
     }
 
   return(SUCCESS);

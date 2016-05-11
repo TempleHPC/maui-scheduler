@@ -2174,9 +2174,9 @@ int MRMAToString(
 
         if (R->SubType != mrmstNONE)
           {
-          sprintf(SVal,"%s:%s",
-            SVal,
+          sprintf(temp_str,":%s",
             MRMSubType[R->SubType]);
+          strcat(SVal,temp_str);
           }
         }    /* END if (R->Type != mrmtNONE) */
 
@@ -2708,10 +2708,10 @@ int MRMConfigShow(
 
       if (tmpVal[0] != '\0')
         {
-        sprintf(tmpLine,"%s %s=%s",
-          tmpLine,
+        sprintf(temp_str," %s=%s",
           MRMAttr[AList[aindex]],
           tmpVal);
+        strcat(tmpLine,temp_str);
         }
       }    /* END for (aindex) */
  
@@ -4607,9 +4607,9 @@ int MRMJobPostUpdate(
 
           if (strlen(Message) + 100 < sizeof(Message))
             {
-            sprintf(Message,"%s '%s' ",
-              Message,
+            sprintf(temp_str," '%s' ",
               N->Name);
+            strcat(Message,temp_str);
             }
 
           if (N->DRes.Procs >= N->CRes.Procs)
