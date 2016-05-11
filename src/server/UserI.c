@@ -4699,7 +4699,7 @@ int UIJobGetStart(
  
     strcpy(JName,J->Name);
  
-    memcpy(&tmpRQ,0,sizeof(tmpRQ));
+    memset(&tmpRQ,0,sizeof(tmpRQ));
  
     MJobMkTemp(&tmpJ,&tmpRQ,tmpACL,tmpCL,tmpJNodeList,tmpRQNodeList);
  
