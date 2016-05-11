@@ -4632,8 +4632,9 @@ void MU2dMemSet(
   int c,
   int m,
   size_t n) {
+  int i;
 
-  for (int i=0; i < m; ++i)
+  for (i=0; i < m; ++i)
     memset(a[i],c,n);
 }
 
