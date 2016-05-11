@@ -32,8 +32,13 @@ bin/*
 # Debug files
 *.dSYM/
 
+# editor backups
+*~
+.*.swp
+*.orig
+
 # autoconf and configure output
-Makefile
+/Makefile
 autom4te.cache
 config.log
 config.status
