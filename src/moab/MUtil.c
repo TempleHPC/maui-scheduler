@@ -36,11 +36,14 @@ typedef struct {
     int  *RC;
     int  *Lock;
     } mut_t;
- 
+
+/* global buffer for string manipulations.
+   has to be kept reusable at all time. */
+char temp_str[MMAX_LINE];
+
 #include "MGUtil.c"
 
 
- 
 /* prototypes */
  
 int __MUTFunc(void *);
@@ -4623,7 +4626,16 @@ int __MUTFunc(
   }  /* END __MUTFunc() */
 
 
+void MU2dMemSet(
 
+  void **a,
+  int c,
+  int m,
+  size_t n) {
+
+  for (int i=0; i < m; ++i)
+    memset(a[i],c,n);
+}
 
 int MUMemCCmp(
 

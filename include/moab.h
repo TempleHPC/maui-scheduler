@@ -1302,8 +1302,6 @@ enum {
   msimfIgnFrame,
   msimfIgnAll };
 
-char temp_str[MMAX_LINE];	      /* Fix the sprintf bug					  */
-
 typedef struct {
   char  WorkloadTraceFile[MAX_MLINE + 1]; /* File Containing Workload Traces  */
   char  ResourceTraceFile[MAX_MLINE + 1]; /* File Containing Resource Traces  */
@@ -2100,6 +2098,8 @@ enum MSSSObjNameEnum {
 #define MAM_CLIENTTYPE  "maui"    
 
 #endif /* __M_H */    
+
+#include "moab-utils.h"
 
 #endif /* __MOAB_H */
 
