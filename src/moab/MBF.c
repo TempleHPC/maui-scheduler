@@ -715,7 +715,7 @@ int MBFGetWindow(
 
   strcpy(BRes,"UNKNOWN");
 
-  memcpy(&RQ->DRes,DRes,sizeof(DRes));
+  memcpy(&RQ->DRes,DRes,sizeof(*DRes));
 
   if (MJobSetCreds(J,UName,GName,AName) == FAILURE)
     {
