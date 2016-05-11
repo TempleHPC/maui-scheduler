@@ -1798,7 +1798,7 @@ char *MQOSFlagsToString(
 
     strcat(Line,MQOSFlags[mqfusereservation]);
 
-    if ((Q->ResName != NULL) && (Q->ResName[0][0] != '\0'))
+    if (Q->ResName[0][0] != '\0')
       {
       int rindex;
 

@@ -197,7 +197,7 @@ int MJobAllocMNL(
 
   if (MOutList != NULL)
     {
-    memset(MOutList,0,sizeof(MOutList));
+    MU2dMemSet((void **)MOutList,0,MAX_MREQ_PER_JOB,sizeof(MOutList[0]));
 
     for (rqindex = 0;rqindex < MAX_MREQ_PER_JOB;rqindex++)
       MOutList[rqindex][0].N = NULL;

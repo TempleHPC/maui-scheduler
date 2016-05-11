@@ -1896,7 +1896,7 @@ int MNodeSelectIdleTasks(
     *NodeCount = 0;
 
   if (RejReason != NULL)
-    memset(RejReason,0,sizeof(RejReason));
+    MU2dMemSet((void **)RejReason,0,MAX_MREQ_PER_JOB,sizeof(RejReason[0]));
 
   if ((J == NULL) || 
       (FNL == NULL) ||
