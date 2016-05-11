@@ -66,7 +66,7 @@ int MGroupToString(mgcred_t *,char *);
 int MGroupProcessConfig(mgcred_t *,char *);
 
 /* HvB */
-int MGroupGetFSGroups();
+void MGroupGetFSGroups();
 int MGroupSecondary(char *, mjob_t *);
 
 

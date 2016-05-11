@@ -102,7 +102,7 @@ int MGroupLoadCP(
 /*
  * HvB: Get all GroupNames that have a Fairshare target set
 */
-int MGroupGetFSGroups()
+void MGroupGetFSGroups()
   {
   int           gindex;
   int		fsindex = 0;
