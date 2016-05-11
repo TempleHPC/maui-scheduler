@@ -1754,7 +1754,6 @@ int MPBSJobStart(
   char         Message[MAX_MLINE];
   char         tmpJobName[MAX_MNAME];
 
-  char        *MasterHost;
   char        *ErrMsg;
 
   int          JobStartFailed = FALSE;
@@ -1776,8 +1775,6 @@ int MPBSJobStart(
 
     return(FAILURE);
     }
-
-  MasterHost  = NULL;
 
   if (R->SubType != mrmstRMS)
     {
@@ -4570,8 +4567,6 @@ int __MPBSGetTaskList(
   char   *ptr;
   char   *ptr2;
 
-  char   *host;
-
   char   *TokPtr;
   char   *TokPtr2;
 
@@ -4658,8 +4653,6 @@ int __MPBSGetTaskList(
     ppn = 1;
 
     strcpy(tmpHostName,ptr);
-
-    host = MUStrTok(tmpHostName,":",&TokPtr2);  
 
     /* remove virtual host id */
 
@@ -5238,15 +5231,12 @@ int MJobParsePBSExecHost(
 
   mnode_t *N;
   char    tmpHostName[MMAX_NAME];
-  char    tmpName[MMAX_NAME];
 
   mreq_t *RQ;
   int     rqindex;
 
   int     TC;
   int     OldTC;
-
-  mbool_t NodeLocated = FALSE;
 
   /* FORMAT:  <HOSTNAME>[:{ppn|cpp}=<X>][<HOSTNAME>[:{ppn|cpp}=<X>]][#excl]... */
   /* or       <COUNT>[:{ppn|cpp}=<X>][#excl]                                   */

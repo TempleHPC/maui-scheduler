@@ -539,8 +539,6 @@ int MS3Initialize(
   int   *SC)  /* O (optional) */
  
   {
-  s3rm_t *S;
-
 #ifndef __MPROD
   const char *FName = "MS3Initialize";
 
@@ -574,8 +572,6 @@ int MS3Initialize(
   /* set S3_ROOT */
 
   MUSetEnv("S3_ROOT","/usr/local/sss");
-
-  S = (s3rm_t *)R->S;
 
   R->Version = MUGetIndex(R->APIVersion,MS3VName,FALSE,msssV3_0);
 
@@ -2646,8 +2642,6 @@ int MS3JobStart(
   int          nindex;
   int          tindex;
 
-  char        *MasterHost;
-
   char        *ptr;
 
   mnode_t *N;
@@ -2680,8 +2674,6 @@ int MS3JobStart(
     {
     return(FAILURE);
     }
-
-  MasterHost  = NULL;
 
   if (J->NodeList[0].N == NULL)
     {
@@ -3360,12 +3352,6 @@ int MS3JobLoad(
 
   int           CTok;
 
-  long          WallTime;
-  long          WCLimit;
-
-  int           NodeCount;
-  int           TaskCount;
-
   mxml_t       *E;
   mxml_t       *CE;
 
@@ -3400,12 +3386,6 @@ int MS3JobLoad(
   J = *JP;
  
   MTRAPJOB(J,FName);
-
-  WallTime = 0;
-  WCLimit  = 0;
-
-  TaskCount = 1;
-  NodeCount = 1;
 
   /* add resource requirements information */
 
@@ -3720,11 +3700,6 @@ int MS3JobUpdate(
   {
   enum MJobStateEnum OldState;
 
-  int           TaskCount;
-  int           NodeCount;
-
-  mreq_t        *RQ;
-
   int           cindex;
 
   mxml_t       *E;
@@ -3755,11 +3730,6 @@ int MS3JobUpdate(
   TaskList[0] = -1;
 
   /* get job state: NYI */
-
-  RQ = J->Req[0];
-
-  TaskCount = 1;
-  NodeCount = 1;
 
   if (J->State != OldState)
     {
@@ -4318,8 +4288,6 @@ int __MS3JobSetAttr(
         {
         mxml_t *NE;
 
-        char *ptr;
-
         char tmpBuf[MMAX_BUFFER];
 
         char *BPtr;
@@ -4328,8 +4296,6 @@ int __MS3JobSetAttr(
         int   CTok;
  
         /* FORMAT:  <Node>X</Node>... */
-
-        ptr = AVal;
 
         MUSNInit(&BPtr,&BSpace,tmpBuf,sizeof(tmpBuf));
 

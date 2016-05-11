@@ -2205,9 +2205,6 @@ int MCQueueShow(
   int UpProcs = 0;
   int UpNodes = 0;
 
-  int IdleProcs = 0;
-  int IdleNodes = 0;
-
   int ActiveProcs = 0;
   int ActiveNodes = 0;
 
@@ -2224,7 +2221,6 @@ int MCQueueShow(
   
   long StartTime;
   long Duration;
-  long SubmitTime;
 
   int  Procs = 0;
 
@@ -2252,12 +2248,6 @@ int MCQueueShow(
 
   if (MXMLGetAttr(CE,"upNodes",NULL,tmpString,sizeof(tmpString)) == SUCCESS)
     UpNodes = (int)strtol(tmpString,NULL,0);
-
-  if (MXMLGetAttr(CE,"idleProcs",NULL,tmpString,sizeof(tmpString)) == SUCCESS)
-    IdleProcs = (int)strtol(tmpString,NULL,0);
-
-  if (MXMLGetAttr(CE,"idleNodes",NULL,tmpString,sizeof(tmpString)) == SUCCESS)
-    IdleNodes = (int)strtol(tmpString,NULL,0);
 
   if (MXMLGetAttr(CE,"allocProcs",NULL,tmpString,sizeof(tmpString)) == SUCCESS)
     ActiveProcs = (int)strtol(tmpString,NULL,0);
@@ -2323,11 +2313,6 @@ int MCQueueShow(
         StartTime = strtol(tmpString,NULL,0);
       else
         StartTime = 0;
-
-      if (MXMLGetAttr(JE,(char *)MJobAttr[mjaSubmitTime],NULL,tmpString,sizeof(tmpString)) == SUCCESS)
-        SubmitTime = strtol(tmpString,NULL,0);
-      else
-        SubmitTime = 0;
 
       if (MXMLGetAttr(JE,(char *)MJobAttr[mjaReqAWDuration],NULL,tmpString,sizeof(tmpString)) == SUCCESS)
         Duration = strtol(tmpString,NULL,0);

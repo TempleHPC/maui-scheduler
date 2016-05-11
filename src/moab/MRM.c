@@ -2221,7 +2221,6 @@ int MRMProcessConfig(
   char *TokPtr;
  
   char  ValLine[MAX_MLINE];
-  char *ValList[2];
  
   if ((R == NULL) ||
       (Value == NULL) ||
@@ -2256,10 +2255,7 @@ int MRMProcessConfig(
  
       continue;
       }
- 
-    ValList[0] = ValLine;
-    ValList[1] = NULL;
- 
+
     switch(aindex)
       {       
       case mrmaAuthType:
@@ -4263,9 +4259,6 @@ int MRMJobPostUpdate(
 
   mbool_t   BuildTaskMap;
 
-  int       RQ0TC = 0;
-  int       RQ0NC = 0;
-
   mnode_t  *N;
 
   char      Message[MAX_MLINE << 4];
@@ -4486,9 +4479,6 @@ int MRMJobPostUpdate(
         else
           JobHasMap = TRUE;
 
-        RQ0NC = 0;
-        RQ0TC = 0;
-
         if (J->Req[1] != NULL)
           {
           for (rqindex = 0;J->Req[rqindex] != NULL;rqindex++)
@@ -4513,7 +4503,6 @@ int MRMJobPostUpdate(
 
           /* NOTE:  must split resources across reqs (NYI) */
 
-          RQ0TC = tindex;
           }  /* END if (J->Req[1] != NULL) */
 
         for (tindex = 0;TaskList[tindex] != -1;tindex++)

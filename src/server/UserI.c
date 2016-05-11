@@ -760,8 +760,6 @@ int UIJobShow(
   int      ncount;
   int      pcount;
  
-  int      Fail;
- 
   double MinSpeed;
   double PE;
  
@@ -1709,8 +1707,6 @@ int UIJobShow(
     {
     MUSNPrintF(&BPtr,&BSpace,"job cannot run in any partition  (insufficient total procs:  %d available)\n",
       MPar[0].CRes.Procs);
- 
-    Fail = TRUE;
     }
 
   for (pindex = 0;pindex < MAX_MPAR;pindex++)
@@ -1980,8 +1976,6 @@ int UIJobShow(
         P->Name,
         pcount,
         J->Request.TC * RQ->DRes.Procs);
- 
-      Fail = FALSE;
       }
     }   /* END for (pindex) */
  
@@ -6347,8 +6341,6 @@ int UIResCreate(
 
   unsigned long Flags;
 
-  int    rc;
-
   int    Access;
   int    ResPLevel;
 
@@ -6391,7 +6383,7 @@ int UIResCreate(
 
   /* Format:  <CLIENT_PRESENTTIME> <START_TIME> <END_TIME> <PNAME> <ULIST> <GLIST> <ALIST> <CLIST> <QLIST> <RESID> <RLIST> <CANAME> <NODEEXP> <FLIST> <NODESET> <FLAGS> */
 
-  rc = MUSScanF(RBuffer,"%ld %ld %ld %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %d %x%s",
+  MUSScanF(RBuffer,"%ld %ld %ld %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %x%s %d %x%s",
     &ClientTime,
     &StartTime,
     &EndTime,
@@ -7038,8 +7030,6 @@ int MUIQueueShow(
 
   mpar_t *P;
 
-  int     JobCount;
-
   mreq_t *RQ;
 
   mxml_t *E;
@@ -7058,8 +7048,6 @@ int MUIQueueShow(
     return(FAILURE);
 
   P = &MPar[0];
-
-  JobCount = 0;
 
   if (*RspE == NULL)
     {
@@ -7294,7 +7282,6 @@ int __MUIJobToXML(
   int       DoShowTaskList)
 
   {
-  int tmpState;
 
   long Duration;
   int  Procs;
@@ -7308,17 +7295,6 @@ int __MUIJobToXML(
    *  state, wclimit, jobid, user, starttime, submittime, procs, qos 
    *  nodecount, group 
    */
-
-  if (J->Hold & (1 << mhBatch))
-    tmpState = mjsBatchHold;
-  else if (J->Hold & (1 << mhSystem))
-    tmpState = mjsSystemHold;
-  else if (J->Hold & (1 << mhUser))
-    tmpState = mjsUserHold;
-  else if (J->EState == mjsDeferred)
-    tmpState = mjsDeferred;
-  else
-    tmpState = (J->IState != mjsNONE) ? J->IState : J->State;
 
   *JEP = NULL;
 
@@ -9910,18 +9886,11 @@ int UIQueueShowBJobs(
 
   char     Line[MAX_MLINE];
   mjob_t  *J; 
-  mjob_t  *J_IDLE;
-  char     resState;
-
-  mreq_t  *RQ;
-
-  char    *CListPtr;
 
   char    *BPtr;
   int      BSpace;
 
   int     SrcQ[2];
-  int     DstQ[2];
   mjob_t *tmpQ[2];
   char     tmpBuffer[MAX_MBUFFER];    
 

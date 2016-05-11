@@ -782,8 +782,8 @@ int MLLNodeSetAttrs(
 
   {
   int      tmpI;
-  char    *tmpP;
-  char   **tmpPA;
+  char    *tmpP = NULL;
+  char   **tmpPA = NULL;
 
   if ((N == NULL) || (LLNO == NULL))
     {
@@ -859,7 +859,7 @@ int MLLNodeSetAttrs(
   {
   int index;
 
-  int  tmpI;
+  int  tmpI = 0;
   int *tmpIA = NULL;
 
   ll_get_data(LLNO,LL_MachinePoolList,&tmpIA);
@@ -1317,20 +1317,20 @@ int MLLJobLoad(
 
   char **ReqHList;
 
-  int    HoldType;
+  int    HoldType = 0;
   mclass_t *C;
   long   tmpL;
 
-  int    LL2Status;
+  int    LL2Status = 0;
 
-  int    NodeUsage;
+  int    NodeUsage = 0;
 
   char   Requirements[MAX_MLINE];
 
   short  TaskList[MAX_MTASK_PER_JOB + 1];
 
-  int    MinInstance;
-  int    TaskCount;
+  int    MinInstance = 0;
+  int    TaskCount = 0;
 
   char   Line[MAX_MNAME];
 
@@ -2415,8 +2415,6 @@ int MLLWorkloadQuery(
   int   *SC)     /* I */
 
   {
-  int         rc;
-
   char       *stepid;
 
   int         status;
@@ -2429,7 +2427,7 @@ int MLLWorkloadQuery(
   LL_element *LLStep;
   LL_element *LLUsage;
 
-  int tmpSC;
+  int tmpSC = 0;
 
   const char *FName = "MLLWorkloadQuery";
 
@@ -2451,8 +2449,6 @@ int MLLWorkloadQuery(
   MUSetEnv("LOADL_CONFIG",R->U.LL.ConfigFile);
 
   qj = ll_query(JOBS);
-
-  rc = ll_set_request(qj,QUERY_ALL,NULL,ALL_DATA);
 
   LLJob = ll_get_objs(qj,LL_CM,NULL,&JobCount,&tmpSC);
 
@@ -2578,7 +2574,7 @@ int MLLJobSetAttr(
     case mjaHold:
 
       {
-      int tmpI;
+      int tmpI = 0;
 
       /* reset RM holds */
 
@@ -2663,7 +2659,7 @@ int MLLJobSetAttr(
     case mjaState:
 
       {
-      int tmpI;
+      int tmpI = 0;
 
       ll_get_data(LLStep,LL_StepState,&tmpI);
 
@@ -2842,8 +2838,6 @@ int MLLJobUpdate(
 
   short    TaskList[MAX_MTASK_PER_JOB + 1];
 
-  mreq_t  *RQ;
-
   int      aindex;
 
   const int AList[] = {
@@ -2875,8 +2869,6 @@ int MLLJobUpdate(
     {
     return(FAILURE);
     }
-
-  RQ = J->Req[0];
 
   OldState = J->State;
   OldHold  = J->Hold;
@@ -3018,7 +3010,7 @@ int MLLGetTL(
   int        *TC)     /* O (optional) */
 
   {
-  LL_element *Machine;
+  LL_element *Machine = NULL;
   LL_element *Node;
   char       *MName;
 
