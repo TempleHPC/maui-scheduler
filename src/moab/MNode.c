@@ -5268,7 +5268,7 @@ int MUNLGetMaxAVal(
   void      **Val)    /* O */
  
   {
-  mnode_t *N;
+  mnode_t *N = NULL;
  
   int nindex;
  
@@ -5295,7 +5295,7 @@ int MUNLGetMaxAVal(
 
         if (NPtr != NULL)
           *NPtr = N;
- 
+
         return(SUCCESS);
         }
  
