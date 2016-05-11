@@ -169,7 +169,6 @@ int MClusterShowARes(
   int        Flags;   /* (BM) */
 
   char *BPtr;
-  int   BSpace;
 
   const char *FName = "MClusterShowARes";
 
@@ -185,7 +184,6 @@ int MClusterShowARes(
     }
 
   BPtr   = Buf;
-  BSpace = BufSize;
 
   BPtr[0] = '\0';
 

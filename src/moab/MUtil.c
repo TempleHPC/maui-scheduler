@@ -4481,8 +4481,6 @@ int MUThread(
 
   {
   int rc;
-  int DelayTime;
-  int DelayInterval = 1;
 
   int index;
 
@@ -4553,13 +4551,6 @@ int MUThread(
 
   /* poll waiting for thread to complete */
 
-  for (DelayTime = 0;*D.Lock == TRUE;DelayTime += DelayInterval)
-    {
-    if (DelayTime >= TimeOut)
-      break;
-
-    sleep(DelayInterval);
-    }  /* END for (DelayTime) */
  
   if (*D.Lock == TRUE)
     {

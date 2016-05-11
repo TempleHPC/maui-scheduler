@@ -1023,9 +1023,7 @@ int MSimJobSuspend(
  
   {
   int      nindex;
-  mnode_t *N;
  
-  mreq_t  *RQ;
 
   const char *FName = "MSimJobSuspend";
 
@@ -1039,11 +1037,9 @@ int MSimJobSuspend(
   if ((J->State != mjsRunning) && (J->State != mjsStarting))
     return(FAILURE);
  
-  RQ = J->Req[0];
- 
+
   for (nindex = 0;J->NodeList[nindex].N != NULL;nindex++)
     {
-    N = J->NodeList[nindex].N;
  
     /* adjust resource usage */
 
@@ -1166,15 +1162,11 @@ int MSimJobRequeue(
   mjob_t *J)  /* I */
  
   {
-  mreq_t  *RQ;
-
   const char *FName = "MSimJobRequeue";
  
   DBG(2,fSCHED) DPrint("%s(%s)\n",
     FName,
     (J != NULL) ? J->Name : "NULL");
- 
-  RQ = J->Req[0];  /* FIXME */
 
   if (J == NULL)
     {
@@ -1326,7 +1318,6 @@ int MJobGetAdjRunPriority(
   {
   int    nindex;
 
-  long   RunPriority;
 
   if ((PreemptorJ == NULL) || 
       (PreempteeJ == NULL) || 
@@ -1337,7 +1328,6 @@ int MJobGetAdjRunPriority(
 
   /* note:  value is proportional to amount of resources freed by preempting job */
 
-  RunPriority = 0;
 
   /* NOTE:  run priority -> Idle Priority + UsageWeight * 
      (RUWeight * TotalResourcesUsed) +

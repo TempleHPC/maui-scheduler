@@ -4415,7 +4415,6 @@ int MNodeGetTC(
   int RRes[MAX_MRESOURCETYPE];
 
   int rindex;
-  int pindex;
 
   const char *FName = "MNodeGetTC";
 
@@ -4506,10 +4505,6 @@ int MNodeGetTC(
       }
     }    /* END BLOCK */
 
-    if (MPar[0].NAvailPolicy[rindex] != 0)
-      pindex = rindex;
-    else
-      pindex = 0;
 
     if (RRes[rindex] == -1)
       {
@@ -6664,7 +6659,6 @@ int MNodeShowRes(
   int    nindex;
   int    rindex;
 
-  mjob_t  *J;
   mres_t  *R;
   mnode_t *N;
 
@@ -6914,8 +6908,6 @@ int MNodeShowRes(
     for (srindex = 0;ARes[srindex] != NULL;srindex++)
       {
       R = ARes[srindex];
-
-      J = (mjob_t *)R->J;
 
       switch(DisplayMode)
         {

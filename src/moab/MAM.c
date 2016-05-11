@@ -258,7 +258,6 @@ int MAMAllocJDebit(
 
   {
   char AMISBuffer[MMAX_LINE << 2];
-  char AMIRBuffer[MMAX_LINE << 2];
   char NodeType[MMAX_NAME];
  
   char AccountName[MMAX_NAME];
@@ -266,8 +265,6 @@ int MAMAllocJDebit(
 
   char JobType[MMAX_NAME];
  
-  int  rc;
-  int  tmpSC;
  
   mnode_t *N;
  
@@ -472,13 +469,6 @@ int MAMAllocJDebit(
         J->Name,
         J->NodeCount);
 
-      rc = MAMQBDoCommand(
-             A,
-             0,
-             AMISBuffer,
-             NULL,
-             &tmpSC,
-             AMIRBuffer);
 
       break;
 
@@ -1811,7 +1801,6 @@ int MAMProcessConfig(
   char *TokPtr;
  
   char  ValLine[MMAX_LINE];
-  char *ValList[2];
  
   if ((A == NULL) ||
       (Value == NULL) ||
@@ -1847,8 +1836,6 @@ int MAMProcessConfig(
       continue;
       }
  
-    ValList[0] = ValLine;
-    ValList[1] = NULL;
  
     switch(aindex)
       {
@@ -2106,7 +2093,6 @@ int MAMShow(
 
   mbool_t ShowHeader = TRUE;
 
-  char tmpLine[MMAX_LINE];
  
   mam_t *A;
  
@@ -2134,7 +2120,6 @@ int MAMShow(
       ShowHeader = FALSE;
       }
 
-    tmpLine[0] = '\0';
 
     if (A->Type == mamtNONE)
       continue;
@@ -2605,7 +2590,6 @@ int MAMAccountGetDefault(
 
         {
         char *RspBuf = NULL;
-        int   rc;
 
         mxml_t *RE;
 
@@ -2640,7 +2624,6 @@ int MAMAccountGetDefault(
 
         A->P.S->SDE = RE;
  
-        rc = MS3DoCommand(&A->P,NULL,&RspBuf,NULL,NULL,NULL);
 
         MDB(3,fAM) MLog("INFO:     account query response '%s'\n",
           (RspBuf != NULL) ? RspBuf : "NULL");
@@ -2670,11 +2653,7 @@ int MAMAccountGetDefault(
           if ((NE->Val == NULL) || (NE->Val[0] == '\0'))
             continue;
 
-          if (!strcmp(NE->Val,"$ANY") ||
-              !strcmp(NE->Val,"$NONE"),
-              !strcmp(NE->Val,"$MEMBER"),    /* XXX: is currently ignored */
-              !strcmp(NE->Val,"$DEFINED"),   /* XXX: is currently ignored */
-              !strcmp(NE->Val,"$SPECIFIED")) /* XXX: is currently ignored */
+          if (!strcmp(NE->Val,"$SPECIFIED")) /* XXX: is currently ignored */
             {
             continue;
             }

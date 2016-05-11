@@ -540,9 +540,6 @@ int MResSetAttr(
 
   mnode_t *N;
 
-  long     tmpStartTime;
-  long     tmpDuration = -1;
-
   mre_t   *RE;
 
   if (R == NULL)
@@ -800,9 +797,6 @@ int MResSetAttr(
     case mraStartTime:
 
       {
-      int StartForward = FALSE;
-      int EndForward   = FALSE;
-
       long     tmpStartTime = 0;
       long     tmpDuration  = 0;
 
@@ -835,20 +829,6 @@ int MResSetAttr(
           tmpDuration = strtol((char *)AVal,NULL,0);
         else
           tmpDuration  = *(long *)AVal;
-        }
-
-      if (R->StartTime > 0)
-        {
-        if (tmpStartTime < R->StartTime)
-          {
-          StartForward = TRUE;
-          EndForward   = TRUE;
-          }
-
-        if (tmpDuration < R->EndTime - R->StartTime)
-          {
-          EndForward = TRUE;
-          }
         }
 
       R->StartTime = tmpStartTime;
@@ -4112,13 +4092,11 @@ int MResCheckJAccess(
   {
   int IsInclusive;
  
-  char tmpAffinity;
  
   mjob_t *RJ;
  
   char  *tail;
- 
-  mreq_t *RQ;
+
  
   /* R:  existing job or user reservation */
   /* J:  job wrapper for new reservation  */
@@ -4144,7 +4122,6 @@ int MResCheckJAccess(
     }
  
   IsInclusive = FALSE;
-  tmpAffinity = nmPositiveAffinity;
  
   if (Same != NULL)
     *Same = FALSE; 
@@ -4199,7 +4176,7 @@ int MResCheckJAccess(
     RJ = NULL;
     }
  
-  RQ = J->Req[0];  /* FIXME:  only handles one req */
+
  
   if ((R->Flags & (1 << mrfByName)) || (J->Flags & (1 << mjfByName)))
     {
@@ -6041,30 +6018,10 @@ int MResAdjustGResUsage(
   int     TC) /* I */
 
   {
-  mrange_t tmpRange[2];
 
   if (R == NULL)
     {
     return(FAILURE);
-    }
-
-  tmpRange[0].StartTime = R->StartTime;
-  tmpRange[0].EndTime   = R->EndTime;
-  tmpRange[0].TaskCount = TC;
-
-  tmpRange[1].EndTime   = 0;     
-
-  if (TC > 0)
-    {
-    /*
-    MRLMerge(MRange,tmpRange,TC,NULL);
-    */
-    }
-  else
-    {
-    /*
-    MRLSubtract(MRange,tmpRange);
-    */
     }
 
   return(SUCCESS);
@@ -7115,7 +7072,6 @@ int MResAdjustDRes(
   static mre_t  *NRE = NULL;  /* new RE */
   static mre_t  *JRE = NULL;  /* job RE */
 
-  static int DRSize;
 
   long    JRETime;
 
@@ -7160,7 +7116,6 @@ int MResAdjustDRes(
     	JRE = (mre_t *)calloc((MSched.ResDepth << 1),sizeof(mre_t));
     }
 
-    DRSize = sizeof(mcres_t);
     }  /* END if (CRE == NULL) */
 
   if (CRE == NULL || ORE == NULL || NRE == NULL || JRE == NULL )

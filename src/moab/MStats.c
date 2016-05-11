@@ -853,7 +853,6 @@ int MStatUpdateActiveJobUsage(
 
   double   fsusage;
 
-  int      psremaining;
   
   int      timeindex;
   int      procindex;
@@ -962,11 +961,7 @@ int MStatUpdateActiveJobUsage(
     msdedicated = 0.0;
     msutilized  = 0.0;
 
-    if (J->StartTime + J->WCLimit > MSched.Time)
-      psremaining = TotalProcs * (J->StartTime + J->WCLimit - MSched.Time);
-    else
-      psremaining = 0;
- 
+
     if ((J->StartTime != MSched.Time) && (J->CTime != MSched.Time))
       { 
       psdedicated = interval * TotalProcs;
