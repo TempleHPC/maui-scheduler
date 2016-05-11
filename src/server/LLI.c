@@ -781,7 +781,7 @@ int MLLNodeSetAttrs(
   LL_element *LLNO) /* I */
 
   {
-  int      tmpI;
+  int      tmpI = 0;
   char    *tmpP = NULL;
   char   **tmpPA = NULL;
 
