@@ -40,6 +40,7 @@ all: config.status
 	${MAKE} -C src/server setup   
 
 dep:
+	${MAKE} -C tools fastdep.exe
 	${MAKE} -C src/moab dep
 	${MAKE} -C src/mcom dep
 	${MAKE} -C src/server dep
