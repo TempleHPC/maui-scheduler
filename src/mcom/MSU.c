@@ -1658,9 +1658,6 @@ int MSURecvData(
 
   char    TMarker[MMAX_NAME];
 
-  mbool_t IsRequest;
-
-  mbool_t LocalAllocation = FALSE;
 
   /* read data from socket.  socket is NOT closed */
 
@@ -1832,7 +1829,6 @@ int MSURecvData(
           return(FAILURE);
           }
 
-        LocalAllocation = TRUE;
         }
 
       if (MSURecvPacket(S->sd,&S->RBuffer,0,NULL,TimeLimit,NULL) == FAILURE)
@@ -1991,7 +1987,6 @@ int MSURecvData(
           return(FAILURE);
           }
 
-        LocalAllocation = TRUE;
         }
 
       /* read data */
@@ -2059,8 +2054,6 @@ int MSURecvData(
 
       if (!strncmp(tmpLine,"GET ",strlen("GET ")))
         {
-        IsRequest = TRUE;
-
         if (MSched.HTTPProcessF == NULL)
           {
           /* HTTP processing not supported */
@@ -2140,8 +2133,6 @@ int MSURecvData(
 
         return(FAILURE);
         }
-
-      LocalAllocation = TRUE;
 
       if (MSURecvPacket(
             S->sd,
@@ -2711,8 +2702,6 @@ int MSURecvData(
 
       if (MXMLGetChild(BE,MSON[msonRequest],NULL,&RE) == SUCCESS)
         {
-        IsRequest = TRUE;
-
         MXMLExtractE(
           (mxml_t *)BE,
           (mxml_t *)RE,
@@ -2735,8 +2724,6 @@ int MSURecvData(
         char tmpLine[MMAX_LINE];
 
         enum MSFC tSC;
-
-        IsRequest = FALSE;
 
         /* load status information if provided */
 
@@ -3420,7 +3407,6 @@ int MUClearChild(
   int pid;
   int StatLoc;
   int Flags;
-  int index;
 
 #ifndef __MPROD
   const char *FName = "MUClearChild";

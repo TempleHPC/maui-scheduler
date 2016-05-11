@@ -65,22 +65,6 @@ int MCfgAdjustBuffer(
 
     if (*ptr == '#')
       {
-      if (AllowExtension == TRUE)
-        {
-        /* look for include */
-
-        if (!strncmp(ptr,"#INCLUDE",strlen("#INCLUDE")))
-          {
-          int rc;
-
-          /* FORMAT:  #INCLUDE <FILENAME> */
-
-          rc = MUSScanF(ptr + strlen("#INCLUDE"),"%x%s",
-            MAX_SULINE,
-            IFile);
-          }
-        }
-
       State = cbComment;
       }  /* END if (*ptr == '#') */
     else if ((*ptr == '\\') && (State != cbComment))
@@ -793,7 +777,6 @@ int MCfgProcessLine(
   int   PIndex;
 
   mpar_t      *P  = NULL;
-  mfsc_t      *F  = NULL;
   mam_t       *A  = NULL;
   mrm_t       *R  = NULL;
   sres_t      *SR = NULL;
@@ -842,8 +825,6 @@ int MCfgProcessLine(
 
         return(FAILURE);
         }
-
-      F = &P->FSC;
 
       break;
 

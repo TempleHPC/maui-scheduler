@@ -244,8 +244,6 @@ static int MQueueCheckSingleJob(
   char     DValue[MAX_MNAME];
   enum MJobDependEnum DType;
 
-  long     PS;
-
   int      PReason;
 
   int      PReq;
@@ -256,7 +254,6 @@ static int MQueueCheckSingleJob(
 
   char     tmpLine[MAX_MLINE];
 
-  const char *FName = "MQueueCheckSingleJob";
 
   RQ = J->Req[0]; /* FIXME */
 
@@ -280,7 +277,6 @@ static int MQueueCheckSingleJob(
   PReq = MJobGetProcCount(J);
   /* XXX: PE is unused? */
   MJobGetPE(J,P,&PE);
-  PS   = (long)PReq * J->SpecWCLimit[0];
 
   /* check partition */
 
@@ -1222,8 +1218,6 @@ int MPolicyGetEStartTime(
   long    JobDuration;
  
   mres_t *R;
-
-  mpar_t *GP;
   
   mpu_t   PAvailable[mxoLAST];
 
@@ -1268,8 +1262,6 @@ int MPolicyGetEStartTime(
 
   /* NOTE:  must incorporate two-dimensional throttling policies    */
   /* NOTE:  all reservation EStart estimates based on 'soft' limits */
-
-  GP = &MPar[0];
 
   JobDuration = J->SpecWCLimit[0];
   AvailStart  = MAX(*Time,MSched.Time);

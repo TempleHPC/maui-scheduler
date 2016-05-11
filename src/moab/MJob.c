@@ -1645,18 +1645,6 @@ int MJobUpdateResourceCache(
     }      /* END if ((J->State == mjsStarting) || ... ) */
   else
     {
-    int NPCount;
-
-    if ((J->SpecFlags & (1 << mjfHostList)) && 
-        (J->ReqHList != NULL) &&
-        (J->ReqHList[0].N != NULL))
-      {
-      NPCount = J->ReqHList[0].N->CRes.Procs;
-      }
-    else
-      {
-      NPCount = (MNode[0] != NULL) ? MNode[0]->CRes.Procs : 1;   
-      }
 
     /* final job task mapping not established */
 
@@ -4592,7 +4580,6 @@ int MJobSetAttr(
   int      Mode)   /* I */
 
   {
-  mreq_t *RQ;
 
   const char *FName = "MJobSetAttr";
 
@@ -4608,7 +4595,6 @@ int MJobSetAttr(
     return(FAILURE);
     }
 
-  RQ = J->Req[0];
 
   switch(AIndex)
     {
@@ -12561,7 +12547,6 @@ int MJobTestDist()
 
   mnalloc_t tmpNodeList[MAX_MNODE + 1];
 
-  int       rc;
 
   int       index;
   char      tmpLine[MAX_MLINE];
@@ -12613,8 +12598,6 @@ int MJobTestDist()
 
   tmpNodeList[index].N = NULL;
   tmpNodeList[index].TC = 0;
-
-  rc = MJobDistributeTasks(&tmpJ,&tmpRM,tmpNodeList,tmpJ.TaskMap);
 
   if (tmpNodeList[0].TC == 0)
     exit(1);

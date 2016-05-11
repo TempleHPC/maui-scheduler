@@ -625,8 +625,6 @@ int MFSUpdateData(
   int     FA)          /* IN:  FS action */
 
   {
-  mpar_t   *GP;
-
   int      fsindex;
 
   char     FSFile[MAX_MLINE];
@@ -655,8 +653,6 @@ int MFSUpdateData(
     (FA & (1 << mfsactCalc))   ? "calc"  : "",
     (FA & (1 << mfsactRotate)) ? "rotate"  : "",
     (FA & (1 << mfsactWrite))  ? "write" : "");
-
-  GP = &MPar[0];
 
   if (FA & ((1 << mfsactWrite) | (1 << mfsactRotate)))
     {
