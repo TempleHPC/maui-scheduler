@@ -46,6 +46,7 @@ dep:
 	${MAKE} -C src/server dep
 
 clean:
+	${MAKE} -C tools clean
 	${MAKE} -C src/moab clean
 	${MAKE} -C src/mcom clean
 	${MAKE} -C src/server clean        
