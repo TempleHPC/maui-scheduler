@@ -1032,7 +1032,7 @@ int MJobGetRunPriority(
   *Priority = MPar[0].FSC.PCW[mpcUsage] * (
      MPar[0].FSC.PSW[mpsUCons] * ResourcesConsumed +
      MPar[0].FSC.PSW[mpsURem]  * ResourcesRemaining +
-     MPar[0].FSC.PSW[mpsUPerC] * PercentResUsage,
+     MPar[0].FSC.PSW[mpsUPerC] * PercentResUsage, // XXX from here ignored
      MPar[0].FSC.PSW[mpsUExeTime] * (MSched.Time - J->StartTime));
 
   *Priority += J->StartPriority;
@@ -1621,7 +1621,8 @@ int MJobUpdateResourceCache(
             {
             /* only one task per node */
 
-            proccount += RQ->TaskCount * (MNode[0] != NULL) ? MNode[0]->CRes.Procs : 1;
+            proccount += RQ->TaskCount *
+                ((MNode[0] != NULL) ? MNode[0]->CRes.Procs : 1);
             }
 
           continue;
@@ -1708,7 +1709,7 @@ int MJobUpdateResourceCache(
   else 
     {
     J->C.TotalProcCount = J->Request.TC * 
-      (J->Req[0]->DRes.Procs > 0) ? J->Req[0]->DRes.Procs : 1;
+        ((J->Req[0]->DRes.Procs > 0) ? J->Req[0]->DRes.Procs : 1);
     }
 
   J->C.TotalProcCount = MAX(1,J->C.TotalProcCount);

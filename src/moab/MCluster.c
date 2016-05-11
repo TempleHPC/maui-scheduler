@@ -41,8 +41,8 @@ int MClusterUpdateNodeState()
           N = RQ->NodeList[nindex].N;
  
           TotalTaskDed[N->Index] += RQ->NodeList[nindex].TC;
-          TotalProcDed[N->Index] += RQ->NodeList[nindex].TC * (RQ->DRes.Procs >= 0) ?
-                                      RQ->DRes.Procs : N->CRes.Procs;
+          TotalProcDed[N->Index] += RQ->NodeList[nindex].TC *
+              ((RQ->DRes.Procs >= 0) ? RQ->DRes.Procs : N->CRes.Procs);
           TotalProcUtl[N->Index] += RQ->NodeList[nindex].TC *
                                       RQ->URes.Procs / 100.0;
           } /* END for (nindex)   */

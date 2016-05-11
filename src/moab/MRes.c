@@ -1017,9 +1017,6 @@ int MResAToString(
 
       int aindex;
 
-      if (R->CL == NULL)
-        break;
-
       for (aindex = 0;R->CL[aindex].Type != maNONE;aindex++)
         {
         if (aindex != 0)
@@ -1514,15 +1511,12 @@ int MResBuildACL(
 
   aindex = 0;
 
-  if (R->Name != NULL)
-    {
-    R->CL[aindex].Type     = maRes;
-    strcpy(R->CL[aindex].Name,R->Name);
-    R->CL[aindex].Cmp      = mcmpSEQ;    
-    R->CL[aindex].Affinity = nmNeutralAffinity;
+  R->CL[aindex].Type     = maRes;
+  strcpy(R->CL[aindex].Name,R->Name);
+  R->CL[aindex].Cmp      = mcmpSEQ;    
+  R->CL[aindex].Affinity = nmNeutralAffinity;
 
-    aindex++;
-    }
+  aindex++;
 
   if (R->EndTime > 0)
     {
@@ -4110,7 +4104,9 @@ int MResCheckJAccess(
  
   {
   int IsInclusive;
- 
+  
+  int aindex;
+
   char tmpAffinity;
  
   mjob_t *RJ;
@@ -4148,25 +4144,20 @@ int MResCheckJAccess(
   if (Same != NULL)
     *Same = FALSE; 
 
-  if (J->RAList != NULL)
+  for (aindex = 0;J->RAList[aindex][0] != '\0';aindex++)
     {
-    int aindex;
- 
-    for (aindex = 0;J->RAList[aindex][0] != '\0';aindex++)
+    if (!strcmp(J->RAList[aindex],R->Name) ||
+        !strcmp(J->RAList[aindex],ALL) ||
+        (!strcmp(J->RAList[aindex],"[ALLJOB]") && (R->J != NULL)))
       {
-      if (!strcmp(J->RAList[aindex],R->Name) ||
-          !strcmp(J->RAList[aindex],ALL) ||
-         (!strcmp(J->RAList[aindex],"[ALLJOB]") && (R->J != NULL)))
-        {
-        /* reservation access is granted */
+      /* reservation access is granted */
  
-        if (Affinity != NULL)
-          *Affinity = nmPositiveAffinity;
+      if (Affinity != NULL)
+              *Affinity = nmPositiveAffinity;
  
-        return(TRUE);
-        }
-      }    /* END for (aindex) */
-    }
+      return(TRUE);
+      }
+    }    /* END for (aindex) */
  
   if (R->Type == mrtJob)
     {

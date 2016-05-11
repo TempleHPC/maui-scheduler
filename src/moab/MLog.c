@@ -121,7 +121,7 @@ int MLogOpen(
 
   /* if null logfile, send logs to stderr */
 
-  if ((LogFile == NULL) || (LogFile[0] == '\0'))
+  if (LogFile[0] == '\0')
     {
     mlog.logfp = stderr;
 

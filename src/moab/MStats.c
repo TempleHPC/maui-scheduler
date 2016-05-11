@@ -2850,11 +2850,8 @@ int MSysAToString(
 
     case msysaVersion:
 
-      if (S->Version != NULL) 
-        {
-        sprintf(Buf,"%s",
-          S->Version);
-        }
+      sprintf(Buf,"%s",
+        S->Version);
 
       break;
 
