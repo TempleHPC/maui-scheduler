@@ -46,8 +46,13 @@ uninstall:
 	$(RM) $(INST_DIR)/include/moab.h
 	$(RM) $(LIB)$(MOAB)  
 
-.c.o:   $(INCS)
+.c.o:
 	$(CC) $(IP) $(DEFS) $(CFLAGS) $(SOURCE) -c $<
+
+dep .depend:
+	$(CC) -MM $(IP) $(DEFS) $(SOURCE) *.c > .depend
+
+sinclude .depend
 
 $(MOAB): $(LOBJECTS)
 	ar rcs $(LIB)$(MOAB) $(LOBJECTS) 

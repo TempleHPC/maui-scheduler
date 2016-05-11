@@ -39,6 +39,11 @@ all: config.status
 	${MAKE} -C src/server all
 	${MAKE} -C src/server setup   
 
+dep:
+	${MAKE} -C src/moab dep
+	${MAKE} -C src/mcom dep
+	${MAKE} -C src/server dep
+
 clean:
 	${MAKE} -C src/moab clean
 	${MAKE} -C src/mcom clean

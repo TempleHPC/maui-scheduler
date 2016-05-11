@@ -22,7 +22,7 @@ LOBJECTS =MSU.o MSec.o MS3I.o MXML.o MConst.o MTComm.o MComm.o
     CP =cp
     RM =rm -f
 
-SOURCE = 
+SOURCE =
 CFLAGS = $(OSCCFLAGS)
 
 all:    $(LIBMCOM)
@@ -35,8 +35,13 @@ install: all
 uninstall:
 	$(RM) $(LIB)$(LIBMCOM)  
 
-.c.o:   $(INCS)
+.c.o:
 	$(CC) $(IP) $(DEFS) $(CFLAGS) $(SOURCE) -c $<
+
+dep .depend:
+	$(CC) -MM $(IP) $(DEFS) $(SOURCE) *.c > .depend
+
+sinclude .depend
 
 $(LIBMCOM): $(LOBJECTS)
 	ar rcs $(LIB)$(LIBMCOM) $(LOBJECTS) 

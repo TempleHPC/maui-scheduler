@@ -1,0 +1,53 @@
+LLI.o: LLI.c ../../include/moab.h ../../include/moab-local.h \
+ ../../include/mcom.h ../../include/msched.h \
+ ../../include/msched-version.h ../../include/msched-common.h \
+ ../../include/msched-llapi.h ../../include/moab.h \
+ ../../include/moab-wiki.h ../../include/mg2.h ../../include/msu.h \
+ ../../include/moab-proto.h ../../include/mcom-proto.h \
+ ../../include/moab-utils.h ../../include/msched-proto.h __MLLStub.c \
+ OLLI.c
+mclient.o: mclient.c ../../include/mclient.h ../../include/moab.h \
+ ../../include/moab-local.h ../../include/mcom.h ../../include/msched.h \
+ ../../include/msched-version.h ../../include/msched-common.h \
+ ../../include/msched-llapi.h ../../include/moab-wiki.h \
+ ../../include/mg2.h ../../include/msu.h ../../include/moab-proto.h \
+ ../../include/mcom-proto.h ../../include/moab-utils.h \
+ ../../include/mclient-proto.h ../../include/msched-version.h \
+ ../../include/moab.h ../../include/msched-proto.h omclient.c \
+ mclient-stub.c
+mclient-stub.o: mclient-stub.c
+__MLLStub.o: __MLLStub.c
+mprof.o: mprof.c ../../include/moab.h ../../include/moab-local.h \
+ ../../include/mcom.h ../../include/msched.h \
+ ../../include/msched-version.h ../../include/msched-common.h \
+ ../../include/msched-llapi.h ../../include/moab.h \
+ ../../include/moab-wiki.h ../../include/mg2.h ../../include/msu.h \
+ ../../include/moab-proto.h ../../include/mcom-proto.h \
+ ../../include/moab-utils.h ../../include/msched-proto.h \
+ ../../include/mprof-proto.h mprof-stub.c mclient-stub.c
+mprof-stub.o: mprof-stub.c mclient-stub.c
+OLLI.o: OLLI.c
+omclient.o: omclient.c
+OServer.o: OServer.c
+OUserI.o: OUserI.c
+SDR.o: SDR.c ../../include/moab.h ../../include/moab-local.h \
+ ../../include/mcom.h ../../include/msched.h \
+ ../../include/msched-version.h ../../include/msched-common.h \
+ ../../include/msched-llapi.h ../../include/moab.h \
+ ../../include/moab-wiki.h ../../include/mg2.h ../../include/msu.h \
+ ../../include/moab-proto.h ../../include/mcom-proto.h \
+ ../../include/moab-utils.h ../../include/msched-proto.h
+Server.o: Server.c ../../include/moab.h ../../include/moab-local.h \
+ ../../include/mcom.h ../../include/msched.h \
+ ../../include/msched-version.h ../../include/msched-common.h \
+ ../../include/msched-llapi.h ../../include/moab.h \
+ ../../include/moab-wiki.h ../../include/mg2.h ../../include/msu.h \
+ ../../include/moab-proto.h ../../include/mcom-proto.h \
+ ../../include/moab-utils.h ../../include/msched-proto.h OServer.c
+UserI.o: UserI.c ../../include/moab.h ../../include/moab-local.h \
+ ../../include/mcom.h ../../include/msched.h \
+ ../../include/msched-version.h ../../include/msched-common.h \
+ ../../include/msched-llapi.h ../../include/moab.h \
+ ../../include/moab-wiki.h ../../include/mg2.h ../../include/msu.h \
+ ../../include/moab-proto.h ../../include/mcom-proto.h \
+ ../../include/moab-utils.h ../../include/msched-proto.h OUserI.c

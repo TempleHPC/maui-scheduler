@@ -41,7 +41,7 @@ POBJECTS =mprof.o
     CP =cp
     LN =ln
 
-SOURCE = 
+SOURCE =
 CFLAGS = $(OSCCFLAGS)
 
 all:    $(MBINS)
@@ -84,10 +84,13 @@ setup:
 	(cd $(TOP);mkdir -p spool stats log traces tools)
 	chmod 1777 $(TOP)/spool
 
-.c.o:   $(INCS)
+.c.o:
 	$(CC) $(IP) $(DEFS) $(CFLAGS) $(SOURCE) -c $<
 
-UserI.o: OUserI.c
+dep .depend:
+	$(CC) -MM $(IP) $(DEFS) $(SOURCE) *.c > .depend
+
+sinclude .depend
 
 $(SERVER): $(SOBJECTS)
 	$(LD) $(SOBJECTS) -o $(BIN)/$@ $(LIBS) $(OSLDFLAGS) $(LP)
