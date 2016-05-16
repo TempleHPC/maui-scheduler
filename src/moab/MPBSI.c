@@ -105,7 +105,7 @@ int __MPBSGetTaskList(mjob_t *,char *,short *,int);
 int __MPBSNLToTaskString(mnalloc_t *,mrm_t *,char *,int);
 int __MPBSIGetSSSStatus(mnode_t *,char *); 
 long MPBSGetResKVal(char *);
-int MPBSQueueQuery(mrm_t *,int *,int *);
+int MPBSQueueQuery(mrm_t *,int *,char *, int *);
 int __MPBSJobChkExecutable(struct batch_status *);
 
 
@@ -1253,6 +1253,7 @@ int MPBSQueueQuery(
 
   mrm_t *R,
   int   *QCount,
+  char  *EMsg,
   int   *SC)
 
   {

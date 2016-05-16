@@ -376,6 +376,7 @@ int MRMSQueueQuery(
 
   mrm_t *R,
   int   *QCount,
+  char  *EMsg,
   int   *SC)
  
   {
