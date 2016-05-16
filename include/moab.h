@@ -1120,7 +1120,7 @@ typedef struct {
   int (*JobStart)(mjob_t *, mrm_t *, char *, int *);
   int (*JobSubmit)(char *,mrm_t *,mjob_t **,char *,char *,int *);
   int (*JobSuspend)(mjob_t *,mrm_t *,char *,int *);
-  int (*QueueQuery)(mrm_t *, int *, int *);
+  int (*QueueQuery)(mrm_t *, int *, char *, int *);
   int (*ResourceModify)();
   int (*ResourceQuery)(mnode_t *,mrm_t *,char *,int *);
   int (*RMEventQuery)(mrm_t *,int *);

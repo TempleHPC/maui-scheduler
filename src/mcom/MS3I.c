@@ -54,17 +54,17 @@ typedef struct {
 int MS3Initialize(mrm_t *,int *);
 int MS3Ping(mrm_t *,enum MStatusCodeEnum *);
 int MS3GetData(mrm_t *,mbool_t,int *);
-int MS3JobStart(mjob_t *,mrm_t *,char *,enum MStatusCodeEnum *);
+int MS3JobStart(mjob_t *,mrm_t *,char *,int *);
 int MS3JobRequeue(mjob_t *,mrm_t *,mjob_t **,char *,int *); 
 int MS3JobModify(mjob_t *,mrm_t *,char *,char *,char *,int *);
-int MS3JobCancel(mjob_t *,mrm_t *,char *,char *,enum MStatusCodeEnum *); 
+int MS3JobCancel(mjob_t *,mrm_t *,char *,char *,int *);
 int MS3JobSubmit(char *,mrm_t *,mjob_t **,long,char *,char *,enum MStatusCodeEnum *);
 int MS3JobSuspend(mjob_t *,mrm_t *,char *,int *); 
 int MS3JobResume(mjob_t *,mrm_t *,char *,int *); 
 int MS3JobCheckpoint(mjob_t *,mrm_t *,mbool_t,char *,int *);
-int MS3ClusterQuery(mrm_t *,int *,char *,enum MStatusCodeEnum *);
-int MS3WorkloadQuery(mrm_t *,int *,enum MStatusCodeEnum *);
-int MS3QueueQuery(mrm_t *,int *,char *,enum MStatusCodeEnum *);
+int MS3ClusterQuery(mrm_t *,int *,char *,int *);
+int MS3WorkloadQuery(mrm_t *,int *,int *);
+int MS3QueueQuery(mrm_t *,int *,char *,int *);
 int MS3JobLoad(char *,void *,mjob_t **,short *,mrm_t *);
 int MS3JobUpdate(void *,mjob_t **,short *,mrm_t *);
 int MS3NodeLoad(mnode_t *,void *,int,mrm_t *);
@@ -1134,7 +1134,7 @@ int MS3QueueQuery(
   mrm_t                *R,      /* I */
   int                  *QCount, /* O */
   char                 *EMsg,   /* O (optional,minsize=MMAX_LINE) */
-  enum MStatusCodeEnum *SC)     /* O (optional) */
+  int                  *SC)     /* O (optional) */
 
   {
   mclass_t *C;
@@ -1342,7 +1342,7 @@ int MS3WorkloadQuery(
 
   mrm_t                *R,       /* I */
   int                  *WCount,  /* O (optional) */
-  enum MStatusCodeEnum *SC)      /* O (optional) */
+  int                  *SC)      /* O (optional) */
 
   {
   mjob_t *J;
@@ -2281,7 +2281,7 @@ int MS3ClusterQuery(
   mrm_t                *R,      /* I */
   int                  *RCount, /* O */
   char                 *EMsg,   /* O (optional,minsize=MMAX_LINE) */
-  enum MStatusCodeEnum *SC)     /* I */
+  int 				   *SC)     /* I */
  
   {
   char  NodeName[MMAX_NAME];
@@ -2632,7 +2632,7 @@ int MS3JobStart(
   mjob_t               *J,   /* I */
   mrm_t                *R,   /* I */
   char                 *Msg, /* O (optional,minsize=MMAX_LINE) */
-  enum MStatusCodeEnum *SC)  /* O (optional) */
+  int                  *SC)  /* O (optional) */
 
   {
   char        *Response = NULL;
@@ -2859,7 +2859,7 @@ int MS3JobCancel(
   mrm_t                *R,        /* I */
   char                 *Message,  /* I */
   char                 *EMsg,     /* O (optional,minsize=MMAX_LINE) */
-  enum MStatusCodeEnum *SC)       /* O (optional) */
+  int                  *SC)       /* O (optional) */
 
   {
   mxml_t *E  = NULL;
