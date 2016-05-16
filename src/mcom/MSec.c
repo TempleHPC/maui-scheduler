@@ -1718,8 +1718,7 @@ int MSecCompress(
 
   if (Y > SrcSize)
     {
-    for (Y = 0;Y < SrcSize;Dest[Y + 1] = SrcString[Y++]);
-
+    memmove(Dest+1,SrcString,SrcSize);
     Dest[0] = FLAG_Copied;
 
     return(SrcSize + 1);

@@ -2378,7 +2378,7 @@ int MSURecvData(
 
         /* verify checksum */
 
-        if ((S->CSAlgo != mcsaNONE) && (S->CSKey != NULL))
+        if (S->CSAlgo != mcsaNONE)
           {
           MSecGetChecksum(
             ptr,

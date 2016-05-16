@@ -1032,8 +1032,8 @@ int MJobGetRunPriority(
   *Priority = MPar[0].FSC.PCW[mpcUsage] * (
      MPar[0].FSC.PSW[mpsUCons] * ResourcesConsumed +
      MPar[0].FSC.PSW[mpsURem]  * ResourcesRemaining +
-     MPar[0].FSC.PSW[mpsUPerC] * PercentResUsage, // XXX from here ignored
-     MPar[0].FSC.PSW[mpsUExeTime] * (MSched.Time - J->StartTime));
+     MPar[0].FSC.PSW[mpsUPerC] * PercentResUsage
+     /* MPar[0].FSC.PSW[mpsUExeTime] * (MSched.Time - J->StartTime) */);
 
   *Priority += J->StartPriority;
 
@@ -1930,14 +1930,14 @@ int MJobPreempt(
   DBG(4,fSCHED) DPrint("%s(%s,JPeer,%s,Msg,SC)\n",
     FName,
     (J != NULL) ? J->Name : "NULL",
-    (PreemptPolicy != -1) ? MPreemptPolicy[PreemptPolicy] : "DEFAULT");
+    MPreemptPolicy[PreemptPolicy]);
 
   if (J == NULL)
     {
     return(FAILURE);
     }
 
-  PPolicy = (PreemptPolicy != -1) ? PreemptPolicy : MSched.PreemptPolicy;
+  PPolicy = PreemptPolicy;
 
   if (Msg != NULL)
     Msg[0] = '\0';
@@ -2469,15 +2469,12 @@ int MJobBuildCL(
  
   /* insert user, group, account, QOS, and class cred info */
 
-  if (J->Name != NULL)
-    {
-    J->Cred.CL[aindex].Type     = maJob;
-    MUStrCpy(J->Cred.CL[aindex].Name,J->Name,MAX_MNAME);
-    J->Cred.CL[aindex].Cmp      = mcmpSEQ;
-    J->Cred.CL[aindex].Affinity = nmPositiveAffinity;
+  J->Cred.CL[aindex].Type     = maJob;
+  MUStrCpy(J->Cred.CL[aindex].Name,J->Name,MAX_MNAME);
+  J->Cred.CL[aindex].Cmp      = mcmpSEQ;
+  J->Cred.CL[aindex].Affinity = nmPositiveAffinity;
  
-    aindex++;
-    }
+  aindex++;
  
   if (J->Cred.U != NULL)
     {
@@ -2548,17 +2545,14 @@ int MJobBuildCL(
 
   /* add reservation access info */
 
-  if (J->RAList != NULL)
+  for (cindex = 0;J->RAList[cindex][0] != '\0';cindex++)
     {
-    for (cindex = 0;J->RAList[cindex][0] != '\0';cindex++)
-      {
-      J->Cred.CL[aindex].Type     = maRes;
-      MUStrCpy(J->Cred.CL[aindex].Name,J->RAList[cindex],MAX_MNAME);
-      J->Cred.CL[aindex].Cmp      = mcmpSEQ;  
-      J->Cred.CL[aindex].Affinity = nmPositiveAffinity;
+    J->Cred.CL[aindex].Type     = maRes;
+    MUStrCpy(J->Cred.CL[aindex].Name,J->RAList[cindex],MAX_MNAME);
+    J->Cred.CL[aindex].Cmp      = mcmpSEQ;  
+    J->Cred.CL[aindex].Affinity = nmPositiveAffinity;
  
-      aindex++;
-      }
+    aindex++;
     }
 
   if (J->SpecWCLimit[0] > 0)
@@ -5772,7 +5766,7 @@ int MReqSetAttr(
 
       MJobUpdateFlags(J);
 
-      if (MPar[2].Name != '\0')
+      if (MPar[2].Name[0] != '\0')
         MJobGetPAL(J,J->SpecPAL,J->PAL,NULL);
       }    /* END BLOCK */
 
@@ -8810,7 +8804,7 @@ int MReqGetFNL(
       RQ,
       (RQ->SetType != mrstNONE) ? RQ->SetType : MPar[0].NodeSetAttribute,
       (tmpRSS != mrssFirstOf) ? tmpRSS : mrssOneOf,
-      (RQ->SetList != NULL) ? RQ->SetList : MPar[0].NodeSetList,
+      RQ->SetList,
       (mnalloc_t *)DstNL,
       rindex);
 

@@ -1616,7 +1616,7 @@ int UIJobShow(
 
   RQ = J->Req[0]; /* FIXME:  only analyze primary req */     
 
-  if (!Flags & (1 << mcmFuture))
+  if ((!Flags) & (1 << mcmFuture))
     {
     mbool_t Blocked = FALSE;
 
@@ -1856,7 +1856,7 @@ int UIJobShow(
         continue;
         }
  
-      if ((!Flags & (1 << mcmFuture)) && 
+      if (((!Flags) & (1 << mcmFuture)) && 
          (((N->State == mnsIdle) || (N->State == mnsActive)) &&
           ((N->EState == mnsIdle) || (N->EState == mnsActive))))
         {
@@ -3956,7 +3956,7 @@ int UIClusterShow(
  
   int   nindex;
  
-  int   Status;
+  int   Status = mclsNONE;
  
   mnode_t *N;
   mjob_t  *J;
@@ -8026,7 +8026,7 @@ int MUIJobDiagnose(
           }
         }
 
-      if (abs((J->AWallTime + J->SWallTime) - (MSched.Time - J->StartTime)) > MSched.RMPollInterval << 1)
+      if (((J->AWallTime + J->SWallTime) - (MSched.Time - J->StartTime)) > MSched.RMPollInterval << 1)
         {
         if (Truncated == FALSE)
           {

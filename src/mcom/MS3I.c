@@ -1140,7 +1140,7 @@ int MS3QueueQuery(
   mclass_t *C;
 
   char   QID[MMAX_NAME];
-  int    Status;
+  int    Status = mclsNONE;
 
   char  *ptr;
 
@@ -1347,7 +1347,7 @@ int MS3WorkloadQuery(
   {
   mjob_t *J;
   
-  enum MJobStateEnum Status;
+  enum MJobStateEnum Status = mjsNONE;
 
   char   SJobID[MMAX_NAME];
   char   RMJID[MMAX_NAME];

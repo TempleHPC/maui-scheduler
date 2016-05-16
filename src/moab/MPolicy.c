@@ -1430,7 +1430,7 @@ int MPolicyGetEStartTime(
     if ((R == NULL) || (R->Name[0] == '\0') || (R->Name[0] == '\1'))
       continue;
 
-    if ((R->CL == NULL) || (R->Type != mrtJob))
+    if (R->Type != mrtJob)
       continue;
 
     /* NOTE:  must add support for user reservation tracking based *

@@ -1072,12 +1072,12 @@ int MJobGetStartPriority(
     SFactor[mpsRPS  ]    += RQ->TaskCount * RQ->DRes.Procs * J->WCLimit; 
     }  /* END for (rqindex) */
 
-  if ((J->Cred.U != NULL) && (&J->Cred.U->L.AP != NULL))
+  if (J->Cred.U != NULL)
+    {
     SFactor[mpsRUProc] = J->Cred.U->L.AP.Usage[mptMaxProc][0];
-
-  if ((J->Cred.U != NULL) && (&J->Cred.U->L.AP != NULL))
     SFactor[mpsRUJob] = J->Cred.U->L.AP.Usage[mptMaxJob][0];
-
+    }
+  
   SFactor[mpsRWallTime] = J->WCLimit; 
           
   MJobGetPE(J,GP,&SFactor[mpsRPE]);
