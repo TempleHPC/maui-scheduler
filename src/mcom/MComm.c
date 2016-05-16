@@ -241,7 +241,7 @@ int MSUCommMessageIsValid(
 
   if (((Now - TSVal) > 3600) || ((Now - TSVal) < -3600))
     {
-    MDB(1,fSOCK) MLog("ALERT:    timestamp does not match (%ld:%ld)\n",
+    MDB(1,fSOCK) MLog("ALERT:    timestamp does not match (%lu:%lu)\n",
       (unsigned long)Now,
       (unsigned long)TSVal);
 

@@ -2441,7 +2441,7 @@ int MSURecvData(
         if ((((long)Now - TSVal) > 3600) || 
             (((long)Now - TSVal) < -3600))
           {
-          MDB(1,fSOCK) MLog("ALERT:    timestamp does not match (%ld:%ld)\n",
+          MDB(1,fSOCK) MLog("ALERT:    timestamp does not match (%lu:%lu)\n",
             (unsigned long)Now,
             (unsigned long)TSVal);
 
@@ -4046,47 +4046,6 @@ int MSUDup(
 
   memcpy(S,Src,sizeof(msocket_t));
 
-#ifdef MNOT
-  /* which is better? memcpy or copy by hand? */
-
-  S = (msocket_t *)calloc(1,sizeof(msocket_t));
-
-  /* primitives */
-  
-  S->Version = Src->Version;
-  S->sd = Src->sd;
-  S->RemotePort = Src->RemotePort;
-  S->Flags = Src->Flags;
-  S->Timeout = Src->Timeout;
-  S->SIndex = Src->SIndex;
-  S->StatusCode = Src->StatusCode;
-  S->RBufSize = Src->RBufSize;
-  S->IsLoaded = Src->IsLoaded;
-  S->IsNonBlocking = Src->IsNonBlocking;
-  S->IsDynamic = Src->IsDynamic;
-  S->SBufSize = Src->SBufSize;
-  S->State = Src->State;
-
-  S->ResponseContext = Src->ResponseContext;
-  S->ResponseHandler = Src->ResponseHandler;
-  
-  S->WireProtocol = Src->WireProtocol;
-  S->SocketProtocol = Src->SocketProtocol;
-  S->CSAlgo = Src->CSAlgo;
-
-  S->DoEncrypt = Src->DoEncrypt;
-  S->Accepted = Src->Accepted;
-  S->Processed = Src->Processed;
-
-  S->CredHandler = Src->CredHandler;
-
-  MUStrCpy(S->Name,Src->Name,sizeof(S->Name));
-  MUStrCpy(S->Host,Src->Host,sizeof(S->Host));
-  MUStrCpy(S->RemoteHost,Src->RemoteHost,sizeof(S->RemoteHost));
-  MUStrCpy(S->CSKey,Src->CSKey,sizeof(S->CSKey));
-
-#endif /* MNOT */
-  
   /* strings */
   
   S->URI = NULL;  

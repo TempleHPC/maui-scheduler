@@ -620,7 +620,7 @@ int MGlobusJobStage(
 #ifndef __MPROD
   const char *FName = "MGlobusJobStage";
                                      
-  MDB(3,fGRID) MLog("%s(J,%s,%s,%ld,%s,%s,JobName,EMsg)\n",
+  MDB(3,fGRID) MLog("%s(J,%s,%s,%d,%s,%s,JobName,EMsg)\n",
     FName,
     (R != NULL) ? R->Name : "NULL",
     (JobString != NULL) ? JobString : "NULL",
@@ -1211,7 +1211,8 @@ int MGlobusStageData(
       {
       MDB(1,fGRID) MLog("ERROR:    src globus-url '%s' without corresponding dst url\n",
         SrcURLs[urlIndex]);
-         
+      
+      fclose(urlFileDesc);   
       return(FAILURE);
       }
 
@@ -1368,13 +1369,13 @@ int MGlobusCheckStageStatus(
       {
       /* abnormal termination */
       
-      MDB(1,fGRID) MLog("WARNING:  globus-url-copy process %d did not exit normally\n",
+      MDB(1,fGRID) MLog("WARNING:  globus-url-copy process %d did not exit normally: code %d\n",
         copyPID,
         WEXITSTATUS(childStatus));
 
       if (EMsg != NULL)
         {
-        sprintf(EMsg,"globus-url-copy process %d did not exit normally\n",
+        sprintf(EMsg,"globus-url-copy process %d did not exit normally: code %d\n",
           copyPID,
           WEXITSTATUS(childStatus));
         }
