@@ -85,7 +85,7 @@ int main(
   char    *tmpArgV[1024 + 1];
 
   int      aindex;
-
+  char    *ptr;
   const char *FName = "main";
 
 #ifdef __MPURIFY
@@ -111,17 +111,20 @@ int main(
 
   ServerSetSignalHandlers();
 
-  for (aindex = 0;aindex < ArgC;aindex++)
+  for (aindex = 1;aindex < ArgC;aindex++)
     {
     if ((ArgV[aindex] == NULL) || (aindex >= 1024))
       break;
 
-    tmpArgV[0] = NULL;
-
     MUStrDup(&tmpArgV[aindex],ArgV[aindex]);
     }
-
   tmpArgV[aindex] = NULL;
+
+  if ((ptr=strrchr(ArgV[0],'/')) != NULL) {
+    MUStrDup(&tmpArgV[0],ptr+1);
+  } else {
+    MUStrDup(&tmpArgV[0],ArgV[0]);
+  }
 
   ServerProcessArgs(ArgC,tmpArgV,TRUE);
  
