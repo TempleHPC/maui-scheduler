@@ -252,7 +252,9 @@ int main(
   int                 rc;
 
   const char *FName = "main";
- 
+
+  memset(temp_str,0,MMAX_LINE);
+
   mlog.logfp = stderr;
  
   DBG(4,fCORE) DPrint("%s(%d,argv)\n",

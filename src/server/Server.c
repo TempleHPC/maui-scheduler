@@ -91,7 +91,9 @@ int main(
 #ifdef __MPURIFY
   int Trigger_Purify;
 #endif /* __MPURIFY */
- 
+
+  memset(temp_str,0,MMAX_LINE);
+
   MUGetTime(&MSched.Time,mtmInit,&MSched);
 
   ServerInitializeLog(ArgC,ArgV);
