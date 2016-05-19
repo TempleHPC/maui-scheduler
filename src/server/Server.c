@@ -116,10 +116,12 @@ int main(
     if ((ArgV[aindex] == NULL) || (aindex >= 1024))
       break;
 
+    tmpArgV[aindex] = NULL;
     MUStrDup(&tmpArgV[aindex],ArgV[aindex]);
     }
   tmpArgV[aindex] = NULL;
 
+  tmpArgV[0] = NULL;
   if ((ptr=strrchr(ArgV[0],'/')) != NULL) {
     MUStrDup(&tmpArgV[0],ptr+1);
   } else {
