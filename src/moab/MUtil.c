@@ -4617,18 +4617,6 @@ int __MUTFunc(
   }  /* END __MUTFunc() */
 
 
-void MU2dMemSet(
-
-  void **a,
-  int c,
-  int m,
-  size_t n) {
-  int i;
-
-  for (i=0; i < m; ++i)
-    memset(a[i],c,n);
-}
-
 int MUMemCCmp(
 
   char *Data,
