@@ -258,6 +258,7 @@ int MAMAllocJDebit(
 
   {
   char AMISBuffer[MMAX_LINE << 2];
+  char AMIRBuffer[MMAX_LINE << 2];
   char NodeType[MMAX_NAME];
  
   char AccountName[MMAX_NAME];
@@ -265,6 +266,7 @@ int MAMAllocJDebit(
 
   char JobType[MMAX_NAME];
  
+  int  tmpSC;
  
   mnode_t *N;
  
@@ -469,6 +471,13 @@ int MAMAllocJDebit(
         J->Name,
         J->NodeCount);
 
+      MAMQBDoCommand(
+             A,
+             0,
+             AMISBuffer,
+             NULL,
+             &tmpSC,
+             AMIRBuffer);
 
       break;
 
@@ -2624,6 +2633,7 @@ int MAMAccountGetDefault(
 
         A->P.S->SDE = RE;
  
+        MS3DoCommand(&A->P,NULL,&RspBuf,NULL,NULL,NULL);
 
         MDB(3,fAM) MLog("INFO:     account query response '%s'\n",
           (RspBuf != NULL) ? RspBuf : "NULL");
@@ -2653,7 +2663,10 @@ int MAMAccountGetDefault(
           if ((NE->Val == NULL) || (NE->Val[0] == '\0'))
             continue;
 
-          if (!strcmp(NE->Val,"$SPECIFIED")) /* XXX: is currently ignored */
+          if (!strcmp(NE->Val,"$ANY") || !strcmp(NE->Val,"$NONE")
+              /* || !strcmp(NE->Val,"$MEMBER")
+                 || !strcmp(NE->Val,"$DEFINED")
+                 || !strcmp(NE->Val,"$SPECIFIED") */)
             {
             continue;
             }
