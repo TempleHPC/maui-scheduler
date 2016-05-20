@@ -91,7 +91,9 @@ int main(
 #ifdef __MPURIFY
   int Trigger_Purify;
 #endif /* __MPURIFY */
- 
+
+  memset(temp_str,0,MMAX_LINE);
+
   MUGetTime(&MSched.Time,mtmInit,&MSched);
 
   ServerInitializeLog(ArgC,ArgV);
@@ -116,10 +118,12 @@ int main(
     if ((ArgV[aindex] == NULL) || (aindex >= 1024))
       break;
 
+    tmpArgV[aindex] = NULL;
     MUStrDup(&tmpArgV[aindex],ArgV[aindex]);
     }
   tmpArgV[aindex] = NULL;
 
+  tmpArgV[0] = NULL;
   if ((ptr=strrchr(ArgV[0],'/')) != NULL) {
     MUStrDup(&tmpArgV[0],ptr+1);
   } else {

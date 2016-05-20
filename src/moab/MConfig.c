@@ -65,6 +65,22 @@ int MCfgAdjustBuffer(
 
     if (*ptr == '#')
       {
+      if (AllowExtension == TRUE)
+        {
+        /* look for include */
+
+        if (!strncmp(ptr,"#INCLUDE",strlen("#INCLUDE")))
+          {
+          int rc;
+
+          /* FORMAT:  #INCLUDE <FILENAME> */
+
+          rc = MUSScanF(ptr + strlen("#INCLUDE"),"%x%s",
+            MAX_SULINE,
+            IFile);
+          }
+        }
+
       State = cbComment;
       }  /* END if (*ptr == '#') */
     else if ((*ptr == '\\') && (State != cbComment))

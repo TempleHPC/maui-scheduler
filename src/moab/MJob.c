@@ -12541,7 +12541,6 @@ int MJobTestDist()
 
   mnalloc_t tmpNodeList[MAX_MNODE + 1];
 
-
   int       index;
   char      tmpLine[MAX_MLINE];
 
@@ -12592,6 +12591,8 @@ int MJobTestDist()
 
   tmpNodeList[index].N = NULL;
   tmpNodeList[index].TC = 0;
+
+  MJobDistributeTasks(&tmpJ,&tmpRM,tmpNodeList,tmpJ.TaskMap);
 
   if (tmpNodeList[0].TC == 0)
     exit(1);
