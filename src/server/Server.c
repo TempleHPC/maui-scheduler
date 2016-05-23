@@ -1134,7 +1134,7 @@ int ServerShowUsage(
   fprintf(stderr,"  [ -B <BACKFILL_DEPTH> ]\n");        
   fprintf(stderr,"  [ -c <BACKFILL_CRITERIA> ]\n");
   fprintf(stderr,"  [ -C <CONFIG_FILE> ]\n");
-  fprintf(stderr,"  [ -d // DEBUG_MODE ]\n");
+  fprintf(stderr,"  [ -d <DEBUG_MODE> ] // DISABLE AUTO BACKGROUND\n");
   fprintf(stderr,"  [ -L <LOGLEVEL> ]\n");
   fprintf(stderr,"  [ -f <LOGFACILITY> ]\n");
   fprintf(stderr,"  [ -h ] // HELP\n");
