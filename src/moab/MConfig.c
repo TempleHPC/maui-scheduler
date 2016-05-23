@@ -71,11 +71,10 @@ int MCfgAdjustBuffer(
 
         if (!strncmp(ptr,"#INCLUDE",strlen("#INCLUDE")))
           {
-          int rc;
 
           /* FORMAT:  #INCLUDE <FILENAME> */
 
-          rc = MUSScanF(ptr + strlen("#INCLUDE"),"%x%s",
+          MUSScanF(ptr + strlen("#INCLUDE"),"%x%s",
             MAX_SULINE,
             IFile);
           }
