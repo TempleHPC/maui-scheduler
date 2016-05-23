@@ -4568,8 +4568,8 @@ int __MPBSGetTaskList(
   char   *ptr;
   char   *ptr2;
 
-  char   *TokPtr;
-  char   *TokPtr2;
+  char   *TokPtr = NULL;
+  char   *TokPtr2 = NULL;
 
   mnode_t *N;
   char    tmpHostName[MAX_MNAME];
