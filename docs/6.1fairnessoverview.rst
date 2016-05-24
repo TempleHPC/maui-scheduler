@@ -1,0 +1,163 @@
+.. raw:: html
+
+   <div class="sright">
+
+.. raw:: html
+
+   <div class="sub-content-head">
+
+Maui Scheduler
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div id="sub-content-rpt" class="sub-content-rpt">
+
+.. raw:: html
+
+   <div id="tab-container" class="tab-container docs">
+
+.. raw:: html
+
+   <div class="topNav">
+
+.. raw:: html
+
+   <div class="docsSearch">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="navIcons topIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. rubric:: 6.1 Fairness Overview
+   :name: fairness-overview
+
+| The concept of *fairness* varies widely from person to person and site
+  to site. To some it implies giving all users equal access to compute
+  resources. However, more complicated concepts incorporating historical
+  resource usage, political issues, and job *value* are equally valid.
+  While no scheduler can handle all possible definitions of what *fair*
+  means, Maui provides some flexible tools that help with most common
+  fairness management definitions and needs. Particularly, fairness
+  under Maui may be addressed by any combination of the facilities
+  described in the table below.
+
++--------------------------+--------------------------+--------------------------+
+| **Facility**             | **Description**          | **Example**              |
++--------------------------+--------------------------+--------------------------+
+| `Throttling              | Specify limits on        | ``USERCFG[john] MAXJOB=3 |
+| Policies <6.2throttlingp | exactly what resources   | ``                       |
+| olicies.html>`__         | can be used at any given | ``GROUPCFG[DEFAULT] MAXP |
+|                          | instant.                 | ROC=64``                 |
+|                          |                          | ``GROUPCFG[staff] MAXPRO |
+|                          |                          | C=128``\ ````            |
+|                          |                          | (allow ``john`` to only  |
+|                          |                          | run 3 jobs at a time.    |
+|                          |                          | Allow the group          |
+|                          |                          | ``staff`` to utilize up  |
+|                          |                          | to 128 total processors  |
+|                          |                          | and all other groups to  |
+|                          |                          | utilize up to 64         |
+|                          |                          | processors.)             |
++--------------------------+--------------------------+--------------------------+
+| `Job                     | Specify what is most     | ``SERVWEIGHT 1``         |
+| Prioritization <5.0prior | important to the         | ``QUEUETIMEWEIGHT 10``   |
+| itization.html>`__       | scheduler. Using         | (cause jobs to increase  |
+|                          | *Service* based priority | in priority by 10 points |
+|                          | factors can allow a site | for every minute they    |
+|                          | to balance job           | remain in the queue.)    |
+|                          | turnaround time,         |                          |
+|                          | expansion factor, or     |                          |
+|                          | other scheduling         |                          |
+|                          | performance metrics.     |                          |
++--------------------------+--------------------------+--------------------------+
+| `Fairshare <6.3fairshare | Specify usage targets to | ``USERCFG[steve] FSTARGE |
+| .html>`__                | limits resource access   | T=25.0+``                |
+|                          | or adjust priority based | ``FSWEIGHT 1``           |
+|                          | on historical resource   | ``FSUSERWEIGHT 10``      |
+|                          | usage.                   | (enable *priority based* |
+|                          |                          | fairshare and specify a  |
+|                          |                          | fairshare target for     |
+|                          |                          | user ``steve`` such that |
+|                          |                          | his job's will be        |
+|                          |                          | favored in an attempt to |
+|                          |                          | keep his job's utilizing |
+|                          |                          | *at least* 25.0% of      |
+|                          |                          | delivered compute        |
+|                          |                          | cycles.)                 |
++--------------------------+--------------------------+--------------------------+
+| `Allocation              | Specify long term,       | ``BANKTYPE QBANK``       |
+| Management <6.4allocatio | credential-based         | ``BANKSERVER server.sys. |
+| nmanagement.html>`__     | resource usage limits.   | net``\ ````              |
+|                          |                          | (enable the **QBank**    |
+|                          |                          | allocation management    |
+|                          |                          | system. Within the       |
+|                          |                          | allocation manager,      |
+|                          |                          | project or account based |
+|                          |                          | allocations may be       |
+|                          |                          | configured. These        |
+|                          |                          | allocations may, for     |
+|                          |                          | example, allow project   |
+|                          |                          | **X** to utilize up to   |
+|                          |                          | 100,000 processor-hours  |
+|                          |                          | per quarter, provide     |
+|                          |                          | various QoS sensitive    |
+|                          |                          | charge rates, share      |
+|                          |                          | allocation access, etc.) |
++--------------------------+--------------------------+--------------------------+
+
+.. raw:: html
+
+   <div class="navIcons topIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="sub-content-btm">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. |Home| image:: /resources/docs/images/home.png
+   :target: index.html
+.. |Up| image:: /resources/docs/images/upArrow.png
+   :target: 6.0managingfairness.html
+.. |Previous| image:: /resources/docs/images/prevArrow.png
+   :target: 6.0managingfairness.html
+.. |Next| image:: /resources/docs/images/nextArrow.png
+   :target: 6.2throttlingpolicies.html

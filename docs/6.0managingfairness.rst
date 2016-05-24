@@ -1,0 +1,95 @@
+.. raw:: html
+
+   <div class="sright">
+
+.. raw:: html
+
+   <div class="sub-content-head">
+
+Maui Scheduler
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div id="sub-content-rpt" class="sub-content-rpt">
+
+.. raw:: html
+
+   <div id="tab-container" class="tab-container docs">
+
+.. raw:: html
+
+   <div class="topNav">
+
+.. raw:: html
+
+   <div class="docsSearch">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="navIcons topIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. rubric:: 6.0 Managing Fairness - Throttling Policies, Fairshare, and
+   Allocation Management
+   :name: managing-fairness---throttling-policies-fairshare-and-allocation-management
+
+-  `6.1 Fairness Overview <6.1fairnessoverview.html>`__
+-  `6.2 Throttling Policies <6.2throttlingpolicies.html>`__
+-  `6.3 Fairshare <6.3fairshare.html>`__
+-  `6.4 Allocation Management <6.4allocationmanagement.html>`__
+
+.. raw:: html
+
+   <div class="navIcons bottomIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="sub-content-btm">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. |Home| image:: /resources/docs/images/home.png
+   :target: index.html
+.. |Up| image:: /resources/docs/images/upArrow.png
+   :target: index.html
+.. |Previous| image:: /resources/docs/images/prevArrow.png
+   :target: 5.5taskdistribution.html
+.. |Next| image:: /resources/docs/images/nextArrow.png
+   :target: 6.1fairnessoverview.html
