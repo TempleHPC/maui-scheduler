@@ -830,6 +830,7 @@ const char *MRMXAttr[] = {
   "SJID",
   "TPN",
   "TRL",
+  "GRES",
   NULL };
 
 const char *MJobFlags[] = {

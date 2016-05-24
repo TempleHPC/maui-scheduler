@@ -3054,6 +3054,7 @@ int MJobSetHold(
  
   {
   char     Line[MAX_MLINE];
+  int      rIndex;
 
   const char *FName = "MJobSetHold";
  
@@ -3114,6 +3115,24 @@ int MJobSetHold(
     DBG(2,fSCHED) DPrint("INFO:     defer disabled\n");
  
     return(SUCCESS);
+    }
+
+  /* workaround to avoid defer state for GRES "gpu": when they are all utilized
+   * a noResource is triggered, but we don't want a hold */
+  /* only if NoResources, other reasons may be valid */
+  if (HoldReason == mhrNoResources)
+    {
+    /* check whether GPUs are defined as GRES somewhere */
+    if ((rIndex = MUMAGetIndex(eGRes,"gpu",mVerify)) != 0)
+      {
+      /* check whether our job requires GPUs */
+      if (J->Req[0]->DRes.GRes[rIndex].count > 0)
+        {
+        DBG(2,fSCHED) DPrint("INFO:     defer disabled (hack for GPUs)\n");
+
+        return(SUCCESS);
+        }
+      }
     }
  
   if (J->Hold & (1 << mhBatch))
@@ -3947,7 +3966,55 @@ int MJobProcessExtensionString(
           RQ->TaskRequestList[2]);
  
         break;
+      case mxaGRes:
 
+        MUStrCpy(tmpLine,Value,sizeof(tmpLine));
+
+        /* FORMAT:  GRES:<RESTYPE>[@<COUNT>][:<RESTYPE>[@<COUNT>]] 
+	   GRES:tape:matlab@2
+	*/
+
+        ptr = MUStrTok(tmpLine,":",&TokPtr2);
+
+        while (ptr != NULL)
+          {
+          char *gresName = NULL;
+          char *p = NULL;
+          int gresCount = 1;
+          int rIndex = 0;
+ 
+          if ((p = strchr(ptr,'@')) != NULL)
+            {
+            *p = '\0';
+            gresCount = strtol(p+1, NULL, 10);
+            }
+          
+          gresName = ptr;
+
+          DBG(3,fCONFIG) DPrint("INFO:     GRES requested = %s@%d\n",
+            gresName,
+            gresCount);
+          
+          if ((rIndex = MUMAGetIndex(eGRes,gresName,mVerify)) == 0)
+            {
+            DBG(1,fPBS) DPrint("ALERT:  Unknown GRES '%s'\n",
+              gresName);
+            }
+          else if (gresCount <= 0)
+            {
+            DBG(1,fPBS) DPrint("ALERT:  Invalid GRES count %d\n",
+              gresCount);
+            }
+          else
+            {
+            RQ->DRes.GRes[rIndex].count = gresCount;
+            RQ->DRes.GRes[0].count +=gresCount; 
+            }
+
+          ptr = MUStrTok(NULL,":",&TokPtr2);
+          }
+
+        break;
       default:
 
         /* not handled */
