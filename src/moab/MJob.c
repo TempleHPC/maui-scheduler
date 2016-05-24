@@ -9427,7 +9427,7 @@ int MJobProcessRemoved(
       {
       /* all subjobs completed.  cancel master job */
 
-      MRMJobCancel(MJ,"MOAB_INFO:  job has completed\n",NULL);
+      MRMJobCancel(MJ,"MAUI_INFO:  job has completed\n",NULL);
       }
     }     /* END if (J->MasterJobName != NULL) */
 
@@ -9602,7 +9602,7 @@ int MJobProcessCompleted(
       {
       /* all subjobs completed.  cancel master job */
 
-      MRMJobCancel(MJ,"MOAB_INFO:  job has completed\n",NULL);
+      MRMJobCancel(MJ,"MAUI_INFO:  job has completed\n",NULL);
       }
     }     /* END if (J->MasterJobName != NULL) */
 

@@ -3960,7 +3960,7 @@ int MRMJobPostLoad(
 
       /* cancel subjob */
 
-      MRMJobCancel(J,"MOAB_ERROR:  cannot locate parent job\n",NULL);
+      MRMJobCancel(J,"MAUI_ERROR:  cannot locate parent job\n",NULL);
       }
     else
       {
