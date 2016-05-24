@@ -1,0 +1,51 @@
+Resource Usage Limits
+#####################
+
+Resource usage limits constrain the amount of resources a given job may
+consume. These limits are generally proportional to the resources
+requested and may include walltime, any standard resource, or any
+specified generic resource. The parameter
+`RESOURCELIMITPOLICY <a.fparameters.html#resourcelimitpolicy>`__
+controls which resources are limited, what limit policy is enforced per
+resource, and what actions the scheduler should take in the event of a
+policy violation.
+
+The **RESOURCELIMITPOLICY** parameter accepts a number of policies and
+actions defined in the tables below.
+
++--------------------------------------------------------------------------+
+| **Policy**                                                               |
+| **Description**                                                          |
++--------------------------------------------------------------------------+
+| **ALWAYS**                                                               |
+| take action whenever a violation is detected                             |
++--------------------------------------------------------------------------+
+| **EXTENDEDVIOLATION**                                                    |
+| take action only if a violation is detected and persists for greater     |
+| than the specified timelimit                                             |
++--------------------------------------------------------------------------+
+
++--------------------------------------------------------------------------+
+| **Action**                                                               |
+| **Description**                                                          |
++--------------------------------------------------------------------------+
+| **CANCEL**                                                               |
+| terminate the job                                                        |
++--------------------------------------------------------------------------+
+| **REQUEUE**                                                              |
+| terminate and requeue the job                                            |
++--------------------------------------------------------------------------+
+| **SUSPEND**                                                              |
+| suspend the job and leave it suspended for an amount of time defined by  |
+| the **X** parameter                                                      |
++--------------------------------------------------------------------------+
+
+Constraining Walltime Usage
+***************************
+
+Early releases of Maui 3.2 allowed jobs to exceed the requested
+wallclock limit by an amount specified on a global basis using the
+`JOBMAXOVERRUN <a.fparameters.html#jobmaxoverrun>`__ parameter or on a
+per class basis using the `**CLASSCFG** <a.fparameters.html#classcfg>`__
+parameter's **OVERRUN** attribute. Later releases of 3.2 allowed the
+**OVERRUN** attribute to be associated with any job credential.

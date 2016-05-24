@@ -1,0 +1,16 @@
+Job Dependencies
+################
+
+Basic Job Dependency Support
+****************************
+
+By default, basic single step job dependencies are supported through
+completed/failed step evaluation. Basic dependency support does not
+require special configuration and is activated by default. Dependent
+jobs are only supported through a resource manager and therefore
+submission methods depend upon the specific resource manager being used.
+
+Task Scheduling of DAG's
+************************
+
+Moab 4.0 and higher supports task scheduling.

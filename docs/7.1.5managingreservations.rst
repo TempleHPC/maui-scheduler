@@ -1,0 +1,913 @@
+Configuring and Managing Reservations
+#####################################
+
+All reservations, whether they be administrative or standing, possess
+many similar traits.
+|image4| The `Moab Cluster Manager <../mcm/index.html>`__\ :sup:`TM`
+provides a graphical interface to `view and control
+reservations <../mcm/reservationMgmt.html>`__.
+
+Reservation Attributes
+**********************
+
+All reservations possess a timeframe of activity, an access control
+list, and a list of resources to be reserved. Additionally, reservations
+may also possess a number of extension attributes including
+epilog/prolog specification, reservation ownership and accountability
+attributes, and special flags which modify the behavior of the
+reservation.
+
+Start/End Time
+==============
+
+All reservations possess a start and an end time which define the
+reservation's *active* time. During this active time, the resources
+within the reservation may only be used as specified by the reservation
+ACL. This active time may be specified as either a start/end pair or a
+start/duration pair. Reservations exist and are visible from the time
+they are created until the active time ends at which point they are
+automatically removed.
+
+Access Control List (ACL)
+=========================
+
+For a reservation to be useful, it must be able to limit who or what can
+access the resources it has reserved. This is handled by way of an
+access control list, or ACL.
+
+Resources
+=========
+
+When specifying which resources to reserve, the administrator has a
+number of options. These options allow control over how many resources
+are reserved and where they are reserved at. The following reservation
+attributes allow the administrator to define resources
+
+Task Description
+----------------
+
+A key concept of reservations is the idea of a task. The scheduler uses
+the task concept extensively for its job and reservation management. A
+task is simply an atomic collection of resources, such as processors,
+memory, or local disk, which must be found on the same node. For
+example, if a task requires 4 processors and 2 GB of memory, the
+scheduler must find all processors AND memory on the same node; it
+cannot allocate 3 processors and 1 GB on one node and 1 processor and 1
+GB of memory on another node to satisfy this task. Tasks constrain how
+the scheduler must collect resources for use in a standing reservation,
+however, they do not constrain the way in which the scheduler makes
+these cumulative resources available to jobs. A job can use the
+resources covered by an accessible reservation in whatever way it needs.
+If reservation X allocated 6 tasks with 2 processors and 512 MB of
+memory each, it could support job Y which requires 10 tasks of 1
+processor and 128 MB of memory or job Z which requires 2 tasks of 4
+processors and 1 GB of memory each. The task constraints used to acquire
+a reservation's resources are completely transparent to a job requesting
+use of these resources.
+
+Taskcount
+---------
+
+Using the task description, the taskcount attribute defines how many
+tasks must be allocated to satisfy the reservation request. To create a
+reservation, a taskcount and/or a hostlist must be specified.
+
+Hostlist
+--------
+
+A hostlist constrains the set of resource which are available to a
+reservation. If no taskcount is specified, the reservation will attempt
+to reserve one task on each of the listed resources. If a taskcount is
+specified which requests fewer resources than listed in the hostlist,
+the scheduler will reserve only the number of tasks from the hostlist
+specified by the taskcount attribute. If a taskcount is specified which
+requests more resources than listed in the hostlist, the scheduler will
+reserve the hostlist nodes first and then seek additional resources
+outside of this list.
+
+Flags
+=====
+
+Reservation flags allow specification of special reservation attributes
+or behaviors. The following flags are supported:
+**Flag Name**
+**Description**
+**BESTEFFORT**
+N/A
+**BYNAME**
+reservation will only allow access to jobs which meet reservation ACL's
+*and* **** explicitly request the resources of this reservation using
+the job **ADVRES** flag
+**OWNERPREEMPT**
+job's by the reservation owner are allowed to preempt non-owner jobs
+using reservation resources
+**PREEMPTEE**
+N/A
+**SPACEFLEX**
+reservation is allowed to move from host to host over time in an attempt
+to optimize resource utilization\*
+
+.. note::
+
+   Reservations must now explicitly request the ability to 'float' for optimization purposes by using the **SPACEFLEX**
+   flag. Previous versions enabled the 'float' behavior by default if a hostlist was not specified.
+
+
+Configuring Standing Reservations
+=================================
+
+Standing reservations allow resources to be dedicated for particular
+uses. This dedication can be configured to be permanent or periodic,
+recurring at a regular time of day and/or time of week. There is
+extensive applicability of standing reservations for everything from
+daily dedicated job runs to improved use of resources on weekends. All
+standing reservation attributes are specified via the
+`SRCFG <a.fparameters.html#SRCFG>`__ parameter using the attributes
+listed in the table below.
+
+**Attribute**
+**Format**
+**Default**
+**Description**
+**Example**
+` <>`__\ **ACCESS**
+**DEDICATED** or **SHARED**
+**DEDICATED**
+If set to **SHARED**, allows a standing reservation to utilize resources
+already allocated to other non-job reservations. Otherwise, these other
+reservations will block resource access.
+``SRCFG[test] ACCESS=SHARED``
+(Standing reservation ``test`` may access resources allocated to
+existing standing and administrative reservations)
+` <>`__\ **ACCOUNTLIST**
+list of valid, comma delimited account names
+[NONE]
+specifies that jobs with the associated accounts may use the resources
+contained within this reservation
+``SRCFG[test] ACCOUNTLIST=ops,staff``
+(jobs using the account ``ops`` or ``staff`` are granted access to the
+resources in standing reservation ``test``)
+` <>`__\ **CHARGEACCOUNT**
+any valid accountname
+[NONE]
+specifies the account to which maui will charge all idle cycles within
+the reservation (via the allocation manager)
+``SRCFG[test] CHARGEACCOUNT=jupiter``
+(The scheduler will charge all idle cycles within reservations
+supporting standing reservation ``test`` to account ``jupiter``)
+` <>`__\ **CLASSLIST**
+list of valid, comma delimited class names
+[NONE]
+specifies that jobs requiring any of these classes may use the resources
+contained within this reservation
+``SRCFG[test] CLASSLIST=interactive``
+(The scheduler will allow all jobs requiring any of the classes listed
+access to the resources reserved by standing reservation ``test``)
+` <>`__\ **DAYS**
+one or more of the following (comma delimited)
+**Mon,** **Tue,** **Wed**, **Thu,** **Fri,** **Sat,** **Sun**,
+or **[ALL]**
+**[ALL]**
+specifies which days of the week the standing reservation will be active
+``SRCFG[test] DAYS=Mon,Tue,Wed,Thu,Fri``
+(standing reservation ``test`` will be active on Monday thru Friday)
+` <>`__\ **DEPTH**
+<INTEGER>
+2
+specifies the number of standing reservations which will be created (one
+per period) See **PERIOD**)
+``SRCFG[test] PERIOD=DAY DEPTH=7``
+(specifies that reservations will be created for standing reservation
+``test`` for today, and the next 6 days)
+` <>`__\ **ENDTIME**
+[[[DD:]HH:]MM:]SS
+24:00:00
+specifies the time of day the standing reservation period ends (end of
+day or end of week depending on **PERIOD**) **NOTE:** In Maui 3.2 and
+earlier, *week* based reservations required specification of the
+**WSTARTTIME** and **WENDTIME** attributes to indicate reservation start
+and end offsets.
+::
+
+    SRCFG[test] STARTTIME=8:00:00
+    SRCFG[test] ENDTIME=17:00:00
+    SRCFG[test] PERIOD=DAY
+
+(standing reservation ``test`` is active from 8:00 AM until 5:00 PM)
+` <>`__\ **FLAGS**
+comma delimited list of zero or more of the following flags:
+**SINGLEUSE**, **BYNAME**, **OWNERPREEMPT**, **PREEMPTEE**,
+**TIMEFLEX**, or **FORCE**
+[NONE]
+specifies special reservation attributes. See `7.1.5.1.4 Managing
+Reservations - Flags <7.1.5managingreservations.html>`__ for details.
+``SRCFG[test] FLAGS=BYNAME``
+(Jobs may only access the resources within this reservation if they
+explicitly request the reservation *by name*)
+` <>`__\ **GROUPLIST**
+one or more comma delimited group names
+[ALL]
+specifies the groups which will be allowed access to this standing
+reservation
+``SRCFG[test] GROUPLIST=staff,ops,special``
+``SRCFG[test] CLASSLIST=interactive``
+(The scheduler will allow jobs with the listed group ID's or which
+request the job class ``interactive`` to use the resources covered by
+the standing reservation.)
+` <>`__\ **HOSTLIST**
+one or more comma delimited host names or host expressions
+[ALL]
+specifies the set of host from which the scheduler can search for
+resources to satisfy the reservation. If **TASKCOUNT** is also
+specified, only **TASKCOUNT** tasks will be reserved. Otherwise, all
+hosts listed will be reserved.
+::
+
+    SRCFG[test] HOSTLIST=node001,node002,node003
+    SRCFG[test] RESOURCES=PROCS:2;MEM:512
+    SRCFG[test] TASKCOUNT=2
+
+(The scheduler will reserve a total of 2 tasks - with 2 processors and
+512 MB each, using resources located on node001, node002, and/or
+node003)
+` <>`__\ **JOBATTRLIST**
+comma delimited list of one or more of the following job attributes
+**PREEMPTEE**
+[NONE]
+specifies job attributes which will grant a job access to the
+reservation
+``SRCFG[test] JOBATTRLIST=PREEMPTEE``
+(Preemptible jobs can access the resources reserved within this
+reservation)
+` <>`__\ **NODEFEATURES**
+comma delimited list of node features
+[NONE]
+specifies the required node features for nodes which will be part of the
+standing reservation
+``SRCFG[test] NODEFEATURES=wide,fddi``
+(all nodes allocated to the standing reservation must have both the
+``wide`` and ``fddi`` node attributes)
+` <>`__\ **OWNER**
+<CREDTYPE>:<CREDID> where <CREDTYPE> is one of **USER**, **GROUP**,
+**ACCOUNT**, **QOS**, or **CLASS** and <CREDTYPE> is a valid credential
+id of that type.
+[NONE]
+specifies the owner of the reservation
+``SRCFG[test] OWNER=USER:tom``
+(user ``tom`` *owns* the reservation and may be granted special
+privileges associated with that ownership.)
+` <>`__\ **PARTITION**
+a valid partition name
+[ALL]
+specifies the partition in which the standing reservation should be
+created
+``SRCFG[test] PARTITION=OLD``
+(The standing reservation will only select resources from partition
+``OLD``)
+` <>`__\ **PERIOD**
+one of **DAY**, **WEEK**, or **INFINITY**
+**DAY**
+specifies the ``period`` of the standing reservation
+``SRCFG[test] PERIOD=WEEK``
+(each standing reservation covers a one week period)
+` <>`__\ **PRIORITY**
+<INTEGER>
+**0**
+specifies the ``priority`` of the standing reservation
+````
+` <>`__\ **QOSLIST**
+zero or more valid, comma delimited QOS names
+[NONE]
+specifies that jobs with the listed QOS names can access the reserved
+resources
+``SRCFG[test] QOSLIST=hi,low,special``
+(The scheduler will allow jobs using the listed QOS's access to the
+reserved resources)
+` <>`__\ **RESOURCES**
+semicolon delimited <ATTR>=<VALUE> pairs where <ATTR> may be one of
+**PROCS**, **MEM**, **SWAP**, or **DISK**
+PROCS=-1 (All processors available on node)
+specifies what resources constitute a single standing reservation task.
+(each task must be able to obtain all of its resources as an atomic unit
+on a single node) Supported resources currently include the following:
+| PROCS (number of processors)
+| MEM (real memory in MB)
+| DISK (local disk in MB)
+| SWAP (virtual memory in MB)
+
+``SRCFG[test] RESOURCES=PROCS:1;MEM:512``
+(each standing reservation task will reserve one processor and 512 MB of
+real memory)
+` <>`__\ **STARTTIME**
+[[[DD:]HH:]MM:]SS
+00:00:00:00 (midnight)
+specifies the time of day/week the standing reservation becomes active.
+Whether this indicated a time of day or time of week depends on the
+setting of **SRPERIOD** **NOTE:** In Maui 3.2 and earlier, *week* based
+reservations required specification of the **WSTARTTIME** and
+**WENDTIME** attributes to indicate reservation start and end offsets.
+``SRCFG[test] STARTTIME=08:00:00``
+``SRCFG[test] ENDTIME=17:00:00`` ``SRCFG[test] PERIOD=DAY``
+(The standing reservation will be active from 8:00 AM until 5:00 PM each
+day)
+` <>`__\ **TASKCOUNT**
+<INTEGER>
+0 (unlimited tasks)
+specifies how may tasks should be reserved for the reservation
+``SRCFG[test] RESOURCES=PROCS:1;MEM:256``
+``SRCFG[test] TASKCOUNT=16``
+(standing reservation ``test`` will reserve 16 tasks worth of resources,
+in this case, 16 procs and 4 GB of real memory)
+
+` <>`__\ **TIMELIMIT**
+[[[DD:]HH:]MM:]SS
+-1 (no time based access)
+specifies the maximum allowed overlap between a the standing reservation
+and a job requesting resource access
+``SRCFG[test] TIMELIMIT=1:00:00``
+(The scheduler will allow jobs to access up to one hour of resources in
+the standing reservation)
+` <>`__\ **TIMELOGIC**
+**AND** or **OR**
+**OR**
+specifies how TIMELIMIT access status will be combined with other
+standing reservation access methods to determine job access. If
+TIMELOGIC is set to OR, a job is granted access to the reserved
+resources if it meets the TIMELIMIT criteria or any other access
+criteria (i.e., USERLIST) If TIMELOGIC is set to AND, a job is granted
+access to the reserved resources only if it meets the TIMELIMIT criteria
+and at least one other access criteria (NOTE: **TIMELOGIC** is not
+supported in Maui 3.2.6 and later. Instead, the *required* ACL marker,
+'**\***', should be used. Equivalent functionality can be enabled by
+setting something like the following
+``SRCFG[special] TIMELIMIT=1:00:00*``
+``SRCFG[special] TIMELIMIT=1:00:00``
+``SRCFG[special] TIMELOGIC=AND``
+``SRCFG[special] QOSLIST=high low special-``
+``SRCFG[special] ACCCOUNTLIST=!projectX,!Y``
+`**TPN** (Tasks Per Node) <>`__
+<INTEGER>
+0 (no TPN constraint)
+specifies the minimum number of tasks per node which must be available
+on eligible nodes.
+``SRCFG[2] TPN=4``
+``SRCFG[2] RESOURCES=PROCS:2;MEM:256``
+(Maui must locate at least 4 tasks on each node that is to be part of
+the reservation. That is, each node included in standing reservation '2'
+must have at least 8 processors and 1 GB of memory available)
+
+`**TRIGGER** <>`__
+<ETYPE>[+<OFFSET>][@<THRESHOLD>];<ATYPE>[@<ADATA>]
+where
+**ETYPE** is one of **create**, **start**, **end**, or **minload**
+**OFFSET** is a relative time specified in [[HH:]MM:]SS format
+**THRESHOLD** is a floating point value
+**ATYPE** is one of **cancel**, **exec**, or **submit**
+**ADATA** is a context sensitive string indicating an executable, submit
+script, or other action data
+N/A
+specifies event triggers to be launched by the scheduler under the
+scheduler's id. These triggers can be used to conditionally cancel
+reservations or launch various actions at specified event offsets. NOTE:
+This feature is only available in Moab 4.0 and higher.
+``SRCFG[fast] TRIGGER=start+5:00:00:exec@/usr/local/domail.pl``
+(Maui will launch the ``domail.pl`` script 5 hours after any ``fast``
+reservation is started.
+` <>`__\ **USERLIST**
+comma delimited list of users
+[NONE]
+specifies which users have access to the resources reserved by this
+reservation
+``SRCFG[test] USERLIST=bob,joe,mary``
+(users ``bob``, ``joe`` and ``mary`` can all access the resources
+reserved within this reservation)
+
+Standing Reservation Overview
+-----------------------------
+   :name: standing-reservation-overview
+
+A standing reservation is similar to a normal administrative reservation
+in that it also places an access control list on a specified set of
+resources. Resources are specified on a *per-task* basis and currently
+include processors, local disk, real memory, and swap. The access
+control list supported for standing reservations includes users, groups,
+accounts, job classes, and QOS levels. Standing reservations can be
+configured to be permanent or periodic on a daily or weekly basis and
+can accept a daily or weekly start and end time. Regardless of whether a
+standing reservation is permanent or recurs on a daily or weekly basis,
+they are enforced using a series of reservations, extending a number of
+*periods* into the future as controlled by the **DEPTH** attribute of
+the `SRCFG <a.fparameters.html#SRCFG>`__ parameter.
+The examples below demonstrate possibles configuration specified with
+the **SRCFG** parameter.
+
+.. rubric:: Example 1 Basic Business Hour Standing Reservation
+   :name: example-1-basic-business-hour-standing-reservation
+
+::
+
+    -----
+    # maui.cfg
+
+    SRCFG[interactive] TASKCOUNT=6 RESOURCES=PROCS:1,MEM:512
+    SRCFG[interactive] PERIOD=DAY DAYS=MON,TUE,WED,THU,FRI
+    SRCFG[interactive] STARTTIME=9:00:00 ENDTIME=17:00:00
+    SRCFG[interactive] CLASSLIST=interactive
+    -----
+
+|image6|\ when using the **SRCFG** parameter, attribute lists must be
+delimited using the *comma*, *pipe*, or *colon* characters (i.e., ',',
+'\|', or ':'), they cannot be space delimited. For example, to specify a
+multi-class ACL, specify '``SRCFG[test] CLASSLIST=classA,classB``'.
+
+| |image7|\ only one **STARTTIME** and one **ENDTIME** value can be
+  specified per reservation. If varied start and end times are desired
+  throughout the week, complementary standing reservations should be
+  created. For example, to establish a reservation from 8:00 PM until
+  6:00 AM the next day during business days, two reservations should be
+  created, one from 8:00 PM until midnight, and the other from midnight
+  until 6:00 AM. Jobs can run across reservation boundaries allowing
+  these two reservations function a single reservation which spans the
+  night.
+
+The above example fully specifies a reservation including the quantity
+of resources requested using the **TASKCOUNT** and **RESOURCES**
+attributes. In all cases, resources are allocated to a reservation in
+units called *tasks* where a task is a collection of resources which
+must be allocated together on a single node. The **TASKCOUNT** attribute
+specifies the number of these tasks which should be reserved by the
+reservation. In conjunction with this attribute, the **RESOURCES**
+attribute defines the reservation task by indicating what resources must
+be included in each task. In this case, the scheduler must locate and
+reserve 1 processor and 512 MB of memory together on the same node for
+each task requested.
+
+As mentioned previously, a standing reservation reserves resources over
+a given timeframe. The **PERIOD** attribute may be set to a value of
+**DAY**, **WEEK**, or **INFINITE** to indicate the period over which
+this reservation should recur. If not specified, a standing reservation
+recurs on a daily basis. If a standing reservation is configured to
+recur daily, the attribute **DAYS** may be specified to indicate which
+days of the week the reservation should exist. This attribute takes a
+comma-delimited list of days where each day is specified as the first
+three letters of the day in all capital letters, i.e. **MON** or
+**FRI**. The above example specifies that this reservation is periodic
+on a daily basis and should only exist on business days.
+
+The time of day during which the requested tasks are to be reserved is
+specified using the **STARTTIME** and **ENDTIME** attributes. These
+attributes are specified in standard military time HH:MM:SS format and
+both **STARTTIME** and **ENDTIME** specification is optional defaulting
+to midnight at the beginning and end of the day respectively. In the
+above example, resources will be reserved from 9:00 AM until 5:00 PM on
+business days.
+
+The final aspect of any reservation is the access control list
+indicating who or what can utilize the reserved resources. In the above
+example, **CLASSLIST** attribute is used to indicate that jobs
+requesting the class ``interactive`` should be allowed to use this
+reservation.
+
+Specifying Reservation Resources
+--------------------------------
+
+In most cases, only a small subset of standing reservation attributes
+must be specified in any given case. For example, by default,
+**RESOURCES** is set to **``PROCS=-1``** which indicates that each task
+should reserve all of the processors on the node on which it is located.
+This, in essence, creates a *one task equals one node* mapping. In many
+cases, particularly on uniprocessor systems, this default behavior may
+be easiest to work with. However, in SMP environments, the **RESOURCES**
+attribute provides a powerful means of specifying an exact,
+multi-dimensional resource set.
+|image8|\ An examination of the parameters documentation will show that
+the default value of **PERIOD** is **DAYS**. Thus, specifying this
+parameter in the example above was unnecessary. It was used only to
+introduce this parameter and indicate that other options exist beyond
+daily standing reservations.
+
+.. rubric:: Example 2: Host Constrained Standing Reservation
+   :name: example-2-host-constrained-standing-reservation
+
+Although example 1 did specify a quantity of resources to reserve, it
+did not specify where the needed tasks were to be located. If this
+information is not specified, The scheduler will attempt to locate the
+needed resources anywhere it can find them. The example 1 reservation
+will essentially *float* to hosts where the needed resources can be
+found.
+If a site wanted to constrain a reservation to a subset of available
+resources, this could be accomplished using the **HOSTLIST** attribute.
+The **HOSTLIST** attribute is specified as a comma-separated list of
+hostnames and constrains the scheduler to only select tasks from the
+specified list. This attribute can exactly specify hosts or specify them
+using host regular expressions. The example below demonstrates a
+possible use of the **HOSTLIST** attribute.
+
+::
+
+    -----
+    # maui.cfg
+
+    SRCFG[interactive] DAYS=MON,TUE,WED,THU,FRI
+    SRCFG[interactive] PERIOD=DAY
+    SRCFG[interactive] STARTTIME=10:00:00 ENDTIME=15:00:00
+    SRCFG[interactive] RESOURCES=PROCS:2,MEM:256
+    SRCFG[interactive] HOSTLIST=node001,node002,node005,node020
+    SRCFG[interactive] TASKCOUNT=6
+    SRCFG[interactive] CLASSLIST=interactive
+    -----
+
+The example is now a bit more complex. Note that the **HOSTLIST**
+attribute specifies a non-contiguous list of hosts. Any combination of
+hosts may be specified and hosts may be specified in any order. In this
+example, the **TASKCOUNT** attribute is also specified. These two
+attributes both apply constraints on the scheduler with **HOSTLIST**
+specifying where the tasks can be located and **TASKCOUNT** indicating
+how many total tasks may be allocated. In the example above, 6 tasks are
+requested but only 4 hosts are specified. To handle this, if adequate
+resources are available, the scheduler may attempt to allocate more than
+one task per host. For example, assume that each host is a
+quad-processor system with 1 GB of memory. In such a case, the scheduler
+could allocated up to two tasks per host and even satisfy the
+**TASKCOUNT** constraint without using all of the hosts in the hostlist.
+
+|image9|\ It is important to note that even if there is a one to one
+mapping between the value of **TASKCOUNT** and the number of hosts in
+**HOSTLIST** this does not necessarily mean that the scheduler will
+place one task on each host. If, for example, node001 and node002 were 8
+processor SMP hosts with 1 GB of memory, the scheduler could locate up
+to 4 tasks on each of these hosts fully satisfying the reservation
+taskcount without even partially using the remaining hosts. (The
+scheduler will place tasks on hosts according to the policy specified
+with the
+`NODEALLOCATIONPOLICY <a.fparameters.html#NODEALLOCATIONPOLICY>`__
+parameter.) If the hostlist provides more resources than what is
+required by the reservation as specified via **TASKCOUNT**, the
+scheduler will simply select the needed resources within the set of
+hosts listed.
+
+.. rubric:: 7.1.5.2.3 Enforcing Policies Via Multiple Reservations
+   :name: enforcing-policies-via-multiple-reservations
+
+Single reservations enable multiple capabilities. Combinations of
+reservations can further extend a site's capabilities to impose specific
+policies.
+
+.. rubric:: Example 3: Reservation Stacking
+   :name: example-3-reservation-stacking
+
+If **HOSTLIST** is specified but **TASKCOUNT** is not, the scheduler
+will pack as many tasks as possible onto *all* of the listed hosts. For
+example, assume the site added a second standing reservation named
+*debug* to its configuration which reserved resources for use by certain
+members of its staff using the configuration below:
+
+::
+
+    -----
+    # maui.cfg
+
+    SRCFG[interactive] DAYS=MON,TUE,WED,THU,FRI
+    SRCFG[interactive] PERIOD=DAY
+    SRCFG[interactive] STARTTIME=10:00:00 ENDTIME=15:00:00
+    SRCFG[interactive] RESOURCES=PROCS:2,MEM:256
+    SRCFG[interactive] HOSTLIST=node001,node002,node005,node020
+    SRCFG[interactive] TASKCOUNT=6
+    SRCFG[interactive] CLASSLIST=interactive
+
+    SRCFG[debug]       HOSTLIST=node001,node002,node003,node004
+    SRCFG[debug]       USERLIST=helpdesk
+    SRCFG[debug]       GROUPLIST=operations,sysadmin
+    SRCFG[debug]       PERIOD=INFINITY
+    -----
+
+The new standing reservation is quite simple. Since **RESOURCES** is not
+specified, it will allocate all processors on each host that is
+allocated. Since **TASKCOUNT** is not specified, it will allocate every
+host listed in **HOSTLIST**. Since **PERIOD** is set to **INFINITY**,
+the reservation is always in force and there is no need to specify
+**STARTTIME**, **ENDTIME**, of **DAYS**.
+
+While the reservation resource and timeframe specification is simple,
+the reservation access specification is actually a bit more complicated.
+Note that the standing reservation has two access parameters set using
+the attributes **USERLIST** and **GROUPLIST**. This configuration
+indicates that the reservation can be accessed if any one of the access
+lists specified is satisfied by the resource consumer (i.e., the job).
+In essence, reservation access is *logically OR'd* allowing access if
+the requestor meets any of the access constraints specified. In this
+example, jobs submitted by either user ``helpdesk`` or any member of the
+groups ``operations`` or ``sysadmin`` can use the reserved resources.
+
+While access is granted to the logical *OR* of access lists specified
+within a standing reservation, access is only granted to the logical
+*AND* of access lists across different standing reservations. A
+comparison of the standing reservations ``interactive`` and ``debug`` in
+the example above will indicate that they both can allocate hosts
+``node001`` and ``node002``. If ``node001`` had both of these
+reservations in place simultaneously and a job attempted to access this
+host during business hours when standing reservation ``interactive`` was
+active. The job could only use the *doubly* reserved resources if it
+requested the run class ``interactive`` *AND* it met the constraints of
+reservation ``debug`` (i.e., was submitted by user ``helpdesk`` or by a
+member of the group ``operations`` or ``sysadmin``).
+
+Things may be further complicated by the presence of partially reserved
+resources. As a rule, the scheduler will not *stack* reservations unless
+it has to. If adequate resources exist, it can allocate reserved
+resources *side by side* in a single SMP host rather than on top of each
+other. In the case of a 16 processor SMP host with two 8 processor
+standing reservations. Eight of the processors on this host will be
+allocated to the first reservation, and eight to the next. Any
+configuration is possible. The 16 processor hosts can also have 4
+processors reserved for user *John*, 10 processors reserved for group
+*Staff*, with the remaining 2 processors available for use by any job.
+
+Stacking reservations is not usually required but some sites choose to
+do it to enforce elaborate policies. There is no problem with doing so
+so long as you can keep things straight. It really is not too difficult
+a concept, just takes a little getting used to. See the `Reservation
+Overview <7.1.1resoverview.html>`__ section for a more detailed
+description of reservation use and constraints.
+
+As mentioned earlier, by default the scheduler enforces standing
+reservations by creating a number of reservations where the number
+created is controlled by the **DEPTH** attribute. When the scheduler
+starts up, and again each night at midnight, the scheduler updates its
+periodic, *non-floating* standing reservations. By default, **DEPTH** is
+set to 2, meaning when the scheduler starts up, it will create two 24
+hour reservations covering a total of two days worth of time, (i.e. a
+reservation for today and one for tomorrow.) For *daily* reservations,
+at midnight, the reservations will *roll*, meaning today's reservation
+will expire and be removed, tomorrow's reservation will become today's
+and the scheduler will create a new reservation for the next day.
+
+With this model, the scheduler continues creating new reservations in
+the future as time moves forward. Each day, the needed resources are
+always reserved. At first, all appears automatic but the standing
+reservation **DEPTH** attribute is in fact an important aspect of
+reservation *rolling* which helps address certain site specific
+environmental factors. This attribute remedies a situation which might
+occur when a job is submitted and cannot run immediately because the
+system is backlogged with jobs. In such a case, available resources may
+not exist for several days out and the scheduler must reserve these
+future resources for this job. With the default **DEPTH** setting of
+two, when midnight arrives, the scheduler attempts to *roll* its
+standing reservations but a problem arises in that the job has now
+allocated the resources needed for the standing reservation two days
+out. The scheduler cannot reserve the resources for the standing
+reservation because they are already claimed by the job. The standing
+reservation reserves what it can but because all needed resources are
+not available, the resulting reservation is now smaller than it should
+be or possibly even empty.
+
+If a standing reservation is smaller than it should be, the scheduler
+will attempt to add resources each iteration until it is fully
+populated. However, in the case of this job, the job is not going to
+release its reserved resources until it completes and the standing
+reservation cannot claim them until this time. The **DEPTH** attribute
+allows a site to specify how *deep* into the future a standing
+reservation should reserve its resources allowing it to claim the
+resources first and prevent this problem. If *partial* standing
+reservation us detected on a system, it may be an indication that the
+reservations **DEPTH** attribute should be increased.
+
+In example 3 above, the **PERIOD** attribute is set to **INFINITY**.
+With this setting, a single, permanent standing reservation is created
+and the issues of resource contention do not exist. While this
+eliminates the contention issue, infinite length standing reservations
+cannot be made periodic.
+
+.. rubric:: Example 4: Multiple ACL Types
+   :name: example-4-multiple-acl-types
+
+In most cases, access lists within a reservation are logically OR'd
+together to determine reservation access. However, exceptions to this
+rule can be specified by using the *required* ACL marker, '**\***'
+(i.e., the asterisk). Any ACL marked with this symbol is required and a
+job is only allowed to utilized a reservation if it meets *all* required
+ACL's and *at least one* non-required ACL (if specified). A common use
+for this facility is in conjunction with the **TIMELIMIT** attribute.
+This attribute controls the length of time a job may use the resources
+within a standing reservation. This access mechanism can be AND'd or
+OR'd to the cumulative set of all other access lists as specified by the
+required ACL marker. (NOTE: The required ACL marker is only enabled in
+Maui 3.2.6 and higher). Consider the following example configuration:
+
+::
+
+    -----
+    # maui.cfg
+
+    SRCFG[special] TASKCOUNT=32
+    SRCFG[special] PERIOD=WEEK
+    SRCFG[special] STARTTIME=1:08:00:00
+    SRCFG[special] ENDTIME=5:17:00:00
+    SRCFG[special] NODEFEATURES=largememory
+    SRCFG[special] TIMELIMIT=1:00:00*
+    SRCFG[special] QOSLIST=high low special-
+    SRCFG[special] ACCCOUNTLIST=!projectX,!projectY
+    -----
+
+The above configuration requests 32 tasks which translate to 32 nodes.
+The **PERIOD** attribute makes this reservation periodic on a weekly
+basis while the attributes **STARTTIME** and **ENDTIME** specify the
+week offsets when this reservation is to start and end. (Note that the
+specification format has changed to DD:HH:MM:SS) In this case, the
+reservation starts on Monday at 8:00 AM and runs until Friday at 5:00
+PM. The reservation is enforced as a series of weekly reservations which
+only cover the specified timeframe. The **NODEFEATURES** attribute
+indicates that each of the reserved nodes must have the node feature
+``largememory`` configured.
+
+As described above, **TIMELIMIT** indicates that jobs using this
+reservation can only use it for one hour. This means the job and the
+reservation can only overlap for one hour. Clearly jobs requiring an
+hour or less of wallclock time meet this constraint. However, a four
+hour job that starts on Monday at 5:00 AM or a 12 hour job which starts
+on Friday at 4:00 PM also satisfy this constraint. Also, note the
+**TIMELIMIT** required ACL marker, '**\***'. It is set indicating that
+jobs must not only meet the **TIMELIMIT** access constraint but must
+also meet one or more of the other access constraints. In this example,
+the job can use this reservation if it can utilize the access specified
+via **QOSLIST** or **ACCOUNTLIST**, i.e., it is assigned a QOS of
+``high``, ``low``, or ``special`` , or the submitter of the job has an
+account which satisfies the ``!projectX`` and ``!projectY`` criteria
+(More on this below). **NOTE**: See the `QOS Overview <7.3qos.html>`__
+for more info about QOS configuration and usage.
+
+.. rubric:: 7.1.5.2.4 Affinity
+   :name: affinity
+
+Reservation ACL's allow or deny access to reserved resources but they
+may be configured to also impact a job's *affinity* for a particular
+reservation. By default, jobs *gravitate* towards reservations through a
+mechanism known known as *positive affinity*. This mechanism allows jobs
+to run on the most constrained resources leaving other, unreserved
+resources free for use by other jobs which may not be able to access the
+reserved resources. Normally this is a desired behavior. However,
+sometimes, it is desirable to reserve resources for use only as a *last
+resort*, i.e., use the reserved resources only when there are no other
+resources available. This last resort behavior is known as *negative
+affinity*. Note the '-' (hyphen or negative sign) following the
+'``special``' in the **QOSLIST** values above. This special mark
+indicates that QOS '``special``' should be granted access to this
+reservation but should be assigned negative affinity. Thus, the
+**QOSLIST** attribute specifies that QOS ``high`` and ``low`` should be
+granted access with positive affinity (use the reservation first where
+possible) and QOS ``special`` granted access with negative affinity (use
+the reservation only when no other resources are available).
+
+Affinity status is granted on a *per access object* basis rather than a
+*per access list* basis and always defaults to positive affinity. In
+addition to negative affinity, neutral affinity can also be specified
+using the '**=**' character, i.e.,
+'``QOSLIST[0] normal= high debug= low-``'.
+
+In addition to affinity, ACL's may also be of different types. Note the
+**ACCOUNTLIST** values in the previous example. They are preceded with
+an exclamation point, or NOT symbol. This indicates that all jobs with
+accounts other than ``projectX`` and ``projectY`` meet the account ACL.
+Note that if a !<X> value (ie '!projectX') appears in an ACL line, that
+ACL is satisfied by any object not explicitly listed by a NOT entry.
+Also, if an object matches a NOT entry, the associated job is excluded
+from the reservation even if it meets other ACL requirements. For
+example, a QOS 3 job requesting account '``projectX`` ' will be denied
+access to the reservation even though the job QOS matches the QOS
+ACL.\ **Note that the ability to specify 'NOT' ACLs is only enabled in
+Moab 4.0.0 and higher.**
+
+.. rubric:: 7.1.5.2.5 Reservation Ownership
+   :name: reservation-ownership
+
+Reservation ownership allows a site to control who *owns* the reserved
+resources during the reservation timeframe. Depending on needs, this
+ownership may be identical to, a subset of, or completely distinct from
+the reservation ACL. By default, reservation ownership implies resource
+accountability and resources not consumed by jobs will be accounted
+against the reservation owner. In addition, ownership can also be
+associated with special privileges within the reservation.
+
+Ownership is specified using the **OWNER** attribute in the format
+``<CREDTYPE>:<CREDID>``, as in ``OWNER=USER:john``. To enable *john's*
+jobs to preempt other jobs using resources within his reservation, the
+**SRCFG** attribute **FLAG** should be set to **OWNERPREEMPT**. In the
+example below, the ``jupiter`` project chooses to share resources with
+the ``saturn`` project but only when it does not currently need them.
+
+.. rubric:: Example 5: Limited Shared Access
+   :name: example-5-limited-shared-access
+
+::
+
+    -----
+    # maui.cfg
+
+    ACCTCFG[jupiter] PRIORITY=10000
+
+    SRCFG[jupiter] HOSTLIST=node0[1-9]
+    SRCFG[jupiter] PERIOD=INFINITY
+    SRCFG[jupiter] ACCOUNTLIST=jupiter,saturn-
+    SRCFG[jupiter] OWNER=ACCOUNT:jupiter
+    SRCFG[jupiter] FLAGS=OWNERPREEMPT
+    SRCFG[jupiter] PERIOD=INFINITY
+    -----
+
+.. rubric:: 7.1.5.2.5 Resource Allocation Behavior
+   :name: resource-allocation-behavior
+
+As mentioned above, standing reservations can operate in one of two
+modes, floating, or non-floating (essentially node-locked). A floating
+reservation is created when a **TASKCOUNT** is specified and
+**HOSTLIST** is either not specified or specified with more resources
+than are needed to fulfill the **TASKCOUNT** requirement. If a
+reservation is non-floating, the scheduler will allocate all resources
+specified by the **HOSTLIST** parameter regardless of node state, job
+load, or even the presence of other standing reservations. The scheduler
+interprets the request for a non-floating reservation as stating, 'I
+want a reservation on these exact nodes, no matter what!'
+
+If a reservation is configured to be floating, the scheduler takes a
+more relaxed stand, searching through all possible nodes to find
+resources meeting standing reservation constraints. Only Idle, Running,
+or Busy node will be considered and further, only considered if no
+reservation conflict is detected. The reservation attribute **ACCESS**
+can be used to modify this behavior slightly and allow the reservation
+to allocate resources even if reservation conflicts exist.
+
+Other standing reservation attributes not covered here include
+**PARTITION** and **CHARGEACCOUNT**. These parameters are described in
+some detail in the `parameters <a.fparameters.html>`__ documentation.
+
+--------------
+
+.. rubric:: 7.1.5.3 Configuring Administrative Reservations
+   :name: configuring-administrative-reservations
+
+A default reservation, with no ACL, is termed a *SYSTEM* reservation. It
+blocks access to all jobs because it possesses an empty access control
+list. It is often useful when performing administrative tasks but cannot
+be used for enforcing resource usage policies.
+
+Administrative reservations are created and modified using the
+`setres <commands/setres.html>`__ command. With this command, all
+aspects of reservation timeframe, resource selection, and access control
+can be dynamically updated.
+
+.. raw:: html
+
+   <div class="navIcons bottomIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="sub-content-btm">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. |Home| image:: /resources/docs/images/home.png
+   :target: index.html
+.. |Up| image:: /resources/docs/images/upArrow.png
+   :target: 7.1advancereservations.html
+.. |Previous| image:: /resources/docs/images/prevArrow.png
+   :target: 7.1.4reservationpolicies.html
+.. |Next| image:: /resources/docs/images/nextArrow.png
+   :target: 7.1.6userreservations.html
+.. |image4| image:: /images/logo1.gif
+   :height: 24px
+.. |Note| image:: /resources/docs/images/note.png
+.. |image6| image:: /images/note.gif
+   :width: 20px
+   :height: 24px
+.. |image7| image:: /images/note.gif
+   :width: 20px
+   :height: 24px
+.. |image8| image:: /images/note.gif
+   :width: 20px
+   :height: 24px
+.. |image9| image:: /images/note.gif
+   :width: 20px
+   :height: 24px

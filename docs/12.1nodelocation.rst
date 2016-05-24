@@ -1,0 +1,71 @@
+Node Location
+#############
+
+Nodes can be assigned three types of location information based on
+partitions, frames, and/or queues.
+
+Partitions
+**********
+
+The first form of location assignment, the partition, allows nodes to be
+grouped according to physical resource constraints or policy needs. By
+default, jobs are not allowed to span more than one partition so
+partition boundaries are often valuable if a underlying network topology
+make certain resource allocations undesirable. Additionally,
+per-partition policies can be specified to grant control over how
+scheduling is handled on a partition by partition basis. See the
+`Partition Overview <7.2partitions.html>`__ for more information.
+
+Frames
+******
+
+Frame based location information is orthogonal to the partition based
+configuration and is mainly an organizational construct. In general
+frame based location usage, a node is assigned both a frame and a slot
+number. This approach has descended from the IBM SP2 organizational
+approach in which a frame can contain any number of slots but typically
+contains between 1 and 64. Using the frame and slot number combo,
+individual compute nodes can be grouped and displayed in a more ordered
+manner in certain Maui commands (i.e.,
+`showstate <commands/showstate.html>`__). Currently, frame information
+can only be specified directly by the system via the SDR interface on
+SP2/Loadleveler systems. In all other systems, this information must be
+manually specified via the `NODECFG <a.fparameters.html#nodecfg>`__
+parameter.
+
+Example:
+
+| ---
+| ``# maui.cfg``
+
+| ``NODECFG[node024] FRAME=1 SLOT=1``
+| ``NODECFG[node025] FRAME=1 SLOT=2``
+| ``NODECFG[node026] FRAME=2 SLOT=1 PARTITION=special``
+| ``...``
+| ---
+
+When specifying node and frame information, slot values must be in the
+range of 1 to 32 (limited to 1 to 16 in Maui 3.0 and earlier). and
+frames must be in the range of 1 to 64.
+
+Queues
+******
+
+Some resource managers allow queues (or classes) to be defined and then
+associated with a subset of available compute resources. With such
+systems, such as Loadleveler or PBSPro, these queue to node mappings are
+automatically detected. On resource managers which do not provide this
+service, Maui provides alternative mechanisms for enabling this feature.
+
+OpenPBS Queue to Node Mapping
+=============================
+
+Under OpenPBS, queue to node mapping can be accomplished setting the
+queue ``acl_hosts`` parameter to the mapping hostlist desired within
+PBS. Further, the ``acl_host_enable`` parameter should be set to
+``False``. **NOTE**: Setting ``acl_hosts`` and then setting
+``acl_host_enable`` to ``True`` will constrain the list of hosts from
+which jobs may be submitted to the queue. Prior to Maui 3.0.7p3, queue
+to node mapping was only enabled when ``acl_host_enable`` was set to
+``True``, thus, for these versions, the ``acl_host`` list should always
+include all submission hosts.

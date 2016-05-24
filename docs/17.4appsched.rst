@@ -1,0 +1,11 @@
+Using the Application Scheduling Library
+########################################
+
+Application Scheduling Library Overview
+***************************************
+
+Moab 4.0 and higher support an application scheduling library which
+allows locally developed applications to directly utilize scheduler
+information and finctionality. This allows the scheduler to be more
+aware of its environment and more capable of utilizing this information
+to improve both productivity and fault tolerance.

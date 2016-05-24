@@ -1,0 +1,227 @@
+Quality of Service (QoS) Facilities
+###################################
+
+QoS Overview
+************
+
+The QOS facility allows a site to give special treatment to various
+classes of jobs, users, groups, etc. Each QOS object can be thought of
+as a container of special privileges ranging from fairness policy
+exemptions, to special job prioritization, to special functionality
+access. Each QOS object also has an extensive access list of users,
+groups, and accounts which can access these privileges.
+
+Sites can configure various QOS's each with its own set of priorities,
+policy exemptions, and special resource access settings. They can then
+configure user, group, account, and class access to these QOS's. A given
+job will have a default QOS and may have access to several additional
+QOS's. When the job is submitted, the submittor may request a specific
+QOS (see the User's Manual for information on specifying job QOS for the
+resource manager of interest) or just allow the default QOS to be used.
+Once a job is submitted, a user may adjust the QOS of his job's at any
+time using the '`setqos <commands/setqos.html>`__' command. The
+**setqos** command will only allow the user to modify the QOS of his
+jobs and only change the QOS to a QOS that this user has access to. Maui
+administrators may change the QOS of any job to any value.
+
+Jobs are currently granted access to QOS privileges by configuring QDEF
+(QOS Default) or QLIST (QOS Access List) settings in the fs.cfg file. A
+job may access a particular QOS if that QOS is listed in the system
+default configuration QDEF or QLIST, or if the QOS is specified in the
+QDEF or QLIST of a user, group, account, or class associated with that
+job.
+
+| The '`diagnose -Q <commands/diagnoseqos.html>`__' command can be used
+  to obtain information about the current QOS configuration.
+
+|image4|\ With the `Moab Cluster
+Manager <../mcm/index.html>`__\ :sup:`TM`, a QoS can be `created,
+modifed <../mcm/qos.html>`__ and `reports <../mcm/reports.html>`__
+generated about through a graphical interface.
+
+QoS Enabled Privileges
+**********************
+
+The privileges enabled via QoS settings may be broken into one of the
+following categories
+
+-  Special Prioritization
+-  Service Access and Constraints
+-  Override Policies and Policy Exemptions
+
+All privileges are managed via the
+`QOSCFG <a.fparameters.html#qoscfg>`__ parameter.
+
+Special Prioritization
+======================
+
++----------------------+---------------------------------------------------------+
+| **Attribute Name**   | **Description**                                         |
++----------------------+---------------------------------------------------------+
+| FSTARGET             |                                                         |
++----------------------+---------------------------------------------------------+
+| PRIORITY             | Assign priority to all jobs requesting particular QoS   |
++----------------------+---------------------------------------------------------+
+| QTTARGET             |                                                         |
++----------------------+---------------------------------------------------------+
+| QTWEIGHT             |                                                         |
++----------------------+---------------------------------------------------------+
+| XFTARGET             |                                                         |
++----------------------+---------------------------------------------------------+
+| XFWEIGHT             |                                                         |
++----------------------+---------------------------------------------------------+
+
+Example:
+
+| ---
+| ``QOSCFG[geo] PRIORITY=10000``
+| ---
+
+Service Access and Constraints
+==============================
+
+   :name: service-access-and-constraints
+
+| The QoS facility can ne used to enable special service and/or disable
+  default services. All services are enabled/disabled by setting the QoS
+  **QFLAGS** attribute.
+
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Flag Name**           | **Description**                                                                                                                                                                                                              |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| DEDICATED               | jobs should not share compute resources with any other job. These jobs will only run on nodes which are idle and will not allow other jobs to use resources on allocated nodes even if additional resources are available.   |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| NOBF                    | job cannot be considered for backfilled                                                                                                                                                                                      |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| NORESERVATION           | job should never reserve resources regardless of priority                                                                                                                                                                    |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| PREEMPTEE               | job may be preempted by higher priority PREEMPTOR jobs                                                                                                                                                                       |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| PREEMPTOR               | job may preempt lower priority PREEMPTEE jobs                                                                                                                                                                                |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| RESERVEALWAYS           | job should create resource reservation regardless of job priority                                                                                                                                                            |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| RESTARTPREEMPT          | jobs can preempt restartable jobs by essentially requeueing them if this allows the QOS job to start earlier                                                                                                                 |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| USERESERVED[:<RESID>]   | job may only utilize resources within accessible reservations. If <RESID> is specified, job may only utilize resources within the specified reservation.                                                                     |
++-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Example:
+
+| ---
+| ``QOSCFG[hiprio] QFLAGS=NOBF:PREEMPTEE``
+| ---
+
+Example 2:
+
+| ---
+| ``QOSCFG[chem-b] QFLAGS=USERESERVED:chemistry``
+| ---
+
+Policy Exemptions
+=================
+
+Individual QoS's may be assigned override policies which will set new
+policy limits regardless of user, group, account, or queue limits.
+Particularly, the following policies may be overridden:
+
+| **MAXJOB**
+| **MAXPROC**
+| **MAXNODE**
+
+Example:
+
+| ---
+| ``QOSCFG[staff] MAXJOB=48``
+| ---
+
+In addition to overriding policies, QoS's may also be used to allow
+particular jobs to ignore policies by setting the QoS **FLAG** attribute
+
+**QOS Flags**
+
+| IGNJOBPERUSER
+| IGNPROCPERUSER
+| IGNPSPERUSER
+| IGNJOBQUEUEDPERUSER
+| IGNJOBPERGROUP
+| IGNPROCPERGROUP
+| IGNPSPERGROUP
+| IGNJOBQUEUEDPERGROUP
+| IGNJOBPERACCOUNT
+| IGNPROCPERACCOUNT
+| IGNPSPERACCOUNT
+| IGNJOBQUEUEDPERACCOUNT
+| IGNSYSMAXPROC
+| IGNSYSMAXTIME
+| IGNSYSMAXPS
+
+IGNSRMAXTIME
+
+jobs should ignore standing reservation MAXTIME constraints
+
+IGNUSER
+
+jobs should ignore all user throttling policies
+
+IGNGROUP
+
+jobs should ignore all group throttling policies
+
+IGNACCOUNT
+
+jobs should ignore all account throttling policies
+
+IGNSYSTEM
+
+jobs should ignore all system throttling policies
+
+IGNALL
+
+jobs should ignore all user, group, and account throttling policies
+
+|
+| Example
+
+| ---
+| ``QOSCFG[express] QFLAGS=IGNSYSTEM``
+| ---
+
+Managing QoS Access
+*******************
+
+While defining the privileges allowed within a QoS is managed using the
+**QOSCFG** parameter, actual access to the QoS is enabled via credential
+specific **\*CFG** parameters. Specifically, the
+`USERCFG <a.fparameters.html#usercfg>`__,
+`GROUPCFG <a.fparameters.html#groupcfg>`__,
+`ACCOUNTCFG <a.fparameters.html#accountcfg>`__, and
+`CLASSCFG <a.fparameters.html#classcfg>`__ parameters allow QoS access
+lists and QoS defaults to be defined. To enable QoS access, the
+**QLIST** and/or **QDEF** attributes of the appropriate user, group,
+account, or queue should be specified as in the example below:
+Example:
+
+::
+
+    ---
+    # user john's jobs can access QOS geo, chem, or staff with geo as default
+    USERCFG[john]     QDEF=geo   QLIST=geo,chem,staff
+
+    # group system jobs can access the development qos
+    GROUPCFG[systems] QDEF=development
+
+    # class batch jobs can access the normal qos
+    CLASSCFG[batch]   QDEF=normal
+    ---
+
+.. note::
+
+   By default, jobs may request a QoS if access to that QoS is
+   allowed by *any* of the job's credentials. (i.e., in the example above,
+   a job from user ``john`` submitted to the class ``batch`` could request
+   QoS's ``geo``, ``chem``, ``staff``, or ``normal``)
+
+See also:
+
+| N/A

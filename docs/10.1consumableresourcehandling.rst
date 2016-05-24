@@ -1,0 +1,25 @@
+Consumable Resource Handling
+############################
+
+Maui is designed to inherently handle consumable resources. Nodes
+possess resources, and workload (jobs) consume resources. Maui tracks
+any number of consumable resources on a per node and per jobs basis.
+Work is under way to allow 'floating' per system resources to be handled
+as well. When a job is started on a set of nodes, Maui tracks how much
+of each available resource must be dedicated to the tasks of the job.
+This allows Maui to prevent per node oversubscription of any resource,
+be it CPU, memory, swap, local disk, etc.
+
+Recent enhancements to Loadleveler (version 2.2 and above) finally
+provide a resource manager capable of exercising this long latent
+capability. These changes allow a user to specify per task consumable
+resources and per node available resources. For example, a job may be
+submitted requiring 20 tasks, with 2 CPUs and 256 MB per task. Thus,
+Maui would allow a node with 1 GB of Memory and 16 processors to allow
+run 4 of these tasks because 4 tasks would consume all of the available
+memory. Consumable resources allow more intelligent allocation of
+resources allowing better management of shared node resources.
+
+No steps are required to enable this capability, simply configure the
+underlying resource manager to support it and Maui will pick up this
+configuration.

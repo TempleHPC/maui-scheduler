@@ -1,0 +1,23 @@
+Advance Reservations
+####################
+
+An advance reservation is the mechanism by which Maui guarantees the
+availability of a set of resources at a particular time. Every
+reservation consists of 3 major components, a list of resources, a
+timeframe, and an access control list. It is the job of the scheduler to
+make certain that the access control list is not violated during the
+reservation's lifetime (i.e., its timeframe) on the resources listed.
+For example, a reservation may specify that node002 is reserved for user
+Tom on Friday. The scheduler will thus be constrained to make certain
+that only Tom's jobs can use node002 at any time on Friday. Advance
+reservation technology enables many features including backfill,
+deadline based scheduling, QOS support, and meta scheduling.
+
+.. toctree::
+
+    7.1.1resoverview
+    7.1.2adminreservations
+    7.1.3standingreservations
+    7.1.4reservationpolicies
+    7.1.5managingreservations
+    7.1.6userreservations

@@ -1,0 +1,10 @@
+Suspend/Resume Handling
+#######################
+
+Maui supports both manual and automatic job preemption. These topics are
+covered in greater detail in the following sections:
+
+-  manual preemption with the `mjobctl <commands/mjobctl.html>`__
+   command
+-  `QOS based job preemption <8.4preemption.html>`__
+-  `Preemption based backfill <8.2backfill.html>`__

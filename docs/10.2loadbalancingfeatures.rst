@@ -1,0 +1,46 @@
+Load Balancing Features
+#######################
+
+*Load balancing* is generally defined as the incorporation of resource
+load information into scheduling decisions. Maui supports load balancing
+in a number of ways allowing sites to use node load information to both
+determine `resource availability <5.4nodeavailability.html>`__ and to
+control job `resource allocation <5.2nodeallocation.html>`__.
+
+Resource Availability
+*********************
+
+Maui will only schedule jobs onto available nodes. Using Maui's `node
+availability policies <5.4nodeavailability.html>`__, a site can specify
+exactly what criteria determine the node's availability. For load
+balancing purposes, sites may wish to configure availability criteria
+for processors, memory, and swap. Various settings can enable
+overcommiting resources if desired while others can constrain nodes to
+only accept jobs if resources exist to meet the maximum needs of all
+concurrent job requests.
+
+Prioritizing Node Allocation
+****************************
+
+The second major aspect of load balancing has to do with the selection
+of resources for new jobs. With Maui, load information can be
+incorporated into the node allocation decision by using
+the\ **PRIORITY** `node allocation <5.2nodeallocation.html>`__ policy.
+This policy allows specification of which aspects of a node's
+configuration contribute to its allocation priority. For load balancing
+purposes, a site would want to favor nodes with the most available
+processors and the lowest load and job count. The node allocation
+priority function is set using the **PRIORITYF** attribute of the
+**NODECFG** parameter as shown in the example below:
+
+::
+
+    -----
+    # maui.cfg
+
+    NODEALLOCATIONPOLICY  PRIORITY
+    NODECFG[DEFAULT]      PRIORITYF='10 * APROCS - LOAD - JOBCOUNT'
+    -----
+
+Other node aspects which may be of value in configuring load-balancing
+based node allocation include **SPEED** and **CPROCS**.

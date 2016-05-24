@@ -1,0 +1,164 @@
+.. raw:: html
+
+   <div class="sright">
+
+.. raw:: html
+
+   <div class="sub-content-head">
+
+Maui Scheduler
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div id="sub-content-rpt" class="sub-content-rpt">
+
+.. raw:: html
+
+   <div id="tab-container" class="tab-container docs">
+
+.. raw:: html
+
+   <div class="topNav">
+
+.. raw:: html
+
+   <div class="docsSearch">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="navIcons topIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. rubric:: 7.1.6 Enabling Reservations for End Users
+   :name: enabling-reservations-for-end-users
+
+By default, the power of advance reservations is only available to
+scheduler administrators. While admins may create and manage
+reservations to provide resource access to end users, end users cannot
+create, modify, or destroy these reservations. Maui 3.2 extends the
+ability to manage reservations to end users and provides control
+facilities to keep this feature manageable.
+
+.. rubric:: 7.1.6.1 Enabling User Reservation Management
+   :name: enabling-user-reservation-management
+
+The parameter **RESCTLPOLICY** controls who is allowed to administer
+reservations using the **mresctl**, **setres**, and **releaseres**
+commands. Valid settings are **ADMINONLY** and **ANY** which, as would
+be expected, allows only scheduler administrators or any valid user to
+manage reservations respectively. While scheduler administrators are
+allowed to manage any reservation, users are only allowed to manage
+their own reservations. This parameter defaults to **ADMINONLY**.
+
+To allow general batch users to create and manage their own
+reservations, the following parameter must be specified in the maui.cfg
+file:
+
+| ----
+| ``RESCTLPOLICY  ANY``
+| ----
+
+.. rubric:: 7.1.6.2 Reservation Accountability
+   :name: reservation-accountability
+
+Reservations can be optionally configured with a set of *accountable*
+credentials. These credentials indicate the user, group, account, etc
+which is responsible for the resources dedicated by the reservation. If
+resources are dedicated by a reservation but not consumed by a job,
+these resources can be charged against the specified accountable
+credentials. Administrators are allowed to create reservations and
+specify the accountable credentials of that reservation. While end users
+can also be allowed to create and otherwise modify an advance
+reservation, they are not allowed to specify or modify the reservation's
+accountable credentials. Anytime a user creates a reservation, the
+credentials of the requestor are associated with the reservation.
+Currently, this accountablility only applies to throttling policies and
+allocation management system chargeability. Support for fairshare and
+other forms of accountability will be incorporated over time.
+
+.. rubric:: 7.1.6.3 Reservation Limits
+   :name: reservation-limits
+
+Allowing end users the ability to create advance reservations can lead
+to potentially unfair and unproductive resource usage. This results from
+the fact that by default, there is nothing to prevent a user from
+reserving all resources in a given system or reserving resources during
+time slots in such a way so to greatly impede the scheduler's ability to
+schedule jobs efficiently. To address this, Maui provides the ability to
+impose scheduler throttling policies onto reservations. With this
+capability, a site may constrain the total amount of resources reserved
+by any particular user, group, or account at any given time. This
+facility tracks resources and enforces limits based on resources
+dedicated to both jobs and user reservations.
+
+Reservation limits are disabled by default but may be enabled by setting
+the **RESLIMITPOLICY** parameter. This parameter specifies the level of
+throttling policy to be be enforced. For example, to limit user
+reservations by hard throttling policy limits, the following may be
+specified:
+
+| ----
+| ``RESLIMITPOLICY  HARD``
+| ----
+
+While time spanning throttling policies are a significant step in the
+direction of end user advance reservation management, it is important to
+track actual site usage of the advance reservation facility. It is still
+likely that further usage policies will be required at each site to
+prevent reservation misuse and provide an optimally useful system.
+
+.. raw:: html
+
+   <div class="navIcons bottomIcons">
+
+|Home| |Up| |Previous| |Next|
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   <div class="sub-content-btm">
+
+.. raw:: html
+
+   </div>
+
+.. raw:: html
+
+   </div>
+
+.. |Home| image:: /resources/docs/images/home.png
+   :target: index.html
+.. |Up| image:: /resources/docs/images/upArrow.png
+   :target: 7.1advancereservations.html
+.. |Previous| image:: /resources/docs/images/prevArrow.png
+   :target: 7.1.5managingreservations.html
+.. |Next| image:: /resources/docs/images/nextArrow.png
+   :target: 7.2partitions.html

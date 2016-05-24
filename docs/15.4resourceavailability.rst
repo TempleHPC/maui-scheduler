@@ -1,0 +1,5 @@
+Providing Resource Availability Information
+###########################################
+
+`See Moab Workload
+Manager </resources/docs/mwm/15.4resourceavailability.html>`__
