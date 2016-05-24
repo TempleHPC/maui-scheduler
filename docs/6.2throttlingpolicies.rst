@@ -1,49 +1,5 @@
-.. raw:: html
-
-   <div class="sright">
-
-.. raw:: html
-
-   <div class="sub-content-head">
-
-Maui Scheduler
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div id="sub-content-rpt" class="sub-content-rpt">
-
-.. raw:: html
-
-   <div id="tab-container" class="tab-container docs">
-
-.. raw:: html
-
-   <div class="topNav">
-
-.. raw:: html
-
-   <div class="docsSearch">
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="navIcons topIcons">
-
-|Home| |Up| |Previous| |Next|
-
-.. raw:: html
-
-   </div>
-
-.. rubric:: 6.2 Throttling Policies
-   :name: throttling-policies
+Throttling Policies
+###################
 
 Maui possesses a number of policies which allow an administrator to
 control the flow of jobs through the system. These throttling policies
@@ -51,23 +7,10 @@ work as filters allowing or disallowing a job to be considered for
 scheduling by specifying limits regarding system usage for any given
 moment. These policies may be specified as global or specific
 constraints specified on a per user, group, account, QOS, or class
-basis. ****
+basis.
 
--  `6.2.1 Fairness via Throttling Policies <#fairness>`__
-
-   -  `6.2.1.1 Basic Fairness Policies <#basic>`__
-   -  `6.2.1.2 Multi-Dimension Fairness Policies <#multi>`__
-
--  `6.2.2 Override Limits <#override>`__
--  `6.2.3 Idle Job Limits <#idle>`__
--  `6.2.4 Hard and Soft Limits <#limits>`__
-
-|image4| The `Moab Cluster Manager <../mcm/index.html>`__\ :sup:`TM`
-`displays the attributes <../mcm/usage.html>`__ of each credential that
-is used in throttling policies.
-
-.. rubric:: ` <>`__\ 6.2.1 Fairness via Throttling Policies
-   :name: fairness-via-throttling-policies
+Fairness via Throttling Policies
+********************************
 
 Significant improvements in the flexibility of throttling policies were
 introduced in Maui 3.2. Those sites using versions prior to this should
@@ -75,8 +18,8 @@ consult the `Maui 3.0 style throttling policy configuration
 documentation <throttling306.html>`__. At a high level, Maui allows
 resource usage limits to be specified for in three primary dimensions:
 
-.. rubric:: ` <>`__\ 6.2.1.1 Basic Fairness Policies
-   :name: basic-fairness-policies
+Basic Fairness Policies
+=======================
 
 | - Active Job Limits (Constrains the total cumulative resource
   available to active jobs at a given time)
@@ -154,8 +97,8 @@ were jobs already running in this class using a total of 14 nodes, his
 job would be blocked unless it requested 2 or fewer nodes by the default
 limit of 16 nodes per class.\ ****
 
-.. rubric:: ` <>`__\ 6.2.1.2 Multi-Dimension Fairness Policies
-   :name: multi-dimension-fairness-policies
+Multi-Dimension Fairness Policies
+=================================
 
 Multi-dimensional fairness policies allow a site to specify policies
 based on combinations of job credentials. A common example might be
@@ -196,7 +139,7 @@ The following example config may clarify further:
 ::
 
     ------
-    # maui.cfg 
+    # maui.cfg
 
     # allow class batch to run up the 3 simultaneous jobs
     # allow any user to use up to 8 total nodes within class
@@ -211,13 +154,13 @@ policies. For such systems, a subset of these policies can be specified
 using the attributes **MAXNODEPERUSER**, **MAXJOBPERUSER**, and
 **MAXPROCPERUSER**.
 
-| 
+|
 | **See Also:**
 
 | N/A
 
-.. rubric:: ` <>`__\ 6.2.2 Override Limits
-   :name: override-limits
+Override Limits
+***************
 
 Like all job credentials, the QOS object may be also be associated with
 resource usage limits. However, this credential can also be given
@@ -260,8 +203,8 @@ While the above example is a bit complicated for actual use at most
 sites, similar combinations may be needed to enforce site policies on
 many larger systems.
 
-.. rubric:: ` <>`__\ 6.2.3 Idle Job Limits
-   :name: idle-job-limits
+Idle Job Limits
+***************
 
 Idle job limits control which jobs are eligible for scheduling. To be
 eligible for scheduling, a job must meet the following conditions:
@@ -324,8 +267,8 @@ Examples:
     QOSCFG[hiprio]    MAXIJOB=3 MAXIPROC=64
     -------
 
-.. rubric:: ` <>`__\ 6.2.4 Hard and Soft Limits
-   :name: hard-and-soft-limits
+Hard and Soft Limits
+********************
 
 Hard and soft limit specification allow a site to balance both fairness
 and utilization on a given system. Typically, throttling limits are used
@@ -376,48 +319,3 @@ available resources allowed.
     CLASSCFG[batch]   MAXNODE=12,32
     QOSCFG[hiprio]    MAXJOB=3,5 MAXNODE=32,64
     -------
-
-.. raw:: html
-
-   <div class="navIcons bottomIcons">
-
-|Home| |Up| |Previous| |Next|
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="sub-content-btm">
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. |Home| image:: /resources/docs/images/home.png
-   :target: index.html
-.. |Up| image:: /resources/docs/images/upArrow.png
-   :target: 6.0managingfairness.html
-.. |Previous| image:: /resources/docs/images/prevArrow.png
-   :target: 6.1fairnessoverview.html
-.. |Next| image:: /resources/docs/images/nextArrow.png
-   :target: 6.3fairshare.html
-.. |image4| image:: /images/logo1.gif
-   :height: 24px

@@ -1,49 +1,5 @@
-.. raw:: html
-
-   <div class="sright">
-
-.. raw:: html
-
-   <div class="sub-content-head">
-
-Maui Scheduler
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div id="sub-content-rpt" class="sub-content-rpt">
-
-.. raw:: html
-
-   <div id="tab-container" class="tab-container docs">
-
-.. raw:: html
-
-   <div class="topNav">
-
-.. raw:: html
-
-   <div class="docsSearch">
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="navIcons topIcons">
-
-|Home| |Up| |Previous| |Next|
-
-.. raw:: html
-
-   </div>
-
-.. rubric:: 6.3 Fairshare
-   :name: fairshare
+Fairshare
+#########
 
 Fairshare is a mechanism which allows historical resource utilization
 information to be incorporated into job feasibility and priority
@@ -51,18 +7,8 @@ decisions. Maui's fairshare implementation allows site administrators to
 set system utilization targets for users, groups, accounts, classes, and
 QOS levels.
 
--  `6.3.1 Overview <#overview>`__
--  `6.3.2 Fairshare Parameters <#parameters>`__
--  `6.3.3 Using Fairshare Information <#using>`__
-
-|image4| The `Moab Cluster Manager <../mcm/index.html>`__\ :sup:`TM`
-`graphically organizes <../mcm/fairshare.html>`__ the fairshare values
-by credential for easy navigation and provides a
-`GUI <../mcm/fairshare.html>`__ to specify the Decay Factor, Depth,
-Interval Length and Usage Metric.
-
-.. rubric:: ` <>`__\ 6.3.1 Overview
-   :name: overview
+Overview
+********
 
 Fairshare allows historical resource utilization information to be
 incorporated into job feasibility and priority decisions. This feature
@@ -76,8 +22,8 @@ Fairshare targets can be specified for any credentials (i.e., user,
 group, class, etc) which administrators wish to have affected by this
 information.
 
-.. rubric:: ` <>`__\ 6.3.2 Fairshare Parameters
-   :name: fairshare-parameters
+Fairshare Parameters
+********************
 
 Fairshare is configured at two levels. First, at a system level,
 configuration is required to determine how fairshare usage information
@@ -112,8 +58,8 @@ utilization targets using the **\*CFG** suite of parameters, i.e.,
 `QOSCFG <a.fparameters.html#qoscfg>`__, and
 `USERCFG <a.fparameters.html#usercfg>`__.
 
-.. rubric:: ` <>`__\ 6.3.2.1 Metric of Consumption
-   :name: metric-of-consumption
+Metric of Consumption
+=====================
 
 As Maui runs, it records how available resources are being utilized.
 Each iteration (**RMPOLLINTERVAL** seconds) it updates fairshare
@@ -133,7 +79,7 @@ usage of essentially nothing since it did not consume anything. Most
 often, dedicated fairshare usage is used on dedicated resource platforms
 while consumed tracking is used in shared SMP environments.
 
-` <>`__\ **Percentage Based Fairshare**
+**Percentage Based Fairshare**
 
 By default, when comparing fairshare usage against fairshare targets,
 Maui will calculate the fairshare component of priority as a difference
@@ -142,8 +88,8 @@ priority component to be calculated as a ratio (1 - fairshare
 usage/fairshare target) a '%' (percent) character can be specified at
 the end of the **FSPOLICY** value.
 
-.. rubric:: ` <>`__\ 6.3.2.2 Specifying Fairshare Timeframe
-   :name: specifying-fairshare-timeframe
+Specifying Fairshare Timeframe
+==============================
 
 When configuring fairshare, it is important to determine the proper
 timeframe that should be considered. Many sites choose to incorporate
@@ -231,8 +177,8 @@ the number and length of windows is a matter of preference, it is
 important to note that more windows will cause the decay factor to
 degrade the contribution of aged data more quickly.
 
-.. rubric:: ` <>`__\ 6.3.2.3 Managing Fairshare Data
-   :name: managing-fairshare-data
+Managing Fairshare Data
+=======================
 
 Using the selected fairshare usage metric, Maui continues to update the
 current fairshare window until it reaches a fairshare window boundary,
@@ -314,8 +260,8 @@ freely and dynamically modified, such changes may result in unexpected
 fairshare status for a period of time as the fairshare data files with
 the old **FSINTERVAL** setting are rolled out.
 
-.. rubric:: ` <>`__\ 6.3.3 Using Fairshare Information
-   :name: using-fairshare-information
+Using Fairshare Information
+***************************
 
 With the mechanism used to determine current fairshare usage explained
 above, the next step is using this information to affect scheduling
@@ -325,8 +271,8 @@ is done through specification of the fairshare targets. These targets
 allow fairshare information to either affect job feasibility or job
 priority.
 
-.. rubric:: 6.3.3.1 Priority Based Fairshare
-   :name: priority-based-fairshare
+Priority Based Fairshare
+========================
 
 The most commonly used type of fairshare is priority based fairshare. In
 this mode, fairshare information does not affect whether or not a job
@@ -355,8 +301,8 @@ but have no effect on scheduling behavior!** See the `Priority Component
 Overview <5.1.2priorityfactors.html>`__ for more information on setting
 priority weights.
 
-.. rubric:: 6.3.3.2 Feasibility Based Fairshare
-   :name: feasibility-based-fairshare
+Feasibility Based Fairshare
+===========================
 
 In addition to the standard priority fairshare targets, Maui also allows
 a site to specify fairshare *caps*. A cap is specified as either a hard
@@ -371,51 +317,3 @@ available.
 | The '`diagnose -f <commands/diagnosefairshare.html>`__' command was
   created to allow diagnosis and monitoring of the fairshare facility.
 | **`FSENFORCEMENT <a.fparameters.html#fsenforcement>`__**
-
-.. raw:: html
-
-   <div class="navIcons bottomIcons">
-
-|Home| |Up| |Previous| |Next|
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   <div class="sub-content-btm">
-
-.. raw:: html
-
-   </div>
-
-.. raw:: html
-
-   </div>
-
-.. |Home| image:: /resources/docs/images/home.png
-   :target: index.html
-.. |Up| image:: /resources/docs/images/upArrow.png
-   :target: 6.0managingfairness.html
-.. |Previous| image:: /resources/docs/images/prevArrow.png
-   :target: 6.2throttlingpolicies.html
-.. |Next| image:: /resources/docs/images/nextArrow.png
-   :target: 6.4allocationmanagement.html
-.. |image4| image:: /images/logo1.gif
-   :height: 24px
-.. |image5| image:: /images/note.gif
-   :width: 20px
-   :height: 24px
