@@ -1585,7 +1585,8 @@ enum MXAttrType {
   mxaSID,
   mxaSJID,
   mxaTPN,
-  mxaTRL };
+  mxaTRL,
+  mxaGRes };
 
 enum MauiAppSimCommandEnum {
   mascNONE,
