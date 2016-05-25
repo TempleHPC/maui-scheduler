@@ -4654,6 +4654,7 @@ int __MPBSGetTaskList(
     ppn = 1;
 
     strcpy(tmpHostName,ptr);
+    MUStrTok(tmpHostName,":",&TokPtr2);
 
     /* remove virtual host id */
 
