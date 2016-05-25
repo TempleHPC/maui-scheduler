@@ -2152,7 +2152,7 @@ int MPBSJobCancel(
     return(MPBSJobCkpt(J,R,TRUE,Message,SC));
     }
 
-  MJobGetName(J,NULL,R,tmpJobName,sizeof(tmpJobName),mjnRMName);     
+  MJobGetName(J,NULL,R,tmpJobName,sizeof(tmpJobName),mjnRMName);
 
   rc = pbs_deljob(R->U.PBS.ServerSD,tmpJobName,Message);
 

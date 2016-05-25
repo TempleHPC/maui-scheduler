@@ -94,7 +94,7 @@ int MLimitEnforceAll(
         }
       else
         {
-        if (MRMJobCancel(J,"MOAB_INFO:  job exceeded wallclock limit\n",NULL) == FAILURE)
+        if (MRMJobCancel(J,"MAUI_INFO:  job exceeded wallclock limit\n",NULL) == FAILURE)
           {
           /* extend job wallclock by JobWCX */
  
