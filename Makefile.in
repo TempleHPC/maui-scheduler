@@ -65,6 +65,8 @@ uninstall:
 
 doc:
 	doxygen
+
+pdf:	doc
 	${MAKE} -C docs/latex pdf
 	cp -v docs/latex/refman.pdf docs/
 
