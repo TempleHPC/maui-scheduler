@@ -1,0 +1,11 @@
+Improving User Effectiveness
+############################
+
+.. toctree::
+
+   15.1userfeedbackloops
+   15.2userlevelstatistics
+   15.3improvingwallclock
+   15.4resourceavailability
+   15.5jobstarttimeestimates
+   15.6profilingjobs

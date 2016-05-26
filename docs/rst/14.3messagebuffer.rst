@@ -1,0 +1,5 @@
+Using the Message Buffer
+########################
+
+`See Moab Workload
+Manager </resources/docs/mwm/14.3messagebuffer.html>`__

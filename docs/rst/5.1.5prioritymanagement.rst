@@ -1,0 +1,21 @@
+Manual Job Priority Adjustment
+##############################
+
+Batch administrator's regularly find a need to adjust the calculated
+priority of a job to meet current needs. Current needs often are broken
+into two categories:
+
+| A) The need to run an admin test job as soon as possible
+| B) The need to pacify an irate user
+
+Under Maui, the `setspri <commands/setspri.html>`__ command can be used
+to handle these issues in one of two ways. This command allows the
+specification of either a relative priority adjustment, or the
+specification of a absolute priority. Using absolute priority
+specification, administrators can set a job priority which is guaranteed
+to be higher than any calculated value. Where Maui-calculated job
+priorities are in the range of 0 to 1 billion, system admin assigned
+absolute priorities start at 1 billion and go up. Issuing the command
+'setspri <PRIO> <JOBID>', for example, will assign a priority of '1
+billion + <PRIO>' to the job. Thus, 'setspri 5 job.1294' with set the
+priority of job 'job.1294' to 1000000005.

@@ -1,0 +1,149 @@
+Resource Manager Extensions
+###########################
+
+All resource managers are not created equal. There is a wide range in
+what capabilities are available from system to system. Additionally,
+there is a large body of functionality which many if not all resource
+managers have no concept of. A good example of this is job QoS. Since
+most resource managers do not have a concept of quality of service, they
+do not provide a mechanism for users to specify this information. In
+many cases, Maui is able to add capabilities at a global level. However,
+a number of features require a 'per job' specification. Resource manager
+extensions allow this information to be associated with the job.
+
+How this is done varies with the resource manager. Both Loadleveler and
+Wiki allow the specification of a *comment* field. (In Loadleveler,
+specified as '``#@comment="<X>"``\ \`) PBS does not support this ability
+by default but is extensible via the '**-W** ' flag. (see the `PBS
+Resource Manager Extension Overview <13.3.1pbsrmextensions.html>`__ )
+
+| Using the resource manager specific method, the following job
+  extensions are currently available:
+
+**Name**
+**Format**
+**Default Value**
+**Description**
+**Example**
+**ADVRES**
+[<RESID>]
+[NONE]
+specifies that reserved resources are required to run the job. If
+<RESID> is specified, then only resources within the specified
+reservation may be allocated
+ADVRES:meta.3
+**DMEM**
+<INTEGER>
+0
+dedicated memory per task in MB
+``DMEM:512``
+**FLAGS**
+one or more of the following comma separated keywords
+**ADVRES[:RESID]**, **RESTARTABLE**, **PREEMPTEE**, **PREEMPTOR**,
+**NOQUEUE**
+[NONE]
+associates various flags with the job
+``FLAGS:ADVRES``
+**GRES**
+comma delimited list of generic resources where each resource is
+specified using the format <RESTYPE>[@<COUNT>]
+[NONE]
+indicates generic resources required by the job on a *per task* basis.
+If a <COUNT> is not specified, the resource count defaults to 1.
+``GRES:tape,matlab@2``
+**HOSTLIST**
+comma delimited list of hostnames
+[NONE]
+indicates a exact set, superset, or subset of nodes on which the job
+must run
+``HOSTLIST:nodeA,nodeB,nodeE``
+**` <>`__ NACCESSPOLICY**
+one of **SHARED**, **SINGLEJOB**, **SINGLETASK** , or **SINGLEUSER**
+[NONE]
+specifies how node resources should be accessed
+NACCESSPOLICY:SINGLEUSER
+**` <>`__ NALLOCPOLICY**
+one of the valid settings for the parameter
+`NODEALLOCATIONPOLICY <a.fparameters.html#nodeallocationpolicy>`__
+[NONE]
+specifies how node resources should be selected and allocated to the job
+NALLOCPOLICY:MINRESOURCE
+**NODESET**
+<SETTYPE>:<SETATTR>[:<SETLIST>]
+[NONE]
+specifies nodeset constraints for job resource allocation. (See the
+NodeSet Overview for more information)
+``NODESET:ONEOF:PROCSPEED:350,400,450``
+**PARTITION**
+<STRING>[:<STRING>]...
+[NONE]
+specifies the partition (or partitions) in which the job must run.
+**NOTE**: the job must have access to this partition based on system
+wide or credential based partition access lists.
+``PARTITION:math:geology``
+(The job must only run in the ``math`` partition or the `` geology``
+partition)
+
+**QOS**
+<STRING>
+[NONE]
+``QOS:highprio``
+**QUEUEJOB**
+one of ``TRUE or FALSE``
+
+``TRUE``
+Indicates whether or not the scheduler should queue the job if resources
+are not available to run the job immediately
+``QUEUEJOB:FALSE``
+**SGE**
+<WINDOWCOUNT>:<DISPLAYNAME>
+[NONE]
+``SGE:8:pinky``
+**SID**
+<STRING>
+[NONE]
+``SID:silverA``
+**TPN**
+<INTEGER>
+0
+``TPN:4``
+**TRL**
+<INTEGER>[,<INTEGER>]...
+0
+``TRL:2,4,8,16``
+If more than one extension is required in a given job, extensions can be
+concatenated with a semicolon separator using the format
+'``<ATTR>:<VALUE>[;<ATTR>:<VALUE>]...``'
+
+See the following examples:
+
+| **Example 1**
+| ----
+| ``# Loadleveler command file``
+| ``#@comment="HOSTLIST:node1,node2;QOS:special;SID:silverA"``
+| ----
+
+Job must run on nodes ``node1`` and ``node2`` using the QoS ``special``.
+The job is also associated with the system id ``silverA`` allowing the
+silver daemon to monitor and control the job.
+
+| **Example 2**
+| ----
+| ``# PBS command file``
+| ``# PBS -W x=\"NODESET:ONEOF:NETWORK;DMEM:64\"``
+| ----
+
+Job will have resources allocated subject to network based nodeset
+constraints. Further, each task will dedicate 64 MB of memory.
+
+**Example 3**
+
+| ----
+| # qsub -l nodes=4,walltime=1:00:00 -W x="FLAGS:ADVRES:john.1"
+| -----
+
+Job will be forced to run within the ``john.1`` reservation.
+
+**See Also:**
+
+`Resource Manager Overview <13.1rmoverview.html>`__

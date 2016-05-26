@@ -1,0 +1,148 @@
+Resource Manager Overview
+#########################
+
+Maui requires the services of a resource manager in order to properly
+function. This resource manager provides information about the state of
+compute resources (nodes) and workload (jobs). Maui also depends on the
+resource manager to manage jobs, instructing it when to start and/or
+cancel jobs.
+
+Maui can be configured to manage one or more resource managers
+simultaneously, even resource managers of different types. However,
+migration of jobs from one resource manager to another is not currently
+allowed. Or, in other words, jobs submitted onto one resource manager
+cannot run on the resources of another.
+
+Scheduler/Resource Manager Interactions
+***************************************
+
+Maui interacts with all resource managers in the same basic format.
+Interfaces are created to translate Maui concepts regarding workload and
+resources into native resource manager objects, attributes, and
+commands.
+Information on creation a new scheduler resource manager interface can
+be found in the `Adding New Resource Manager
+Interfaces <13.4addingrminterfaces.html>`__ section.
+
+Resource Manager Commands
+=========================
+
+In the simplest configuration, Maui interacts with the resource manager
+using the four primary functions listed below:
+
+**GETJOBINFO**
+
+Collect detailed state and requirement information about idle, running,
+and recently completed jobs.
+
+**GETNODEINFO**
+
+Collect detailed state information about idle, busy, and defined nodes.
+
+**STARTJOB**
+
+Immediately start a specific job on a particular set of nodes.
+
+**CANCELJOB**
+
+Immediately cancel a specific job regardless of job state.
+
+Using these four simple commands, Maui enables nearly its entire suite
+of scheduling functions. More detailed information about resource
+manager specific requirements and semantics for each of these commands
+can be found in the specific resource manager overviews. (LL, PBS, or
+`WIKI <wiki>`__).
+
+In addition to these base commands, other commands are required to
+support advanced features such a dynamic job support, suspend/resume,
+gang scheduling, and scheduler initiated checkpoint/restart.
+
+Resource Manager Flow
+=====================
+
+Early versions of Maui (i.e., Maui 3.0.x) interacted with resource
+managers in a very basic manner stepping through a serial sequence of
+steps each scheduling iteration. These steps are outlined below:
+
+#. load global resource information
+#. load node specific information (optional)
+#. load job information
+#. load queue information (optional)
+#. cancel jobs which violate policies
+#. start jobs in accordance with available resources and policy
+   constraints
+#. handle user commands
+#. repeat
+
+Each step would complete before the next step started. As systems
+continued to grow in size and complexity however, it became apparent
+that the serial model described above would not work. Three primary
+motivations drove the effort to replace the serial model with a
+concurrent threaded approach. These motivations were reliability,
+concurrency, and responsiveness.
+**Reliability**
+
+A number of the resource managers Maui interfaces to were unreliable to
+some extent. This resulted in calls to resource management API's with
+exited or crashed taking the entire scheduler with them. Use of a
+threaded approach would cause only the calling thread to fail allowing
+the master scheduling thread to recover. Additionally, a number of
+resource manager calls would hang indefinitely, locking up the
+scheduler. These hangs could likewise be detected by the master
+scheduling thread and handled appropriately in a threaded environment.
+
+**Concurrency**
+
+As resource managers grew in size, the duration of each API global query
+call grew proportionally. Particularly, queries which required contact
+with each node individually became excessive as systems grew into the
+thousands of nodes. A threaded interface allowed the scheduler to
+concurrently issue multiple node queries resulting in much quicker
+aggregate RM query times.
+
+**Responsiveness**
+
+Finally, in the non-threaded serial approach, the user interface was
+blocked while the scheduler updated various aspects of its workload,
+resource, and queue state. In a threaded model, the scheduler could
+continue to respond to queries and other commands even while fresh
+resource manager state information was being loaded resulting in much
+shorter average response times for user commands.
+
+Under the threaded interface, all resource manager information is loaded
+and processed while the user interface is still active. Average
+aggregate resource manager API query times are tracked and new RM
+updates are launched so that the RM query will complete before the next
+scheduling iteration should start. Where needed, the loading process
+uses a *pool* of worker threads to issue large numbers of node specific
+information queries concurrently to accelerate this process. The master
+thread continues to respond to user commands until all needed resource
+manager information is loaded **and** either a scheduling relevant
+*event* has occurred **or** the scheduling iteration time has arrived.
+At this point, the updated information is integrated into Maui's state
+information and scheduling is performed.
+
+Resource Manager Specific Details (Limitations/Special Features)
+****************************************************************
+
+(Under Construction)
+
+| LL/LL2
+| PBS
+| `Wiki <wikiinterface.html>`__
+
+| Synchronizing Conflicting Information
+| Maui does not trust resource manager. All node and job information is
+  reloaded
+| on each iteration. Discrepancies are logged and handled where
+  possible.
+| NodeSyncDeadline/JobSyncDeadline overview.
+
+Purging Stale Information
+
+Thread
+
+**See Also:**
+
+`Resource Manager Configuration <13.2rmconfiguration.html>`__, `Resource
+Manager Extensions <13.3rmextensions.html>`__

@@ -37,14 +37,17 @@ bin/*
 .*.swp
 *.orig
 
-# auto-generated documentation
+# auto-generated documentation and support files
+/docs/docenv
 /docs/html
+/docs/guide
 /docs/latex
+/docs/refman
 /docs/refman.pdf
 
 # autoconf and configure output
 /Makefile
-/Doxyfile
+/docs/Doxyfile
 autom4te.cache
 config.log
 config.status

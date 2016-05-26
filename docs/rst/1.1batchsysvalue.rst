@@ -1,0 +1,50 @@
+Value of a Batch System
+#######################
+
+Batch systems provide a mechanism for submitting, launching, and
+tracking jobs on a shared resource. These services fullfil one of the
+major responsibilities of a batch system, providing centralized access
+to distributed resources. This greatly simplifies the use of the
+cluster's distributed resources allowing users a 'single system image'
+in terms of the management of their jobs and the aggregate compute
+resources available. However, batch systems must do much more than
+provide a global view of the cluster. As with many shared systems,
+complexities arise when attempting to utilize compute resources in a
+fair and effective manner. These complexities can lead to poor
+performance and significant inequalities in usage. With a batch system,
+a scheduler is assigned the job of determining, when, where, and how
+jobs are run so as to maximize the output of the cluster. These
+decisions are broken into three primary areas.
+
+
+Traffic Control
+===============
+
+A scheduler is responsible for preventing jobs from interfering with
+each other. If jobs are allowed to contend for resources, they will
+generally decrease the performance of the cluster, delay the execution
+of these jobs, and possibly cause one or more of the jobs to fail. The
+scheduler is responsible for internally tracking and dedicating
+requested resources to a job, thus preventing use of these resources by
+other jobs.
+
+Mission Policies
+================
+
+When clusters or other HPC platforms are created, they are typically
+created for one or more specific purposes. These purposes, or mission
+goals, often define various rules about how the system should be used
+and who or what will be allowed to use it. To be effective, a scheduler
+must provide a suite of policies which allow a site to *map* site
+mission policies into scheduling behavior.
+
+Optimizations
+=============
+
+The compute power of a cluster is a limited resource and over time,
+demand will inevitably exceed supply. Intelligent scheduling decisions
+can significantly improve the effectiveness of the cluster resulting in
+more jobs being run and quicker job turnaround. Subject to the
+constraints of the traffic control and mission policies, it is the job
+of the scheduler to use whatever freedom is available to schedule jobs
+in such a manner so as to maximize cluster performance.

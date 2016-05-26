@@ -1,0 +1,167 @@
+Preemption Policies
+###################
+
+Many sites possess workloads of varying importance. While it may be
+critical that some jobs obtain resources immediately, other jobs are
+less *turnaround time* sensitive but have an insatiable hunger for
+compute cycles, consuming every available cycle for years on end. These
+latter jobs often have turnaround times on the order of weeks or months.
+The concept of *cycle stealing*, popularized by systems such as Condor,
+handles such situations well and enables systems to run low priority,
+preemptible jobs whenever something more pressing is not running. These
+other systems are often employed on compute farms of desktops where the
+jobs must vacate anytime interactive system use is detected.
+
+Preemption Triggers
+*******************
+
+Preemption can be enabled in one of three ways. These include manual
+intervention, QOS based configuration, and use of the preemption based
+backfill algorithm.
+
+Admin Preemption Commands
+=========================
+
+The **mjobctl** command can be used to preempt jobs. Specifically, the
+command can be used to modify a job's execution state in the following
+ways:
+
++-------------------+------------+-----------------------------------------------------+
+| **Action**        | **Flag**   | **Details**                                         |
++-------------------+------------+-----------------------------------------------------+
+| Cancel            | -c         | terminate and remove job from queue                 |
++-------------------+------------+-----------------------------------------------------+
+| Checkpoint        | -C         | terminate and checkpoint job leaving job in queue   |
++-------------------+------------+-----------------------------------------------------+
+| Requeue           | -R         | terminate job leaving job in queue                  |
++-------------------+------------+-----------------------------------------------------+
+| Resume            | -r         | resume suspended job                                |
++-------------------+------------+-----------------------------------------------------+
+| Start (execute)   | -x         | start idle job                                      |
++-------------------+------------+-----------------------------------------------------+
+| Suspend           | -s         | suspend active job                                  |
++-------------------+------------+-----------------------------------------------------+
+
+In general, users are allowed to suspend or terminate jobs they own.
+Administrators are allowed to suspend, terminate, resume, and execute
+any queued jobs.
+
+QOS Based Preemption
+====================
+
+Maui's QoS-based preemption system allows a site the ability to specify
+preemption rules and control access to preemption privileges. These
+abilities can be used to increase system throughput, improve job
+response time for specific classes of jobs, or other enable various
+political policies. All policies are enabled by specifying some QOS's
+with the flag **PREEMPTOR** , and other with the flag **PREEMPTEE**. For
+example, to enable a *cycle stealing* high throughput cluster, a QOS can
+be created for high priority jobs and marked with the flag
+**PREEMPTOR**; another QOS can be created for low priority jobs and
+marked with the flag **PREEMPTEE** . Finally, the **RESERVATIONPOLICY**
+parameter can be set to **NEVER**. With this configuration, low
+priority, preemptee jobs can be started whenever idle resources are
+available. These jobs will be allowed to run until a high priority job
+arrives, at which point the necessary low priority jobs will be
+preempted and the needed resources freed. This allows near immediate
+resource access for the high priority jobs. Using this approach, a
+cluster can maintain near 100% system utilization while still delivering
+excellent turnaround time to the jobs of greatest value.
+It is important to note the rules of QoS based preemption. Preemption
+**only** occurs when the following 3 conditions are satisfied:
+
+-  The *preemptor* job has the **PREEMPTOR** attribute set
+-  The *preemptee* job has the **PREEMPTEE** attribute set
+-  The *preemptor* job has a higher priority than the *preemptee* job
+
+Use of the preemption system need not be limited to controlling low
+priority jobs. Other uses include optimistic scheduling and development
+job support.
+
+Example:
+
+::
+
+    PREEMPTPOLICY REQUEUE
+
+    QOSCFG[high] QFLAGS=PREEMPTOR
+    QOSCFG[med]
+    QOSCFG[low] QFLAGS=PREEMPTEE
+
+
+Preemption Based Backfill
+=========================
+
+The **PREEMPT** backfill policy allows a site to take advantage of
+optimistic scheduling. By default, backfill only allows jobs to run if
+they are guaranteed to have adequate time to run to completion. However,
+statistically, most jobs do not utilize their full requested wallclock
+limit. The **PREEMPT** backfill policy allows the scheduler to start
+backfill jobs even if required walltime is not available. If the job
+runs too long and interferes with another job which was guaranteed a
+particular timeslot, the backfill job is preempted and the priority job
+is allowed to run. When another potential timeslot becomes available,
+the preempted backfill job will again be optimistically executed. In
+environments with checkpointing or with poor wallclock accuracies, this
+algorithm has potential for significant savings. See the backfill
+section for more information.
+
+Types of Preemption
+*******************
+
+How the scheduler preempts a job is controlled by the
+`PREEMPTPOLICY <a.fparameters.html#preemptpolicy>`__ parameter. This
+parameter allows preemption to be enforced in one of the following
+manners:
+
+Job Requeue
+===========
+
+Under this policy, active jobs are terminated and returned to the job
+queue in an idle state.
+
+Job Suspend
+===========
+
+Suspend causes active jobs to stop executing but to remain in memory or
+the allocated compute nodes. While a suspended job frees up processor
+resources, it may continue to consume swap and/or other resources.
+Suspended jobs must be 'resumed' to continue executing.
+
+.. note::
+
+   If 'suspend' based preemption is selected, then the signal used to initiate
+   the job suspend may be specified by setting the RM specific 'SUSPENDSIG'
+   attribute, i.e. 'RMCFG[base] SUSPENDSIG=23'.
+
+Job Checkpoint
+==============
+
+Systems which support job checkpointing allow a job to save off its
+current state and either terminate or continue running. A checkpointed
+job may be restarted at any time and resume execution from its most
+recent checkpoint.
+
+RM Preemption Constraints
+=========================
+
+Maui is only able to utilize preemption if the underlying resource
+manager/OS combination supports this capability. The following table
+displays current preemption limitations:
+**Table 8.4.2.4 Resource Manager Preemption Constraints**
+
++------------------------+---------------------+--------------------+-------------------------+------------------+-----------------+
+| **Resource Manager**   | **OpenPBS** (2.3)   | **PBSPro** (5.2)   | **Loadleveler** (3.1)   | **LSF** (5.2)    | **SGE** (5.3)   |
++------------------------+---------------------+--------------------+-------------------------+------------------+-----------------+
+| Cancel                 | yes                 | yes                | yes                     | yes              | ???             |
++------------------------+---------------------+--------------------+-------------------------+------------------+-----------------+
+| Requeue                | yes                 | yes                | yes                     | yes              | ???             |
++------------------------+---------------------+--------------------+-------------------------+------------------+-----------------+
+| Suspend                | yes                 | yes                | yes                     | yes              | ???             |
++------------------------+---------------------+--------------------+-------------------------+------------------+-----------------+
+| Checkpoint             | (yes on IRIX)       | (yes on IRIX)      | yes                     | (OS dependent)   | ???             |
++------------------------+---------------------+--------------------+-------------------------+------------------+-----------------+
+
+| **See Also:** N/A .
+| `QOS Overview <7.3qos.html>`__
+| `Managing QOS Access <7.3qos.html#access>`__

@@ -1,0 +1,9 @@
+Managing Fairness - Throttling Policies, Fairshare, and Allocation Management
+#############################################################################
+
+.. toctree::
+
+   6.1fairnessoverview
+   6.2throttlingpolicies
+   6.3fairshare
+   6.4allocationmanagement

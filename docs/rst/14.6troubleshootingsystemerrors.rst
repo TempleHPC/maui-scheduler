@@ -1,0 +1,131 @@
+Tracking System Failures
+########################
+
+System Failures
+***************
+
+The scheduler has a number of dependencies which may cause failures if
+not satisfied. These dependencies are in the areas of disk space,
+network access, memory, and processor utilization.
+
+Disk Space
+==========
+
+The scheduler utilizes a number of files. If the file system is full or
+otherwise inaccessible, the following behaviors might be noted:
+
++--------------------------------------------------------------------------+
+| **File**                                                                 |
+| **Failure**                                                              |
++--------------------------------------------------------------------------+
+| **maui.pid**                                                             |
+| scheduler cannot perform *single instance* check                         |
++--------------------------------------------------------------------------+
+| **maui.ck\***                                                            |
+| scheduler cannot store persistent record of reservations, jobs,          |
+| policies, summary statistics, etc.                                       |
++--------------------------------------------------------------------------+
+| **maui.cfg**                                                             |
+| scheduler cannot load local configuration                                |
++--------------------------------------------------------------------------+
+| **log/\***                                                               |
+| scheduler cannot log activities                                          |
++--------------------------------------------------------------------------+
+| **stats/\***                                                             |
+| scheduler cannot write job records                                       |
++--------------------------------------------------------------------------+
+
+Network
+=======
+
+The scheduler utilizes a number of socket connections to perform basic
+functions. Network failures may affect the following facilities.
+
++--------------------------------------------------------------------------+
+| **Network Connection**                                                   |
+| **Failure**                                                              |
++--------------------------------------------------------------------------+
+| scheduler client                                                         |
+| scheduler client commands fail                                           |
++--------------------------------------------------------------------------+
+| resource manager                                                         |
+| scheduler is unable to load/update information regarding nodes and jobs  |
++--------------------------------------------------------------------------+
+| allocation manager                                                       |
+| scheduler is unable to validate account access or reserve/debit account  |
+| balances                                                                 |
++--------------------------------------------------------------------------+
+
+Memory
+======
+
+Depending on cluster size and configuration, the scheduler may require
+up to 50 MB of memory on the server host. If inadequate memory is
+available, multiple aspects of scheduling may be negatively affected.
+The scheduler log files should indicate is memory failures are detected
+and mark any such messages with the *ERROR* or *ALERT* keywords.
+
+Processor Utilization
+=====================
+
+On a heavily loaded system, the scheduler may appear sluggish and
+unresponsive. However no direct failures should result from this
+slowdown. Indirect failures may include timeouts of peer services (such
+as the resource manager or allocation manager) or timeouts of client
+commands. All timeouts should be recorded in the scheduler log files.
+
+Internal Errors
+***************
+
+The Maui scheduling system contains features to assist in diagnosing
+internal failures. If the scheduler exits unexpectedly, the scheduler
+logs may provide information regarding the cause. If no reason can be
+determined, use of a debugger may be required.
+
+Logs
+====
+
+The first step in any exit failure is to check the last few lines of the
+scheduler log. In many cases, the scheduler may have exited due to
+misconfiguration or detected system failures. The last few lines of the
+log should indicate why the scheduler exited and what changes would be
+required to correct the situation. If the scheduler did not
+intentionally exit, increasing the `LOGLEVEL <a.fparameters.html>`__
+parameter to **7** or higher, may help isolate the problem.
+
+Tracing the Failure with a Debugger
+===================================
+
+If the scheduler did not intentionally exit due detected environmental
+conditions, use of a debugger may assist in pursuing the problem
+further. The fastest method to isolate such situations is to launch the
+scheduler under the debugger and run it until the failure occurs. Use of
+the **MAUIDEBUG** environment variable will prevent the scheduler from
+*backgrounding* itself and allow the debugger to remain attached. The
+example below describes a standard debugging session.
+
+::
+
+    > export MAUIDEBUG=yes
+    > gdb maui
+    (gdb) r
+    ...
+    signal SIGILL received
+    (gdb) where
+    #0 MPBSJobStart()  MPBSI.c:2013
+    #1 MRMJobStart()   MRM.c:1107
+    #2 main()          MSys.c:372
+
+The debugger output should locate the source of the failure and help
+isolate the root cause.
+
+Reporting Failures
+******************
+
+If an internal failure is detected on your system, the information of
+greatest value to developers in isolating the problem will be the output
+of the gdb **where** subcommand and a printout of all variables
+associated with the failure. In addition, a level 7 log covering the
+failure can also help in determining the environment which caused the
+failure. This information should be sent to
+`help@supercluster.org <>`__.

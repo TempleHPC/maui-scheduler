@@ -1,0 +1,9 @@
+Resource Managers and Interfaces
+################################
+
+.. toctree::
+
+   13.1rmoverview
+   13.2rmconfiguration
+   13.3rmextensions
+   13.4addingrminterfaces

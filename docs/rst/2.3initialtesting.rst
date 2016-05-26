@@ -1,0 +1,134 @@
+Initial Maui Testing
+####################
+
+Maui has been designed with a number of key features that allow testing
+to occur in a *no risk* environment. These features allow you to safely
+run Maui in test mode even with your old scheduler running be it an
+earlier version of Maui or even another scheduler. In test mode, Maui
+will collect real time job and node information from your resource
+managers and will act as if it were scheduling live. However, its
+ability to actually affect jobs (i.e., start, modify, cancel, etc) will
+be disabled.
+Central to Maui testing is the parameter
+`SERVERMODE <a.fparameters.html>`__. This parameter allows
+administrators to determine how Maui will run. The possible values for
+this parameter are **NORMAL**, **TEST**, and **SIMULATION**. As would be
+expected, to request test mode operation, the **SERVERMODE** parameter
+must be set to **TEST**.
+
+The ultimate goal of testing is to verify proper configuration and
+operation. Particularly, the following can be checked:
+
+-  Maui possesses the minimal configuration required to start up.
+-  Maui can communicate with the resource manager(s).
+-  Maui is able to obtain full resource and job information from the
+   resource manager(s).
+-  Maui is able to properly start a new job
+
+Each of these areas are covered in greater detail below.
+
+Minimal Configuration Required To Start Up
+******************************************
+
+Maui must have a number of parameters specified in order to properly
+start up. There are three main approaches to setting up Maui on a new
+system. These include the following:
+
+Simulation Mode
+===============
+
+Simulation mode is of value if you would simply like to *test drive* the
+scheduler or when you have a stable production system and you wish to
+evaluate how or even if the scheduler can improve your current
+scheduling environment.
+
+An initial *test drive* simulation can be obtained via the following
+step:
+
+| `` vi maui.cfg``
+| (change 'SERVERMODE NORMAL' to 'SERVERMODE SIMULATION')
+| (add 'SIMRESOURCETRACEFILE traces/Resource.Trace1')
+| (add 'SIMWORKLOADTRACEFILE traces/Workload.Trace1')
+| ``> maui &``
+
+.. note::
+
+   In simulation mode, the scheduler does not background itself like it does in both **TEST** and **NORMAL** mode.
+
+The sample workload and resource traces files allow the simulation to
+emulate a 192 node IBM SP. In this mode, all Maui commands can be run as
+if on a normal system. The `schedctl <commands/schedctl.html>`__ command
+can be used to advance the simulation through time. The
+`Simulation <16.0simulations.html>`__ chapter describes the use of the
+simulator in detail.
+
+| If you are familiar with Maui, you may wish to use the simulator to
+  tune scheduling policies for your own workload and system. The
+  `profiler <commands/profiler.html>`__ tool can be used to obtain both
+  resource and workload traces and is described further in the section
+  'Collecting Traces'. Generally, at least a week's worth of workload
+  should be collected to make the results of the simulation
+  statistically meaningful. Once the traces are collected, the
+  simulation can be started with some initial policy settings.
+  Typically, the scheduler is able to simulate between 10 and 100
+  minutes of *wallclock* time per second for medium to large systems. As
+  the simulation proceeds, various statistics can be monitored if
+  desired. At any point, the simulation can be ended and the statistics
+  of interest recorded. One or more policies can be modified, the
+  simulation re-run, and the results compared. Once you are satisfied
+| with the scheduling results, the scheduler can be run *live* with the
+  tuned policies.\ ****
+
+Test Mode
+=========
+
+Test mode allows you to evaluate new versions of the scheduler 'on the
+side'. In test mode, the scheduler connects to the resource manager(s)
+and obtains live resource and workload information. Using the policies
+specified in the maui.cfg file, the test-mode Maui behaves identical to
+a live 'normal' mode Maui except the code to start, cancel, and pre-empt
+jobs is disabled. This allows you to exercise all scheduler *code paths*
+and diagnose the scheduling state using the various diagnostic client
+commands. The log output can also be evaluated to see if any unexpected
+states were entered. Test mode can also be used to locate system
+problems which need to be corrected. Like simulation mode, this mode can
+also be used to safely *test drive* the scheduler as well as obtain
+confidence over time of the reliability of the software. Once satisfied,
+the scheduling mode can be changed from **TEST** to **NORMAL** to begin
+*live* scheduling.
+
+To set up Maui in test mode, use the following step:
+
+| `` > vi maui.cfg``
+| (change '``SERVERMODE NORMAL``' to '``SERVERMODE TEST``')
+| `` maui``
+
+| Remember that Maui running in test mode will not interfere with your
+  production scheduler, be it Loadleveler, PBS, or even another version
+  of
+| Maui.
+
+.. note::
+
+   If you are running multiple versions of Maui, be they in simulation, normal, or test mode, make certain that they
+   each reside in different home directories to prevent conflicts with config and log files, statistics, checkpointing,
+   and *lock* files. Also, each instance of Maui should run using a different `SERVERPORT <a.fparameters.html#serverport>`__
+   parameter to avoid socket conflicts. Maui client commands can be pointed to the proper Maui server by using the
+   appropriate command line arguments or by setting the environment variable **MAUIHOMEDIR**.
+
+Normal Mode
+===========
+
+| For the adventurous at heart (or if you simply have not yet been
+  properly *burned* by directly installing a large, totally new, mission
+  critical piece
+| of software) or if you are bringing up a new or development system,
+  you may wish to dive in and start the scheduler in **NORMAL** mode.
+  This
+| admin manual and the accompanying man pages should introduce you to
+  the relevant issues and commands. To start the scheduler in **NORMAL**
+  mode, take the following step:
+
+`` maui``
+
+That should be all that is needed to get you started.

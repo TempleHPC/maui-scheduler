@@ -1,0 +1,28 @@
+Managing Node-Locked Consumable Generic Resources
+#################################################
+
+Configuring Consumable Generic Resources
+****************************************
+
+Consumable generic resources are fully supported in all releases of
+`Moab </moab>`__ with resource manager level auto-detection. Within Maui
+3.2, node-locked consumable generic resources (or *generic resources*)
+are specified using the **NODECFG** parameter's **GRES** attribute. This
+attribute is specified using the format
+``<ATTR>:<COUNT> as in the example below.``
+
+::
+
+    -----
+    # maui.cfg
+
+    NODECFG[titan001]  GRES=tape:4
+    NODECFG[login32]   GRES=matlab:2,prime:4
+    NODECFG[login32]   GRES=matlab:2
+    -----
+
+.. rubric:: 12.4.1 requesting Consumable Generic Resources
+   :name: requesting-consumable-generic-resources
+
+Generic resources are requested on a *per task* basis using `resource
+manager extensions <13.3rmextensions.html>`__.

@@ -1,0 +1,12 @@
+Miscellaneous Commands
+######################
+
+The table below covers a number of additional commands which do not
+fully fit in prior categories. The `Commands
+Overview <a.gcommandoverview.html>`__ lists all available commands.
+
++---------------------------------------------+-------------+-----------------------------+
+| **Command**                                 | **Flags**   | **Description**             |
++---------------------------------------------+-------------+-----------------------------+
+| `resetstats <commands/resetstats.html>`__   |             | reset internal statistics   |
++---------------------------------------------+-------------+-----------------------------+

@@ -1,0 +1,5 @@
+Resource Usage Tracking
+#######################
+
+As far as the resource manager will allow, Maui will track the aggregate
+usage of shared resources on a per job basis.
