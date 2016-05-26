@@ -39,6 +39,7 @@ all: config.status
 	${MAKE} -C src/mcom all
 	${MAKE} -C src/server all
 	${MAKE} -C src/server setup   
+	${MAKE} doc
 
 dep:
 	${MAKE} -C tools fastdep.exe
@@ -50,7 +51,7 @@ clean:
 	${MAKE} -C tools clean
 	${MAKE} -C src/moab clean
 	${MAKE} -C src/mcom clean
-	${MAKE} -C src/server clean        
+	${MAKE} -C src/server clean
 
 install:
 	${MAKE} -C src/moab install
@@ -62,13 +63,19 @@ uninstall:
 	${MAKE} -C src/mcom uninstall
 	${MAKE} -C src/server uninstall
 
+doc:
+	doxygen
+	${MAKE} -C docs/latex pdf
+	cp -v docs/latex/refman.pdf docs/
+
 setup:
 	${MAKE} -C src/server setup        
 
 distclean: clean
 	rm -f Makefile maui.cfg.dist include/Makefile.inc.*[!i][!n] include/maui.cfg.dist.inc.*[!i][!n]
-	rm -f maui.ck maui-private.cfg maui.cfg maui-private.cfg.dist
+	rm -f maui.ck maui-private.cfg maui.cfg maui-private.cfg.dist Doxyfile
 	rm -f etc/maui.sh etc/maui.csh include/moab-local.h config.log config.status include/msched-version.h
+	rm -rf docs/html docs/latex docs/refman.pdf
 
 config.status: configure Makefile.in include/moab-local.h.in include/msched-version.h.in \
  include/Makefile.inc.pbs.in maui.cfg.dist.in etc/maui.csh.in etc/maui.sh.in maui-private.cfg.dist.in
