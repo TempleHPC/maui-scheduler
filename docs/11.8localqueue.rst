@@ -1,0 +1,10 @@
+Using a Local Queue
+###################
+
+Maui allows jobs to be submitted directly to the scheduler. With the
+*local queue*, the scheduler is able to directly manage the job or
+*translate* it and resubmit it to a standard resource manager queue.
+This capability allows sites to migrate resource managers without
+re-training their users. Further, it allows the scheduler to dynamically
+modify various job attributes in accordance with site scheduling
+constraints and optimization policies.

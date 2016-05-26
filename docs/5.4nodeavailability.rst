@@ -1,0 +1,37 @@
+Node Availability Policies
+##########################
+
+Schedulers will allow jobs to be launched on a given compute node as
+long as the node is not full or *busy*. The parameter
+**`NODEAVAILABILITYPOLICY <a.fparameters.html#nodeavailabilitypolicy>`__**
+allows a site to determine what criteria constitutes a node being busy .
+The legal settings are listed in the table below:
+
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| **Availability Policy**   | **Description**                                                                                              |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| **DEDICATED**             | The node is considered busy if dedicated resources equal or exceed configured resources                      |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| **UTILIZED**              | The node is considered busy if utilized resources equal or exceed configured resources                       |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+| **COMBINED**              | The node is considered busy if either dedicated or utilized resources equal or exceed configured resources   |
++---------------------------+--------------------------------------------------------------------------------------------------------------+
+
+The default setting for all nodes is **COMBINED** indicating that a node
+can accept workload so long as the jobs which the node was allocated to
+do not request or utilize more resources than the node has available. In
+a load balancing environment, this may not be the desired behavior.
+Setting the **NODEAVAILABILITYPOLICY** parameter to **UTILIZED** will
+allow jobs to be packed onto a node even if the aggregate resources
+requested exceeds the resources configured. For example, assume a
+scenario with a 4 processor compute node and 8 jobs requesting 1
+processor each. If the resource availability policy was set to
+**COMBINED** , this node would only allow 4 jobs to start on this node
+even if the jobs induced a load of less than 1.0 each. With the resource
+availability policy set to **UTILIZED**, the scheduler would continue to
+allow jobs to be started on the node until the node's load average
+exceeded a per processor load value of 1.0 (in this case, a total load
+of 4.0). To prevent a node from being over populated within a single
+scheduling iteration, Maui will artificially raise the node's load for
+one scheduling iteration when starting a new job. On subsequent
+iterations, the actual measured node load information will be used.

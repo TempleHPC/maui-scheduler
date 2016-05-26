@@ -1,0 +1,145 @@
+Internal Diagnostics/Diagnosing System Behavior and Problems
+############################################################
+
+Maui provides a number of commands for diagnosing system behavior. These
+diagnostic commands present detailed state information about various
+aspects of the scheduling problem, summarize performance, and evaluate
+current operation reporting on any unexpected or potentially erroneous
+conditions found. Where possible, Maui's diagnostic commands even
+correct detected problems if desired.
+
+At a high level, the diagnostic commands are organized along
+functionality and object based delineations. Diagnostic command exist to
+help prioritize workload, evaluate fairness, and determine effectiveness
+of scheduling optimizations. Commands are also available to evaluate
+reservations reporting state information, potential reservation
+conflicts, and possible corruption issues. Scheduling is a complicated
+task. Failures and unexpected conditions can occur as a result of
+resource failures, jobs failures, or conflicting policies.
+
+Maui's diagnostics can intelligently organize information to help
+isolate these failures and allow them to be resolved quickly. Another
+powerful use of the diagnostic commands is to address the situation in
+which there are no *hard* failures. In these cases, the jobs, compute
+nodes, and scheduler are all functioning properly, but the cluster is
+not behaving exactly as desired. Maui diagnostics can help a site
+determine how the current configuration is performing and how it can be
+changed to obtain the desired behavior.
+
+Diagnose Command
+****************
+
+The cornerstone of Maui's diagnostics is a command named, aptly enough,
+`diagnose <commands/diagnose.html>`__. This command provides detailed
+information about scheduler state and also performs a large number of
+internal sanity checks presenting problems it finds as warning messages.
+
+| Currently, the diagnose command provides in depth analysis of the
+  following objects and subsystems
+
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Object/Subsystem**   | **Diagnose Flag**                             | **Use**                                                                                                                                                                       |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Account                | -a                                            | shows detailed account configuration information                                                                                                                              |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| FairShare              | `-f <commands/diagnosefairshare.html>`__      | shows detailed fairshare configuration information as well as current fairshare usage                                                                                         |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Frame                  | -m                                            | shows detailed frame information                                                                                                                                              |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Group                  | -g                                            | shows detailed group information                                                                                                                                              |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Job                    | `-j <commands/diagnosejob.html>`__            | shows detailed job information. Reports on corrupt job attributes, unexpected states, and excessive job failures                                                              |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Node                   | -n                                            | shows detailed node information. Reports on unexpected node states and resource allocation conditions.                                                                        |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Partition              | -t                                            | shows detailed partition information                                                                                                                                          |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Priority               | `-p <commands/diagnosepriority.html>`__       | shows detailed job priority information including priority factor contributions to all idle jobs                                                                              |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| QOS                    | -Q                                            | shows detailed QOS information                                                                                                                                                |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Queue                  | `-q <commands/diagnosequeue.html>`__          | indicates why ineligible jobs or not allowed to run                                                                                                                           |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Reservation            | `-r <commands/diagnosereservations.html>`__   | shows detailed reservation information. Reports on reservation corruption of unexpected reservation conditions                                                                |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Resource Manager       | `-R <commands/diagnoserm.html>`__             | shows detailed resource manager information. Reports configured and detected state, configuration, performance, and failures of all configured resource manager interfaces.   |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Scheduler              | `-S <commands/diagnose.html>`__               | shows detailed scheduler state information. Indicates if scheduler is stopped, reports status of grid interface, identifies and reports high-level scheduler failures.        |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| User                   | -u                                            | shows detailed user information                                                                                                                                               |
++------------------------+-----------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Other Diagnostic Commands
+*************************
+
+Beyond **diagnose**, the `checkjob <commands/checkjob.html>`__ and
+`checknode <commands/checknode.html>`__ commands also provide detailed
+information and sanity checking on individual jobs and nodes
+respectively. These commands can indicate why a job cannot start, which
+nodes can be available, and information regarding the recent events
+impacting current job or nodes state.
+
+Using Maui Logs for Troubleshooting
+***********************************
+
+Maui logging is extremely useful in determining the cause of a problem.
+Where other systems may be cursed for not providing adequate logging to
+diagnose a problem, Maui may be cursed for the opposite reason. If the
+logging level is configured too high, huge volumes of log output may be
+recorded, potentially obscuring the problems in a flood of data.
+Intelligent searching, combined with the use of the
+`LOGLEVEL <a.fparameters.html#loglevel>`__ and
+`LOGFACILITY <a.fparameters.html#logfacility>`__ parameters can mine out
+the needed information. Key information associated with various problems
+is generally marked with the keywords WARNING, ALERT, or ERROR. See the
+`Logging Overview <14.2logging.html>`__ for further information.
+
+Using a Debugger
+****************
+
+If other methods do not resolve the problem, the use of a debugger can
+provide missing information. While output recorded in the Maui logs can
+specify which routine is failing, the debugger can actually locate the
+very source of the problem. Log information can help you pinpoint
+exactly which section of code needs to be examined and which data is
+suspicious. Historically, combining log information with debugger
+flexibility have made locating and correcting Maui bugs a relatively
+quick and straightforward process.
+
+To use a debugger, you can either *attach* to a running Maui process or
+start Maui under the debugger. Starting Maui under a debugger requires
+that the MAUIDEBUG environment variable be set to the value 'yes' to
+prevent Maui from daemonizing and backgrounding itself. The following
+example shows a typical debugging start up using gdb.
+
+::
+
+    ----
+    > export MAUIDEBUG=yes
+    > cd <MAUIHOMEDIR>/src/moab
+    > gdb ../../bin/maui
+    > b MQOSInitialize
+    > r
+    >----
+
+The gdb debugger has the ability to specify conditional breakpoints
+which make debugging much easier. For debuggers which do not have such
+capabilities, the '**TRAP\***' parameters are of value allowing
+breakpoints to be set which only trigger when specific routines are
+processing particular nodes, jobs or reservations. See the
+`TRAPNODE <a.fparameters.html#trapnode>`__,
+`TRAPJOB <a.fparameters.html#trapjob>`__,
+`TRAPRES, <a.fparameters.html#trapres>`__ and
+`TRAPFUNCTION <a.fparameters.html#trapfunction>`__ parameters for more
+information.
+
+Controlling behavior after a 'crash'
+************************************
+
+The **MAUICRASHMODE** environment variable can be set to control
+scheduler action in the case of a catastrophic internal failure. Valid
+valus include **trap**, **ignore**, and **die**.
+
+**See also:**
+
+**`Troubleshooting Individual Jobs <14.7troubleshootingjobs.html>`__.**

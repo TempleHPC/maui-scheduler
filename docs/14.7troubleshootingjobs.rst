@@ -1,0 +1,39 @@
+Problems with Individual Jobs
+#############################
+
+To determine why a particular job will not start, there are several
+commands which can be helpful.
+
+**`checkjob -v <commands/checkjob.html>`__**
+
+Checkjob will evaluate the ability of a job to start immediately. Tests
+include resource access, node state, job constraints (ie, startdate,
+taskspernode,QOS, etc). Additionally, command line flags may be
+specified to provide further information.
+
+| -l <POLICYLEVEL> // evaluate impact of throttling policies on job
+  feasibility
+| -n <NODENAME> // evaluate resource access on specific node
+| -r <RESERVATION\_LIST> // evaluate access to specified reservations
+
+**`checknode <commands/checknode.html>`__**
+
+Display detailed status of node
+
+**`diagnose -j <commands/diagnosejob.html>`__**
+
+Display high level summary of job attributes and perform sanity check on
+job attributes/state.
+
+**`diagnose -q <commands/diagnosequeue.html>`__**
+
+Display various reasons job is considered 'blocked' or 'non-queued'.
+
+**`showbf -v <commands/showbf.html>`__**
+
+Determine general resource availability subject to specified
+constraints.
+
+**See also:**
+
+**`Diagnosing System Behavior/Problems <troubleshooting.html>`__**

@@ -1,0 +1,20 @@
+Policy/Config Management Commands
+#################################
+
+Maui allows dynamic modification of most scheduling parameters allowing
+new scheduling policies, algorithms, constraints, and permissions to be
+set at any time. Changes made via Maui client commands are temporary and
+will be overridden by values specified in Maui config files the next
+time Maui is shutdown and restarted. The table below covers the
+available configuration management commands. The `Commands
+Overview <a.gcommandoverview.html>`__ lists all available commands.
+
++-----------------------------------------------+-------------+--------------------------------------------------------------------------------------+
+| **Command**                                   | **Flags**   | **Description**                                                                      |
++-----------------------------------------------+-------------+--------------------------------------------------------------------------------------+
+| `changeparam <commands/changeparam.html>`__   |             | immediately change parameter value                                                   |
++-----------------------------------------------+-------------+--------------------------------------------------------------------------------------+
+| `schedctl <commands/schedctl.html>`__         |             | control scheduling behavior (i.e., stop/start scheduling, recycle, shutdown, etc.)   |
++-----------------------------------------------+-------------+--------------------------------------------------------------------------------------+
+| `showconfig <commands/showconfig.html>`__     |             | display settings of all configuration parameters                                     |
++-----------------------------------------------+-------------+--------------------------------------------------------------------------------------+

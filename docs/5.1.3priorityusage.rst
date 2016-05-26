@@ -1,0 +1,110 @@
+Common Priority Usage
+#####################
+
+Sites vary wildly in the preferred manner of prioritizing jobs. Maui's
+scheduling hierarchy allows sites to meet their job control needs
+without requiring them to adjust dozens of parameters. Some sites may
+choose to utilize numerous subcomponents, others a few, and still others
+are completely happy with the default FIFO behavior. Any subcomponent
+which is not of interest may be safely ignored.
+
+To help clarify the use of priority weights, a brief example may help.
+Suppose a site wished to maintain the FIFO behavior but also incorporate
+some credential based prioritization to favor a special user.
+Particularly, the site would like the userjohn to receive a higher
+initial priority than all other users. Configuring this behavior would
+require two steps. First, the user credential subcomponent would need to
+be enabled and second, john would need to have his relative priority
+specified. Take a look at the example maui.cfg:
+
+| ---
+| ``USERWEIGHT 1``
+| ``USERCFG[john] PRIORITY=300``
+| ---
+
+**|image4|** The 'USER' priority subcomponent was enabled by setting the
+**USERWEIGHT** parameter. In fact, the parameters used to specify the
+weights of all components and subcomponents follow this same
+'**\*WEIGHT**' naming convention (i.e., **RESWEIGHT**,
+**TARGETQUEUETIMEWEIGHT**, etc.).
+
+The second part of the example involved specifying the actual user
+priority for the user john. This was accomplished using the
+`USERCFG <a.fparameters.html#usercfg>`__ parameter. Why was the priority
+300 selected and not some other value? Is this value arbitrary? As in
+any priority system, actual priority values are meaningless, only
+relative values are important. In this case, we are required to balance
+user priorities with the default queue time based priorities. Since
+queuetime priority is measured in minutes queued (see table above), the
+user priority of 300 will make a job by user john on par with a job
+submitted 5 minutes earlier by another user.
+
+Is this what the site wants? Maybe, maybe not. The honest truth is that
+most sites are not completely certain what they want in prioritization
+at the onset. Most often, prioritization is a tuning process where an
+*initial stab* is made and adjustments are then made over time. Unless
+you are an exceptionally stable site, prioritization is also not a
+matter of getting it right. Cluster resources evolve, the workload
+evolves, and even site policies evolve, resulting in changing priority
+needs over time. Anecdotal evidence indicates that most sites establish
+a relatively stable priority policy within a few iterations and make
+only occasional adjustments to priority weights from that point on.
+
+Lets look at one more example. A site wants to do the following:
+
+| - favor jobs in the low, medium, and high QOS's so they will run in
+  QOS order
+| - balance job expansion factor
+| - use job queue time to prevent jobs from starving
+
+The sample **maui.cfg** is listed below:
+
+| ---
+| ``QOSWEIGHT 1``
+| ``XFACTORWEIGHT 1``
+| ``QUEUETIMEWEIGHT 10``
+| ``TARGETQUEUETIMEWEIGHT 1``\ ````
+
+| ``QOSCFG[low] PRIORITY=1000``
+| ``QOSCFG[medium] PRIORITY=10000``
+| ``QOSCFG[high] PRIORITY=10000``
+| ``USERCFG[DEFAULT] QTTARGET=4:00:00``
+| ---
+
+This example is a bit more complicated but is more typical of the needs
+of many sites. The desired QOS weightings are established by enabling
+the QOS subfactor using the **QOSWEIGHT** parameter while the various
+QOS priorities are specified using
+`QOSCFG <a.fparameters.html#qoscfg>`__. **XFACTORWEIGHT** is then set as
+this subcomponent tends to establish a balanced distribution of
+expansion factors across all jobs. Next, the queuetime component is used
+to gradually raise the priority of all jobs based on the length of time
+they have been queued. Note that in this case, **QUEUETIMEWEIGHT** was
+explicitly set to 10, overriding its default value of 1. Finally, the
+**TARGETQUEUETIMEWEIGHT** parameter is used in conjunction with the
+**USERCFG** line to specify a queue time target of 4 hours.
+
+Assume now that the site decided that it liked this priority mix but
+they had a problem with users 'cheating' by submitting large numbers
+very short jobs. They would do this because very short jobs would tend
+to have rapidly growing xfactor values and would consequently quickly
+jump to the head of the queue. In this case, a 'factor cap' would be
+appropriate. These caps allow a site to say I would like this priority
+factor to contribute to a job's priority but only within a defined
+range. This prevents certain priority factors from swamping others. Caps
+can be applied to either priority components or subcomponents and are
+specified using the '<COMPONENTNAME>CAP' parameter (i.e.,
+**QUEUETIMECAP**, **RESCAP**, **SERVCAP**, etc.) Note that both
+component and subcomponent caps apply to the 'pre-weighted' value as in
+the following equation:
+
+| `` Priority =``
+| `` C1WEIGHT * MIN(C1CAP,SUM(``
+| `` S11WEIGHT * MIN(S11CAP,S11S) +``
+| `` S12WEIGHT * MIN(S12CAP,S12S) +``
+| `` ...)) +``
+| `` C2WEIGHT * MIN(C2CAP,SUM(``
+| `` S21WEIGHT * MIN(S21CAP,S21S) +``
+| `` S22WEIGHT * MIN(S22CAP,S22S) +``
+| `` ...)) +``
+| `` ...``

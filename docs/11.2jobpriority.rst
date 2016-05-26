@@ -1,0 +1,9 @@
+Job Priority Management
+#######################
+
+Job priority management is controlled via both configured and manual
+intervention mechanisms.
+
+-  Priority Configuration - see `Job
+   Prioritization <5.1jobprioritization.html>`__
+-  Manual Intervention w/\ `setspri <commands/setspri.html>`__

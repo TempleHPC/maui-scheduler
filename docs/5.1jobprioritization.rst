@@ -1,0 +1,22 @@
+Job Prioritization
+##################
+
+In general, prioritization is the process of determining which of many
+options best fulfills overall goals. In the case of scheduling, a site
+will often have multiple, independent goals which may include maximizing
+system utilization, giving preference to users in specific projects, or
+making certain that no job sits in the queue for more than a given
+period of time. The approach used by Maui in representing a
+multi-faceted set of site goals is to assign weights to the various
+objectives so an overall value or priority can be associated with each
+potential scheduling decision. With the jobs prioritized, the scheduler
+can roughly fulfill site objectives by starting the jobs in priority
+order.
+
+.. toctree::
+
+   5.1.1priorityoverview
+   5.1.2priorityfactors
+   5.1.3priorityusage
+   5.1.4prioritystrategies
+   5.1.5prioritymanagement

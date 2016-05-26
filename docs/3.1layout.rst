@@ -1,0 +1,70 @@
+File Layout
+###########
+
+Maui is initially unpacked into a simple one-deep directory structure as
+shown below. Note that some of the files (i.e., log and statistics
+files) will be created as Maui is run.
+
+| $(MAUIHOMEDIR) \_\_\_\_\_ **maui.cfg** (general config file containing
+  information required by both the Maui server and user interface
+  clients)
+| \|\_\_\_ **maui-private.cfg** (config file containing private
+  information required by the Maui server only)
+| \|\_\_\_ **`fs.cfg <fsconfig.html>`__** (fairshare config file used in
+  Maui 3.0.6 and earlier)
+| \|\_\_\_ **maui.ck** (Maui checkpoint file)
+| \|\_\_\_ **maui.pid** (Maui 'lock' file to prevent multiple instances)
+| \|\_\_\_ **`log <a.fparameters.html#logdir>`__** (directory for Maui
+  log files - REQUIRED BY DEFAULT)
+| \|\_\_\_\_ **`maui.log <a.fparameters.html#logfile>`__** (Maui log
+  file)
+| \|\_\_\_\_ **maui.log.1** (previous 'rolled' Maui log file)
+| \|\_\_\_ **`stats <a.fparameters.html#statdir>`__** (directory for
+  Maui statistics files - REQUIRED BY DEFAULT)
+| \|\_\_\_\_ Maui stats files (in format 'stats.<YYYY>\_<MM>\_<DD>')
+| \|\_\_\_\_ Maui fairshare data files (in format 'FS.<EPOCHTIME>')
+| \|\_\_\_ **tools** (directory for local tools called by Maui -
+  OPTIONAL BY DEFAULT)
+| \|\_\_\_ **traces** (directory for Maui simulation trace files -
+  REQUIRED FOR SIMULATIONS)
+| \|\_\_\_\_ resource.trace1 (sample resource trace file)
+| \|\_\_\_\_ workload.trace1 (sample workload trace file)
+| \|\_\_\_ **bin** (directory for Maui executable files - REQUIRED BY
+  DEFAULT)
+| \|\_\_\_\_ **maui** (Maui scheduler executable)
+| \|\_\_\_\_ **maui\_client** (Maui user interface client executable)
+| \|\_\_\_\_ **`profiler <commands/profiler.html>`__** (tool used to
+  analyze Maui statistics)
+| \|\_\_\_ **src** (directory for Maui source code files - REQUIRED FOR
+  BUILD)
+| \|\_\_\_ **spool** (directory for temporary Maui files - REQUIRED FOR
+  ADVANCED FEATURES)
+| \|\_\_\_ **contrib** (directory containing contributed code in the
+  areas of GUI's, algorithms, policies, etc)
+
+| $(MAUIINSTDIR) \_\_\_\_\_\_\_\_bin (directory for installed Maui
+  executables)
+| \|\_\_\_\_ **maui** (Maui scheduler executable)
+| \|\_\_\_\_ **maui\_client** (Maui user interface client executable)
+| \|\_\_\_\_ **profiler** (tool used to analyze Maui statistics)
+
+**/etc/maui.cfg** (optional file. This file is used to override default
+'$(MAUIHOMEDIR)' settings. it should contain the string '**SERVERHOMEDIR
+$(DIRECTORY)**' to override the 'built-in' $(MAUIHOMEDIR)' setting.
+
+When Maui is configured via the **configure** script, the user is
+queried for the location of the Maui home directory and this directory,
+$(MAUIHOMEDIR), is compiled in as the default **MAUIHOMEDIR** directory
+when Maui is built. Unless specified otherwise, Maui will look in this
+directory for its various config files. If you wish to run Maui out of a
+different directory, you can override the default home directory setting
+by creating a **/etc/maui.cfg** file containing the string
+'**SERVERHOMEDIR <DIRECTORY>**', by setting the environment variable
+'**MAUIHOMEDIR**', or by specifying the configfile explicitly using the
+'**-C**' command line option on Maui and the Maui client commands.
+
+When Maui is run, it creates a log file, '**maui.log**' in the log
+directory and creates a statistics file in the stats directory with the
+naming convention '**stats.YYYY\_MM\_DD**' (i.e., 'stats.2000\_09\_20').
+Additionally, a checkpoint file, **maui.ck** and lock file **maui.pid**
+are maintained in the Maui home directory.

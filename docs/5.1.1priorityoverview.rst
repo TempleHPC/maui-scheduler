@@ -1,0 +1,48 @@
+Priority Overview
+#################
+
+Maui's prioritization mechanism allows component and subcomponent
+weights to be associated with many aspects of a job so as to enable
+fine-grained control over this aspect of scheduling. To allow this level
+of control, Maui uses a simple priority-weighting hierarchy where the
+contribution of each priority subcomponent is calculated as
+
+**<COMPONENT WEIGHT> \* <SUBCOMPONENT WEIGHT> \* <PRIORITY SUBCOMPONENT
+VALUE>**
+
+Each priority component contains one or more subcomponents as described
+in the `Priority Component Overview <5.1.2priorityfactors.html>`__. For
+example, the Resource component consists of Node, Processor, Memory,
+Swap, Disk, and PE subcomponents. While there are numerous priority
+components and many more subcomponents, a site need only focus on and
+configure the subset of components related to their particular priority
+needs. In actual usage, few sites use more than a small fraction
+(usually 5 or less) of the available priority subcomponents. This
+results in fairly straightforward priority configurations and tuning. By
+mixing and matching priority weights, sites may generally obtain the
+desired job-start behavior. At any time, the `diagnose
+-p <commands/diagnosepriority.html>`__ command can be issued to
+determine the impact of the current priority-weight settings on idle
+jobs. Likewise, the command `showgrid <commands/showgrid.html>`__ can
+assist the admin in evaluating priority effectiveness on historical
+system usage metrics such as queue time or expansion factor.
+
+**** As mentioned above, a job's priority is the weighted sum of its
+activated subcomponents. By default, the value of all component and
+subcomponent weights is set to 1 and 0 respectively. The one exception
+is the **QUEUETIME** subcomponent weight which is set to 1. This results
+in a total job priority equal to the period of time the job has been
+queued, causing Maui to act as a simple FIFO. Once the summed component
+weight is determined, this value is then bounded resulting in a priority
+ranging between 0 and MAX\_PRIO\_VAL which is currently defined as
+1000000000 (one billion). In no case will a job obtain a priority in
+excess of MAX\_PRIO\_VAL through its priority subcomponent values.
+
+Using the `setspri <commands/setspri.html>`__ command, site admins may
+adjust the base calculated job priority by either assigning a relative
+priority adjust or an absolute system priority. A relative priority
+adjustment will cause the base priority to be increased or decreased by
+a specified value. Setting an absolute system priority, SPRIO, will
+cause the job to receive a priority equal to MAX\_PRIO\_VAL + SPRIO, and
+thus guaranteed to be of higher value than any naturally occurring job
+priority.

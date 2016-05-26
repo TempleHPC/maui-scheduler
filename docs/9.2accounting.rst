@@ -1,0 +1,126 @@
+Accounting: Job and System Statistics
+#####################################
+
+Maui provides extensive accounting facilities which allow resource usage
+to be tracked by resources (i.e., compute nodes), jobs, users, and other
+objects. The accounting facilities may be used in conjunction with and
+correlated with the accounting provided by the resource manager.
+
+Maui maintains a large number of statistics and provides several
+commands to allow easy access to and helpful consolidation of this
+information. These statistics are of three primary types:
+
+
+Accounting Overview
+*******************
+
+Maui provides accounting data correlated to most major objects utilized
+within scheduling. The records include job accounting, resource
+accounting, and credential based accounting.
+
+Job Accounting
+==============
+
+As each job completes, Maui records a complete job trace containing
+information about who ran the job, when and where it ran, what resources
+it requested, what it actually utilized, and other pieces of key
+information. A complete description of each of the job accounting data
+fields can be found within section `16.3 Workload
+Traces <16.3workloadtrace.html>`__ of the admin manual.
+
+Resource Accounting
+===================
+
+N/A
+
+Credential Accounting
+=====================
+
+N/A
+
+Real Time Statistics
+********************
+
+Maui provides real time statistical information about how the machine is
+running from a scheduling point of view. The
+`showstats <commands/showstats.html>`__ commands is actually a suite of
+commands providing detailed information on an overall scheduling basis
+as well as a per user, group, account and node basis. This command gets
+its information from in memory statistics which are loaded at scheduler
+start time from the scheduler checkpoint file. (See the Checkpoint
+Overview for more information) This checkpoint file is updated from time
+to time and when the scheduler is shutdown allowing statistics to be
+collected over an extended timeframe. At any time, real time statistics
+can be reset using the `resetstats <commands/resetstats.html>`__
+command.
+In addition to the showstats command, the
+`showgrid <commands/showgrid.html>`__ command also obtains its
+information from the in memory stats and checkpoint file. This command
+display a processor-time based matrix of scheduling performance for a
+wide variety of metrics. Information such as backfill effectiveness or
+average job queue time can be determined on a job size/duration basis.
+See the showgrid command documentation for more information.
+
+Profiling Historical Usage
+**************************
+
+Historical usage information can be obtained for a specific
+timeframe, class of jobs, and/or portion of resources using the
+`profiler <commands/profiler.html>`__ command. This command operates on
+the `detailed job trace information <trace.html>`__ recorded at the
+completion of each job. These traces are stored in the directory pointed
+to by the `STATDIR <a.fparameters.html#statdir>`__ parameter which
+defaults to **$(MAUIHOMEDIR)/stats**. Within this directory, statistics
+files are maintained using the format ``WWW_MMM_DD_YYYY`` (i.e,
+Mon\_Jul\_16\_2001) with jobs traces being recorded in the file
+associated with the day the job completed. Each job trace is white space
+delimited flat text and may be viewed directly with any text reader.
+
+When profiling statistics, stat files covering the time frame of
+interest should be aggregated into a single file. This file can be
+passed to the profiler command along with a number of configuration
+flags controlling what data should be processed and how it should be
+display. Command line flags allow specification of constraints such as
+earliest start date, or latest completion date. Flags can also be used
+to evaluate only jobs associated with specific users, groups, accounts,
+or QOS's. Further, it is possible to specify that only jobs run on
+certain nodes be processed. Because the trace files are flat text,
+simple Unix® text processing tools such as awk, sed, or grep can be used
+to create more elaborate filters should they be needed.
+
+The output of the profiler command provides extensive detailed
+information about what jobs ran and what level of scheduling service
+they received. The profiler command documentation should be consulted
+for more information.
+
+Fairshare Usage Statistics
+**************************
+
+Regardless of whether of not fairshare is enabled, detailed
+credential based fairshare statistics are maintained. Like job traces,
+these statistics are stored in the directory pointed to by the STATDIR
+parameter. Fairshare stats are maintained in a separate statistics file
+using the format FS.<EPOCHTIME> (i.e., FS.982713600) with one file
+created per fairshare window. (See the `Fairshare
+Overview <#fairshare>`__ for more information) These files are also flat
+text and record credential based usage statistics. Information from
+these files can be seen via the `diagnose
+-f <commands/diagnosefairshare.html>`__ command.
+|image5| The `Moab Cluster Manager <../mcm/index.html>`__\ :sup:`TM`
+`graphically organizes <../mcm/fairshare.html>`__ the fairshare values
+by credential for easy navigation and provides a
+`GUI <../mcm/fairshare.html>`__ to specify the Decay Factor, Depth,
+Interval Length and Usage Metric.
+
+SMP Aspects
+===========
+
+**Shared vs Dedicated**
+
+SMP nodes are often used to run jobs which do not use all available
+resources on that node. How Maui handles these unused resources is
+controlled by the parameter
+`NODEACCESSPOLICY <a.fparameters.html#nodeaccesspolicy>`__. If this
+parameter is set to **SHARED**, Maui will allow tasks of other jobs to
+use the resources. If this parameter is set to **DEDICATED**, Maui will
+mark these resources unavailable for use by other jobs.

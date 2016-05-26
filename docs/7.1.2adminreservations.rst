@@ -1,0 +1,12 @@
+Administrative Reservations
+###########################
+
+Administrative reservations behave much like standing reservations but
+are generally created to address non-periodic, 'one time' issues. All
+admin reservations are created using the
+`setres <commands/setres.html>`__ command and are persistent until they
+expire or are removed using the
+`releaseres <commands/releaseres.html>`__ command.
+
+See also: `Reservation Overview <7.1.1resoverview.html>`__,
+`Backfill <8.2backfill.html>`__

@@ -1,0 +1,125 @@
+Node Set Overview
+#################
+
+While backfill improves the scheduler's performance, this is only half
+the battle. The efficiency of a cluster, in terms of actual work
+accomplished, is a function of both scheduling performance and
+individual job efficiency. In many clusters, job efficiency can vary
+from node to node as well as with the node mix allocated. Most parallel
+jobs written in popular languages such as MPI or PVM do not internally
+load balance their workload and thus run only as fast as the slowest
+node allocated. Consequently, these jobs run most effectively on
+homogeneous sets of nodes. However, while many clusters start out as
+homogeneous, they quickly evolve as new generations of compute nodes are
+integrated into the system. Research has shown that this integration,
+while improving scheduling performance due to increased scheduler
+selection, can actually decrease average job efficiency.
+
+A feature called node sets allows jobs to request sets of common
+resources without specifying exactly what resources are required. Node
+set policy can be specified globally or on a per-job basis and can be
+based on node processor speed, memory, network interfaces, or locally
+defined node attributes. In addition to their use in forcing jobs onto
+homogeneous nodes, these policies may also be used to guide jobs to one
+or more types of nodes on which a particular job performs best, similar
+to job preferences available in other systems. For example, an I/O
+intensive job may run best on a certain range of processor speeds,
+running slower on slower nodes, while wasting cycles on faster nodes. A
+job may specify ANYOF:PROCSPEED:450,500,650 to request nodes in the
+range of 450 to 650 MHz. Alternatively, if a simple
+procspeed-homogeneous node set is desired, ONEOF:PROCSPEED may be
+specified. On the other hand, a communication sensitive job may request
+a network based node set with the configuration
+ONEOF:NETWORK:via,myrinet,ethernet, in which case Maui will first
+attempt to locate adequate nodes where all nodes contain via network
+interfaces. If such a set cannot be found, Maui will look for sets of
+nodes containing the other specified network interfaces. In highly
+heterogeneous clusters, the use of node sets have been found to improve
+job throughput by 10 to 15%.
+
+Node sets can be requested on a system wide or per job basis. System
+wide configuration is accomplished via the '**NODESET\***' parameters
+while per job specification occurs via the `resource manager
+extensions <13.3rmextensions.html>`__. In all cases, node sets are a
+dynamic construct, created on a per job basis and built only of nodes
+which meet all of the jobs requirements.
+
+As an example, let's assume a large site possessed a Myrinet based
+interconnect and wished to, whenever possible, allocate nodes within
+Myrinet switch boundaries. To accomplish this, they could assign node
+attributes to each node indicating which switch it was associated with
+(ie, switchA, switchB, etc) and then use the following system wide node
+set configuration:
+
+::
+
+  NODESETPOLICY ONEOF
+  NODESETATTRIBUTE FEATURE
+  NODESETDELAY 0:00:00
+  NODESETLIST switchA switchB switchC switchD
+
+
+The `NODESETPOLICY <a.fparameters.html#nodesetpolicy>`__ parameter tells
+Maui to allocate nodes within a single attribute set. Setting
+`NODESETATTRIBUTE <a.fparameters.html#nodesetattribute>`__ to
+**FEATURE** specifies that the node sets are to be constructed along
+node feature boundaries. The next parameter,
+`NODESETDELAY <a.fparameters.html#nodesetdelay>`__, indicates that Maui
+should not delay the start time of a job if the desired node set is not
+available but adequate idle resources exist outside of the set. Setting
+this parameter to zero basically tells Maui to attempt to use a node set
+if it is available, but if not, run the job as soon as possible anyway.
+(**NOTE**: In Maui 3.2, any non-zero value of **NODESETDELAY** will
+force the job to always run in a complete nodeset regardless of the
+delay time.) Finally, the
+`NODESETLIST <a.fparameters.html#nodesetlist>`__ value of 'switchA
+switchB...' tells Maui to only use node sets based on the listed feature
+values. This is necessary since sites will often use node features for
+many purposes and the resulting node sets would be of little use for
+switch proximity if they were generated based on irrelevant node
+features indicating things such as processor speed or node architecture.
+
+On occasion, sites may wish to allow a less strict interpretation of
+nodes sets. In particular, many sites seek to enforce a more liberal
+**PROCSPEED** based node set policy, where *almost balanced* node
+allocations are allowed but wildly varying node allocations are not. In
+such cases, the parameter
+`NODESETTOLERANCE <a.fparameters.html#nodesettolerance>`__ may be used.
+This parameter allows specification of the percentage difference between
+the fastest and slowest node which can be within a nodeset using the
+following calculation:
+
+.. math::
+
+   (Speed.Max - Speed.Min) / Speed.Min <= \mathbf{NODESETTOLERANCE}
+
+Thus setting **NODESETTOLERANCE** to 0.5 would allow the fastest node in
+a particular node set to be up to 50% faster than the slowest node in
+that set. With a 0.5 setting, a job may allocate a mix of 500 and 750
+MHz nodes but not a mix of 500 and 900 MHz nodes. Currently, tolerances
+are only supported when the **NODESETATTRIBUTE** parameter is set to
+**PROCSPEED**. The `MAXBALANCE <5.2nodeallocation.html#MAXBALANCE>`__
+node allocation algorithm is often used in conjunction with tolerance
+based node sets.
+
+| When resources are available in more than one resource set, the
+  `NODESETPRIORITYTYPE <a.fparameters.html#nodesetprioritytype>`__
+  parameter allows control over how the 'best' resource set is selected.
+  Legal values for this parameter are described in the table below.
+
++---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Priority Type**   | **Description**                                                                                                                                                                                          | **Details**                                                                                                                                                                                                                    |
++---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| BESTFIT             | select the smallest resource set possible                                                                                                                                                                | minimizes fragmentation of larger resource sets.                                                                                                                                                                               |
++---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| BESTRESOURCE        | select the resource set with the 'best' nodes                                                                                                                                                            | only supported when ``NODESETATTRIBUTE`` is set to ``PROCSPEED``. Selects the fastest possible nodes for the job.                                                                                                              |
++---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| MINLOSS             | select the resource set which will result in the minimal wasted resources assuming no internal job load balancing is available. (assumes parallel jobs only run as fast as the slowest allocated node)   | Only supported when ``NODESETATTRIBUTE`` is set to ``PROCSPEED`` and ``NODESETTOLERANCE`` is > 0. This algorithm is highly useful in environments with mixed speed compute nodes and a non load-balancing parallel workload.   |
++---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| WORSTFIT            | select the largest resource set possible                                                                                                                                                                 | minimizes the creation of small resource set fragments but fragments larger resource sets.                                                                                                                                     |
++---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+**** On a per job basis, each user can specify the equivalent of all
+parameters except **NODESETDELAY**. As mentioned previously, this is
+accomplished using the `resource manager
+extensions <13.3rmextensions.html>`__.

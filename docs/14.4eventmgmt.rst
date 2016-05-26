@@ -1,0 +1,50 @@
+Handling Events with the Notification Routine
+#############################################
+
+Maui possesses a primitive event management system through the use of
+the *notify* program. The program is called each time an event of
+interest occurs. Currently, most events are associated with failures of
+some sort but use of this facility need not be limited in this way. The
+`NOTIFICATIONPROGRAM <a.fparameters.html#notificationprogram>`__
+parameter allows a site to specify the name of the program to run. This
+program is most often locally developed and designed to take action
+based on the event which has occurred. The location of the notification
+program may be specified as a relative or absolute path. If a relative
+path is specified, Maui will look for the notification relative to the
+**$(MAUIHOMEDIR)/tools** directory. In all cases, Maui will verify the
+existence of the notification program at start up and will disable it if
+it cannot be found or is not executable.
+
+The notification program's action may include steps such as reporting
+the event via email, adjusting scheduling parameters, rebooting a node,
+or even recycling the scheduler.
+
+| For most events, the notification program is called with commandline
+  arguments in a simple <EVENTTYPE>: <MESSAGE> format. The following
+  event types are currently enabled:
+
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **Event Type**              | **Format**                                                                   | **Description**                                                                                                                       |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **BANKFAILURE**             | <MESSAGE>                                                                    | Maui cannot successfully communicate with the bank due to reasons such as connection failures, bank corruption, or parsing failures   |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **JOBCORRUPTION**           | <MESSAGE>                                                                    | An active job is in an unexpected state or has one or more allocated nodes which are in unexpected states                             |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **JOBHOLD**                 | <MESSAGE>                                                                    | A job hold has been placed on a job                                                                                                   |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **JOBWCVIOLATION**          | <MESSAGE>                                                                    | A job has exceeded its wallclock limit                                                                                                |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **RESERVATIONCORRUPTION**   | <MESSAGE>                                                                    | Reservation corruption has been detected                                                                                              |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **RESERVATIONCREATED**      | <RESNAME> <RESTYPE> <NAME> <PRESENTTIME> MSTARTTIME> <ENDTIME> <NODECOUNT>   | A new reservation has been created                                                                                                    |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **RESERVATIONDESTROYED**    | <RESNAME> <RESTYPE> <PRESENTTIME> <STARTTIME> <ENDTIME> <NODECOUNT>          | A reservation has been destroyed                                                                                                      |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| **RMFAILURE**               | <MESSAGE>                                                                    | The interface to the resource manager has failed                                                                                      |
++-----------------------------+------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+
+Perhaps the most valuable use of the notify program stems from the fact
+that additional notifications can be easily inserted into Maui to handle
+site specific issues. To do this, locate the proper block routine,
+specify the correct conditional statement, and add a call to the routine
+**notify(<MESSAGE>);**

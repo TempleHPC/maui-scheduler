@@ -1,0 +1,63 @@
+Issues with Client Commands
+###########################
+
+**Client Overview:**
+
+Maui clients are implemented as symbolic links to the executable
+**maui\_client**. When a maui client command is run, the client
+executable determines the name under which it is run and behaves
+accordingly. At the time Maui was configured, a *home directory* was
+specified. The Maui client will attempt to open the config file
+**maui.cfg** in this home directory on the node where the client command
+is executed. This means that the home directory specified at configure
+time must be available on all hosts where the maui client commands will
+be executed. This also means that a **maui.cfg** file must be available
+in this directory. When the clients open this file, they will try to
+load the **MAUISERVER** and **MAUIPORT** parameters to determine how to
+contact the Maui server.
+
+.. note::
+
+  The home directory value specified at configure time can be overridden
+  by creating an **/etc/maui.cfg** file or by setting the '**MAUIHOMEDIR**' environment
+  variable. Once the client has determined where the Maui server is located, it
+  creates a message, adds an encrypted checksum, and sends the message to
+  the server. Note that the Maui client and Maui server must use the same secret checksum
+  seed for this to work. When the Maui server receives the client request and verifies the
+  checksum, it processes the command and returns a reply.
+
+
+**Diagnosing Client Problems:**
+
+The easiest way to determine where client failures are occurring is to
+utilize built in maui logging. On the client side, use the '**-L**'
+flag. For example,
+
+`` showq -L9``
+
+.. note::
+
+   Maui 3.0.6 and earlier specified the desired client side
+   logging level using the '**-D**' flag (i.e., ``showq -D 9``)
+
+This will dump out a plethora of information about loading the
+configfile, connecting to the maui server, sending a request, and
+receiving a response. Wading through this information almost always will
+reveal the source of the problem. If it does not, the next step is to
+look at the maui server side logs. The easiest way to do this is to use
+the following steps:
+
+| `` schedctl -s``
+| (stop Maui scheduling so that the only activity is handling maui
+  client requests)
+| `` changeparam LOGLEVEL 7``
+| (set the logging level to 'very verbose')
+| `` tail -f log/maui.log | more``
+| (tail the maui.log activity)
+
+(In another window)
+
+`` showq``
+
+The **maui.log** file should record the client request and any reasons
+it was rejected.

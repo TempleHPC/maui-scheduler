@@ -1,0 +1,34 @@
+Prioritization Strategies
+#########################
+
+Each component or subcomponent may be used to accomplish different
+objectives. **WALLTIME** can be used to favor (or disfavor) jobs based
+on their duration. Likewise, **ACCOUNT** can be used to favor jobs
+associated with a particular project while **QUEUETIME** can be used to
+favor those jobs which have been waiting the longest.
+
+| **- `Queue Time <5.1.2priorityfactors.html#queuetimesubcomponent>`__**
+| **- `Expansion Factor <5.1.2priorityfactors.html#xfactorsub>`__**
+| **- `Resource <5.1.2priorityfactors.html#resourcecomponent>`__**
+| **- `Fairshare <5.1.2priorityfactors.html#fairshare>`__**
+| **- `Cred <5.1.2priorityfactors.html#cred>`__**
+| **- `Target Metrics <5.1.2priorityfactors.html#target>`__**
+
+Each priority factor group may contain one or more subfactors. For
+example, the Resource factor consists of Node, Processor, Memory, Swap,
+Disk, and PE components. Figure <X> shows the current priority
+breakdown. From the figure, it is quickly apparent that the
+prioritization problem is fairly 'nasty' due to the fact that every site
+needs to prioritize a bit differently. Fortunately, there has not yet
+been a site that has desired to use more than a fraction of these
+priority factors, thus greatly simplifying the job priority tuning
+issue. When calculating a priority, the various priority factors are
+summed and then bounded between 0 and MAX\_PRIO\_VAL which is currently
+defined as 100000000 (one billion).
+
+Each priority factor is reviewed in detail below. The command '`diagnose
+-p <commands/diagnosepriority.html>`__' is designed to assist in
+visualizing the priority distribution resulting from the current job
+priority configuration. Also, the `showgrid <commands/showgrid.html>`__
+command will help indicate the impact of the current priority settings
+on scheduler service distributions.
