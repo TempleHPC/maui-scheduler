@@ -63,20 +63,19 @@ uninstall:
 	${MAKE} -C src/server uninstall
 
 doc:
-	doxygen
+	${MAKE} -C docs guide refman
 
 pdf:	doc
-	${MAKE} -C docs/latex pdf
-	cp -v docs/latex/refman.pdf docs/
+	${MAKE} -C docs pdf
 
 setup:
 	${MAKE} -C src/server setup        
 
 distclean: clean
+	${MAKE} -C docs clean-all
 	rm -f Makefile maui.cfg.dist include/Makefile.inc.*[!i][!n] include/maui.cfg.dist.inc.*[!i][!n]
-	rm -f maui.ck maui-private.cfg maui.cfg maui-private.cfg.dist Doxyfile
+	rm -f maui.ck maui-private.cfg maui.cfg maui-private.cfg.dist docs/Doxyfile
 	rm -f etc/maui.sh etc/maui.csh include/moab-local.h config.log config.status include/msched-version.h
-	rm -rf docs/html docs/latex docs/refman.pdf
 
 config.status: configure Makefile.in include/moab-local.h.in include/msched-version.h.in \
  include/Makefile.inc.pbs.in maui.cfg.dist.in etc/maui.csh.in etc/maui.sh.in maui-private.cfg.dist.in
