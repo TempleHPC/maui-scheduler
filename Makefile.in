@@ -39,7 +39,6 @@ all: config.status
 	${MAKE} -C src/mcom all
 	${MAKE} -C src/server all
 	${MAKE} -C src/server setup   
-	${MAKE} doc
 
 dep:
 	${MAKE} -C tools fastdep.exe
