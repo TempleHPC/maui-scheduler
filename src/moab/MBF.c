@@ -41,7 +41,7 @@ int MBFValue(
   mjob_t       **JobList,
   int            PolicyLevel,
   nodelist_t     NodeList,
-  unsigned long  MaxDuration,
+  time_t         MaxDuration,
   int            NodesAvailable,
   int            ProcsAvailable,
   int            PIndex)
@@ -67,7 +67,7 @@ int MBFPreempt(
   mjob_t        *JobList[],
   int            PolicyLevel,
   nodelist_t     NodeList,
-  unsigned long  MaxDuration, 
+  time_t         MaxDuration, 
   int            NodesAvailable,
   int            ProcsAvailable,
   mpar_t        *P)
@@ -246,7 +246,7 @@ int MBFFirstFit(
   mjob_t       *BFQueue[],
   int           PolicyLevel,
   nodelist_t    BFNodeList,
-  unsigned long Duration,
+  time_t        Duration,
   int           BFNodeCount,
   int           BFProcCount,
   mpar_t       *P)
@@ -1088,7 +1088,7 @@ int MBFBestFit(
   mjob_t       *BFQueue[],
   int           PolicyLevel,
   nodelist_t    BFNodeList,
-  unsigned long Duration,
+  time_t        Duration,
   int           BFNodeCount,
   int           BFProcCount,
   mpar_t       *P)
@@ -1324,7 +1324,7 @@ int MBFGreedy(
   mjob_t       *BFQueue[],
   int           PolicyLevel,
   nodelist_t    BFNodeList,
-  unsigned long Duration,
+  time_t        Duration,
   int           BFNodeCount,
   int           BFProcCount,
   mpar_t       *P)

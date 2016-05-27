@@ -870,8 +870,8 @@ typedef struct {
   int   JobCountSuccessful;         /* jobs successfully completed                     */
   int   QOSMet;                     /* jobs that met requested QOS                     */
   int   RejectionCount;             /* jobs submitted that have been rejected          */
-  unsigned long TotalQTS;           /* job queue time                                  */
-  unsigned long MaxQTS;
+  time_t TotalQTS;           /* job queue time                                  */
+  time_t MaxQTS;
   double TotalQueuedPH;             /* total queued prochours                          */ 
   double TotalRequestTime;          /* total requested job walltime                    */
   double TotalRunTime;              /* total execution job walltime                    */
@@ -1109,15 +1109,15 @@ typedef struct {
 
   int    WorkloadUpdateIteration;
 
-  long   FailTime[MAX_MRMFAILURE];
+  time_t FailTime[MAX_MRMFAILURE];
   int    FailType[MAX_MRMFAILURE];
   char  *FailMsg[MAX_MRMFAILURE];
   int    FailIndex;
 
-  long   RespTotalTime[MAX_MRMFUNC];
-  long   RespMaxTime[MAX_MRMFUNC];
+  time_t RespTotalTime[MAX_MRMFUNC];
+  time_t RespMaxTime[MAX_MRMFUNC];
   int    RespTotalCount[MAX_MRMFUNC];
-  long   RespStartTime[MAX_MRMFUNC];
+  time_t RespStartTime[MAX_MRMFUNC];
 
   int    JobCount;
   int    NodeCount;
@@ -1183,21 +1183,21 @@ enum BFPriorityEnum {
   mbfpHWDuration };
 
 typedef struct {
-  unsigned long MinTime;
-  unsigned long MaxTime;
-  unsigned long TimeStepCount;
-  unsigned long TimeStep[MAX_SCALE];
-  unsigned long TimeStepSize;
-  unsigned long MinNode;
-  unsigned long MaxNode;
-  unsigned long NodeStepCount;
-  unsigned long NodeStep[MAX_SCALE];
-  unsigned long NodeStepSize;
-  unsigned long AccuracyScale;
-  unsigned long AccuracyStep[MAX_SCALE];
-  long          BeginTime;
-  long          EndTime;
-  unsigned long TraceCount;
+  time_t MinTime;
+  time_t MaxTime;
+  int    TimeStepCount;
+  int    TimeStep[MAX_SCALE];
+  int    TimeStepSize;
+  int    MinNode;
+  int    MaxNode;
+  int    NodeStepCount;
+  int    NodeStep[MAX_SCALE];
+  int    NodeStepSize;
+  int    AccuracyScale;
+  int    AccuracyStep[MAX_SCALE];
+  time_t BeginTime;
+  time_t EndTime;
+  int    TraceCount;
   } mprofcfg_t;
 
 typedef struct {
@@ -1211,7 +1211,7 @@ typedef struct {
   double TotalPHBusy;             /* total proc hours consumed by scheduled jobs                   */
   double SuccessfulPH;            /* proc hours completed successfully                             */
   int    SuccessfulJobsCompleted; /* number of jobs completed successfully                         */
-  unsigned long AvgQueuePH;       /* average queue workload                                        */
+  long   AvgQueuePH;              /* average queue workload                                        */
   int    JobsEvaluated;           /* Total Jobs evaluated for scheduling                           */
   must_t Grid[MAX_MGRIDTIMES][MAX_MGRIDSIZES]; /* stat matrix                                      */
   must_t RTotal[MAX_MGRIDSIZES];   /* row totals                                                   */
@@ -1293,7 +1293,7 @@ typedef struct {
   long   PCC[MAX_MPRIOCOMPONENT];
   long   PSC[MAX_MPRIOSUBCOMPONENT]; 
  
-  long   XFMinWCLimit;
+  time_t XFMinWCLimit;
  
   int    FSPolicy;                /* FairShare Enforceability                                      */
   long   FSInterval;              /* Time Interval Covered by each FS Data File                    */
@@ -1375,7 +1375,7 @@ typedef struct {
   enum MResLimitVActionEnum ResourceLimitViolationAction[MAX_MRESOURCETYPE];
   long                      ResourceLimitMaxViolationTime[MAX_MRESOURCETYPE];
 
-  long   AdminMinSTime;
+  time_t AdminMinSTime;
 
   int    UseLocalMachinePriority;   /* boolean */
   int    NodeLoadPolicy;
@@ -1439,8 +1439,8 @@ typedef struct {
   void   *J;
   void   *NL;
 
-  long    StartTime;             /* reservation starttime                      */
-  long    EndTime;               /* reservation endtime                        */
+  time_t  StartTime;             /* reservation starttime                      */
+  time_t  EndTime;               /* reservation endtime                        */
 
   int     MaxTasks;
 
@@ -1493,10 +1493,10 @@ typedef struct {
   int           Type;
   int           Days;
   int           Depth;
-  unsigned long StartTime;
-  unsigned long EndTime;
-  unsigned long WStartTime;
-  unsigned long WEndTime;
+  time_t        StartTime;
+  time_t        EndTime;
+  time_t        WStartTime;
+  time_t        WEndTime;
   macl_t        ACL[MAX_MACL];
   int           TaskCount;
   int           TPN;
@@ -1523,14 +1523,14 @@ typedef struct {
 #define srsv_t sres_t
 
 typedef struct {
-  long       Time;
+  time_t     Time;
   short      Type;
   short      Index;
   mcres_t    DRes;  /* total resources dedicated to reservation across all tasks on node */
   } mre_t;
 
 typedef struct {
-  long     Time;
+  time_t   Time;
   int      Type;
   int      Index;
   mcred_t *C;
@@ -1540,7 +1540,7 @@ typedef struct {
   } pe_t;
 
 typedef struct {
-  long          MTime;
+  time_t        MTime;
 
   char          RMName[MAX_MNAME + 1];
   char          NetName[MAX_MNETTYPE][MAX_MNAME + 1];
@@ -1575,34 +1575,34 @@ typedef struct {
   } mjobcache_t;
 
 typedef struct msdata_t {
-  char *Location;
+  char  *Location;
 
-  int   IsGlobal;
+  int    IsGlobal;
 
-  char *SrcFileName;
-  char *DstFileName;
+  char  *SrcFileName;
+  char  *DstFileName;
 
-  char *SrcHostName;
-  char *DstHostName;
+  char  *SrcHostName;
+  char  *DstHostName;
 
-  long  SrcFileSize;     /* available file size */
-  long  DstFileSize;     /* total file size */
+  long   SrcFileSize;     /* available file size */
+  long   DstFileSize;     /* total file size */
   
-  long  TStartTime;
-  int   TransferRate;  /* KB/s */
+  time_t TStartTime;
+  int    TransferRate;  /* KB/s */
 
-  long  ESTime;        /* estimated stage time */
+  time_t ESTime;        /* estimated stage time */
   struct msdata_t *Next;
   } msdata_t;
 
 typedef struct {
-  long   CPInterval;
+  time_t CPInterval;
 
-  long   StoredCPDuration; /* duration of walltime checkpointed in previous runs */
-  long   ActiveCPDuration; /* duration of walltime checkpointed in current run */
+  time_t StoredCPDuration; /* duration of walltime checkpointed in previous runs */
+  time_t ActiveCPDuration; /* duration of walltime checkpointed in current run */
 
-  long   InitialStartTime;
-  long   LastCPTime;
+  time_t InitialStartTime;
+  time_t LastCPTime;
 
   char   UserICPEnabled;
   char   SystemICPEnabled;
@@ -1666,18 +1666,18 @@ typedef struct {
 
   char  *FullName;            /* fully qualified host name                   */
 
-  long   CTime;               /* time node record was created                */
-  long   ATime;               /* time of most recent node information        */
-  long   MTime;               /* time node structure was modified            */
+  time_t CTime;               /* time node record was created                */
+  time_t ATime;               /* time of most recent node information        */
+  time_t MTime;               /* time node structure was modified            */
 
-  long   ResMTime;
-  long   StateMTime;          /* time node changed state                     */
+  time_t ResMTime;
+  time_t StateMTime;          /* time node changed state                     */
 
   enum MNodeStateEnum State;  /* node state                                  */
   enum MNodeStateEnum EState; /* expected node state resulting from sched action */
   enum MNodeStateEnum NewState;
 
-  long     SyncDeadLine;      /* time by which state and estate must agree   */
+  time_t   SyncDeadLine;      /* time by which state and estate must agree   */
 
   mcres_t  DRes;              /* dedicated resources (dedicated to consumer) */
   mcres_t  CRes;              /* configured resources                        */
@@ -1712,9 +1712,9 @@ typedef struct {
 
   double   BackLog;           /* avg work required by node                   */
 
-  mulong   STTime;            /* time node was monitored (in 1/100's)        */
-  mulong   SUTime;            /* time node was available (in 1/100's)        */
-  mulong   SATime;            /* time node was active    (in 1/100's)        */
+  time_t   STTime;            /* time node was monitored (in 1/100's)        */
+  time_t   SUTime;            /* time node was available (in 1/100's)        */
+  time_t   SATime;            /* time node was active    (in 1/100's)        */
 
   int      TaskCount;
   int      EProcCount;
@@ -1801,8 +1801,8 @@ typedef struct {
   mcres_t  LURes;            /* req lifetime utilized resources per task    */
   mcres_t  MURes;            /* maximum utilized resources per task         */
 
-  unsigned long RMWTime;     /* req walltime as reported by RM              */
-  unsigned long StatWTime;
+  time_t RMWTime;     /* req walltime as reported by RM              */
+  time_t StatWTime;
 
   /* index '0' is active, index '1-N' contain requests */
 
@@ -1856,14 +1856,14 @@ typedef struct mjob_t {
 
   int    Index;               /* job table index                         */  
 
-  long   CTime;               /* creation time (first RM report)         */
-  long   MTime;               /* modification time (any source)          */
-  long   ATime;               /* access time (most recent RM report)     */
+  time_t CTime;               /* creation time (first RM report)         */
+  time_t MTime;               /* modification time (any source)          */
+  time_t ATime;               /* access time (most recent RM report)     */
 
-  long   StateMTime;              
+  time_t StateMTime;              
 
-  long   SWallTime;           /* duration job was suspended              */
-  long   AWallTime;           /* duration job was executing              */
+  time_t SWallTime;           /* duration job was suspended              */
+  time_t AWallTime;           /* duration job was executing              */
  
   mjckpt_t *Ckpt;             /* checkpoint structure                    */
 
@@ -1908,20 +1908,20 @@ typedef struct mjob_t {
   char   SpecDistPolicy;
   char   DistPolicy;   
 
-  long   SystemQueueTime;   /* time job was initially eligible to start */
-  long   EffQueueDuration;  /* duration of time job was eligible to run */
+  time_t SystemQueueTime;   /* time job was initially eligible to start */
+  time_t EffQueueDuration;  /* duration of time job was eligible to run */
 
-  mulong SMinTime;          /* effective earliest start time           */
-  mulong SpecSMinTime;      /* user specified earliest start time      */
-  mulong SysSMinTime;       /* system mandated earliest start time     */
-  mulong CMaxTime;          /* user specified latest completion time   */
-  mulong TermTime;          /* time by which job must be terminated    */
-  mulong RMinTime;          /* earliest 'resume' time for suspend job  */
-  mulong SubmitTime;        /* time job was submitted to RM            */
-  mulong StartTime;         /* time job began most recent execution    */
-  mulong DispatchTime;      /* time job was dispatched by RM           */
-  mulong CompletionTime;    /* time job execution completed            */
-  mulong LastNotifyTime;
+  time_t SMinTime;          /* effective earliest start time           */
+  time_t SpecSMinTime;      /* user specified earliest start time      */
+  time_t SysSMinTime;       /* system mandated earliest start time     */
+  time_t CMaxTime;          /* user specified latest completion time   */
+  time_t TermTime;          /* time by which job must be terminated    */
+  time_t RMinTime;          /* earliest 'resume' time for suspend job  */
+  time_t SubmitTime;        /* time job was submitted to RM            */
+  time_t StartTime;         /* time job began most recent execution    */
+  time_t DispatchTime;      /* time job was dispatched by RM           */
+  time_t CompletionTime;    /* time job execution completed            */
+  time_t LastNotifyTime;
   int    CompletionCode;    /* execution completion code               */
   int    StartCount;        /* number of times job was started         */
   int    DeferCount;        /* number of times job was deferred        */
@@ -1931,14 +1931,14 @@ typedef struct mjob_t {
   int    HoldReason;        /* reason job was deferred/held by scheduler */            
   int    BlockReason;       /* reason job not considered for scheduling */
 
-  long   SyncDeadLine;      /* time by which state and estate must agree */     
+  time_t SyncDeadLine;      /* time by which state and estate must agree */     
   char  *Message;           /* job event message                        */     
 
-  mutime WCLimit;           /* effective walltime limit                 */
-  mutime CPULimit;          /* specified CPU limit (per job)            */
-  mutime SpecWCLimit[MAX_TASK_REQUESTS + 1];     
-  mutime RemainingTime;     /* execution time job has remaining         */
-  mutime SimWCTime;         /* total time sim job will consume          */
+  time_t WCLimit;           /* effective walltime limit                 */
+  time_t CPULimit;          /* specified CPU limit (per job)            */
+  time_t SpecWCLimit[MAX_TASK_REQUESTS + 1];     
+  time_t RemainingTime;     /* execution time job has remaining         */
+  time_t SimWCTime;         /* total time sim job will consume          */
 
   int     MinMachineSpeed;  /* (in MHz) */
 
@@ -2058,63 +2058,63 @@ typedef struct frag_t {
 #define MDEF_ADMINACTIONINTERVAL 600
 
 typedef struct {
-  char  Name[MAX_MNAME];
-  long  StartTime;
+  char   Name[MAX_MNAME];
+  time_t StartTime;
 
-  mulong Time;                      /* current epoch time                              */
+  time_t Time;                      /* current epoch time                              */
 
   char  Version[MAX_MNAME];         /* scheduler version                               */
 
   struct timeval SchedTime;         /* accurate system time at start of scheduling     */
-  long  GreenwichOffset;
-  int   Interval;                   /* time transpired (hundredths of a seocnd)        */
+  time_t GreenwichOffset;
+  int    Interval;                   /* time transpired (hundredths of a seocnd)        */
 
-  char  Day[MAX_WORD + 1];          /* current local day of the week                   */
-  int   DayTime;                    /* current local hour of the day                   */
-  long  RMPollInterval;             /* interval between scheduling attempts (seconds)  */
-  long  RMJobAggregationTime;
+  char   Day[MAX_WORD + 1];          /* current local day of the week                   */
+  int    DayTime;                    /* current local hour of the day                   */
+  time_t RMPollInterval;             /* interval between scheduling attempts (seconds)  */
+  time_t RMJobAggregationTime;
 
-  int   Mode;                       /* mode of scheduler operation                     */
-  int   SpecMode;                   /* configured scheduler operation mode             */
+  int    Mode;                       /* mode of scheduler operation                     */
+  int    SpecMode;                   /* configured scheduler operation mode             */
 
-  int   StepCount;                  /* number of scheduling steps before shutdown      */
+  int    StepCount;                  /* number of scheduling steps before shutdown      */
 
-  char  ConfigFile[MAX_MLINE];      /* sched configuration file name                   */
+  char   ConfigFile[MAX_MLINE];      /* sched configuration file name                   */
 
-  char *ConfigBuffer;
-  char *PvtConfigBuffer;
+  char  *ConfigBuffer;
+  char  *PvtConfigBuffer;
 
-  char  LogDir[MAX_MLINE];          /* directory for logging                           */
-  char  LogFile[MAX_MLINE];         /* log file                                        */
-  char  ToolsDir[MAX_MLINE];        /* directory for sched tools                       */
-  char  HomeDir[MAX_MLINE];         /* scheduler home directory                        */
-  char  LockFile[MAX_MLINE];        /* scheduler lock file                             */
-  char  KeyFile[MAX_MLINE];
+  char   LogDir[MAX_MLINE];          /* directory for logging                           */
+  char   LogFile[MAX_MLINE];         /* log file                                        */
+  char   ToolsDir[MAX_MLINE];        /* directory for sched tools                       */
+  char   HomeDir[MAX_MLINE];         /* scheduler home directory                        */
+  char   LockFile[MAX_MLINE];        /* scheduler lock file                             */
+  char   KeyFile[MAX_MLINE];
  
-  char  Action[4][MAX_MLINE];       /* response for specified events                   */
-  long  ActionInterval;
+  char   Action[4][MAX_MLINE];       /* response for specified events                   */
+  time_t ActionInterval;
 
-  int   LogFileMaxSize;             /* maximum size of log file                        */
-  int   LogFileRollDepth;
+  int    LogFileMaxSize;             /* maximum size of log file                        */
+  int    LogFileRollDepth;
 
-  char  ServerHost[MAX_MNAME];      /* name of scheduler server host                   */
-  int   ServerPort;                 /* socket used to communicate with sched client    */
+  char   ServerHost[MAX_MNAME];      /* name of scheduler server host                   */
+  int    ServerPort;                 /* socket used to communicate with sched client    */
 
-  char  FBServerHost[MAX_MNAME];
-  int   FBServerPort;
+  char   FBServerHost[MAX_MNAME];
+  int    FBServerPort;
 
-  long  FBPollInterval;
-  int   FBFailureCount;
+  time_t FBPollInterval;
+  int    FBFailureCount;
 
-  int   FBActive;                   /* boolean */
+  int    FBActive;                   /* boolean */
 
   msocket_t ServerS;
   msocket_t ServerSH;               /* web interface                                   */
-  int   DefaultMCSocketProtocol;      
-  long  ClientTimeout;     
+  int    DefaultMCSocketProtocol;      
+  time_t ClientTimeout;     
 
-  char  DefaultCSKey[MAX_MNAME];
-  int   DefaultCSAlgo;
+  char   DefaultCSKey[MAX_MNAME];
+  int    DefaultCSAlgo;
 
   /* SSL interface */
 
@@ -2125,81 +2125,81 @@ typedef struct {
   mpsi_t DS;  /* directory service interface */
   mpsi_t EM;  /* event manager interface */
 
-  FILE *statfp;
+  FILE  *statfp;
 
-  char  DefaultDomain[MAX_MNAME];   /* domain appended to unqualified hostnames        */
-  char  DefaultQMHost[MAX_MNAME];
+  char   DefaultDomain[MAX_MNAME];   /* domain appended to unqualified hostnames        */
+  char   DefaultQMHost[MAX_MNAME];
 
-  char  Admin1User[MAX_MADMINUSERS + 1][MAX_MNAME]; /* admin usernames                 */
-  char  Admin2User[MAX_MADMINUSERS + 1][MAX_MNAME];
-  char  Admin3User[MAX_MADMINUSERS + 1][MAX_MNAME];
-  char  Admin4User[MAX_MADMINUSERS + 1][MAX_MNAME];
-  char  AdminHost[MAX_MADMINHOSTS + 1][MAX_MNAME];  /* hosts allowed admin access      */
+  char   Admin1User[MAX_MADMINUSERS + 1][MAX_MNAME]; /* admin usernames                 */
+  char   Admin2User[MAX_MADMINUSERS + 1][MAX_MNAME];
+  char   Admin3User[MAX_MADMINUSERS + 1][MAX_MNAME];
+  char   Admin4User[MAX_MADMINUSERS + 1][MAX_MNAME];
+  char   AdminHost[MAX_MADMINHOSTS + 1][MAX_MNAME];  /* hosts allowed admin access      */
 
-  long  DeferTime;                  /* time job will stay deferred                     */
-  int   DeferCount;                 /* times job will get deferred before being held   */
-  int   DeferStartCount;            /* times job will fail starting before getting deferred */
-  long  JobPurgeTime;               /* time job must be missing before getting purged  */
-  long  NodePurgeTime;
-  int   APIFailureThreshhold;       /* times API can fail before notifying admins      */
-  long  NodeSyncDeadline;           /* time in which node must reach expected state    */
-  long  JobSyncDeadline;            /* time in which job must reach expected state     */
-  long  JobMaxOverrun;              /* time job is allowed to exceed wallclock limit   */
-  int   Iteration;                  /* number of scheduling cycles completed           */
+  time_t DeferTime;                  /* time job will stay deferred                     */
+  int    DeferCount;                 /* times job will get deferred before being held   */
+  int    DeferStartCount;            /* times job will fail starting before getting deferred */
+  time_t JobPurgeTime;               /* time job must be missing before getting purged  */
+  time_t NodePurgeTime;
+  int    APIFailureThreshhold;       /* times API can fail before notifying admins      */
+  time_t NodeSyncDeadline;           /* time in which node must reach expected state    */
+  time_t JobSyncDeadline;            /* time in which job must reach expected state     */
+  time_t JobMaxOverrun;              /* time job is allowed to exceed wallclock limit   */
+  int    Iteration;                  /* number of scheduling cycles completed           */
 
-  int   Reload;                     /* reload config file at next interval (boolean)   */
-  int   Schedule;                   /* scheduling should continue (boolean)            */
-  int   Shutdown;
-  int   EnvChanged;                 /* scheduling env has changed (boolean)            */
+  int    Reload;                     /* reload config file at next interval (boolean)   */
+  int    Schedule;                   /* scheduling should continue (boolean)            */
+  int    Shutdown;
+  int    EnvChanged;                 /* scheduling env has changed (boolean)            */
 
-  int   MaxSleepIteration;          /* max iterations scheduler can go without scheduling */
-  char  LLConfigFile[MAX_PATH_LEN];
+  int    MaxSleepIteration;          /* max iterations scheduler can go without scheduling */
+  char   LLConfigFile[MAX_PATH_LEN];
 
   /* policies */
 
-  enum MNodeAccessPolicyEnum       DefaultNAccessPolicy;
+  enum   MNodeAccessPolicyEnum       DefaultNAccessPolicy;
 
-  int   AllocLocalityPolicy;
-  int   AllocLocalityGroup;
+  int    AllocLocalityPolicy;
+  int    AllocLocalityGroup;
 
-  int   WCViolAction;
+  int    WCViolAction;
 
-  int   UseJobRegEx;                /* (config boolean) */
-  int   SPVJobIsPreemptible;        /* (config boolean) */
+  int    UseJobRegEx;                /* (config boolean) */
+  int    SPVJobIsPreemptible;        /* (config boolean) */
 
   mbool_t EnableEncryption;
   mbool_t PercentBasedFS;
 
-  char *Argv[MAX_MARG];
+  char  *Argv[MAX_MARG];
 
-  long  PresentTime;
+  time_t PresentTime;
 
-  char  MonitoredJob[MAX_MLINE];
-  char  MonitoredNode[MAX_MLINE];
-  char  MonitoredRes[MAX_MLINE];
-  char  MonitoredFunction[MAX_MLINE];
+  char   MonitoredJob[MAX_MLINE];
+  char   MonitoredNode[MAX_MLINE];
+  char   MonitoredRes[MAX_MLINE];
+  char   MonitoredFunction[MAX_MLINE];
 
-  int   ResDepth;
-  char  DefaultClassList[MAX_MLINE];
+  int    ResDepth;
+  char   DefaultClassList[MAX_MLINE];
 
-  int   SecureMode;        /* (state boolean) */
-  int   DebugMode;         /* (state boolean) */
-  int   CrashMode;         /* (state boolean) */
+  int    SecureMode;        /* (state boolean) */
+  int    DebugMode;         /* (state boolean) */
+  int    CrashMode;         /* (state boolean) */
 
-  long  CurrentFSInterval;
-  long  DisplayFlags;      /* (BM) */
-  long  TraceFlags;        /* (BM) */
-  long  RMLoadStart;
-  int   NodePollFrequency;
-  int   NodePollOffset;
-  char  ProcSpeedFeatureHeader[MAX_MNAME];
-  int   ProcSpeedFeatureIsVisible;    /* (boolean) */
-  char  NodeTypeFeatureHeader[MAX_MNAME];
-  int   NodeTypeFeatureIsVisible;     /* (boolean) */
-  char  PartitionFeatureHeader[MAX_MNAME];
-  int   PartitionFeatureIsVisible;    /* (boolean) */
-  int   InitialLoad;
-  int   NodeAllocMaxPS;
+  time_t CurrentFSInterval;
+  long   DisplayFlags;      /* (BM) */
+  long   TraceFlags;        /* (BM) */
+  time_t RMLoadStart;
+  int    NodePollFrequency;
+  int    NodePollOffset;
+  char   ProcSpeedFeatureHeader[MAX_MNAME];
+  int    ProcSpeedFeatureIsVisible;    /* (boolean) */
+  char   NodeTypeFeatureHeader[MAX_MNAME];
+  int    NodeTypeFeatureIsVisible;     /* (boolean) */
+  char   PartitionFeatureHeader[MAX_MNAME];
+  int    PartitionFeatureIsVisible;    /* (boolean) */
+  int    InitialLoad;
+  int    NodeAllocMaxPS;
 
   mgcred_t *DefaultU;
   mgcred_t *DefaultG;
@@ -2217,7 +2217,7 @@ typedef struct {
   double NodeCPUOverCommitFactor;
   double NodeMemOverCommitFactor;
   int    MaxJobPerIteration;
-  long   MinDispatchTime;
+  time_t MinDispatchTime;
   double MaxOSCPULoad;
 
   int    UseSyslog;      /* config boolean */
@@ -2229,17 +2229,12 @@ typedef struct {
   int    PreemptPolicy;
 
   int    TimePolicy;
-  long   TimeOffset;  /* offset between actual and trace time */
+  time_t TimeOffset;  /* offset between actual and trace time */
  
   int    ResourcePrefIsActive;  /* state boolean */
-#ifdef __SANSI__
-  int    PID;
-#else /* __SANSI__ */
   pid_t  PID;
-#endif /* __SANSI__ */
-
-  int    UID;
-  int    GID;
+  uid_t  UID;
+  gid_t  GID;
 
   mpar_t *GP;
 
@@ -2270,7 +2265,7 @@ typedef struct {
 
   int    Index;
 
-  long   MTime;
+  time_t MTime;
   int    Type;
 
   int    Memory;
@@ -2312,18 +2307,18 @@ typedef struct {
   } cstats;
 
 typedef struct {
-  long    StartTime;
-  long    EndTime;
+  time_t  StartTime;
+  time_t  EndTime;
   int     PIndex;
   int     PIndexCmp;
   int     FIndex;
   int     FIndexCmp;
   int     NIndex;
   int     NIndexCmp;
-  int     UID;
-  int     UIDCmp;
-  int     GID;
-  int     GIDCmp;
+  uid_t   UID;
+  uid_t   UIDCmp;
+  gid_t   GID;
+  gid_t   GIDCmp;
   char    User[MAX_MNAME];
   int     UserCmp;
   char    Group[MAX_MNAME];

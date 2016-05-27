@@ -263,13 +263,13 @@ int CrashMode(
   DBG(1,fALL) DPrint("CRASH MODE:  crash occurred on iteration %d (Debug: %d) time: %s\n",
     MSched.Iteration,
     mlog.Threshold,
-    MULToDString((mulong *)&Time));
+    MULToDString(&Time));
  
   if (MSched.Mode == msmSim)
     {
     DBG(1,fALL) DPrint("CRASH MODE:  SIMULATION TIME: (%ld) %s\n",
       MSched.Time,
-      MULToDString((mulong *)&MSched.Time));
+      MULToDString(&MSched.Time));
     }
 
   mlog.Threshold = 20;

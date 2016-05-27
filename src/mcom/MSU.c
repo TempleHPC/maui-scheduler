@@ -2281,7 +2281,7 @@ int MSURecvData(
                   
                 int        index;   
 
-                MUStrCpy(S->Name,ptr,MIN(sizeof(S->Name),ptr2 - ptr + 1));
+                MUStrCpy(S->Name,ptr,MIN((long)sizeof(S->Name),ptr2 - ptr + 1));
                                                                              
                 for (index = 0;index < MMAX_CLIENT;index++)
                   {

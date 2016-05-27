@@ -45,12 +45,12 @@ static int MQueueCheckSingleJob(
   int		*Reason,
   mpar_t	*P,
   mpar_t	*GP,
-  int            PLevel,
-  int            MaxNC,
-  int            MaxPC,
-  unsigned long  MaxWCLimit,
-  int            OrigPIndex,
-  mbool_t        UpdateStats);
+  int        PLevel,
+  int        MaxNC,
+  int        MaxPC,
+  time_t     MaxWCLimit,
+  int        OrigPIndex,
+  mbool_t    UpdateStats);
 
 /* NYI:  must handle effqduration */
 
@@ -233,12 +233,12 @@ static int MQueueCheckSingleJob(
   int		*Reason,
   mpar_t	*P,
   mpar_t	*GP,
-  int            PLevel,
-  int            MaxNC,
-  int            MaxPC,
-  unsigned long  MaxWCLimit,
-  int            OrigPIndex,
-  mbool_t        UpdateStats)
+  int        PLevel,
+  int        MaxNC,
+  int        MaxPC,
+  time_t     MaxWCLimit,
+  int        OrigPIndex,
+  mbool_t    UpdateStats)
 
   {
   char     DValue[MAX_MNAME];

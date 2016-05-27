@@ -979,7 +979,7 @@ int MQueueDiagnose(
  
   for (J = FullQ[0]->Next;J != FullQ[0];J = J->Next)
     {
-    if (strlen(Buffer) + 256 >= BufSize)
+      if (((int)strlen(Buffer) + 256) >= BufSize)
       break;
 
     if ((PS->Index > 0) && (MUBMCheck(PS->Index,J->PAL) == FAILURE))
@@ -1806,7 +1806,7 @@ int MQueueScheduleRJobs(
       {
       DBG(2,fSCHED) DPrint("INFO:     located job '%s' reserved to start %30s",
         J->Name,
-        MULToDString((mulong *)&J->R->StartTime));
+        MULToDString(&J->R->StartTime));
  
       /* get reservation partition information */
  

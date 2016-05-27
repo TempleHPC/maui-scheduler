@@ -245,7 +245,7 @@ int main(
  
   char                SBuffer[MAX_MBUFFER];
  
-  long                tmpTime;
+  time_t              tmpTime;
  
   msocket_t           S;
  
@@ -261,7 +261,7 @@ int main(
     FName,
     argc);
  
-  MUGetTime((mulong *)&tmpTime,mtmInit,NULL);
+  MUGetTime(&tmpTime,mtmInit,NULL);
  
   MSched.Time = tmpTime;
  
@@ -1486,7 +1486,7 @@ int MCClusterShow(
   /* display state */
  
   fprintf(stdout,"cluster state summary for %s\n\n",
-    MULToDString((mulong *)&Now));
+    MULToDString(&Now));
  
   fprintf(stdout,"    %-18s %1s %9s %8s %5s %11s  %19s\n",
     "JobName",
@@ -1518,7 +1518,7 @@ int MCClusterShow(
       JGName[index],
       JPCount[index],
       MULToTString(JStartTime[index] + JDuration[index] - Now),
-      MULToDString((mulong *)&JStartTime[index]));
+      MULToDString(&JStartTime[index]));
  
     TotalNodes += JNCount[index];
     }  /* END for (index) */
@@ -2338,7 +2338,7 @@ int MCQueueShow(
           JState,
           Procs,
           MULToTString(Duration - (SchedTime - StartTime)),
-          MULToDString((mulong *)&StartTime));
+          MULToDString(&StartTime));
         }
       else 
         {
@@ -2348,7 +2348,7 @@ int MCQueueShow(
           JState,
           Procs,
           MULToTString(Duration),
-          MULToDString((mulong *)&StartTime));
+          MULToDString(&StartTime));
         }
       }    /* END while (MXMLGetChild() != FAILURE) */
 
@@ -2652,7 +2652,7 @@ int MCShowCStats(
   tmpUP[OCount + 1] = NULL;             
  
   fprintf(stdout,"statistics initialized %s\n",
-    MULToDString((mulong *)&MStat.InitTime)); 
+    MULToDString(&MStat.InitTime)); 
  
   fprintf(stdout,"         |------ Active ------|--------------------------------- Completed -----------------------------------|\n");
  
@@ -2877,11 +2877,11 @@ int MCShowEStart(
  
   fprintf(stdout,"Earliest start in      %11s on %s",
     MULToTString(StartTime - Now),
-    MULToDString((mulong *)&StartTime));
+    MULToDString(&StartTime));
  
   fprintf(stdout,"Earliest completion in %11s on %s",
     MULToTString(Deadline - Now),
-    MULToDString((mulong *)&Deadline));
+    MULToDString(&Deadline));
  
   fprintf(stdout,"Best Partition: %s\n\n",
     PName);

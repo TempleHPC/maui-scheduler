@@ -1356,7 +1356,7 @@ int MCfgProcessBuffer(
           tail = ptr + MAX_MLINE; 
           }
  
-        MUStrCpy(Line,ptr,MIN(tail - ptr + 1,sizeof(Line)));
+        MUStrCpy(Line,ptr,MIN(tail - ptr + 1,(long)sizeof(Line)));
 
         /* preserve cindex as loop variable */
 

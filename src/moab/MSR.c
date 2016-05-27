@@ -1749,7 +1749,7 @@ int MSRGetAttributes(
   tmpL = (PeriodStart + SRStartOffset);
  
   DBG(5,fSTRUCT) DPrint("INFO:     res start: %s",
-    MULToDString((mulong *)&tmpL));
+    MULToDString(&tmpL));
  
   DBG(5,fSTRUCT) DPrint("INFO:     standing res attributes: Start: %ld  Duration: %ld (W: %d  D: %s)\n",
     PeriodStart + SRStartOffset,
@@ -2310,7 +2310,7 @@ int MSRSetRes(
       (SR->PName[0] != '\0') ? SR->PName : "[ALL]",
       MULToTString(BestTime - MSched.Time),
       BestTime,
-      MULToDString((mulong *)&BestTime));
+      MULToDString(&BestTime));
     }
   else
     {
@@ -2321,7 +2321,7 @@ int MSRSetRes(
       (SR->PName[0] != '\0') ? SR->PName : "[ALL]",
       MULToTString(BestTime - MSched.Time),
       BestTime,
-      MULToDString((mulong *)&BestTime));
+      MULToDString(&BestTime));
     }
 
   return(SUCCESS);

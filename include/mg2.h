@@ -82,7 +82,7 @@ typedef struct
   mattrlist_t *AttrList;
   long        *CREndTime;
   char        *CurrentHostName;
-  mulong      *PresentTime;
+  time_t      *PresentTime;
 
   int         (*G2RsvFind)();
   int         (*G2ResSetAttr)();

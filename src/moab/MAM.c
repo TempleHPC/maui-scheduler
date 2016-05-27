@@ -740,7 +740,7 @@ int MAMAllocRDebit(
  
   if ((ptr = strchr(R->A->Name,'@')) != NULL)
     {
-    MUStrCpy(SAName,R->A->Name,MIN(sizeof(SAName),(ptr - R->A->Name + 1)));
+    MUStrCpy(SAName,R->A->Name,MIN((long)sizeof(SAName),(ptr - R->A->Name + 1)));
  
     MUStrCpy(AName,(ptr + 1),sizeof(AName));
     }
@@ -2174,7 +2174,7 @@ int MAMShow(
         }
 
       MUSNPrintF(&BPtr,&BSpace,"  %19.19s  %-15s  '%s'\n",
-        MULToDString((mulong *)&A->FailTime[findex]),
+        MULToDString(&A->FailTime[findex]),
         MAMFuncType[A->FailType[findex]],
         (A->FailMsg[findex] != NULL) ? A->FailMsg[findex] : "no msg");
       }  /* END for (index) */
@@ -3674,7 +3674,7 @@ int MAMAllocResCancel(
 
   if ((ptr = strchr(CAName,'@')) != NULL)
     {
-    MUStrCpy(SAName,CAName,MIN(sizeof(SAName),ptr - CAName + 1));
+    MUStrCpy(SAName,CAName,MIN((long)sizeof(SAName),ptr - CAName + 1));
 
     MUStrCpy(AName,(ptr + 1),sizeof(AName));
     }
@@ -3865,7 +3865,7 @@ int MAMAllocRReserve(
 
   if ((ptr = strchr(CAName,'@')) != NULL)
     {
-    MUStrCpy(SAName,CAName,MIN(ptr - CAName + 1,sizeof(SAName)));
+    MUStrCpy(SAName,CAName,MIN(ptr - CAName + 1,(long)sizeof(SAName)));
     MUStrCpy(AName,ptr + 1,sizeof(AName));
     }
   else

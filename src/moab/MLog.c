@@ -355,7 +355,7 @@ char *MLogGetTime()
   static char   line[MAX_MLINE];
   static time_t now = 0;
 
-  MUGetTime((mulong *)&epoch_time,mtmNONE,NULL);
+  MUGetTime(&epoch_time,mtmNONE,NULL);
 
   if (epoch_time != now)
     {

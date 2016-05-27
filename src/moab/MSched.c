@@ -96,7 +96,7 @@ int MJobAllocMNL(
   char        *NodeMap,
   mnodelist_t  MOutList,       /* O: allocated nodes          */
   int          NAPolicy,       /* I: node allocation policy   */
-  long         StartTime)      /* I: time job must start      */
+  time_t       StartTime)      /* I: time job must start      */
 
   {
   int                 index;
@@ -196,7 +196,7 @@ int MJobAllocMNL(
 
   if (MOutList != NULL)
     {
-    memset(MOutList,0,sizeof(MOutList));
+    memset(MOutList,0,(MAX_MNODE+1)*MAX_MREQ_PER_JOB*sizeof(mnalloc_t));
 
     for (rqindex = 0;rqindex < MAX_MREQ_PER_JOB;rqindex++)
       MOutList[rqindex][0].N = NULL;
@@ -3147,8 +3147,8 @@ int MQueueGetBestRQTime(
 int MQueueGetRequeueValue(
 
   int    *AQ,
-  long    ETime,
-  long    CTime,
+  time_t  ETime,
+  time_t  CTime,
   double *Value)
 
   {
@@ -3566,14 +3566,14 @@ int MSchedOConfigShow(
   strcat(Buffer,temp_str);
   sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMaxTime],MStat.P.MaxTime);
   strcat(Buffer,temp_str);
-  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotTimeScale],MStat.P.TimeStepCount);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pPlotTimeScale],MStat.P.TimeStepCount);
   strcat(Buffer,temp_str);
 
-  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMinNode],MStat.P.MinNode);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pPlotMinNode],MStat.P.MinNode);
   strcat(Buffer,temp_str);
-  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotMaxNode],MStat.P.MaxNode);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pPlotMaxNode],MStat.P.MaxNode);
   strcat(Buffer,temp_str);
-  sprintf(temp_str,"%-30s  %ld\n",MParam[pPlotNodeScale],MStat.P.NodeStepCount);
+  sprintf(temp_str,"%-30s  %d\n",MParam[pPlotNodeScale],MStat.P.NodeStepCount);
   strcat(Buffer,temp_str);
 
   DBG(4,fUI) DPrint("INFO:     plot parameters displayed\n");
@@ -7052,7 +7052,7 @@ int MSchedUpdateStats()
 
   {
   struct timeval   tvp;
-  long             schedtime;
+  time_t           schedtime;
 
   double           efficiency;
 

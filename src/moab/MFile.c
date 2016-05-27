@@ -15,7 +15,7 @@
 
 extern mlog_t mlog;
 
-mulong    *STime;
+time_t    *STime;
 
 mfcache_t  MFileCache[MAX_FILECACHE];   
 mfindex_t  MIndexState[MAX_FILECACHE];
@@ -30,7 +30,7 @@ int __MFUCacheFile(char *,char *,int);
 
 int MFUCacheInitialize(
 
-  mulong *SysTime) /* I */
+  time_t *SysTime) /* I */
 
   {
   int index;
@@ -1354,13 +1354,13 @@ int MFUGetCurrentIndex(
 
 int MFUGetAttributes(
 
-  char *PathName,  /* I */
-  int  *Perm,      /* O */
-  long *MTime,     /* O */
-  long *Size,      /* O */
-  int  *UID,       /* O */
-  int  *IsPrivate, /* O */
-  int  *IsExe)     /* O */
+  char   *PathName,  /* I */
+  int    *Perm,      /* O */
+  time_t *MTime,     /* O */
+  long   *Size,      /* O */
+  uid_t  *UID,       /* O */
+  int    *IsPrivate, /* O */
+  int    *IsExe)     /* O */
 
   {
   struct stat S;
@@ -1376,16 +1376,16 @@ int MFUGetAttributes(
     }
 
   if (MTime != NULL)
-    *MTime = (long)S.st_mtime;
+    *MTime = S.st_mtime;
 
   if (Size != NULL)
-    *Size = (unsigned long)S.st_size;
+    *Size = S.st_size;
 
   if (Perm != NULL)
     *Perm = (int)S.st_mode;
 
   if (UID != NULL)
-    *UID = (int)S.st_uid;
+    *UID = S.st_uid;
 
   if (IsPrivate != NULL)
     {

@@ -37,10 +37,7 @@ int MUSNInit(
   }  /* END MUSNInit() */
 
 
-
-
-
-int MOSGetEUID()
+uid_t MOSGetEUID()
 
   {
 #if defined(__AIX43) || defined(__AIX51)
@@ -52,7 +49,7 @@ int MOSGetEUID()
 
 
 
-int MOSGetUID()
+uid_t MOSGetUID()
 
   {
   return(getuid());
@@ -137,7 +134,7 @@ int MUCheckAuthFile(
   int AuthFileOK = FALSE;
   int IsPrivate;
 
-  int UID;
+  uid_t UID;
 
   char *ptr;
 
@@ -234,14 +231,11 @@ int MUCheckAuthFile(
 
 int MUGetTime(
 
-  mulong   *Time,                  /* I/O */
+  time_t   *Time,                  /* I/O */
   enum MTimeModeEnum RefreshMode,  /* I */
   msched_t *S)                     /* I (optional) */
 
   {
-  mulong tmpTime;
-
-  time_t tmpT;
 
   if (Time == NULL)
     {
@@ -251,7 +245,7 @@ int MUGetTime(
   if (((S != NULL) && (S->TimePolicy != mtpNONE)) ||
        (RefreshMode == mtmRefresh))
     {
-    tmpTime = MIN(*Time,MAX_MTIME);
+    *Time = MIN(*Time,MAX_MTIME);
     }
 
   if (S != NULL)
@@ -267,9 +261,7 @@ int MUGetTime(
          ((S->TimePolicy != mtpReal) &&
           (S->TimePolicy != mtpNONE))))
         {
-        (*X->XGetTime)(X->xd,(long *)&tmpTime,RefreshMode);
-
-        *Time = tmpTime;
+        (*X->XGetTime)(X->xd,Time,RefreshMode);
 
         return(SUCCESS);
         }
@@ -290,7 +282,7 @@ int MUGetTime(
 
           /* refresh */
 
-          tmpTime += S->RMPollInterval;
+          *Time += S->RMPollInterval;
 
           break;
 
@@ -298,15 +290,10 @@ int MUGetTime(
 
           /* initialize (load real time) */
 
-          time(&tmpT);
-
-          tmpTime = (mulong)tmpT;
+          time(Time);
 
           break;
         }  /* END switch(RefreshMode) */
-
-      if (Time != NULL)
-        *Time = tmpTime;
 
       return(SUCCESS);
       }  /* END if ((S->Mode == msmSim) && ...) */
@@ -314,12 +301,7 @@ int MUGetTime(
 
   /* load real time */
 
-  time(&tmpT);
-
-  tmpTime = (mulong)tmpT;
-
-  if (Time != NULL)
-    *Time = tmpTime;
+  time(Time);
 
   return(SUCCESS);
   }  /* END MUGetTime() */
