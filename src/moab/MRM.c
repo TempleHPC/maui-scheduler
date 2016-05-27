@@ -2568,7 +2568,7 @@ int MRMShow(
         }
 
       MUSNPrintF(&BPtr,&BSpace,"  %19.19s  %-15s  '%s'\n",
-        MULToDString((mulong *)&R->FailTime[findex]),
+        MULToDString(&R->FailTime[findex]),
         MRMFuncType[R->FailType[findex]],
         (R->FailMsg[findex] != NULL) ? R->FailMsg[findex] : "no msg");
       }  /* END for (index) */ 
@@ -4400,7 +4400,7 @@ int MRMJobPostUpdate(
       J->SpecWCLimit[1] = MDEF_SYSJOBWCLIMIT;
       }
     }
-  else if (J->SpecWCLimit[1] == (unsigned long)-1)
+  else if (J->SpecWCLimit[1] == -1)
     {
     DBG(4,fRM) DPrint("INFO:     wallclock limit set to unlimited to job %s\n",
       J->Name);

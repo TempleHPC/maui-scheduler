@@ -1531,7 +1531,7 @@ int MStatBuildGrid(
     Mode);
 
   sprintf(Buffer,"statistics since %s\n",
-    MULToDString((mulong *)&MStat.InitTime));
+    MULToDString(&MStat.InitTime));
 
   switch(SIndex)
     {
@@ -1674,13 +1674,13 @@ int MStatBuildGrid(
     {
     if (Mode & 8)
       {
-      sprintf(temp_str,"  %4ld   ",
+      sprintf(temp_str,"  %4d   ",
         MStat.P.NodeStep[procindex]);
       strcat(Buffer,temp_str);
       }
     else
       {
-      sprintf(temp_str,"[ %4ld  ]",
+      sprintf(temp_str,"[ %4d  ]",
         MStat.P.NodeStep[procindex]);
       strcat(Buffer,temp_str);
       }
@@ -2083,9 +2083,9 @@ int MStatUpdateCompletedJobUsage(
   int     ProfileMode) /* I */
 
   {
-  unsigned long run;
-  unsigned long request;
-  unsigned long queuetime;
+  time_t run;
+  time_t request;
+  time_t queuetime;
 
   int   psrun;
   int   psrequest;
@@ -2200,17 +2200,17 @@ int MStatUpdateCompletedJobUsage(
       }
     }    /* END if (J->Cred.Q != NULL) */
     
-  DBG(3,fSTAT) DPrint("INFO:     job '%18s' completed.  QueueTime: %6ld  RunTime: %6ld  Accuracy: %5.2f  XFactor: %5.2f\n",
+  DBG(3,fSTAT) DPrint("INFO:     job '%18s' completed.  QueueTime: %6d  RunTime: %6d  Accuracy: %5.2f  XFactor: %5.2f\n",
     J->Name,
     queuetime,
     run,
     accuracy * 100,
     xfactor);
 
-  DBG(4,fSTAT) DPrint("INFO:     start: %8ld  complete: %8ld  SystemQueueTime: %8ld\n",
-    (unsigned long)J->StartTime,
-    (unsigned long)J->CompletionTime,
-    (unsigned long)J->SystemQueueTime);
+  DBG(4,fSTAT) DPrint("INFO:     start: %8d  complete: %8d  SystemQueueTime: %8d\n",
+    J->StartTime,
+    J->CompletionTime,
+    J->SystemQueueTime);
 
   DBG(3,fSTAT) DPrint("INFO:     overall statistics.  Accuracy: %5.2f  XFactor: %5.2f\n",
     (GS->Count > 0) ? (GS->JobAcc / GS->Count) : 0.0,
@@ -2541,7 +2541,7 @@ int MStatUpdateSubmitJobUsage(
 
   int psrequest;
   
-  unsigned long TotalProcs;
+  int TotalProcs;
 
   const char *FName = "MStatUpdateSubmitJobUsage";
 

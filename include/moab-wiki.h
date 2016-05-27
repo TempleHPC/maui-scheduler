@@ -204,8 +204,8 @@ typedef struct {
 
   int  WCLimit;
 
-  int  UID;
-  int  GID;
+  uid_t UID;
+  gid_t GID;
   char Account[MAX_MNAME];
 
   char PartitionList[MAX_MNAME];
@@ -237,8 +237,8 @@ typedef struct {
 
   char Env[MAX_MLINE];
 
-  int  UID;
-  int  GID;
+  uid_t  UID;
+  gid_t  GID;
 
   int  TID;
   int  PID;

@@ -146,8 +146,8 @@ enum {
   cMStrArray };
 
 typedef struct {
-  mulong StartTime;
-  mulong EndTime;
+  time_t StartTime;
+  time_t EndTime;
   int    TaskCount;
   int    NodeCount;
   char   Affinity;

@@ -2205,7 +2205,7 @@ int MPBSNodeLoad(
 
   char         *TokPtr;
 
-  mulong        tmpTime;
+  time_t        tmpTime;
 
   const char *FName = "MPBSNodeLoad";
 
@@ -2634,7 +2634,7 @@ int MPBSQueryMOM(
 
   int    RCount;
 
-  mulong T;
+  time_t T;
 
   char   DiskLine[MAX_MLINE];
 
@@ -2886,7 +2886,7 @@ int MPBSNodeUpdate(
 
   char         *TokPtr;
 
-  mulong        tmpTime;
+  time_t        tmpTime;
 
   int           tmpProcs;
   int           OldState;

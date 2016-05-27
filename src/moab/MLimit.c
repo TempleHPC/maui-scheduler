@@ -66,7 +66,7 @@ int MLimitEnforceAll(
     if ((JobWCX >= 0) &&
         (J->WCLimit > 0) &&
         (MSched.Time > J->StartTime) &&
-       ((unsigned long)(MSched.Time - J->StartTime) > (J->WCLimit + J->SWallTime + JobWCX)))
+       ((MSched.Time - J->StartTime) > (J->WCLimit + J->SWallTime + JobWCX)))
       {
       DBG(2,fCORE) DPrint("ALERT:    job '%s' in state '%s' has exceeded its wallclock limit (%ld+S:%ld) by %s (job will be cancelled)\n",
         J->Name,

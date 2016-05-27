@@ -323,7 +323,7 @@ int MUStrCat(
     return(SUCCESS);
     }
 
-  DEnd = MIN(strlen(Dst),DstSize);
+  DEnd = MIN((int)strlen(Dst),DstSize);
 
   for (index = 0;index < DstSize - DEnd;index++)
     {
@@ -3122,20 +3122,14 @@ char *MUBStringTime(
 
 
 
-
-
 char *MULToDString(
 
-  mulong *Time) /* I */
+  time_t *Time) /* I */
 
   {
-  time_t tmpTime;
-
   static char String[MAX_MNAME];
 
-  tmpTime = (time_t)*Time;
-
-  strncpy(String,ctime(&tmpTime),19);
+  strncpy(String,ctime(Time),19);
 
   String[19] = '\n';
   String[20] = '\0';
@@ -3322,7 +3316,7 @@ int MUGetOpt(
 
 char *MUUIDToName(
 
-  int UID)  /* I */
+  uid_t UID)  /* I */
 
   {
   struct passwd *bufptr;
@@ -3341,7 +3335,7 @@ char *MUUIDToName(
     FName,
     UID);
 
-  if (UID == -1)
+  if (UID == ~0U)
     {
     strcpy(Line,NONE);
 
@@ -3383,7 +3377,7 @@ char *MUUIDToName(
 
 char *MUGIDToName(
 
-  int GID)  /* I */
+  gid_t GID)  /* I */
 
   {
   struct group *bufptr;
@@ -3403,7 +3397,7 @@ char *MUGIDToName(
     FName,
     GID);
 
-  if (GID == -1)
+  if (GID == ~0U)
     {
     strcpy(Line,NONE);
 
@@ -3485,9 +3479,9 @@ int MUGNameFromUName(
 
 
 
-int MUGIDFromUID(
+gid_t MUGIDFromUID(
 
-  int UID)  /* I */
+  uid_t UID)  /* I */
 
   {
   struct passwd *bufptr;
@@ -3537,7 +3531,7 @@ int MUGIDFromUID(
 
 
 
-int MUUIDFromName(
+uid_t MUUIDFromName(
 
   char *Name)  /* I */
 
@@ -3576,7 +3570,7 @@ int MUUIDFromName(
 
 
 
-int MUGIDFromName(
+gid_t MUGIDFromName(
 
   char *Name)  /* I */
 
@@ -4199,7 +4193,7 @@ int MUBMFromString(
 
 int MOSSetUID(
  
-  int UID)  /* I */
+  uid_t UID)  /* I */
  
   {
   if (MOSGetEUID() == UID)
@@ -4219,7 +4213,7 @@ int MOSSetUID(
  
 int MOSSetGID(
  
-  int GID)  /* I */
+  gid_t GID)  /* I */
  
   {
   if (getgid() == GID)

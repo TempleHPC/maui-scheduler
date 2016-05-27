@@ -435,7 +435,7 @@ typedef struct
   char          *Name;
 
   long           State;
-  long           PresentTime;
+  time_t         PresentTime;
 
   /* END order must NOT change */
   } su_t;

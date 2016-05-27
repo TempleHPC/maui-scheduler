@@ -27,12 +27,12 @@
 
 
 typedef struct {
-  mulong   FirstQueueTime;
-  mulong   EarliestQueueTime;
-  mulong   EarliestStartTime;
-  mulong   LatestQueueTime;
-  mulong   LatestStartTime;
-  mulong   LatestCompletionTime;
+  time_t   FirstQueueTime;
+  time_t   EarliestQueueTime;
+  time_t   EarliestStartTime;
+  time_t   LatestQueueTime;
+  time_t   LatestStartTime;
+  time_t   LatestCompletionTime;
 
   int    QueueTimeDistProfile[MAX_HOUR_SLOTS];
   double QueueJobDepthProfile[MAX_HOUR_SLOTS];
@@ -1356,7 +1356,7 @@ int PQueueDistribution()
    
       ETime = S->FirstQueueTime + ((hindex -1000) * 3600);
  
-      strcpy(Time,MULToDString((mulong *)&ETime));
+      strcpy(Time,MULToDString(&ETime));
 
       Time[19] = '\0';
  

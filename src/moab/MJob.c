@@ -1003,8 +1003,8 @@ int MJobGetRunPriority(
   {
   double PercentResUsage;
 
-  long   Duration;
-  long   WallTime;             
+  time_t Duration;
+  time_t WallTime;             
 
   long   ResourcesRequired;
   long   ResourcesConsumed;
@@ -1048,14 +1048,14 @@ int MJobGetRunPriority(
 int MJobGetBackfillPriority(
 
   mjob_t        *J,
-  unsigned long  MaxDuration,
+  time_t         MaxDuration,
   int            PIndex,
   double        *BFPriority,
   char          *Buffer)
 
   {
   double WCAccuracy;
-  long   Duration;
+  time_t Duration;
 
   if ((J == NULL) || (BFPriority == NULL))
     {
@@ -2359,7 +2359,7 @@ int MJobFind(
 
     if ((ptr = strchr(JobName,'.')) != NULL)
       {
-      MUStrCpy(QJobID,JobName,MIN(sizeof(QJobID),ptr - JobName + 1));
+      MUStrCpy(QJobID,JobName,MIN((long)sizeof(QJobID),ptr - JobName + 1));
       MUStrCpy(QHostName,ptr,sizeof(QHostName));
       }
     else
@@ -3048,7 +3048,7 @@ int MJobSetHold(
  
   mjob_t               *J,            /* I */
   int                   HoldTypeBM,   /* I (BM) */
-  long                  HoldDuration, /* I */
+  time_t                HoldDuration, /* I */
   enum MHoldReasonEnum  HoldReason,   /* I */
   char                 *HoldMsg)      /* I */
  
@@ -4336,7 +4336,7 @@ int MJobReserve(
   int     ResType) /* I */ 
  
   {
-  long          BestTime;
+  time_t        BestTime;
   mpar_t       *BestP;
  
   mnodelist_t   MNodeList;
@@ -4355,9 +4355,9 @@ int MJobReserve(
   int           sindex;
  
   int           BestSIndex;
-  unsigned long BestSTime;
+  time_t        BestSTime;
  
-  unsigned long DefaultSpecWCLimit;
+  time_t        DefaultSpecWCLimit;
   int           DefaultTaskCount;
 
   int           rc;
@@ -4563,7 +4563,7 @@ int MJobReserve(
     J->Request.TC,
     BestP->Name,
     MULToTString(BestTime - MSched.Time),
-    MULToDString((mulong *)&BestTime),
+    MULToDString(&BestTime),
     J->SpecWCLimit[BestSIndex]);
  
   if ((InitialCompletionTime > 0) &&
@@ -7106,7 +7106,7 @@ int MJobGetEStartTime(
   int         *NodeCount,  /* O: number of nodes located           */
   int         *TaskCount,  /* O: tasks located                     */
   mnodelist_t  MNodeList,  /* O: list of best nodes to execute job */
-  long        *EStartTime) /* I/O: earliest start time possible    */
+  time_t      *EStartTime) /* I/O: earliest start time possible    */
  
   {
   int    rindex;
@@ -7114,8 +7114,8 @@ int MJobGetEStartTime(
   int    nindex;
   int    rqindex;
  
-  unsigned long JobStartTime;
-  unsigned long JobEndTime;
+  time_t        JobStartTime;
+  time_t        JobEndTime;
   int           JobTaskCount;
  
   int           TC;
@@ -7138,7 +7138,7 @@ int MJobGetEStartTime(
  
   int           BestTaskCount;
   int           BestNodeCount;
-  unsigned long BestStartTime;
+  time_t        BestStartTime;
 
   mrange_t      BestRange[MAX_MRANGE];
  
@@ -7536,8 +7536,8 @@ int MJobGetEStartTime(
       }
     else
       {
-      JobStartTime  = MAX(JobStartTime,(unsigned long)GRange[0].StartTime);
-      JobEndTime    = MIN(JobEndTime,(unsigned long)GRange[0].EndTime);
+      JobStartTime  = MAX(JobStartTime,GRange[0].StartTime);
+      JobEndTime    = MIN(JobEndTime,GRange[0].EndTime);
       JobTaskCount += GRange[0].TaskCount;
  
       if (JobStartTime > JobEndTime)
@@ -9290,7 +9290,7 @@ int MJobProcessRemoved(
 
   /* debit account if wallclock limit reached */
 
-  if (((unsigned long)(J->CompletionTime - J->StartTime) >= J->WCLimit) ||
+  if (((J->CompletionTime - J->StartTime) >= J->WCLimit) ||
        (MAM[0].ChargePolicy == mamcpDebitAllWC) ||
        (MAM[0].ChargePolicy == mamcpDebitAllCPU) ||
        (MAM[0].ChargePolicy == mamcpDebitAllPE))
@@ -9841,8 +9841,8 @@ int MJobGetSNRange(
   int index;
   int index2;
 
-  long   RangeTime;
-  long   JDuration;
+  time_t RangeTime;
+  time_t JDuration;
 
   mcres_t AvlRes;
   mcres_t DedRes;
@@ -11491,9 +11491,9 @@ int MReqRResFromString(
         return(SUCCESS);
         }
 
-      if (!strncmp(ResString,"expr",strlen("expr")))
+      if (!strncmp(ResString,"expr",4))
         {
-        for (index = 0;index < strlen("expr");index++)
+        for (index = 0;index < 4;index++)
           ResString[index] = ' ';
         }
 
