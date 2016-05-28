@@ -29,20 +29,7 @@
 extern char *MSON[];
 extern const char *MBool[];
 
-
-#ifdef __AIX42
-# define _NO_PROTO
-# include <arpa/inet.h>
-# undef _NO_PROTO
-#else /* __AIX42 */
-# ifndef __NT
-#  include <arpa/inet.h>
-# endif /* __NT */
-#endif /* AIX42 */
-
-#ifdef __NT
-#include <winsock2.h>
-#endif  /* __NT */
+#include <arpa/inet.h>
 
 #define SOCKETQUEUESIZE      64
 #define SOCKETFLAGS      (int)0
@@ -777,14 +764,7 @@ int MSUAcceptClient(
   {
   int sd;
 
-#if defined(__LINUX) || defined(_SOCKLEN_T)
   socklen_t          addrlen;     
-#elif defined(__AIX51)
-  unsigned long      addrlen;
-#else
-  int                addrlen;
-#endif /* __LINUX || _SOCKLEN_T */
-
   struct sockaddr_in c_sockaddr;
   int                flags;
   char              *NetAddr;
@@ -792,14 +772,12 @@ int MSUAcceptClient(
 
   struct in_addr    *NA;
 
-#ifndef __MPROD
   const char *FName = "MSUAcceptClient";
 
   MDB(9,fSOCK) MLog("%s(%d,ClientSD,HostName,%s)\n",
     FName,
     S->sd,
     MISSET(SocketType,msftTCP) ? "TCP" : "UDP");
-#endif /* !__MPROD */
 
   if ((S == NULL) && (C == NULL))
     {
@@ -857,8 +835,6 @@ int MSUAcceptClient(
 
     MDB(8,fSOCK) MLog("INFO:     non-blocking mode established\n");
 
-#   if !defined(__AIX41) && !defined(__AIX42) && !defined(__AIX43) && !defined(__AIX51)
-
     {
     struct linger Linger;
 
@@ -877,7 +853,6 @@ int MSUAcceptClient(
     MDB(6,fSOCK) MLog("INFO:     socket linger enabled\n");
     }  /* END BLOCK */
 
-#   endif  /* END !__AIX** */
     }  /* END if (MISSET(SocketType,msftTCP)) */
 
   if ((hoststruct = gethostbyaddr(
@@ -3080,41 +3055,18 @@ int MSUSelectWrite(
   struct timeval TimeOut;
   int            numfds;
 
-#if defined(__AIX41)
-
-  struct sellist
-    {
-    int fdsmask[64];
-    } wset;
-
-#else /* __AIX41 */
-
   fd_set wset;
 
-#endif /* __AIX41 */
-
-#ifndef __MPROD
   const char *FName = "MSUSelectWrite";
 
   MDB(7,fSOCK) MLog("%s(%d,%lu)\n",
     FName,
     sd,
     TimeLimit);
-#endif /* !__MPROD */
-
-#if defined(__AIX41)
-
-  memset(&wset,0,sizeof(wset));
-
-  AIX_SET(sd,wset.fdsmask);
-
-#else
 
   FD_ZERO(&wset);
 
   FD_SET(sd,&wset);
-
-#endif
 
   TimeOut.tv_sec  = TimeLimit / 1000000;
   TimeOut.tv_usec = TimeLimit % 1000000;
@@ -3123,21 +3075,12 @@ int MSUSelectWrite(
 
   if (select(numfds + 1,NULL,&wset,NULL,&TimeOut) > 0)
     {
-#if defined(__AIX41)
-
-    if (AIX_ISSET(sd,wset.fdsmask))
-      {
-      return(SUCCESS);
-      }
-
-#else
 
     if (FD_ISSET(sd,&wset))
       {
       return(SUCCESS);
       }
 
-#endif
     }  /* END if (select() > 0) */
 
   return(FAILURE);
@@ -3156,41 +3099,18 @@ int MSUSelectRead(
   struct timeval TimeOut;
   int            numfds;
 
-#if defined(__AIX41)
-
-  struct sellist
-    {
-    int fdsmask[64];
-    } rset;
-
-#else
-
   fd_set rset;
 
-#endif
-
-#ifndef __MPROD
   const char *FName = "MSUSelectRead";
 
   MDB(7,fSOCK) MLog("%s(%d,%lu)\n",
     FName,
     sd,
     TimeLimit);
-#endif /* !__MPROD */
-
-#if defined(__AIX41)
-
-  memset(&rset,0,sizeof(rset));
-
-  MAIX_SET(sd,rset.fdsmask);
-
-#else
 
   FD_ZERO(&rset);
 
   FD_SET(sd,&rset);
-
-#endif
 
   TimeOut.tv_sec  = TimeLimit / 1000000;
   TimeOut.tv_usec = TimeLimit % 1000000;
@@ -3199,22 +3119,12 @@ int MSUSelectRead(
 
   if (select(numfds + 1,&rset,NULL,NULL,&TimeOut) > 0)
     {
-#if defined(__AIX41)
-
-    if (MAIX_ISSET(sd,rset.fdsmask))
-      {
-      return(SUCCESS);
-      }
-
-#else
-
     if (FD_ISSET(sd,&rset))
       {
       return(SUCCESS);
       }
 
     MDB(2,fSOCK) MLog("MSUSelectRead-FD is not set\n");
-#endif
     }  /* END if (select() > 0) */
 
   MDB(2,fSOCK) MLog("MSUSelectRead-select failed\n");
@@ -3365,15 +3275,8 @@ int MUSystemF(
       return(SUCCESS);
       }
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(_AIX51)
-
-    usleep(10000);
-
-#else
-
     sleep(1);
 
-#endif /* __AIX** */
     }
 
   MDB(3,fSOCK) MLog("ALERT:    spawn of command '%s' did not return within %d us\n",

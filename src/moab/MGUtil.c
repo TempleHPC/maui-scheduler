@@ -40,10 +40,6 @@ int MUSNInit(
 uid_t MOSGetEUID()
 
   {
-#if defined(__AIX43) || defined(__AIX51)
-  return(getuid());
-#endif /* __AIX43 */
-
   return(geteuid());
   }  /* END MOSGetEUID() */
 

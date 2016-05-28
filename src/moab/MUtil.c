@@ -4148,11 +4148,7 @@ int MOSSetGID(
     return(0);
     }
  
-  #if defined(__OLDHPUX) || defined(__AIX43) || defined(__AIX51)
-    return(setegid(GID));
-  #else /* __OLDHPUX || defined(__AIX43) */
     return(setgid(GID));
-  #endif /* __OLDHPUX */
   }  /* END MOSSetGID() */
 
 

@@ -2647,10 +2647,8 @@ int MPBSQueryMOM(
     "arch",               /* the architecture of the machine */
     "physmem",            /* the amount of physical memory */
     "loadave",            /* the current load average */
-#if defined(__AIX43) || defined(__AIX51) || defined(__LINUX)  || defined(__CYGWIN) || defined(__IRIX)
     "availmem",
     "totmem",
-#endif /* AIX43 || LINUX || IRIX */
     NULL };
 
   char *PBS5ResList[] = {

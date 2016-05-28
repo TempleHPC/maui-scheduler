@@ -82,16 +82,8 @@ int MLogInitialize(
 
   if (SigSet == 0)
     {
-#   if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS)
-      signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
-      signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
-#   else 
-#     ifndef __NT
-        signal(SIGUSR1,MLogLevelAdjust);
-        signal(SIGUSR2,MLogLevelAdjust);
-#     endif /* __NT */
-#   endif   /* __AIX41... */
-
+    signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
+    signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
     SigSet = 1;
     }
 
@@ -414,15 +406,7 @@ void MLogLevelAdjust(
         mlog.Threshold);
       }
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS)
-
     signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
-
-#else
-
-    signal(SIGUSR1,MLogLevelAdjust);
-
-#endif /* ... */
     }
   else if (signo == SIGUSR2)
     {
@@ -441,15 +425,8 @@ void MLogLevelAdjust(
         mlog.Threshold);
       }
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF)
-
     signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
 
-#else
-
-    signal(SIGUSR2,MLogLevelAdjust);
-
-#endif
     }
 
   fflush(mlog.logfp);
