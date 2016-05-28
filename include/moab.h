@@ -2081,19 +2081,6 @@ enum MSSSObjNameEnum {
 
 #include "moab-wiki.h"    
 
-#ifndef __MX
-#define __MX
-#endif /* __MX */
-
-#if !defined(__MX)
-#define MAX_SUNAME             64
-#define MAX_SULINE           1024
-#define MAX_G2XMLATTR          64
-#define DEFAULT_G2XMLICCOUNT   16
-#else /* !__MX */
-#include "mg2.h"
-#endif /* !__MX */
-
 #ifdef __M_H      
 
 #define MAM_CLIENTTYPE  "maui"    

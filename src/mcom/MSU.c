@@ -24,6 +24,7 @@
 
 #include "moab.h"
 #include "moab-proto.h"  
+#include "msu.h"
 
 extern char *MSON[];
 extern const char *MBool[];

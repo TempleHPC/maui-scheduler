@@ -75,7 +75,7 @@ int MCfgAdjustBuffer(
           /* FORMAT:  #INCLUDE <FILENAME> */
 
           MUSScanF(ptr + strlen("#INCLUDE"),"%x%s",
-            MAX_SULINE,
+            MMAX_LINE,
             IFile);
           }
         }
