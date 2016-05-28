@@ -2199,11 +2199,6 @@ int MUSScanF(
   }  /* END MUSScanf() */                    
 
 
-
-
-
-#ifndef __NT
-
 #define MAX_RXCACHE   32         
  
 int MUREToList(
@@ -2721,26 +2716,6 @@ int MUREToList(
   return(SUCCESS);
   }  /* MUREToList() */
  
-#else /* __NT */
- 
-int MUREToList(
- 
-  char  *Pattern,
-  int    ObjType,
-  int    PIndex,
-  short *List,
-  int   *Count,
-  char  *Buffer)
- 
-  {
-  return(FAILURE);
-  }  /* END MUREToList() */
- 
-#endif /* __NT */
-
-
-
-
 long MURSpecToL(
 
   char             *String,    /* I */

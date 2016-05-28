@@ -23,13 +23,11 @@
 #  include <libgen.h>
 #else /* LIBGEN */
 
-#ifndef __NT
 #ifdef PCRE
 #  include <pcreposix.h>
 #else /* PCRE */
 #  include <regex.h>
 #endif /* PCRE */
-#endif /* __NT */
 
 #endif /* LIBGEN */
 

@@ -2833,7 +2833,7 @@ int MLLJobUpdate(
   mrm_t      *R)       /* I */
 
   {
-  int      OldState;
+  long     OldState;
   int      OldHold;
 
   short    TaskList[MAX_MTASK_PER_JOB + 1];

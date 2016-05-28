@@ -376,8 +376,6 @@ char *MLogGetTime()
 
 
 
-#ifndef __NT
-
 void MLogLevelAdjust(
 
   int signo)
@@ -433,8 +431,6 @@ void MLogLevelAdjust(
 
   return;
   }  /* END MLogLevelAdjust() */
-
-#endif /* __NT */
 
 /* END MLog.c */
 

@@ -68,16 +68,10 @@ int MSUIPCInitialize()
   {
   int index;
 
-#ifndef __MPROD
   const char *FName = "MSUIPCInitialize";
 
   MDB(2,fSOCK) MLog("%s()\n",
     FName);
-#endif /* !__MPROD */
-
-#ifdef __NT
-  /* initialize winsock */
-#endif /* __NT */
 
 #ifdef __MGSS
   /* initialize grid credential handler */
