@@ -235,7 +235,7 @@ enum SUAttrEnum {
 
 typedef struct
   {
-  unsigned long  State;          /* External */
+  long           State;          /* External */
 
   int            Threshold;      /* External */
   unsigned long  FacilityList;   /* External */
@@ -380,7 +380,7 @@ typedef struct
   char          *ClientName;
 
   unsigned long  Flags;
-  unsigned long  State;
+  long           State;
 
   unsigned long  Version;
 

@@ -3235,7 +3235,7 @@ int MRMNodePreUpdate(
   mrm_t   *R)       /* I */
 
   {
-  int     OldState;
+  long    OldState;
 
   const char *FName = "MRMNodePreUpdate";
 
@@ -3378,7 +3378,7 @@ int MRMNodePreUpdate(
 int MRMNodePostUpdate(
 
   mnode_t *N,         /* I (modified) */
-  int      OldState)  /* I */
+  long     OldState)  /* I */
 
   {
   const char *FName = "MRMNodePostUpdate";

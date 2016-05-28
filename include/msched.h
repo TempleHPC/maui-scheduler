@@ -17,23 +17,17 @@
 #  include "msched-local.h"
 #endif /* __LOCAL */
 
-#ifdef __MTHREADS
-#  include <pthread.h>
-#endif
-
 #include "msched-common.h"
 
 #ifdef LIBGEN
 #  include <libgen.h>
 #else /* LIBGEN */
 
-#ifndef __NT
 #ifdef PCRE
 #  include <pcreposix.h>
 #else /* PCRE */
 #  include <regex.h>
 #endif /* PCRE */
-#endif /* __NT */
 
 #endif /* LIBGEN */
 

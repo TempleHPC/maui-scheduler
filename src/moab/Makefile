@@ -7,10 +7,6 @@
    SRC =$(TOP)/src/moab
    LIB =$(TOP)/lib/
 
-# uncomment for THREADs
-#THREADDEF =-D__MTHREADS
-#THREADLIB =-lpthread
-
 SCHEDIP=-I$(INC) -I$(MSCHED_HOME)/include 
 SHELL  =/bin/sh
 

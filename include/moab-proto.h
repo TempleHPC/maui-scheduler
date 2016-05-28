@@ -213,7 +213,7 @@ int MNodeInitialize(mnode_t *,char *);
 int MNodeAdjustState(mnode_t *,enum MNodeStateEnum *);
 int MNodeAdjustAvailResources(mnode_t *,double,short,short);
 int MNodeSetAttr(mnode_t *,enum MNodeAttrEnum,void **,int,int);
-int MNodeSetState(mnode_t *,int,int);
+int MNodeSetState(mnode_t *,long,int);
 int MNodeEval(mnode_t *);
 int MNodeLoadConfig(mnode_t *,char *);
 int MNodeProcessConfig(mnode_t *,char *);
@@ -675,7 +675,7 @@ int MRMSetAttr(mrm_t *,int,void **,int,int);
 int MRMAToString(mrm_t *,int,char *,int);
 int MRMNodePreLoad(mnode_t *,int,mrm_t *);
 int MRMNodePostLoad(mnode_t *);
-int MRMNodePostUpdate(mnode_t *,int);
+int MRMNodePostUpdate(mnode_t *,long);
 int MRMNodePreUpdate(mnode_t *,int,mrm_t *);
 
 

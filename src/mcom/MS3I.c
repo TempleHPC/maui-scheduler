@@ -9,8 +9,6 @@
 
 #define __MS330
 
-/* #include "mg2.h" */
-
 extern mlog_t    mlog;
 
 extern msched_t    MSched;

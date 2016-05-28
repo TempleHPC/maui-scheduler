@@ -4150,7 +4150,7 @@ int MNodeSetAttr(
 int MNodeSetState(
 
   mnode_t *N,       /* I */
-  int      NState,  /* I */
+  long     NState,  /* I */
   int      Mode)    /* I */
 
   {
