@@ -17,10 +17,6 @@
 #  include "msched-local.h"
 #endif /* __LOCAL */
 
-#ifdef __MTHREADS
-#  include <pthread.h>
-#endif
-
 #include "msched-common.h"
 
 #ifdef LIBGEN

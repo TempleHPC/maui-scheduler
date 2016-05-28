@@ -16,7 +16,7 @@ SHELL  =/bin/sh
   DEFS =-D$(OPSYS) $(OSDEF) $(MXDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 LIBMCOM  =libmcom.a
-LOBJECTS =MSU.o MSec.o MS3I.o MXML.o MConst.o MTComm.o
+LOBJECTS =MSU.o MSec.o MS3I.o MXML.o MConst.o
 
     LD =$(CC)
     CP =cp
