@@ -1,0 +1,11 @@
+[Unit]
+Description=maui-scheduler
+After=syslog.target network.target pbs_server.service
+
+[Service]
+Type=forking
+ExecStart=@prefix@/sbin/maui
+PIDFile=@SPOOLDIR@/maui.pid
+
+[Install]
+WantedBy=multi-user.target

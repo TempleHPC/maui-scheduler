@@ -78,8 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/showstate
 %{_bindir}/showstats
 %{_sbindir}/maui
-%{_sharedstatedir}/maui/maui-private.cfg
-%{_sharedstatedir}/maui/maui.cfg
+%{_unitdir}/maui-scheduler.service
+%config(noreplace) %{_sharedstatedir}/maui/maui-private.cfg
+%config(noreplace) %{_sharedstatedir}/maui/maui.cfg
 
 %doc LICENSE LICENSE.mcompat README CHANGELOG ChangeLog.TempleHPC
 

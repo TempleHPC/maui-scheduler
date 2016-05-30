@@ -43,7 +43,7 @@ CFLAGS = $(OSCCFLAGS)
 all:    $(MBINS)
 
 install: all
-	mkdir -p $(INST_DIR)/bin $(INST_DIR)/sbin $(INST_DIR)/include $(INST_DIR)/lib
+	mkdir -p $(INST_DIR)/bin $(INST_DIR)/sbin $(INST_DIR)/include $(INST_DIR)/lib $(INST_DIR)/lib/systemd/system
 	mkdir -p $(MSCHED_HOME)/log $(MSCHED_HOME)/traces $(MSCHED_HOME)/stats $(MSCHED_HOME)/spool $(MSCHED_HOME)/tools
 
 	chmod 1777 $(MSCHED_HOME)/spool
@@ -54,6 +54,7 @@ install: all
 	cp $(INC)/moab.h $(INST_DIR)/include
 	cp $(LIB)/lib$(SCHEDLIB).a $(INST_DIR)/lib
 	cp $(LIB)/lib$(COMLIB).a $(INST_DIR)/lib
+	cp $(TOP)/maui-scheduler.service $(INST_DIR)/lib/systemd/system/
      
 	(cd $(INST_DIR)/bin; \
 	for i in $(MCLIENTS); do \
