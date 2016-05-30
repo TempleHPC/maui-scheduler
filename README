@@ -1,4 +1,4 @@
-                 Maui Scheduler, Release 3.3.2
+                 Maui Scheduler, Release 3.5-TempleHPC
 
 This package contains the Maui Scheduler, an advance reservation based HPC 
 batch scheduler with extensive job management and resource optimization
@@ -20,27 +20,16 @@ license agreement/s distributed with this software.
 To build this package, run './configure' followed by 'gmake' as the user 
 under which the software should run.
 
-General documentation can be found at the Official Maui Homepage at
- 
-  http://clusterresources.com/maui
+This version has been heavily modified by the Temple HPC team.
 
-For integration with various resources managers, please see 
+It is maintained on github at
 
-  PBS         - http://clusterresources.com/mauidocs/pbsintegration.html
-  Loadleveler - http://clusterresources.com/mauidocs/llintegration.html
-  SGE         - http://clusterresources.com/mauidocs/sgeintegration.html   
+https://github.com/TempleHPC/maui-scheduler
 
-Professional services (installation, configuration, development, consultation, 
-and support) are available through Cluster Resources, Inc at 
+Bug reports may be submitted to the github issue tracker
 
-  http://clusterresources.com
+https://github.com/TempleHPC/maui-scheduler/issues
 
-General questions and bug reports may be submitted to the Maui users mailing 
-list address at 
+For general comments and questions, please contact hpc@temple.edu
 
-  mauiusers@supercluster.org 
-
-The Moab Workload Manager is based upon the next generation of the Moab 
-Scheduling System.  If you need increased functionality or scalability, you
-may want to consider this tool (see http://clusterresources.com/moab)
 

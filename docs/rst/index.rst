@@ -6,7 +6,7 @@
 Maui Scheduler™ Administrator's Guide
 #####################################
 
-| version 3.2
+| version 3.5-TempleHPC
 | Copyright © 1999-2014 Adaptive Computing Enterprises, Inc All Rights Reserved
 | Distribution of this document for commercial purposes in either
 | hard or soft copy form is strictly prohibited
