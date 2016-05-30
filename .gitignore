@@ -49,8 +49,8 @@ bin/*
 /Makefile
 /docs/Doxyfile
 autom4te.cache
-config.log
-config.status
+/config.log
+/config.status
 etc/maui.csh
 etc/maui.sh
 include/Makefile.inc.ll
@@ -67,3 +67,4 @@ maui-private.cfg
 maui-private.cfg.dist
 maui.cfg.dist
 maui.ck
+/maui-scheduler.service

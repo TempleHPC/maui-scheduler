@@ -5483,6 +5483,8 @@ ac_config_files="$ac_config_files include/msched-version.h"
 
 ac_config_files="$ac_config_files docs/Doxyfile"
 
+ac_config_files="$ac_config_files maui-scheduler.service"
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -6205,6 +6207,7 @@ do
     "include/moab-local.h") CONFIG_FILES="$CONFIG_FILES include/moab-local.h" ;;
     "include/msched-version.h") CONFIG_FILES="$CONFIG_FILES include/msched-version.h" ;;
     "docs/Doxyfile") CONFIG_FILES="$CONFIG_FILES docs/Doxyfile" ;;
+    "maui-scheduler.service") CONFIG_FILES="$CONFIG_FILES maui-scheduler.service" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
