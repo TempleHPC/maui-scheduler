@@ -400,6 +400,7 @@ int UIProcessCommand(
     case svcSetJobUserPrio:
     case svcJobShow:
     case svcShowQ:
+    case svcShowTasks:
     case svcSetJobHold:
     case svcReleaseJobHold:
     case svcResDestroy:
@@ -416,7 +417,6 @@ int UIProcessCommand(
       sprintf(tmpLine,"%s%d ",
         MCKeyword[mckStatusCode],
         scFAILURE);
-
       Align = (int)strlen(tmpLine) + (int)strlen(MCKeyword[mckArgs]);
 
       sprintf(S->SBuffer,"%s%*s%s",
@@ -427,12 +427,12 @@ int UIProcessCommand(
 
       HeadSize = (int)strlen(SBuffer);
       S->SBufSize -= HeadSize + 1;
-
+    	if(sindex == 40)
+    		sindex = 4;
       if (Function[sindex] != NULL)
         scode = (*Function[sindex])(args,S->SBuffer + HeadSize,FLAGS,Auth,&S->SBufSize);
       else
         scode = FAILURE;
-
       ptr = S->SBuffer + strlen(MCKeyword[mckStatusCode]);
 
       *ptr = scode + '0';
@@ -440,6 +440,7 @@ int UIProcessCommand(
       S->SBufSize = (long)strlen(S->SBuffer);
 
       MSUSendData(S,MAX_SOCKETWAIT,TRUE,TRUE);
+
 
       break;
 

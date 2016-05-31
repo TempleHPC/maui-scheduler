@@ -7,10 +7,6 @@ extern mlog_t mlog;
 
 extern const char *Service[];
 
-
-
-
-
 int UIFormatShowAllJobs(
 
   char *SrcBuffer,

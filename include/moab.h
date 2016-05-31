@@ -404,7 +404,8 @@ enum MSvcEnum {
   svcMStat,
   svcMDiagnose,
   svcMShow,
-  svcMBal };
+  svcMBal,
+	svcShowTasks};
 
 
 typedef struct {

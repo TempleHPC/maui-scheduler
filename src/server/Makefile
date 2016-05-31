@@ -30,7 +30,7 @@ LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(THREADLIB) $(MXLIB) $(LLLIB) $(SDRLIB) \
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
           releaseres resetstats runjob schedctl sethold setqos setres setspri \
-          showbf showconfig showgrid showhold showstart showq showres \
+          showbf showconfig showgrid showhold showstart showq showtasks showres \
           showstate showstats mschedctl mjobctl mnodectl mdiag mstat mbal
 
 SOBJECTS =Server.o UserI.o SDR.o LLI.o

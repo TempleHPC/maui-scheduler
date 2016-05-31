@@ -52,6 +52,7 @@ int MCMigrateJob(char *);
 int MCBShowState(char *); 
 int MCShowEstimatedStartTime(char *); 
 int MCShowQueue(char *);
+int showTasksPerUser(char *);
 int MCShowQ(char *,int);
 int LoadConfig(char *,char *); 
 int PSDedicatedComp(cstats *,cstats *);

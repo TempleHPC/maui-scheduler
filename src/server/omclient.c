@@ -1790,8 +1790,8 @@ int __OMCProcessArgs(
 
       break;
 
+    case svcShowTasks:
     case svcShowQ:
-
       if (QueueMode == -1)
         QueueMode = 0;
 
@@ -4472,6 +4472,86 @@ int MCShowQueue(
   return(SUCCESS);
   }  /* END MCShowQueue() */
 
+
+/* query the total number of tasks running by a given user */
+
+
+int showTasksPerUser(
+
+  char *Buffer)
+	{
+  char  *ptr;
+  char   name[MAX_MNAME];
+  long   stime;
+  long   qtime;
+  int    procs;
+  long   WCLimit;
+  char   tmpQOS[MAX_MNAME];
+  int    count;
+  int    priority;
+  int    state;
+
+  long   Now;
+
+  char   UserName[MAX_MNAME];
+
+  int    UpProcs;
+  int    IdleProcs;
+
+  int    UpNodes;
+  int    IdleNodes;
+  int    ActiveNodes;
+
+  int    BusyNodes;
+  int    BusyProcs;
+
+  int    acount;
+  int    icount;
+  int    ncount;
+
+  int    rc;
+
+  char   tmp[MAX_MLINE];
+
+  const char *FName = "showTasksPerUser";
+  int 	 sumOfProcs;
+
+  sumOfProcs = 0;
+  /* get present time */
+  if(TempArgv == NULL)
+  	return FAILURE;
+
+  ptr = strtok(Buffer,"\n");
+  char userName[40] = "tuf94753";
+  /* get and sum each record */
+  while ((ptr = strtok(NULL,"\n")) != NULL)
+    {
+    if (!strcmp(ptr,"[ENDACTIVE]"))
+      break;
+
+      rc = sscanf(ptr,"%s %s %ld %ld %d %ld %s %d %d",
+        name,
+        UserName,
+        &stime,
+        &qtime,
+        &procs,
+        &WCLimit,
+        tmpQOS,
+        &state,
+        &priority);
+
+      if (rc != 9)
+        continue;
+
+      /* just calculate the tasks for the desired user*/
+    	if (!strcmp(TempArgv,UserName))
+    		sumOfProcs = sumOfProcs + procs;
+  	}
+
+  fprintf(stdout,"The total number of tasks running by %s is %d\n", TempArgv, sumOfProcs);
+
+  return(SUCCESS);
+	}/* END showTasksPerUser() */
 
 
 

@@ -125,15 +125,12 @@ int MCSendRequest(
   DBG(2,fUI) DPrint("%s(%s)\n",
     FName,
     (S != NULL) ? "S" : "NULL");
-
   if (S == NULL)
     {
     return(FAILURE);
     }
-
   if (S->SBufSize == 0)
     S->SBufSize = (long)strlen(S->SBuffer);
-
   if (MSUSendData(S,S->Timeout,TRUE,FALSE) == FAILURE)
     {
     DBG(0,fSOCK) DPrint("ERROR:    cannot send request to server %s:%d (server may not be running)\n",
@@ -151,14 +148,12 @@ int MCSendRequest(
     DBG(3,fUI) DPrint("INFO:     message sent: '%s'\n",
       (S->SBuffer != NULL) ? S->SBuffer : "NULL");
     }
-
   if (MSURecvData(S,S->Timeout,TRUE,NULL,NULL) == FAILURE)
     {
     fprintf(stderr,"ERROR:    lost connection to server\n");
 
     return(FAILURE);
     }
-
   DBG(3,fUI) DPrint("INFO:     message received\n");
 
   DBG(4,fUI) DPrint("INFO:     received message '%s' from server\n",

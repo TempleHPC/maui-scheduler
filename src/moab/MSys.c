@@ -2655,7 +2655,6 @@ int MSysCheckPrimary()
     FName);
 
   /* contact primary */
-
   rc = MCDoCommand(
     MSched.FBServerHost,
     MSched.FBServerPort,
