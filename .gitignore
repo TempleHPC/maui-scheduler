@@ -8,6 +8,9 @@
 *.gch
 *.pch
 
+# gcov files
+*.gcda
+
 # Libraries
 *.lib
 *.a
