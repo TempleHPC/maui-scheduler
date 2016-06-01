@@ -61,3 +61,8 @@ maui-private.cfg
 maui-private.cfg.dist
 maui.cfg.dist
 maui.ck
+
+# eclipse project
+.settings
+.cproject
+.project
