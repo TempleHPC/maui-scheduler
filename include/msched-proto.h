@@ -76,7 +76,9 @@ int UINodeStatShow(int,char *,long *);
 int UIChangeParameter(char *,char *,int,char *,long *); 
 int MigrateJob(char *,char *,int,char *,long *);
 int UIShowEstStartTime(char *,char *,int,char *,long *); 
-int UIQueueShow(char *,char *,int,char *,long *); 
+int UIQueueShow(char *,char *,int,char *,long *);
+int UIShowUserTasks(char *,char *,long *);
+int getUserTasks(char *);
 int ConfigShow(char *,int,int);
 int UHProcessRequest(msocket_t *,char *);
 

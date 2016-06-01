@@ -427,9 +427,9 @@ int UIProcessCommand(
 
       HeadSize = (int)strlen(SBuffer);
       S->SBufSize -= HeadSize + 1;
-    	if(sindex == 40)
-    		sindex = 4;
-      if (Function[sindex] != NULL)
+      if(sindex == svcShowTasks)
+        scode = UIShowUserTasks(args,S->SBuffer + HeadSize,&S->SBufSize);
+      else if (Function[sindex] != NULL)
         scode = (*Function[sindex])(args,S->SBuffer + HeadSize,FLAGS,Auth,&S->SBufSize);
       else
         scode = FAILURE;

@@ -126,8 +126,6 @@ extern mframe_t  MFrame[];
 
 char      *AList[32];
 
-char       *TempArgv = NULL;
-
 long       BeginTime = 0;
 long       EndTime   = MAX_MTIME;
 long       Duration  = 0;
@@ -255,7 +253,6 @@ int main(
   int                 rc;
 
   const char *FName = "main";
-
   memset(temp_str,0,MMAX_LINE);
 
   mlog.logfp = stderr;
@@ -287,9 +284,6 @@ int main(
   __MCLoadArgs(argc,argv,&CIndex);
  
   Msg.SIndex = CIndex;
-  if(CIndex == 40)
-  	TempArgv = argv[1];
-
 /*
   Msg.RID = MOSGetEUID(); 
  
@@ -2923,7 +2917,7 @@ int __MCLoadArgs(
     "mshow",
     NULL };
  
-  if ((ArgV == NULL) || (CIndex == NULL) || (*CIndex == 40))
+  if ((ArgV == NULL) || (CIndex == NULL))
     {
     return(FAILURE);
     }
