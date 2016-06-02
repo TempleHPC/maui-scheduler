@@ -73,6 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/showgrid
 %{_bindir}/showhold
 %{_bindir}/showq
+%{_bindir}/showtasks
 %{_bindir}/showres
 %{_bindir}/showstart
 %{_bindir}/showstate

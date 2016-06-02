@@ -7364,6 +7364,80 @@ int __MUIJobToXML(
   return(SUCCESS);
   }  /* END __MUIJobToXML() */
 
+int UIShowUserTasks(
+
+	char 	 *RBuffer,   /* I */
+  char   *SBuffer,   /* O */
+  long   *SBufSize)
+	{
+  int     sumOfProcs;
+
+
+  char    userName[MAX_MLINE];
+  char    Line[MAX_MLINE];
+
+  char   *BPtr;
+  int     BSpace;
+
+  MUSScanF(RBuffer,"%s",userName);
+  BPtr   =  SBuffer;
+  BSpace = *SBufSize;
+
+  sumOfProcs = getUserTasks(userName);
+
+  sprintf(Line,"%d\n",sumOfProcs);
+
+  MUStrNCat(&BPtr,&BSpace,Line);
+
+  return(SUCCESS);
+	}
+
+int getUserTasks(
+
+	char *userName)
+	{
+  int     aindex;
+  int     sindex;
+  int 		sumOfProcs;
+  int     SuspQ[MAX_MJOB];
+
+  /* locate suspended jobs */
+
+  sindex = 0;
+  sumOfProcs = 0;
+
+  mjob_t *J;
+  for (J = MJob[0]->Next;(J != NULL) && (J != MJob[0]);J = J->Next)
+    {
+    if (J->State == mjsSuspended)
+      SuspQ[sindex++] = J->Index;
+    }  /* END for (J) */
+
+  SuspQ[sindex] = -1;
+
+  /* Calculate tasks */
+
+  aindex = 0;
+  sindex = 0;
+
+  while ((MAQ[aindex] != -1) || (SuspQ[sindex] != -1)) {
+    if (MAQ[aindex] != -1) {
+      J = MJob[MAQ[aindex++]];
+
+      if (J->State == mjsSuspended)
+        continue;
+    } else {
+      J = MJob[SuspQ[sindex++]];
+    }
+    if (J->Cred.U != NULL) {
+      if (!strcmp(userName, J->Cred.U->Name))
+        sumOfProcs = sumOfProcs + MJobGetProcCount(J);
+    }
+  } /* END while (MAQ[aindex] != -1) */
+
+  return sumOfProcs;
+	}
+
 
 
 

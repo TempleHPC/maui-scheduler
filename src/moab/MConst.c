@@ -1142,6 +1142,7 @@ const char *MService[] = {
   "mdiag",
   "mshow",
   "mbal",
+	"showtasks",
   NULL };
 
 

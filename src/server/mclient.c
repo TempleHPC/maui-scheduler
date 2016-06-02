@@ -84,7 +84,8 @@ int (*MCFunction[])() = {
   NULL,
   NULL,
   MCShow,
-  MCBal };
+  MCBal,
+	showTasksPerUser};
 
 
 extern mlog_t mlog;
@@ -252,7 +253,6 @@ int main(
   int                 rc;
 
   const char *FName = "main";
-
   memset(temp_str,0,MMAX_LINE);
 
   mlog.logfp = stderr;
@@ -284,7 +284,6 @@ int main(
   __MCLoadArgs(argc,argv,&CIndex);
  
   Msg.SIndex = CIndex;
-
 /*
   Msg.RID = MOSGetEUID(); 
  
@@ -333,14 +332,13 @@ int main(
     case svcMShow:
     case svcMResCtl:
     case svcMBal:
-
+    case svcShowTasks:
       MSUInitialize(
         &S,
         C.ServerHost,
         C.ServerPort,
         C.Timeout,
         (1 << TCP));
-
       if (C.ServerCSKey[0] != '\0')
         strcpy(S.CSKey,C.ServerCSKey);
       else
@@ -350,7 +348,6 @@ int main(
 
       S.SocketProtocol = C.SocketProtocol;
       S.SBuffer        = SBuffer;  
- 
       if (MSUConnect(&S,FALSE,NULL) == FAILURE)
         {
         DBG(0,fSOCK) DPrint("ERROR:    cannot connect to '%s' port %d\n",
@@ -359,7 +356,6 @@ int main(
  
         exit(1);
         }
- 
       sprintf(S.SBuffer,"%s%s %s%s %s%s\n",
         MCKeyword[mckCommand],
         MService[CIndex],
@@ -367,7 +363,6 @@ int main(
         MUUIDToName(MOSGetEUID()),
         MCKeyword[mckArgs],
         MsgBuffer);
- 
       S.SBufSize = (long)strlen(S.SBuffer);
 
       S.Timeout = C.Timeout;
@@ -392,7 +387,6 @@ int main(
         }  /* END switch(CIndex) */
 
       /* attempt connection to primary server */
-
       if (MCSendRequest(&S) == FAILURE)
         {
         if (MSched.FBServerHost[0] != '\0')
@@ -416,7 +410,6 @@ int main(
           exit(1);
           }
         }
-
       if (S.WireProtocol == mwpXML)
         {
         if (((ptr = strchr(S.RBuffer,'<')) == NULL) ||
@@ -477,7 +470,6 @@ int main(
 				
         S.RPtr = ptr;
         }  /* END else (S.WireProtocol == mwpXML) */
-
       if (scode == scSUCCESS)
         {
         switch(CIndex)
@@ -493,7 +485,6 @@ int main(
             break;
 
           default:
-
             rc = (*MCFunction[CIndex])(S.RPtr,S.RBufSize - (ptr - S.RBuffer));
 
             break;
@@ -840,6 +831,7 @@ int __MCGetArgList(
  
       break;
  
+    case svcShowTasks:
     case svcShowQ:
  
       /* a-???, b-BLOCKED, i-IDLE, p-PARTITION, r-RUNNING, u-USERNAME, v-VERBOSE */
@@ -4433,6 +4425,15 @@ int MCShowUsage(
       fprintf(stderr,"  -S // SMP\n");
       fprintf(stderr,"  -u <USER>\n");
  
+      break;
+    case svcShowTasks:
+      fprintf(stderr,"Usage: %s [FLAGS]\n",
+        MService[CIndex]);
+
+      __MCShowGFlags();
+
+      fprintf(stderr,"  username // USER\n");
+
       break;
 
     case svcShowQ:
