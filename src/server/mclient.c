@@ -4426,9 +4426,17 @@ int MCShowUsage(
       fprintf(stderr,"  -u <USER>\n");
  
       break;
+    case svcShowTasks:
+      fprintf(stderr,"Usage: %s [FLAGS]\n",
+        MService[CIndex]);
+
+      __MCShowGFlags();
+
+      fprintf(stderr,"  username // USER\n");
+
+      break;
 
     case svcShowQ:
-    case svcShowTasks:
 
       fprintf(stderr,"Usage: %s [FLAGS]\n",
         MService[CIndex]);

@@ -1791,6 +1791,14 @@ int __OMCProcessArgs(
       break;
 
     case svcShowTasks:
+
+      if (ArgCount != 2)
+        {
+        MCShowUsage(*sindex);
+
+        exit(1);
+        }
+
       if(Args[1] != NULL)
         sprintf(MsgBuffer,"%s",Args[1]); /* add argument to the buffer*/
 
@@ -4488,13 +4496,10 @@ int showTasksPerUser(
   char  *ptr;
   int    procs;
 
-  if(temp_argv == NULL)
-  	return FAILURE;
-
   ptr = strtok(Buffer,"\n");
   sscanf(ptr,"%d",&procs);
 
-  fprintf(stdout,"The total number of tasks running by %s is %d\n", temp_argv, procs);
+  fprintf(stdout,"The total number of tasks running by this user is %d\n", procs);
 
   return(SUCCESS);
 	}/* END showTasksPerUser() */
