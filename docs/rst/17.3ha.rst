@@ -1,0 +1,7 @@
+Enabling High Availability Features
+###################################
+
+High Availability Overview
+**************************
+
+`See Moab Workload Manager </resources/docs/mwm/22.2ha.html>`__

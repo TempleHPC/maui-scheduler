@@ -38,8 +38,8 @@ int GetTokens(
 char *GetShortName(char *);
 
 int OSGetPID(void);
-int OSSetGID(int);
-int OSSetUID(int);
+int OSSetGID(gid_t);
+int OSSetUID(uid_t);
 
 char *ShowIArray(const char *,int,int); 
 char *ShowLArray(const char *,int,long); 

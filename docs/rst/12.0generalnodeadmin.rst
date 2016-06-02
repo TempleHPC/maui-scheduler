@@ -1,0 +1,67 @@
+General Node Administration
+###########################
+
+Since Maui interoperates with a number of resource managers of varying
+capabilities, it must possess a somewhat redundant set of mechanisms for
+specifying node attribute, location, and policy information. Maui
+determines a node's configuration through one or more of the following
+approaches:
+
+- Direct resource manager specification
+
+Some node attribute may be directly specified through the resource
+manager. For example, Loadleveler allows a site to assign a
+'MachineSpeed' value to each node. If the site chooses to specify this
+value within the Loadleveler configuration, Maui will obtain this info
+via the Loadleveler scheduling API and use it in scheduling decisions.
+The list of node attributes supported in this manner varies from
+resource manager to resource manager and should be determined by
+consulting resource manager documentation.
+
+- Translation of resource manager specified 'opaque' attributes
+
+Many resource managers support the concept of opaque node attributes,
+allowing a site to assign arbitrary strings to a node. These strings are
+opaque in the sense that the resource manager passes them along to the
+scheduler without assigning any meaning to them. Nodes possessing these
+opaque attributes can then be requested by various jobs. Using certain
+Maui parameters, sites can assign a meaning within Maui to these opaque
+node attributes and extract specific node information. For example,
+setting the parameter
+'`FEATUREPROCSPEEDHEADER <a.fparameters.html#featureprocspeedheader>`__
+xps' will cause a node with the opaque string 'xps950' to be a assigned
+a processor speed of 950 MHz within Maui.
+
+- Default node attributes
+
+Some default node attributes can be assigned on a frame or partition
+basis. Unless explicitly specified otherwise, nodes within the
+particular node or partition will be assigned these default attribute
+values. See the `Partition Overview <7.2partitions.html>`__ for more
+information.
+
+- Direct Maui parameter specification
+
+Maui also provides a parameter named
+`NODECFG <a.fparameters.html#nodecfg>`__ which allows direct
+specification of virtually all node attributes supported via other
+mechanisms and also provides a number of additional attributes not found
+elsewhere. For example, a site may wish to specify something like the
+following:
+
+::
+
+  NODECFG[node031] MAXJOB=2 PROCSPEED=600 PARTITION=small
+
+.. note::
+
+   These approaches may be mixed and matched according to the
+   site's local needs. Precedence for the approaches generally follows the
+   order listed above in cases where conflicting node configuration
+   information is specified through one or more mechanisms.
+
+.. toctree::
+
+  12.1nodelocation
+  12.2nodeattributes
+  12.3nodepolicies

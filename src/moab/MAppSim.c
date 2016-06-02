@@ -50,7 +50,7 @@ asim_t SimDriver[] = {
 
 typedef struct {
   char *Name;
-  int   ASState;
+  long  ASState;
   } masdefdata_t;
 
 

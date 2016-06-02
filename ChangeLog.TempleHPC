@@ -1,0 +1,1581 @@
+commit 1390095b0a2c110778e22b2d474aadce3642029a
+Merge: 1c1b318 d410b79
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 29 22:33:24 2016 -0400
+
+    Merge branch 'purge_if_dead_node'
+    
+    this should address the annoying issue of maui triggering 100s
+    of e-mails being sent due to Torque's inability to regularly
+    delete a job where the mother superior has crashed.
+
+commit d410b79902dceb913afeca3dc899591800b94034
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 29 22:31:43 2016 -0400
+
+    tell PBS/Torque to delete with prejudice of one of the nodes of a job is down
+
+commit 1c1b318b7ced9aef1483bb16c68ca3c01a097162
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat May 28 10:52:43 2016 -0400
+
+    update dependency file
+
+commit 2ba3c333ecad525e880aecc815797970d27ec7dd
+Merge: bdab476 414caef
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat May 28 10:51:46 2016 -0400
+
+    Merge branch 'remove_dead_code'
+    
+    removing unused code and making things more posix compatible
+
+commit 414caef80a845c60214329b0a6dc85dee3e2dc68
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 27 22:53:41 2016 -0400
+
+    some more dead code removal. now mostly related to WinNT
+
+commit e77f273bf79b07ec61f6557ba80f4d48ef834069
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 27 22:25:24 2016 -0400
+
+    remove some non-POSIX hacks, particularly for AIX4
+
+commit d0ed182d5062b9e89b22feab50b410868b934c30
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 27 21:07:15 2016 -0400
+
+    remove support for threading
+
+commit 62bf72acda7d9ef667e37d4cd46dc0f70e0aaa7b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 27 20:54:20 2016 -0400
+
+    fist batch of dead code removal. eliminate references to MG2
+
+commit bdab476d67474a318342387ae79faee2468d40c5
+Merge: dd4682f 7991548
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 27 16:24:28 2016 -0400
+
+    Merge branch 'eliminate_warnings'
+    
+    massive reworking of data types and elimination of casts.
+
+commit 7991548f1f751b0f288f16baf412136db71dd56c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 27 16:23:09 2016 -0400
+
+    make use of various data types consistent and use posix types if possible
+    
+    this cleans up the mess with long vs. unsigned long either directly
+    or via various typedefs for all kinds of variables that store time data.
+    we now use time_t, as far as the compiler could detect (the rest will be "long").
+    similarly, use uid_t and gid_t consistently.
+
+commit dd4682f6fe9e45440e7df6f87d822f6be3ce3f4c
+Merge: 84e8c94 a6a5ce1
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 18:40:40 2016 -0400
+
+    Merge branch 'doc-build'
+
+commit a6a5ce187a57344a298a4d900c642bd7bf8274b7
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 18:39:29 2016 -0400
+
+    some more shuffling around of stuff and consolidated documentation building
+
+commit 4d42c3f36efaa8b2107bcccafca4730c8d5e3dac
+Merge: f184ee6 84e8c94
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 18:27:21 2016 -0400
+
+    Merge branch 'master' into devel-akohlmey
+
+commit f184ee61561176c5d2b0ff53b9c60acee3927176
+Merge: 4bbf1c5 b15cf24
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 17:36:38 2016 -0400
+
+    Merge branch 'docs/sphinx' into devel-akohlmey
+
+commit b15cf24c3d0ac5eacd993732d9a58b88b2c6d1e1
+Author: Richard Berger <richard.berger@temple.edu>
+Date:   Thu May 26 17:01:30 2016 -0400
+
+    Move sphinx documentation source files to rst subfolder
+
+commit 84e8c94aec5a3276b8e7338def7b6d4783389b33
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 16:42:39 2016 -0400
+
+    don't require doxygen for travis CI, as it'll pull in latex
+
+commit 4bbf1c5cabe0f5c77c3de4eff6a980894320be8d
+Merge: f6580c5 73e1ed7
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 16:29:20 2016 -0400
+
+    Merge branch 'docs/sphinx' into devel-akohlmey
+
+commit f6580c54bbbea85c328e8bfaf5aeff85d3a48dd2
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 16:25:50 2016 -0400
+
+    do not build pdf format documentation by default
+
+commit 6c2e042da4bb91f63295fa75e48bd250c80881ec
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 16:24:25 2016 -0400
+
+    need to install doxygen for travis now
+
+commit 496d0deeafd29893627bd15e2b2502920066dc0d
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 26 16:18:23 2016 -0400
+
+    add basic doxygen functionality as required for implementing issue #27
+
+commit eb03e277c6ff20efc1ed25f9b7c37fb89bf3d179
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 25 12:41:26 2016 -0400
+
+    restore code that advances the tokenizer so that -l nodes=<*>:ppn=<num> is correctly parsed again
+    
+    this closes #23
+
+commit fc5a8fc494eeeda9c6eb0f5f1cb2d669de1fe90f
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 25 11:59:30 2016 -0400
+
+    update one more diagnostic to print out MAUI instead of MOAB
+
+commit 73e1ed77e297abe28571683b4663d195a151e08c
+Author: Richard Berger <richard.berger@temple.edu>
+Date:   Tue May 24 19:00:01 2016 -0400
+
+    Add commands
+
+commit 7433cba185c21a4e6119564a072ea4d2571ccce1
+Author: Richard Berger <richard.berger@temple.edu>
+Date:   Tue May 24 18:42:17 2016 -0400
+
+    Add _build folder to .gitignore
+
+commit fd4c4e96a65055b4a389c3558f69b3eeab0df668
+Author: Richard Berger <richard.berger@temple.edu>
+Date:   Tue May 24 18:38:44 2016 -0400
+
+    Add chapter 7 to 17 and appendices
+
+commit eb1b2e57a1ad98684d1c44abc9d4d3c3fc9c236b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 24 18:11:02 2016 -0400
+
+    rename MOAB strings in library functions to MAUI
+
+commit 5a86e33b843a6ef1c69a1c139876e3e3feb41dfe
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 24 17:01:45 2016 -0400
+
+    remove patch file and folder from distribution.
+
+commit d667112de8d791d24f58d62709e620afcfd4942b
+Merge: 7527444 d017862
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 24 16:44:35 2016 -0400
+
+    Merge pull request #22 from TempleHPC/gpu_GRES_patch
+    
+    applied GPUs through GRES patches
+
+commit d0178627fc7694533135889057c78763f17fca35
+Author: Ershaad Basheer <ershaad.a@gmail.com>
+Date:   Tue May 24 15:18:41 2016 -0400
+
+    applied GPUs through GRES patches
+
+commit de87700db96e0723d2f413f9d7f694e31634aca6
+Author: Richard Berger <richard.berger@temple.edu>
+Date:   Mon May 23 20:29:33 2016 -0400
+
+    Clean up chapter 6 files
+
+commit c5c2470235921fa1a008b7316667ade933b006b2
+Author: Richard Berger <richard.berger@temple.edu>
+Date:   Mon May 23 20:24:13 2016 -0400
+
+    Adding first 6 chapters of converted documentation
+
+commit 7527444be05cd51697d2c7f605b8a652020705c4
+Merge: 35c6512 a32eaab
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 23 19:16:58 2016 -0400
+
+    Merge remote-tracking branch 'origin/unusedvar_warnings'
+
+commit 35c65123a7b755a7b3505a4dc26ba877a19d8c0a
+Merge: 4cd6708 edfcc7b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 23 19:16:13 2016 -0400
+
+    Merge pull request #21 from TempleHPC/debug_detail
+    
+    Adds some details about the debug mode
+
+commit a32eaab17ebf47dd29c34ddcc181687071c8d71d
+Author: dalin <tuf69906@temple.edu>
+Date:   Mon May 23 16:02:29 2016 -0400
+
+    Fixes unused variable warnings
+    Deletes unused variables in MRes.c and MConfig.c
+
+commit edfcc7bf38d21b01aaf648d6fa220b2b15002377
+Author: dalin <tuf69906@temple.edu>
+Date:   Mon May 23 15:37:33 2016 -0400
+
+    Add some details about the debug mode
+
+commit 4cd67085f9cae9ce6d7713c32e9b4711ecb3797a
+Merge: c058a7e 78ba4a2
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 23 15:17:54 2016 -0400
+
+    Merge branch 'merge-pull-20'
+    
+    closes #19
+
+commit 78ba4a2649ee0a6449b9055ede427ffd53e2d61c
+Author: dalin <tuf69906@temple.edu>
+Date:   Mon May 23 15:00:59 2016 -0400
+
+    Fixes the valgrind warnings
+
+commit c058a7e44a924d030c769e570b4a595974155b66
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 23 11:47:56 2016 -0400
+
+    add maui administrator's guide to docs folder
+
+commit 849808982580273f800226deeb5c2528358c8328
+Merge: e422188 042cb97
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 20 15:56:44 2016 -0400
+
+    Merge branch 'add-rpm-spec'
+    
+    closes #18
+
+commit 042cb97508d2c2bdb09e88b05855b65894a97e0c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 20 15:55:23 2016 -0400
+
+    add initial draft version of a spec file for building RPMs
+
+commit 483dc6989100a307d7292f039a141da74c1e07be
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri May 20 15:38:39 2016 -0400
+
+    update makefile template for rpm spec file compilation
+
+commit e42218865a4058c35d8f3293b12cfec34a1097fe
+Merge: bfa733f c50c59c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 19 20:29:12 2016 -0400
+
+    Merge branch 'devel-akohlmey'
+    
+    this restores/corrects some of the code that was incorrectly removed
+    or changed so that maui segfaults. still not 100% valgrind clean, though.
+    This closes #15.
+
+commit c50c59c7772955a2a857b735bb51e4eb2654613b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 19 20:27:05 2016 -0400
+
+    avoid segfault by restoring old code
+
+commit 94b8f5df1712f90a1bf2549bf3b75b2112f2fdc8
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 19 20:08:02 2016 -0400
+
+    this puts back some code that was over-eagerly deleted.
+
+commit 0245ea3294d63f053ecc383db0b7d6a867135541
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 19 17:06:46 2016 -0400
+
+    make certain that temp_str is initialized
+
+commit 815e861ebd9c00fde71b139c921121e569b1cd67
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu May 19 17:06:27 2016 -0400
+
+    remove broken MU2dMemSet() call and replace with memset() using correct sizeof() operations
+
+commit 86d698afe85bd3da31be09686b326c26d261b5c3
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 18 20:36:06 2016 -0400
+
+    make valgrind happy
+
+commit 4b96206188770ee930ddd6e19b5db3675b6a07c8
+Merge: 8b65074 bfa733f
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 16 18:55:40 2016 -0400
+
+    Merge branch 'master' into cppcheck-warnings
+
+commit bfa733fb31ec62657cf54989040f4e35f0095cda
+Merge: 0c6a83b fee56d1
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 16 18:52:14 2016 -0400
+
+    Merge branch 'devel-akohlmey'
+    
+    closes #12
+
+commit fee56d118706674815c3d5071483e342325dbcdf
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 16 18:51:23 2016 -0400
+
+    fix null pointer bug on argv[0] for maui server executable
+
+commit 8b65074248c69c558651e87ac878c15a8a6b47c8
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 16 18:50:15 2016 -0400
+
+    correct some issues found with cppcheck
+
+commit 0c6a83badbfe19f33cbac2ec84436ef9800447c9
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 16 16:40:21 2016 -0400
+
+    This corrects a few more very minor issues the Clang and Gcc warn about
+    
+    The only warnings left are the bogus warnings about optimized inlined
+    string operations on short string constants, warnings about unused
+    parameters and warnings about comparing singed and unsigned integers.
+
+commit fb2746e416a8eb507d0c1f5679ae2ba15e52695f
+Merge: d834499 ba3ec0c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 16 15:53:16 2016 -0400
+
+    Merge pull request #13 from TempleHPC/issue_warnings
+    
+    Fixes the "incompatible pointer type" warnings
+
+commit ba3ec0c16ab61ac394905f817ac5624788c13b17
+Author: dalin <tuf69906@temple.edu>
+Date:   Mon May 16 11:37:42 2016 -0400
+
+    Fixes the "incompatible pointer type" warnings
+    
+    Changes "enum MStatusCodeEnum *" to "int *" for the corresponding functions' parameter in file MS3I.c
+    Adds an additional char pointer parameter to MPBSQueueQuery() in file MPBSI.c and MRMSQueueQuery() in file MRMSI.c
+
+commit d83449994d0020abdc7204cde4e70c0d91bc7fe3
+Merge: 2d7285f 77ac23d
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 14:39:08 2016 -0400
+
+    Merge branch 'merge-dead-code-removal'
+    
+    This merge removes unused variables and fixes problems with
+    potentially uninitialized variables as flagged by GCC.
+
+commit 77ac23deb4ce818f5152b3c2af35fad503098752
+Merge: 2d7285f 04c406d
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 14:36:32 2016 -0400
+
+    Merge remote-tracking branch 'origin/issue_warnings' into merge-dead-code-removal
+
+commit 04c406dd7384b07550583d2c1411578c6bb2e1e8
+Author: dalin <tuf69906@temple.edu>
+Date:   Wed May 11 13:03:16 2016 -0400
+
+    Fixes the remaining one uninitialized variable warning
+
+commit 61dbea3b09a2ca9a191724310d64148993efad6c
+Author: dalin <tuf69906@temple.edu>
+Date:   Wed May 11 12:27:21 2016 -0400
+
+    Fixes all of the unused and uninitialized variables
+    
+    Deletes the unused variables
+    Gives an initial value to the uninitialized variables
+
+commit eb095cdd1efdf08c77dd442c383b0c9904ee6531
+Author: dalin <tuf69906@temple.edu>
+Date:   Wed May 11 11:14:17 2016 -0400
+
+    Fixes some of the unused variable warnings
+
+commit 2d7285fe10afd955dd61f84bf6e0f01ced65f08f
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:49:06 2016 -0400
+
+    fix C++-ism
+
+commit 334bfbd1c3fb8948ca37b0ad3622ac8bd4ef7aed
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:48:58 2016 -0400
+
+    make sure local variable is initialized before use
+
+commit fec40dcb8bbad1c2ff5ffa25bb3abc385325c693
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:37:41 2016 -0400
+
+    fix bug determining the size of buffer to copy
+
+commit fd63d4aeea9af8549172dcaa90c07afce6f80c98
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:37:22 2016 -0400
+
+    correct prototype for function
+
+commit cacf8c2f2379f3f45601a121dd4473fa5b726561
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:28:22 2016 -0400
+
+    clean tools directory with make clean
+
+commit cba68dc629e54eddf5ba212ac62394190bc0cfc3
+Merge: 15af26c dc03f1e
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:27:33 2016 -0400
+
+    Merge branch 'explicit-deps' into array-utils
+
+commit 15af26cf44ebbd5aecddd9946662f5e367877e57
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:27:10 2016 -0400
+
+    fix bug calling memcpy() instead of memset()
+
+commit dc03f1e9ca12c063b1f52f81a79b254cf217475d
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:25:03 2016 -0400
+
+    correct final issues with dependency rewrite
+
+commit 8c4c6b35379291744fdbbb254d44646f26d7800c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:15:45 2016 -0400
+
+    update dependencies
+
+commit af1a84f69563dd96e1c05ebdf663077d898ebfde
+Merge: 38ad421 13aaeae
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:14:53 2016 -0400
+
+    Merge branch 'explicit-deps' into array-utils
+    
+    # Conflicts:
+    #	src/mcom/.depend
+    #	src/moab/.depend
+    #	src/server/.depend
+
+commit 13aaeaef707f013f0fb8672fec7497ed54a3b459
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Wed May 11 00:12:01 2016 -0400
+
+    use fastdep to generate dependencies, so they are independent of the location of the torque library headers
+
+commit 38ad421840bfaf61b889bab0a1ce03b5e622b5e8
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 23:49:43 2016 -0400
+
+    update dependencies
+
+commit d94ff35f6b27e7c1418412ff862be307f48f811c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 23:49:17 2016 -0400
+
+    fix some logic and precedence issues flagged by clang
+
+commit a17c7a86dff73a78a3c3a2076df8d94c3ab7d5cd
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 23:48:47 2016 -0400
+
+    use correct sizeof argument
+
+commit a9081d4980d7a1ad25b8ece066aae483dac956c8
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 23:30:06 2016 -0400
+
+    correct dependency files
+
+commit 1cca4ea3e6e9b90e818ffcfca8e096bf83438408
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 23:29:04 2016 -0400
+
+    implement 2d array memset
+
+commit 4a05ff6198e7889d148857600751fb5ea18a2564
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 23:28:03 2016 -0400
+
+    collect utilities interfaces in moab-utils.h, implementations in src/moab/MUtil.c
+
+commit ac84384bb70dba8bbcb28f21ed23d6871198e50e
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 22:55:55 2016 -0400
+
+    update makefiles to use explicit deps generated by $(CC) -MM > .depend
+
+commit 96cf4613c47dae8006bd18fc5e664925be63fb88
+Merge: b88c8d6 6b73413
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Tue May 10 21:59:09 2016 -0400
+
+    Merge pull request #9 from TempleHPC/bugfixes_sprintf
+    
+    Fix the sprintf bug
+
+commit 6b73413109e8cda6bae66f219e6c3b918ccf2f0b
+Author: dalin <tuf69906@temple.edu>
+Date:   Tue May 10 14:27:17 2016 -0400
+
+    Fix the sprintf bug
+
+commit b88c8d65adb84513dbf89bc7774dece8b98da6b9
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 9 11:50:02 2016 -0400
+
+    update version number to 3.4 indicating new development efforts
+
+commit 1b6c0335a8bb742c30fe1f866ac1230274c93ad4
+Merge: 74afe28 891107d
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 9 07:17:42 2016 -0400
+
+    Merge branch 'devel-akohlmey'
+
+commit 891107d16f3caa62af2e9e4d637e679aa098d1bb
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 9 07:11:07 2016 -0400
+
+    add more generated files for "make distclean"
+
+commit c9e158a24537804c2bac57ee6290a96bde31d719
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 9 06:50:42 2016 -0400
+
+    remove some dead code
+
+commit 74afe2822f8b1944d94645674319d4146f2ebd07
+Merge: 9659303 3482eb9
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 9 00:27:33 2016 -0400
+
+    Merge branch 'devel-akohlmey'
+    
+    more branding updates and build procedure improvements.
+
+commit 3482eb96dcd8261a1bb01b7c90fef3ca4b3c2b46
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 9 00:22:06 2016 -0400
+
+    more Temple HPC "branding". added "make tar" target using "git archive"
+
+commit 965930397bc6f3f0c111ca66693d1113d8d0c518
+Merge: a8173e0 e6e2c6b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 23:34:03 2016 -0400
+
+    Merge pull request #4 from TempleHPC/devel-akohlmey
+    
+    Update version number and contact email
+
+commit e6e2c6b3c3f3c6b715eea98c436d96999b1ea31b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 23:26:15 2016 -0400
+
+    update version number and contact e-mail address to indicate TempleHPC modifications
+
+commit a8173e0e4c7457910f6045dab54174501108ccd6
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:54:47 2016 -0400
+
+    run integration test with clang compiled code in addition to gcc
+
+commit 7fd12d730a505ea0186049527b640776149f3ab9
+Merge: 85bff11 40ad434
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:43:23 2016 -0400
+
+    Merge branch 'debug-travis-ci'
+    
+    this closes issue #2.
+
+commit 40ad434c499df69794db43ada8f0c3999df3ffd7
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:42:47 2016 -0400
+
+    put PBS integration on top of optional makefile components
+
+commit 6eb2cefd1c4e2d8b42632b4cd9fa06ef66b6431f
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:38:54 2016 -0400
+
+    switch to VM based runs on TravisCI
+
+commit 08ef68fbc94a25dde32637a860131afeb6406ecd
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:29:04 2016 -0400
+
+    add slack.com integration and try installing libtorque-dev
+
+commit d52ec384d8935f42a200d8282b69a1ec925d947b
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:21:42 2016 -0400
+
+    update optimization level to -O2
+
+commit 85bff11f5509540533002ee4942dcae6343d8b6c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:13:46 2016 -0400
+
+    ignore more generated files
+
+commit b239c587dd3a9b3ddb45a2b2a94f453adf38df41
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:13:35 2016 -0400
+
+    try to retrieve torque development package for compiling maui
+
+commit 2686e8705278897e4b05086981822865798f93c2
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 21:13:08 2016 -0400
+
+    adapt makefile so that configure --with-pbs works
+
+commit 81337a80ab233d3f3468f4e3e07664358209ece6
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 20:56:51 2016 -0400
+
+    add basic TravisCI integration
+
+commit ce1d0f4ad37f6d193ba841c365bf1e23aaad979e
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 20:42:56 2016 -0400
+
+    regenerate configure script to work around mktime bug with gcc 4.2 and later
+
+commit 6b3241f366fe9e9968a9b779fc9d6e3d0cd35da4
+Merge: 9b31d0b 7a97858
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 19:53:43 2016 -0400
+
+    Merge branch 'master' of github.com:TempleHPC/maui-scheduler
+
+commit 7a9785884578519998d8654af1dd8fc4fe7620dd
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 8 19:51:10 2016 -0400
+
+    Initial commit
+
+commit 9b31d0bce1326089abc4ba6abb2bcb7635eb8591
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Apr 13 21:10:25 2016 +0000
+
+    fixes to update maui for torque 6.x
+
+commit f93f2e47fdd5cef21e9365337c166d19ba2dbd79
+Author: bas <bas@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Sep 11 08:57:08 2013 +0000
+
+    fixed a showq -r segv when user only request for node property
+
+commit 7056e2bb6244dcbf98f886634ae1d10fa6a5d19e
+Author: bas <bas@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Oct 11 13:33:54 2012 +0000
+
+    applied client socket patch from Jonathan Barber
+
+commit 9bd6160461fc3ee114ee1e0e7acc80828e284015
+Author: bas <bas@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Oct 4 08:36:35 2012 +0000
+
+    Showstats segfaults when using compiler optimization
+
+commit f9aac5208c6b614673e234a50fe7f519611f4942
+Author: bas <bas@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Apr 12 09:14:51 2011 +0000
+
+    added a patch for diagnose -f to allow an argument:
+     * -f [user|group|acct|class|qos]
+
+commit 15437a577e8d12863346407a4420becc03a96e86
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Mar 4 16:24:58 2011 +0000
+
+    Changed version to 3.3.2
+
+commit 28b76671c57baada30b6e1f2ece4c9a9b8a8aa2e
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Mar 4 16:00:09 2011 +0000
+
+    Changed version to 3.3.1
+
+commit 24be85bb7b91e4236806a0cca86ad64188164390
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Mar 3 05:02:54 2011 +0000
+
+    Added UseMachineSpeedForFS patch from Robin Roth
+
+commit 484149b8e0827af2c5b0035a630ae420abb06ec8
+Author: bas <bas@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Aug 10 12:56:35 2010 +0000
+
+    Fixed 'showq -r' to show the correct values when NODEALLOCMAXPS is set to TRUE
+
+commit c8ce839d8681a3e645ce3a779e740ac23d46d068
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Aug 6 17:36:19 2010 +0000
+
+    - Patch to fix SYSTEMMAXJOBWALLTIME, SYSTEMMAXPROCPERJOB, and SYSTEMMAXPROCSECONDPERJOB which previously no-op'ed
+
+commit 4475ad037405c068602e52610952b16ea335df17
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Aug 6 15:47:47 2010 +0000
+
+    - update CHANGELOG
+    - added debug messages and a check for glibc return codes from vsnprintf to MUSNPrintF()
+
+commit 2fe966a4113bb2372ab869ae197510cd41ac71f3
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Aug 6 13:36:50 2010 +0000
+
+    Changed all remaining mallocs to callocs.
+
+commit 3895eba2bb3430966ac28d0692b25094bbdffde8
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Aug 3 21:21:42 2010 +0000
+
+    - MAJOR FIX: MRes.c: replaced mallocs with callocs in MResAdjustDRes() to scrub the {C|J|O|N}RE variables. Code in that function depends on it, and breaks badly with glic memory corruption errors when RESERVATIONDEPTH is > 1.  Further auditing of malloc vs. calloc is probably needed across the entire codebase.
+    
+    - MSU.c: Fix for valgrind error about uninitialized value
+    
+    - MNode.c: Fix for valgrind error about uninitialized value
+
+commit d54b8d152c09ed8a56796a3621ca42b16a442783
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Aug 3 14:32:11 2010 +0000
+
+    - slight modification to the toplevel Makefile to allow BUILD_ROOT to be set by rpm when building RPMS and to be set to EMPTY if not set.
+
+commit 98d1402e0768361b23f93d791e103b85c8891b0f
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Aug 2 18:24:51 2010 +0000
+
+    - all the mallocs in the MResAdjustDRes() function should really be checked independently for success or failure instead of just the CRE malloc
+
+commit 9be0037d50ff00baaf362d05911746da7f0595ab
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Jul 27 15:43:24 2010 +0000
+
+commit 77e2fa7538516ad79319e5987c29c2fc53fb943d
+Author: jasonw <jasonw@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Jul 22 21:04:11 2010 +0000
+
+    Patch to fix SYSTEMMAXJOBWALLTIME, SYSTEMMAXPROCPERJOB, and SYSTEMMAXPROCSECONDPERJOB which previously no-op'ed
+
+commit a6ea6933a38760f3fbc7b8f2ba17d90f518c747b
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 21 21:34:53 2010 +0000
+
+    cygwin readme
+
+commit 7590f0dc1644729a5650702e1e295761b5138673
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 21 21:33:42 2010 +0000
+
+    cygwin porting
+
+commit 31435ea72a533e6cf558bca0e205fe29a370c8d3
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 21 21:27:06 2010 +0000
+
+    Made showgrid's, and other's, arguments case-insensitive. (David Chin)
+
+commit 42e251cb8ffbcb632135cab717692ccb3f2762d8
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 21 14:35:56 2010 +0000
+
+    fix for preventing users from setting system priority on their own jobs (Bas van der Vlies)
+
+commit df80badc3158bc1860ac5e10ad9b0f84dfc81600
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Apr 30 15:14:38 2010 +0000
+
+    updated CHANGELOG
+
+commit 79ec828fb33a446f9fe84ed812f1bfb728ae5b8e
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Apr 30 14:59:45 2010 +0000
+
+    Fix for broken  - Alexis Cousein
+
+commit 02fb9791e3126be7ebcce628248cea8e1b050072
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Feb 23 17:48:41 2010 +0000
+
+    Fixed fprintf comipler warnings
+
+commit e66b5c3437dee77ae09b2b2b0fffbea0a054c9b5
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Feb 23 17:46:36 2010 +0000
+
+    Fixed memset_chk compiler errors. (Denis Pynkin)
+
+commit 05a03f7f15d15d003cac5be8738ebc281ae3c56e
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Feb 19 19:59:45 2010 +0000
+
+    changelog update
+
+commit e5b84d75fbdbf67ca9ad46bb709cc3828678d3f4
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Feb 19 19:48:13 2010 +0000
+
+    updated configure.ac because RMNMHOST didn't exist. Fixed mkdirs and commented out links in src/server/Makefile
+
+commit ab3604c294b228fd6a219b2ef51e6f7dab956986
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Feb 19 18:54:21 2010 +0000
+
+    updated version information to 3.3
+
+commit b372d3c11e3d28c28116c2e76cc96baec9a5f6dc
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Oct 13 22:24:06 2009 +0000
+
+    removed unreferenced src/mcom/Makefile.in
+
+commit e3693bdbd04570d5a808d0681401a4ea36cc0a01
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Oct 12 20:02:27 2009 +0000
+
+    INCR: updated version information
+
+commit c47f1bffe842c40fe1d6cee12dc605d9bb88a131
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Sep 10 17:16:46 2009 +0000
+
+    FEATURE:	Added RMCFG[] ASYNCJOBSTART=TRUE for asynchronous job starts in pbs.
+    Problem Ref:	MAUI + TORQUE JOB START RATE
+    Organization:	NA
+    Contact:	NA
+
+commit 1dc8453deff062ed5a5a84aef064da90c5fd4c41
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Sep 8 22:17:58 2009 +0000
+
+    INCR:		updated msched-version.h to maui-3.2.6p21
+
+commit beb4984c508f184c6118546741f684f42057dd2d
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Jul 14 17:25:32 2009 +0000
+
+    INCR:		Added StartTime and CompletionTime to Gold Charge
+
+commit 2c317bf331bbfcbd8d66abd1d82fef304c2d94bf
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Jun 2 21:09:42 2009 +0000
+
+    FIX:	fixed backfill issue with SINGLEJOB NODEACCESSPOLICY.
+    Organization:	University of Tromso
+    Contact:	Roy Dragseth
+
+commit 550782100a088a2648edc6f73eb6464cc56c3983
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Mar 18 16:08:51 2009 +0000
+
+    INCR:		N->{A|C}Res.Swap is overcommitted with N->CRes.Swap instead of N->CRes.Mem.
+
+commit 40b0e8d80743e02ca8f03bc472a7443879d9254f
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Feb 17 21:11:35 2009 +0000
+
+    INCR:		updated changelog for swap change.
+
+commit ffea74368d17144fba2d7e2d7d549961cd80d0a2
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Feb 13 18:53:54 2009 +0000
+
+    FIX:	Fix changing Configured Swap
+    Problem Ref:	2956
+    Organization:	CSIRO
+    Contact:	Gareth Williams
+
+commit 429c5f2e495bf4a92dfe687d08e47724ce428742
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Dec 9 20:54:30 2008 +0000
+
+    Fix for compiling with x86_64 systems and fix for -O2 optimiztions issues in server client communication.
+
+commit 8dd123f88f3ce25774f3457677164d3f74714da6
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Oct 22 20:14:47 2008 +0000
+
+    INCR:		Added maui + slurm checksum fix to CHANGELOG.
+
+commit a37860078eb654141855e76705efd129a388b708
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Oct 22 20:08:42 2008 +0000
+
+    FIX:	Fixed wrong size of buffer being passed into MSecGetCheckSum. Should be strlen(buffer). Eygene Ryabinkin found this using slumr and authtype checksum.
+    Problem Ref:	FIX FOR THE WIKI AUTHENTICATION (SLURM CASE)
+    Organization:	Eygene Ryabinkin
+    Contact:	Eygene Ryabinkin
+
+commit 160ba2bf325223dbbaabd97d0e90d617b46a9283
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Oct 20 15:57:46 2008 +0000
+
+    INCR:		Changed VERSION number in header.cfgs.
+
+commit 2bd968c782628c094d3977877ad31895bdf89069
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Oct 20 15:26:37 2008 +0000
+
+    INCR:		changed patch version from 20 to 21 in README
+
+commit 2912fe86e2923a68229cbc1a7d1bd4c115a2d512
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Oct 20 15:21:38 2008 +0000
+
+    INCR:		added statement about adding DBG(3,fALL) to CHANGELOG
+
+commit 3dbb9cdd9cf17deb05f606e163d5deaa6b87064f
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Oct 6 21:29:19 2008 +0000
+
+    INCR:		Added DBG(3,fALL) to lone DPrint states since it was flooding log file for Michael Barnes
+
+commit fabe0fc4f76ebcc772d9e2414879cc9c84704709
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 3 21:33:52 2008 +0000
+
+    INCR:		Updated CHANGELOG - brought last patches to patch 20 instead of 21
+
+commit 35e7d3f828c024776a79b85ea368c3bb08062988
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 3 21:14:15 2008 +0000
+
+    INCR:		Updated CHANGELOG with new patche info.
+
+commit 9d8a3276a10431c3734911cee2a33b0b09fd16f9
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 3 21:02:55 2008 +0000
+
+    FEATURE:	PATCH:Eygene Ryabinkin - Fitting job into partition that works.
+    Problem Ref:	[MAUIUSERS] PATCH FOR DEFAULT PARTITION HANDLING
+    Organization:	Eygene
+    Contact:	Eygene Ryabinkin
+
+commit d5a8aa2f7800462979856a29728c8c9308bf1d52
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Aug 29 18:07:25 2008 +0000
+
+    FIX:	Added a check in UIClusterShow to prevent segfaults. Also stopped showing GLOBAL node.
+    Organization:	Tom Rudwick
+    Contact:	tomr@intrinsity.com
+
+commit b8d3efcd81ec3662c4c834fe35756f6404d8b926
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Aug 29 18:03:57 2008 +0000
+
+    FEATURE:	Applied patch that reads in -l resources_list: software as a generic resource (pbs)
+    Organization:	tomr@intrinsity.com
+    Contact:	Tom Rudwick
+
+commit 8bebb5371a0c2862a09e18a7deb2b9c733d026fd
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Jun 12 16:26:20 2008 +0000
+
+    FIX:	added space in MCred.c in MUSNPrintf's and printing problem in MSUSendData()
+    Problem Ref:	MAUI PATCH
+    Organization:	Eygene Ryabinkin
+    Contact:	Eyegene Ryabinkin
+
+commit cb71447da34bf8984452359e015dcf7033809a99
+Author: bchristiansen <bchristiansen@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon May 26 20:17:27 2008 +0000
+
+    Added FSSECONDARYGROUPS - maps unix groups to fair share groups.
+    Added IGNPBSGROUPLIST - ignores 'qsub -W group_list=<value>'.
+    Contributed by Bas van der Vlies (SARA).
+
+commit ef1cfaaeccf2c85ee4987882d580095501403c18
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Apr 11 15:35:50 2008 +0000
+
+    move things over MUSNPrintF()
+
+commit b11be53fffffc2b37b4cb91ce48a5db2fbc74b63
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Oct 9 15:40:54 2007 +0000
+
+    FIX:	added 64-bit detection to Maui configure script if uname -m reports 64-bit architecture
+
+commit 4e9f960430e0cef7e4491aac66be92a0130f5bc3
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Aug 13 21:38:31 2007 +0000
+
+    FEATURE:	Maui now detaches from the terminal when it is in a daemonizing mode
+    Organization:	Mauiusers List
+    Contact:	Stanislav Ievlev
+
+commit b918bd936183843928ee81c9b6bacba187c322b9
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jun 27 20:06:53 2007 +0000
+
+    FORMAT:		added some new names to CHANGELOG
+
+commit 7a93a1bc8ba12e4855135c0ceb7ffdd344cf5ce9
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jun 27 20:04:10 2007 +0000
+
+    FIX:	fixed the construction of a group fairshare component when percent based fairshare is enabled
+
+commit e48c6114e11796f91d89efc544a07ebb8e6c64b5
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jun 27 20:03:21 2007 +0000
+
+    FORMAT:		added new items to changelog
+
+commit 622f0ef681d67d3187f05ada2c16167293b542df
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jun 27 20:01:37 2007 +0000
+
+    FIX:	fixed bug with generic consumable floating resources and typos in MPBSI.c
+    Description:	The fixes for these bugs were submitted in a patch by Jeffery B. Reed.
+
+commit 7a7d12a9a38261e49f4f9ec5cd6e93a7f4968834
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Apr 18 18:28:52 2007 +0000
+
+    FIX: changed versioning to patch 20
+
+commit 6a4b0420219b9e5ea247797422c0c0ea80b40d40
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Apr 18 18:08:06 2007 +0000
+
+    FIX:	fixed security bug and also a problem with resource policy ExtendViolationTime
+
+commit 38bcc3c7ea5d93bb872c3994943b359dfc305319
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Mar 28 20:04:48 2007 +0000
+
+    Subject:	fixed bug in MFSProcessOConfig and MPLoadTrace (patches submitted by communitiy)
+    
+    Category:	fix
+    
+    Problem Ref:
+    
+    Organization:
+    
+    Contact:	Ake Sandgren
+    
+    Description:	# Enter a detailed description including how the issue was resolved, why it was necessary, customer impact, etc.
+
+commit 16aa820c3df15315a7b6e45eba4da94fa0f406a7
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Feb 14 19:53:30 2007 +0000
+
+    FIX:	applied patch to allow nodelist a proper creation
+    Contact:	Toni Harbaugh-Blackford
+
+commit c0f3ac77a43119264377a1e3d7f8768dcb2cfb9b
+Author: jacksond <jacksond@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Feb 6 01:47:06 2007 +0000
+
+    INCR:		add ddisk support as RM extension
+
+commit 0d4b6e14805f6da5d6b54e262cf4f743ed079096
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Jan 25 21:01:11 2007 +0000
+
+    FEATURE:	added startup script for RedHat
+    Contact:	Dave Chin
+    Description:	Dave Chin contributed this trivial modification to the Maui startup script on-line
+
+commit bb76a14f44ccf66ef8656f098e2afae8ed1d16e7
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jan 24 23:31:29 2007 +0000
+
+    FEATURE:	added new SUSE startup script
+    Description:	script was partially contributed by Stephen Cary (srcary@us.ibm.com)
+
+commit 3696a36b318a995c83eacd1fdb56da41f151a418
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Dec 5 19:58:41 2006 +0000
+
+    updated CHANGELOG
+
+commit 626da7d8c906fa33e15c3ea8f7de81cd3b3fa570
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Dec 5 19:57:14 2006 +0000
+
+    applied patch sent by Peter Gardfjaell
+
+commit 0e8cb25ec569ca0d5204f8c76479f16beadb9610
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Nov 29 20:38:43 2006 +0000
+
+    change update
+
+commit 52494a147abaea9c5eb43d3800de5651262b4726
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Nov 29 20:37:52 2006 +0000
+
+    fixed Ake Sandgren's segfault report
+
+commit bf3a2ed67644cbc387250d88f62e654170f8e36f
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Nov 21 14:50:52 2006 +0000
+
+    fix
+
+commit eb1acd3e53ae8fad18e258c6a4877c843432fd7e
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Nov 21 05:31:19 2006 +0000
+
+    patch from Yaroslav Halchenko for NODECFG[] MAXPROCPERUSER
+
+commit 09e77a1292044d5ece956e42b0896d595f0b8090
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Nov 20 17:05:34 2006 +0000
+
+    version change
+
+commit a72b358d58189d701aaeea73ae81fc571c24586c
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Nov 20 17:04:44 2006 +0000
+
+    switch to patch 18
+
+commit 20c85588b4384e4daa1682d6efacac7c30f7f9d9
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Nov 17 16:56:07 2006 +0000
+
+    small patches for RM->EPort and MADMINHOSTS
+
+commit 2b457e931031c1a93642f67b6352cdf6cb8c7625
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Nov 17 16:44:51 2006 +0000
+
+    enable NODEALLOCMAXPS (patch from Bas van der Vlies)
+
+commit b00e46118bd28c210175f1c7023fa574df3c6a2e
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Oct 23 16:40:29 2006 +0000
+
+    fix for a buffer overflow
+
+commit 28a35a479d1a21a0bae75abb17a5c17acfe766bb
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 20 20:32:05 2006 +0000
+
+    added fixes submitted by Ake Sandgren
+
+commit 6bda8b7d637c6111a3ef887bc531c6b11d663419
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Sep 6 16:40:07 2006 +0000
+
+    fix
+
+commit 2d01ddaedbb9d3462ca0cd154ca0f6d13f905c8b
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Sep 4 16:35:35 2006 +0000
+
+    enable PercentBasedFS
+
+commit f3b399fc3d914626f0ffa6fd78385c7d5b717c67
+Author: josh <josh@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Aug 17 23:12:48 2006 +0000
+
+    fixed-up suspension bug
+
+commit ac2573bd00e6eba2ac3133aa9ff009a6decae18a
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Jul 22 00:59:04 2006 +0000
+
+    final configure fixes for old openpbs buildsystem
+
+commit c278df05b1f5a278f0ad1b0c0fcb1055053c9e97
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Jul 22 00:41:52 2006 +0000
+
+    Fix --with-pbs for old openpbs-style build system
+
+commit 512d39eb1b3263c6072787948e68132fd96eb732
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Jul 13 22:53:31 2006 +0000
+
+    Report the correct unsupported OS
+
+commit 409bad836b0c48b369db028653e0a55236317a4d
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 12 23:45:25 2006 +0000
+
+    Fix OS and OPSYS var handling in configure
+
+commit 411b30af1e49263dd7bbbbcbb8e9a7fcd0901284
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jun 21 23:02:34 2006 +0000
+
+    Fix searching for pbs-config and bump version
+
+commit 4152ccbc5a00876b008c239575156d1bba4611b4
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jun 21 23:00:15 2006 +0000
+
+    Rearrange linking order
+
+commit dc3adf03ed40e92d749aeffccaed7bff32aee0af
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue May 23 19:53:52 2006 +0000
+
+    version changes for p16
+
+commit e27111d79da603ab27d8d843147770378fe79b71
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue May 23 19:40:43 2006 +0000
+
+    Make sure 'make distclean' removes everything it should.
+
+commit 0119c0b2fcf876d8a1502e16bf08e9390755d661
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue May 23 19:39:40 2006 +0000
+
+    updated versioning and copyright's for p15
+
+commit 6eeda778625eedb67ed9f5cb3650c6fa54dc135c
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue May 23 19:10:59 2006 +0000
+
+    Create top-level bin and lib dirs if missing and really clean bin files.
+
+commit f2ab7082647ee9230d0142701499c3d5570b8499
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon May 22 22:24:32 2006 +0000
+
+    readying for p15
+
+commit 6762f6fb3020f10349f0d9179aa51775b78fd408
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu May 11 21:07:41 2006 +0000
+
+    Support TORQUE-2.1's build system
+
+commit ebba47325c93aa465035e0e47c75c53089a8ffa8
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Mar 21 15:36:48 2006 +0000
+
+    a fix for double counting
+
+commit e2729765dad030318adbbb4cf18c4ba67695213d
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Feb 28 03:30:24 2006 +0000
+
+    Support new TORQUE pbs-config build system
+
+commit 88ec01b4eb963d59dff567684f73f1f203ddbbc7
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Jan 19 18:19:15 2006 +0000
+
+    fix mdiag -p overflow
+
+commit 275c6e76788ddbf0b36c46a9402d0b87f239aed2
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Jan 16 20:26:35 2006 +0000
+
+    allow clients to accept MAUIHOMEDIR in /etc/maui.cfg
+
+commit 351087b6d03c856e737d780f47007ac92466d3e0
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Jan 13 22:24:02 2006 +0000
+
+    add fallback account suffix
+
+commit 896a9dd298629894e4f8d2cb384003e8c3e5573d
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Dec 12 23:09:30 2005 +0000
+
+    fixed bug with generic floating resource tracking
+
+commit 142e99ed14e1eb4e9738fa2a620018cf7ca29305
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Nov 11 01:50:25 2005 +0000
+
+    add wclimit overrun protection
+
+commit c86b4fde5fec2e61ac0e9778b3c1fe32fbb2b968
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Nov 5 02:42:08 2005 +0000
+
+    Be more permissive about EXECQUEONLY -garrick
+
+commit ef69611998fd9f246244d168ddd73ed17143f0b1
+Author: gstaples <gstaples@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Nov 3 22:58:28 2005 +0000
+
+    Support EXECQUEONLY in pbs_statjob() -garrick
+
+commit 8172c7992e4605848bc94598b05d62d258f643e3
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Oct 29 17:56:32 2005 +0000
+
+    add support for 'select' resource and version loading
+
+commit 1416d4529ba8dff94196013d5b310bc2c1b3a141
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 21 19:09:58 2005 +0000
+
+    fix S3 workload query
+
+commit c5a43cd85e794db0fcfc3d89b7abbac0657e1af4
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 21 17:40:26 2005 +0000
+
+    enable event manager and directory manager services
+
+commit 3b6c57ca9c665d28e2c9e56cf80b37fd3f49844c
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Oct 19 20:19:16 2005 +0000
+
+    address PBSPro API changes
+
+commit da6579a9870791414e48757c7237d356a4a7daac
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Oct 14 23:17:24 2005 +0000
+
+    check PBS ErrMsg
+
+commit 409e68ee15ea8c5be28518dda22080f7a460e13f
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Oct 13 02:32:35 2005 +0000
+
+    fix AM enhancements
+
+commit 257aadb2e2fde7cd464917a68aa539de9811ef91
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Oct 13 02:25:05 2005 +0000
+
+    enable reservation debit via AM
+
+commit 960f5c62ee4254cc608ee53699c2f3e30657077d
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Oct 13 02:05:52 2005 +0000
+
+    fix reservation allocation charging
+
+commit 831026a83c480f99517193a2491a86fc72490683
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Oct 11 17:08:01 2005 +0000
+
+    enable GOLD reservation AM debit
+
+commit 1a87676353842a9b3ee0c593ee394c04f916b31d
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Sep 28 19:00:03 2005 +0000
+
+    log statements for class info
+
+commit 04e38f820dbb1561d19afd835f22e5de1c40b49a
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Sep 23 20:52:23 2005 +0000
+
+    sync
+
+commit e5271a6d233de163d201f36f966f5ebea8c629a4
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Sep 23 15:25:46 2005 +0000
+
+    change nodesets
+
+commit d65d5202855aa99cc0ca0ebd01db5ba91adefcd4
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Sep 16 12:54:10 2005 +0000
+
+    add buffer overflow protection to MQueueDiagnose()
+
+commit 83df29bd263fcdea4f3316b1259b47f774bec14b
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Sep 12 16:48:28 2005 +0000
+
+    fix rsv pointer bug
+
+commit 4aac34c14ebc8c95e3c55c6e1260e774b27d96df
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Sep 10 00:20:18 2005 +0000
+
+    fix memory leaks
+
+commit 0b33c68621f68aa5fe3b4d40d536889d72e400d0
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Sep 6 19:32:48 2005 +0000
+
+    sync
+
+commit 3b4129c48c70e2ebe1b1a6b09c5ddfcc378f5fb5
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Sep 6 19:32:22 2005 +0000
+
+    fix gold interface QOS
+
+commit 1525b99d17ac8ec18d282b3a8036ab68e620eafd
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Sep 3 17:11:19 2005 +0000
+
+    sync
+
+commit 0deac4eec6f38ef40b28c8edce171a04bb7b90ab
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Sep 2 17:14:36 2005 +0000
+
+    fixes for Idle Policy Limits
+
+commit b5aeb9e6eb8fc83faf35ee6297698a682c60414f
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Sep 2 16:59:53 2005 +0000
+
+    update directory service interface
+
+commit 104cc0e5cf26cc87b17a27321d9de53eb61a4a0f
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Sep 2 15:00:02 2005 +0000
+
+    rebuild node attributes every iteration
+
+commit 98248fc6dd85e6e63ecc2b54b723902ab0683661
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Sep 1 14:54:51 2005 +0000
+
+    patch valgrind issue in MResCheckJAccess
+
+commit 82e1f8079a13e75817efe8d68129caeb5bfe8154
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Aug 31 17:10:23 2005 +0000
+
+    add MFULoad checking
+
+commit cb9e4c3fd54973cd74d403d49d7eca39f71e172f
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Aug 24 15:49:27 2005 +0000
+
+    print out snapshot version
+
+commit 9367da3f1dbc880cbc8cc2d27e910e46b6dc76a6
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Aug 24 14:55:07 2005 +0000
+
+    sync
+
+commit 4d206cd7d82a782491283cc6340d1ebe0c71bea8
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Aug 24 14:54:27 2005 +0000
+
+    sync
+
+commit 053b357c0e1df911113fc92a232acb7eb3d74777
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Aug 4 23:17:07 2005 +0000
+
+    fixes for seg-faults and memory leaks
+
+commit cac427e168d27dddd3a3302345210f9f228e373b
+Author: musson <musson@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Aug 4 18:35:07 2005 +0000
+
+    MAX_MNODE_PER_JOB stuffs
+
+commit d531a49ec02ec63cd70e97f747ebed9c2cfb13e1
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Thu Aug 4 18:31:58 2005 +0000
+
+    add MAXNODEPERJOB bounds checking
+
+commit 79069f64a5fb5f1458c317c85bba166738dd748b
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Jul 18 20:50:46 2005 +0000
+
+    sync
+
+commit 7baee544bd2a2cb80645f9239156d4409a3c6526
+Author: wightman <wightman@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Mon Jul 18 16:30:52 2005 +0000
+
+    changed a job submitted with a -a <future_date> to show up as on hold rather
+    than not showing up at all (Moab behavior).
+
+commit 371dcb97fbd8b92c4e13639d8227c26e276a30aa
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Jul 16 13:41:55 2005 +0000
+
+    sync
+
+commit 0b29a013f6f39575ec09df239f57e7b613f52c74
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Sat Jul 16 13:34:59 2005 +0000
+
+    cleanup
+
+commit 739d31453aaa6a24ef75376326369e05b8195722
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Fri Jul 15 01:47:31 2005 +0000
+
+    force reservations with feature list to be locked down to initially allocated node list
+
+commit 1315990ff53e33431009135bee91b220ac154fee
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 13 22:13:19 2005 +0000
+
+    sync
+
+commit ce44faf4b38bf1d5b44fdd9f7c568b7946d9a3f9
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 13 02:12:20 2005 +0000
+
+    sync
+
+commit 07581c1e8e4a12a176386dbdc84526d75094dda4
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 13 02:10:45 2005 +0000
+
+    fixes
+
+commit 7b14fae4136e18ba8527f404e1c23d8df0b1d8e4
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Wed Jul 13 00:45:42 2005 +0000
+
+    add argv processing of copy (clean ps output)
+
+commit 060fe56e2cc3b4a793ef69d0a89f95f06f24dff4
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Jul 12 23:22:01 2005 +0000
+
+    improve silver compatibility
+    add garrick node MAM interface
+
+commit 6a38845daf46800ab6b1e3750229b86189bc18f8
+Author: dev <dev@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Jul 12 21:12:53 2005 +0000
+
+    Initial revision
+
+commit c1c2c1625ef114da83d432a904f8641bc35ef6e7
+Author: (no author) <(no author)@3f5042e3-fb1d-0410-be18-d6ca2573e517>
+Date:   Tue Jul 12 21:12:53 2005 +0000
+
+    New repository initialized by cvs2svn.

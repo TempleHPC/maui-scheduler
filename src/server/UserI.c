@@ -3,10 +3,10 @@
 #include "moab.h"
 #include "msched-proto.h"
  
-long   UIDeadLine;
+time_t UIDeadLine;
  
 int    IgnoreToIteration = 0;
-long   IgnoreToTime      = 0;
+time_t IgnoreToTime      = 0;
 
 int MUIJobCtl(msocket_t *,long,char *);
 int MUIShow(msocket_t *,long,char *);
@@ -290,21 +290,21 @@ int MUISProcessRequest(
 int UIProcessClients(
  
   msocket_t *SS,        /* I */
-  long       TimeLimit) /* I */
+  time_t     TimeLimit) /* I */
  
   {
   msocket_t  C;
   msocket_t *S;
  
   int    index;
-  long   now;
+  time_t now;
  
   char   HostName[MAX_MNAME];
  
   int    RMDataStageInitiated;
   int    RMDataStaged;
  
-  long   RMDataStageTime;
+  time_t RMDataStageTime;
  
   const char *FName = "UIProcessClients";
  
@@ -316,7 +316,7 @@ int UIProcessClients(
   if (SS == NULL)
     return(FAILURE);
  
-  MUGetTime((mulong *)&now,mtmNONE,NULL);
+  MUGetTime(&now,mtmNONE,NULL);
  
   UIDeadLine = now + TimeLimit;
  
@@ -532,7 +532,7 @@ int UIProcessClients(
  
       MUSleep(100000);
  
-      MUGetTime((mulong *)&now,mtmNONE,NULL);
+      MUGetTime(&now,mtmNONE,NULL);
       }
     }       /* END while (MSched.Time) */
  
@@ -908,7 +908,7 @@ int UIJobShow(
     J->Name,
     MJobState[J->State],
     MJobState[J->EState],
-    MULToDString((mulong *)&J->SubmitTime));
+    MULToDString(&J->SubmitTime));
  
   if (J->AName != NULL)
     {
@@ -993,7 +993,7 @@ int UIJobShow(
   strcpy(tmpLine,MULToTString(TQTime));
 
   MUSNPrintF(&BPtr,&BSpace,"SubmitTime: %s  (Time Queued  Total: %s  Eligible: %s)\n\n",
-    MULToDString((mulong *)&J->SubmitTime),
+    MULToDString(&J->SubmitTime),
     tmpLine,
     MULToTString(J->EffQueueDuration));
   }  /* END BLOCK */
@@ -1001,14 +1001,14 @@ int UIJobShow(
   if ((J->State == mjsStarting) || (J->State == mjsRunning))
     {
     MUSNPrintF(&BPtr,&BSpace,"StartTime: %s",
-      MULToDString((mulong *)&J->StartTime));
+      MULToDString(&J->StartTime));
     }
  
   if (J->SMinTime != 0)
     {
     MUSNPrintF(&BPtr,&BSpace,"StartDate: %s  %s",
       MULToTString(J->SMinTime - MSched.Time),
-      MULToDString((mulong *)&J->SMinTime));
+      MULToDString(&J->SMinTime));
     }
  
   MUSNPrintF(&BPtr,&BSpace,"Total Tasks: %d\n",
@@ -1354,7 +1354,7 @@ int UIJobShow(
     if (J->SystemQueueTime != J->SubmitTime)
       {
       MUSNPrintF(&BPtr,&BSpace,"SystemQueueTime: %20s\n",
-        MULToDString((mulong *)&J->SystemQueueTime));
+        MULToDString(&J->SystemQueueTime));
       }
     }
  
@@ -4756,7 +4756,7 @@ int UIJobGetStart(
     J->Name,
     MULToTString(Start - MSched.Time),
     BP->Name,
-    MULToDString((mulong *)&Deadline)); 
+    MULToDString(&Deadline)); 
  
   return(SUCCESS);
   }  /* END UIJobGetStart() */
@@ -5478,11 +5478,11 @@ int MUIJobSetAttr(
           /* cannot meet requested completion time */
 
           DBG(2,fUI) DPrint("INFO:     requested deadline %s cannot be set for job %s",
-            MULToDString((mulong *)&ReqCTime),
+            MULToDString(&ReqCTime),
             J->Name);
 
           sprintf(Msg,"requested deadline %s cannot be set for job %s",
-            MULToDString((mulong *)&ReqCTime),
+            MULToDString(&ReqCTime),
             J->Name);
 
           return(SUCCESS);
@@ -5493,7 +5493,7 @@ int MUIJobSetAttr(
         if (MResJCreate(J,MNodeList,StartTime,mjrDeadline,NULL) == FAILURE)
           {
           sprintf(Msg,"ERROR:  cannot enforce request completion time deadline %s for job %s",
-            MULToDString((mulong *)&ReqCTime),
+            MULToDString(&ReqCTime),
             J->Name);
 
           return(SUCCESS);
@@ -8215,7 +8215,7 @@ int MUIJobDiagnose(
         }    /* END if J->StartCount */
       }      /* END else if J->State */
 
-    if ((strlen(Buffer) > (*BufSize - 3000)) && (Truncated != TRUE))
+    if (((long)strlen(Buffer) > (*BufSize - 3000)) && (Truncated != TRUE))
       {
       DBG(2,fUI) DPrint("ALERT:    buffer overflow in %s()\n",
         FName);
@@ -8263,7 +8263,7 @@ int MUIJobDiagnose(
       {
       J = MJob[MAQ[jindex]];
 
-      if ((strlen(Buffer) > (*BufSize - 300)) && (Truncated == FALSE))
+      if (((long)strlen(Buffer) > (*BufSize - 300)) && (Truncated == FALSE))
         {
         DBG(2,fUI) DPrint("ALERT:    buffer overflow in %s()\n",
           FName);
@@ -8916,7 +8916,7 @@ int UINodeDiagnose(
           MAList[eNodeState][N->State],
           MAList[eNodeState][N->EState],
           MULToTString(N->SyncDeadLine - MSched.Time),
-          MULToDString((mulong *)&N->SyncDeadLine));
+          MULToDString(&N->SyncDeadLine));
         }
       }
 
@@ -9360,7 +9360,7 @@ int UIResList(
       }
     else
       {
-      strcpy(SMinTime,MULToDString((mulong *)&R->StartTime));
+      strcpy(SMinTime,MULToDString(&R->StartTime));
       }
 
     MUSNPrintF(&BPtr,&BSpace,"%-18s %5s %1c %11s %11s %11s %4d/%-4d %s",
@@ -9445,7 +9445,7 @@ int UIResList(
       }
     else
       {
-      strcpy(SMinTime,MULToDString((mulong *)&R->StartTime));
+      strcpy(SMinTime,MULToDString(&R->StartTime));
       }
 
     MUSNPrintF(&BPtr,&BSpace,"%-18s %5s %1c %11s %11s %11s %4d/%-4d %s",
@@ -10316,7 +10316,7 @@ int UIResDiagnose(
 
     /* no reservation stats displayed */
 
-    if ((strlen(SBuffer) + strlen(StatLine)) < (*SBufSize - 300))
+    if ((long)(strlen(SBuffer) + strlen(StatLine)) < (*SBufSize - 300))
       {
       strcat(SBuffer,StatLine);
       }

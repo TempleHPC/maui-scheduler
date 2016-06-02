@@ -1,0 +1,74 @@
+Grid Scheduling
+###############
+
+
+Grid Scheduling Overview
+************************
+
+Maui can participate in a grid environment providing functionality and
+information critical to effective grid scheduling. Maui can provide
+information to grid schedulers about what resources are available, how
+much the resources cost, and when remote jobs can run. Maui also
+provides resource reservation and job staging facilities to allow grid
+scheduling systems integrated support with Maui facilities.
+Currently, the `Silver Grid
+Scheduler <http://www.clusterresources.com/products/mgs/docs/>`__ is the
+most advanced grid scheduler taking advantage of these capabilities. It
+provides automated data staging, account and allocation management, and
+resource reservation optimizations. It provides an intuitive interface
+for job submission and job management, using submission languages from
+popular resource management systems. The the `Silver Home
+Page <http://www.clusterresources.com/products/mgs>`__ for more
+information.
+
+Configuring Maui to Inter-Operate with Grid Schedulers
+******************************************************
+
+To utilize cluster scheduler facilities, the grid scheduler must be
+authenticated and authorized. Grid scheduler authentication is enabled
+by adding an entry to the ``maui-private.cfg`` file as shown in the
+`Interface Security <a.esecurity.html#interface>`__ section of appendix
+E. Once authentication is setup, the level of grid scheduler
+authorization is configured. In most cases, the grid scheduler is
+assigned the role of a *level 1 admin* using the
+`ADMIN1 <a.fparameters.html>`__ parameter.
+In most cases, not only must the grid scheduler be authenticated to
+Maui, but Maui must also be authenticated to the grid scheduler. In the
+case of Silver, this is accomplished by *naming* the instance of Maui by
+using the `SCHEDCFG <a.fparameters.html#schedcfg>`__ parameter and
+adding the shared secret key to silver's ``silver.cfg`` file.
+
+Specifying Cluster Level Policies for Grid Jobs
+***********************************************
+
+The number and type of resources available for grid jobs can be
+constrained using policies and/or reservations. All grid workload is
+assigned the job attribute **GRID**. Reservations and policies can be
+configured to allow or deny access based on this attribute providing
+access to or exclusion from specific resources, limiting the quantity of
+grid jobs which can run at any given time, or constraining access to
+other special functions such as preemption.
+
+Evaluating Performance Impact of Grid Workload
+**********************************************
+
+Maui integrates the grid jobs into the standard job queue and, unless
+specifically directed by special grid policies, treats grid jobs just
+like ordinary workload. In fact, aside from having the **GRID** job
+attribute set, grid jobs are identical to locally submitted workload.
+&nbps;When a grid job is received, Maui tracks two additional pieces of
+information. This information, **System Id** and **System Job Id**
+indicates the submitting grid scheduler and *global* job id
+respectively. To determine a job's global job id, the
+`showq <commands/showq.html>`__ command can be run with the '**-g**'
+flag.
+
+Diagnosing Grid Based Issues
+****************************
+
+To address various grid specific failures, Maui provides integrated
+diagnostic tools. Among the most useful is the `diagnose
+-S <commands/diagnose.html>`__ command. This command provides
+information about the status of required grid management modules and the
+status of grid scheduler interface. In addition, it also reports on any
+grid level failures or discrepancies it locates.

@@ -285,7 +285,7 @@ int MCPRestore(
  
   if (((tmp = strchr(ptr,'\n')) != NULL) && (tmp - ptr < MAX_MLINE))
     {
-    MUStrCpy(Line,ptr,MIN(sizeof(Line),(tmp - ptr + 1)));
+    MUStrCpy(Line,ptr,MIN((long)sizeof(Line),(tmp - ptr + 1)));
     }
   else
     {
@@ -819,7 +819,7 @@ int MCPStoreCluster(
  
       /* copy old data */
  
-      MUStrCpy(tmpLine,ptr,MIN(sizeof(tmpLine),tail - ptr + 1));
+      MUStrCpy(tmpLine,ptr,MIN((long)sizeof(tmpLine),tail - ptr + 1));
  
       fprintf(CP->fp,"%s\n",
         tmpLine);

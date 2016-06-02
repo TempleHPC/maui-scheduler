@@ -627,13 +627,13 @@ enum MTimePolicyEnum {
 /* server checkpointing object */
 
 typedef struct {
-  char  CPFileName[MAX_MLINE];
+  char   CPFileName[MAX_MLINE];
 
-  char *Buffer;
+  char  *Buffer;
  
-  int   CPInterval;         /* seconds between subsequent checkpoints          */
-  int   CPExpirationTime;   /* seconds stale checkpoint data will be kept      */
-  mulong LastCPTime;        /* time of most recent checkpoint                  */
+  time_t CPInterval;         /* seconds between subsequent checkpoints          */
+  time_t CPExpirationTime;   /* seconds stale checkpoint data will be kept      */
+  time_t LastCPTime;         /* time of most recent checkpoint                  */
  
   char  DVersion[MAX_MNAME];      /* detected data version */
   char  SVersionList[MAX_MLINE];  /* supported versions    */
@@ -1184,23 +1184,23 @@ typedef struct {
 
   int   ChargePolicy;             /* allocation charge policy                        */
 
-  mulong FlushInterval;           /* AM flush interval                               */
-  mulong FlushTime;
+  time_t FlushInterval;           /* AM flush interval                               */
+  time_t FlushTime;
 
   int   DeferJobOnFailure;        /* boolean */
   int   AppendMachineName;        /* boolean */
 
   char  FallbackAccount[MAX_MNAME]; /* account to use if primary account is unavailable */
 
-  long   FailTime[MAX_MRMFAILURE];
+  time_t FailTime[MAX_MRMFAILURE];
   int    FailType[MAX_MRMFAILURE];
   char  *FailMsg[MAX_MRMFAILURE];
   int    FailIndex;
 
-  long   RespTotalTime[MMAX_AMFUNC];
-  long   RespMaxTime[MMAX_AMFUNC];
+  time_t RespTotalTime[MMAX_AMFUNC];
+  time_t RespMaxTime[MMAX_AMFUNC];
   int    RespTotalCount[MMAX_AMFUNC];
-  long   RespStartTime[MMAX_AMFUNC];
+  time_t RespStartTime[MMAX_AMFUNC];
 
   msocket_t *S;
   FILE      *FP;
@@ -1948,7 +1948,7 @@ typedef struct {
   mnode_t    **MNode;
   mrange_t    *MRange;
   mpar_t      *MPar;
-  mulong      *PresentTime;
+  time_t      *PresentTime;
   sres_t      *OSRes;
   mres_t     **Res;
   mrm_t       *RM;
@@ -1963,23 +1963,23 @@ typedef struct {
 
 
 typedef struct {
-  long MTime;
-  long ETime;
-  long WallTime;
+  time_t MTime;
+  time_t ETime;
+  time_t WallTime;
 
-  long WCLimit;
+  time_t WCLimit;
 
-  int  JobSwapLimit;
-  int  JobMemLimit;
+  int    JobSwapLimit;
+  int    JobMemLimit;
 
-  int  NCPUs;
-  int  NodesRequested;
-  int  ProcsRequested;
+  int    NCPUs;
+  int    NodesRequested;
+  int    ProcsRequested;
 
-  long ProcCPULimit;
-  long JobCPULimit;
+  time_t ProcCPULimit;
+  time_t JobCPULimit;
 
-  long UtlJobCPUTime;
+  time_t UtlJobCPUTime;
   } tpbsa_t;
 
 enum MFormatModeEnum {
@@ -2081,19 +2081,6 @@ enum MSSSObjNameEnum {
   msonWhere };
 
 #include "moab-wiki.h"    
-
-#ifndef __MX
-#define __MX
-#endif /* __MX */
-
-#if !defined(__MX)
-#define MAX_SUNAME             64
-#define MAX_SULINE           1024
-#define MAX_G2XMLATTR          64
-#define DEFAULT_G2XMLICCOUNT   16
-#else /* !__MX */
-#include "mg2.h"
-#endif /* !__MX */
 
 #ifdef __M_H      
 

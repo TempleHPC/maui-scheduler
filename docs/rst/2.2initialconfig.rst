@@ -1,0 +1,54 @@
+Initial Maui Configuration
+##########################
+
+After you install Maui, there are a few decisions which must be made and
+some corresponding information which will need to be provided in the
+Maui configuration file, **maui.cfg**. The **configure** script
+automatically sets most of these parameters for you. However, this
+document provides some additional information to allow further initial
+configuration. If you are satisfied with the values specified in
+**configure** then you can probably skip this section. The parameters
+needed for proper initial startup include the following:
+
+- **SERVERHOST**
+
+This specifies where Maui will run. It allows Maui client commands to
+locate the Maui server. It must specify the fully qualified hostname of
+the machine on which Maui will run. (Example: ``SERVERHOST cw.psu.edu``)
+
+- **SERVERPORT**
+
+This specifies the port on which the Maui server will listen for client
+connections. Unless the default port of 40559 is unacceptable, this
+parameter need not be set. (Example: ``SERVERPORT 50001``)
+
+- **ADMIN1**
+
+Maui has 3 major levels of admin access. Users which are to be granted
+full control of all Maui functions should be indicated by setting the
+**ADMIN1** parameter. The first user in this list is considered the
+*primary* admin. It is the ID under which Maui should always run. Maui
+will only run under the primary admin user id and will shut itself down
+otherwise. In order for Maui to properly interact with both PBS and
+Loadleveler, it is important that the primary Maui admin also be
+configured as a resource manager admin within each of those systems.
+(Example: ``ADMIN1 joe charles``)
+
+- **RMTYPE[X]**
+
+Maui must be told which resource manager(s) to talk to. Maui currently
+has interfaces to Loadleveler, Wiki, and PBS. To specify a resource
+manager, typically only the resource manager type needs to be indicated
+using the keywords LL, WIKI, or PBS (Example: ``RMTYPE[0] PBS``). The
+array index in the parameter name allows more than one resource manager
+to be specified. In these multiple resource manager situations,
+additional parameters may need to be specified depending on the resource
+manager type. Some of the related resource management parameters are
+listed below. Further information about each is available in the
+`parameters <a.fparameters.html>`__ documentation.
+
+| `RMPORT <a.fparameters.html#rmport>`__
+| `RMSERVER <a.fparameters.html#rmserver>`__
+| `RMTYPE <a.fparameters.html#rmtype>`__
+| `RMAUTHTYPE <a.fparameters.html#rmauthtype>`__
+| `RMCONFIGFILE <a.fparameters.html#rmconfigfile>`__

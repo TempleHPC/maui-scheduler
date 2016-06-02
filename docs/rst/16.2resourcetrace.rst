@@ -1,0 +1,134 @@
+Resource Traces
+###############
+
+Resource traces fully describe all scheduling relevant aspects of a
+batch system's compute resources. In most cases, each resource trace
+describes a single compute node providing information about configured
+resources, node location, supported classes and queues, etc. Each
+resource trace consists of a single line composed of 21 whitespace
+delimited fields. Each field is described in detail in the table
+below.
+
+**Field Name**
+**Field Index**
+**Data Format**
+**Default Value**
+**Details**
+Resource Type
+1
+one of **COMPUTENODE**
+**COMPUTENODE**
+currently the only legal value is **COMPUTENODE**
+Event Type
+2
+one of **AVAILABLE**, **DEFINED**, or **DRAINED**
+[NONE]
+when **AVAILABLE**, **DEFINED**, or **DRAINED** is specified, node will
+start in the state Idle, Down, or Drained respectively.
+Event Time
+3
+<EPOCHTIME>
+1
+time event occurred. (currently ignored)
+Resource ID
+4
+<STRING>
+N/A
+for **COMPUTENODE** resources, this should be the name of the node.
+Resource Manager Name
+5
+<STRING>
+[NONE]
+name of resource manager resource is associated with
+Configured Swap
+6
+<INTEGER>
+1
+amount of virtual memory (in MB) configured on node
+Configured Memory
+7
+<INTEGER>
+1
+amount of real memory (in MB) configured on node (i.e. RAM)
+Configured Disk
+8
+<INTEGER>
+1
+amount of local disk (in MB) on node available to batch jobs
+Configured Processors
+9
+<INTEGER>
+1
+number of processors configured on node
+Resource Frame Location
+10
+<INTEGER>
+1
+number of frame containing node (SP2 only)
+Resource Slot Location
+11
+<INTEGER>
+1
+Number of first frame slot used by node (SP2 only)
+Resource Slot Use Count
+12
+<INTEGER>
+1
+Number of frame slots used by node (SP2 only)
+Node Operating System
+13
+<STRING>
+[NONE]
+node operating system
+Node Architecture
+14
+<STRING>
+[NONE]
+node architecture
+Configured Node Features
+15
+<STRING>
+[NONE]
+square bracket delimited list of node features/attributes (ie,
+'[amd][s1200]')
+Configured Run Classes
+16
+<STRING>
+[batch:1]
+square bracket delimited list of CLASSNAME:CLASSCOUNT pairs.
+Configured Network Adapters
+17
+<STRING>
+[NONE]
+square bracket delimited list of configured network adapters (ie,
+'[atm][fddi][ethernet]')
+Relative Resource Speed
+18
+<DOUBLE>
+1.0
+relative machine speed value
+RESERVED FIELD 1
+19
+<STRING>
+[NONE]
+[NONE]
+RESERVED FIELD 2
+20
+<STRING>
+[NONE]
+[NONE]
+RESERVED FIELD 3
+21
+<STRING>
+[NONE]
+[NONE]
+
+
+.. note::
+
+   If no applicable value is specified, the exact string '**[NONE]**' should be entered.
+
+
+Sample Resource Trace:
+
+'``COMPUTENODE AVAILABLE 0 cluster008 PBS1 423132 256 7140 2 -1 -1 1 LINUX62 AthlonK7 [s950][compute] [batch:2]  [ethernet][atm] 1.67 [NONE] [NONE] [NONE]``'

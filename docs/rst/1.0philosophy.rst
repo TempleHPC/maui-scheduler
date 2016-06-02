@@ -1,0 +1,17 @@
+Philosophy
+##########
+
+The goal of a scheduler in the broadest sense is to make users,
+administrators, and managers happy. Users desire the ability to specify
+resources, obtain quick turnaround on their jobs, and receive reliable
+allocation of resources. Administrators desire happy managers and happy
+users. They also desire the ability to understand both the workload and
+the resources available. This includes current state, problems, and
+statistics as well as information about what is happening *under the covers*.
+They need an extensive set of *buttons* and *knobs* to both enable management
+enforced policies and tune the system to obtain desired statistics.
+
+.. toctree::
+
+   1.1batchsysvalue
+   1.2philandgoals

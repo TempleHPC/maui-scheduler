@@ -9,8 +9,6 @@
 
 #define __MS330
 
-/* #include "mg2.h" */
-
 extern mlog_t    mlog;
 
 extern msched_t    MSched;
@@ -2509,7 +2507,7 @@ int MS3QueueLoadInfo(
     return(FAILURE);
     }
 
-  if ((MSched.Time > (unsigned long)(R->U.S3.ServerSDTimeStamp + 3000)) ||
+  if ((MSched.Time > (R->U.S3.ServerSDTimeStamp + 3000)) ||
       (R->U.S3.ServerSD <= 0))
     {
     MS3Initialize(R,NULL);
@@ -3050,7 +3048,7 @@ int MS3NodeLoad(
   int           nindex;
   int           cindex;
 
-  mulong        tmpTime;
+  time_t        tmpTime;
 
   mxml_t      *E;
   mxml_t      *C;
@@ -3212,9 +3210,9 @@ int MS3NodeUpdate(
   mrm_t     *R)      /* I */
 
   {
-  int           cindex;
+  int          cindex;
 
-  mulong        tmpTime;
+  time_t       tmpTime;
 
   mxml_t      *E;
   mxml_t      *C;

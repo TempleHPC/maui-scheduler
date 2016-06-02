@@ -1,0 +1,262 @@
+Resource Manager Configuration
+##############################
+
+Configurable Resource Manager Attributes
+****************************************
+
+The scheduler's resource manager interface(s) are defined using the
+`RMCFG <a.fparameters.html#rmcfg>`__ parameter. This parameter allows
+specification of key aspects of the interface as shown in the table
+below.
+
+**Attribute**
+**Format**
+**Default**
+**Description**
+**Example**
+**ASYNCJOBSTART**
+<BOOLEAN>
+**FALSE**
+Enables Maui to start jobs asynchronously. **NOTE**: Only enabled for
+PBS.
+``RMCFG[pbs] ASYNCJOBSTART=TRUE ``
+**AUTHTYPE**
+one of **CHECKSUM**, **PKI**, or **SECUREPORT**
+**CHECKSUM**
+specifies the security protocol to be used in scheduler-resource manager
+communication. **NOTE**: Only valid with WIKI based interfaces.
+``RMCFG[base] AUTHTYPE=CHECKSUM``
+(The scheduler will require a secret key based checksum associated with
+each resource manager message)
+
+**CONFIGFILE**
+<STRING>
+**N/A**
+specifies the resource manager specific configuration file which must be
+used to enable correct API communication. **NOTE**: Only valid with LL
+based interfaces.
+``RMCFG[base] TYPE=LL CONFIGFILE=/home/loadl/loadl_config``
+(The scheduler will utilize the specified file when establishing the
+resource manager/scheduler interface connection)
+
+**EPORT**
+<INTEGER>
+**N/A**
+specifies the event port to use to receive resource manager based
+scheduling events.
+``RMCFG[base] EPORT=15017``
+(The scheduler will look for scheduling events from the resource manager
+host at port 15017)
+
+**MINETIME**
+<INTEGER>
+**1**
+specifies the minimum time in seconds between processing subsequent
+scheduling events.
+``RMCFG[base] MINETIME=5``
+(The scheduler will batch-process scheduling events which occur less
+than 5 seconds apart.)
+
+**NMPORT**
+<INTEGER>
+(any valid port number)
+specifies a non-default RM node manager through which extended node
+attribute information may be obtained
+``RMCFG[base] NMPORT=13001``
+(The scheduler will contact the node manager located on each compute
+node at port 13001)
+
+**PORT**
+<INTEGER>
+0
+specifies the port on which the scheduler should contact the associated
+resource manager. The value '0' specifies that the resource manager
+default port should be used.
+``RMCFG[base] TYPE=PBS HOST=cws PORT=20001``
+(The scheduler will attempt to contact the PBS server daemon on host
+cws, port 20001)
+
+**SERVER**
+<URL>
+N/A
+specifies the resource management service to use. If not specified, the
+scheduler will locate the resource manager via built-in defaults or, if
+available, with an information service. **NOTE**: only available in Maui
+3.2.7 and higher.
+``RMCFG[base] server=ll://supercluster.org:9705``
+(The scheduler will attempt to utilize the Loadleveler scheduling API at
+the specified location.)
+
+**SUBMITCMD**
+<STRING>
+**N/A**
+specifies the full pathname to the resource manager job submission
+client.
+``RMCFG[base] SUBMITCMD=/usr/local/bin/qsub``
+(The scheduler will use the specified submit command when launching
+jobs.)
+
+**TIMEOUT**
+<INTEGER>
+15
+time (in seconds) the scheduler will wait for a response from the
+resource manager.
+``RMCFG[base] TIMEOUT=30``
+(The scheduler will wait 30 seconds to receive a response from the
+resource manager before timing out and giving up. The scheduler will try
+again on the next iteration.)
+
+**TYPE**
+<RMTYPE>[:<RMSUBTYPE>] where <RMTYPE> is one of the following: **LL**,
+**LSF**, **PBS**, **RMS**, **SGE**, **SSS**, or **WIKI** and the
+optional <RMSUBTYPE> value is one of **RMS**
+PBS
+specifies type of resource manager to be contacted by the scheduler.
+NOTE: for **TYPE** **WIKI**, **AUTHTYPE** must be set to **CHECKSUM**
+The <RMSUBTYPE> option is currently only used to support Compaq's RMS
+resource manager in conjunction with PBS. In this case, the value
+``PBS:RMS`` should be specified. **NOTE**: deprecated in Maui 3.2.7 and
+higher - use **server** attribute.
+``RMCFG[clusterA] TYPE=PBS HOST=clusterA PORT=15003``
+``RMCFG[clusterB] TYPE=PBS HOST=clusterB PORT=15005``
+(The scheduler will interface to two different PBS resource managers,
+one located on server clusterA at port 15003 and one located on server
+clusterB at port 15004)
+
+Resource Manager Configuration Details
+**************************************
+
+As with all scheduler parameters, **RMCFG** follows the syntax described
+within the `Parameters Overview <3.4configure.html>`__.
+
+Resource Manager Types
+======================
+
+The parameter **RMCFG** allows the scheduler to interface to multiple
+types of resource managers using the **TYPE** or **SERVER** attributes.
+Specifying these attributes, any of the resource managers listed below
+may be supported. To further assist in configuration, *Integration
+Guides* are provided for `PBS <pbsintegration.html>`__,
+`SGE <sgeintegration.html>`__, and `Loadleveler <llintegration.html>`__
+systems.
+
++--------------------------------------------------------------------------+
+| **TYPE**                                                                 |
+| **Resource Managers**                                                    |
+| **Details**                                                              |
++--------------------------------------------------------------------------+
+| LL                                                                       |
+| Loadleveler version 2.x and 3.x                                          |
+| N/A                                                                      |
++--------------------------------------------------------------------------+
+| LSF                                                                      |
+| Platform's Load Sharing Facility, version 5.1 and higher                 |
+| N/A                                                                      |
++--------------------------------------------------------------------------+
+| PBS                                                                      |
+| OpenPBS (all versions), TORQUE (all versions), PBSPro (all versions)     |
+| N/A                                                                      |
++--------------------------------------------------------------------------+
+| RMS                                                                      |
+| RMS (for Quadrics based systems)                                         |
+| for development use only - not production quality                        |
++--------------------------------------------------------------------------+
+| SGE                                                                      |
+| Sun Grid Engine version 5.3 and higher                                   |
+| N/A                                                                      |
++--------------------------------------------------------------------------+
+| SSS                                                                      |
+| Scalable Systems Software Project version 0.5 and 2.0 and higher         |
+| N/A                                                                      |
++--------------------------------------------------------------------------+
+| WIKI                                                                     |
+| `Wiki <wiki>`__ interface specification version 1.0 and higher           |
+| used for LRM, YRM, ClubMASK, BProc, and others                           |
++--------------------------------------------------------------------------+
+
+Resource Manager Name
+=====================
+
+Maui can support more than one resource manager simultaneously.
+Consequently, the **RMCFG** parameter takes an index value, i.e.,
+``RMCFG[clusterA] TYPE=PBS``. This index value essentially *names* the
+resource manager (as done by the deprecated parameter **RMNAME**. The
+resource manager name is used by the scheduler in diagnostic displays,
+logging, and in reporting resource consumption to the allocation
+manager. For most environments, the selection of the resource manager
+*name* can be arbitrary.
+
+Resource Manager Location
+=========================
+
+The **HOST**, **PORT**, and **SERVER** attributes can be used to specify
+how the resource manager should be contacted. For many resource managers
+(i.e., OpenPBS, PBSPro, Loadleveler, SGE, LSF, etc) the interface
+correctly establishes contact using default values. These parameters
+need only to be specified for resource managers such as the WIKI
+interface (which do not include defaults) or with resources managers
+which can be configured to run at non-standard locations (such as PBS).
+In all other cases, the resource manager is automatically located.
+
+Other Attribute
+===============
+
+The maximum amount of time Maui will wait on a resource manager call can
+be controlled by the **`TIMEOUT <a.fparameters.html#rmcfg>`__**
+parameter which defaults to 30 seconds. Only rarely will this parameter
+need to be changed. The **AUTHTYPE** attribute allows specification of
+how security over the scheduler/resource manager interface is to be
+handled. Currently, only the WIKI interface is affected by this
+parameter.
+
+Another **RMCFG** attribute is
+**`CONFIGFILE <a.fparameters.html#rmcfg>`__**, which specifies the
+location of the resource manager's primary config file and is used when
+detailed resource manager information not available via the scheduling
+interface is required. It is currently only used with the Loadleveler
+interface and needs to only be specified when using Maui grid-scheduling
+capabilities.
+
+Finally, the `NMPORT <a.fparameters.html#rmcfg>`__ attribute allows
+specification of the resource manager's node manager port and is only
+required when this port has been set to a non-default value. It is
+currently only used within PBS to allow MOM specific information to be
+gathered and utilized by Maui.
+
+Scheduler/Resource Manager Interactions
+***************************************
+
+In the simplest configuration, Maui interacts with the resource manager
+using the four primary functions listed below:
+
+**GETJOBINFO**
+
+Collect detailed state and requirement information about idle, running,
+and recently completed jobs.
+
+**GETNODEINFO**
+
+Collect detailed state information about idle, busy, and defined nodes.
+
+**STARTJOB**
+
+Immediately start a specific job on a particular set of nodes.
+
+**CANCELJOB**
+
+Immediately cancel a specific job regardless of job state.
+
+Using these four simple commands, Maui enables nearly its entire suite
+of scheduling functions. More detailed information about resource
+manager specific requirements and semantics for each of these commands
+can be found in the specific resource manager overviews. (LL, PBS, or
+`WIKI <wiki>`__).
+
+In addition to these base commands, other commands are required to
+support advanced features such a dynamic job support, suspend/resume,
+gang scheduling, and scheduler initiated checkpoint restart. More
+information about these commands will be forthcoming.
+
+Information on creation a new scheduler resource manager interface can
+be found in the `Adding New Resource Manager
+Interfaces <13.4addingrminterfaces.html>`__ section.

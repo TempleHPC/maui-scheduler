@@ -1,0 +1,47 @@
+User Feedback Overview
+######################
+
+The 'Feedback' facility allows a site to provide job performance
+information to users at job completion time. When a job completes, the
+program pointed to by the
+`FEEDBACKPROGRAM <a.fparameters.html#feedbackprogram>`__ parameter is
+called with a number of command line arguments. The site is responsible
+for creating a program capable of processing and acting upon the
+contents of the command line. The command line arguments passed are a
+follows
+
+| - job name
+| - user name
+| - NONE
+| - final job state
+| - QOS requested
+| - epoch time job was submitted
+| - epoch time job started
+| - epoch time job completed
+| - job XFactor
+| - job wallclock limit
+| - processors requested
+| - memory requested
+| - average per task cpu load
+| - maximum per task cpu load
+| - average per task memory usage
+| - maximum per task memory usage
+
+For many sites, the feedback script is useful as a means of letting
+user's know that accuracy of their wallclock limit estimate, as well as
+the cpu efficiency, and memory usage pattern of their job. The feedback
+script may be used as a mechanism to do any of the following:
+
+| - email users regarding statistics of all completed jobs
+| - email users only when certain criteria are met (ie. "Dear John, you
+  submitted job X requesting 128MB of memory per task. It actually
+  utilized 253 MB of memory per task potentially wreaking havoc with the
+  entire system! Please improve your resource usage estimates in future
+  jobs!")
+| - update system databases
+| - take system actions based on job completion statistics
+
+.. note::
+
+   some of these fields may be set to zero if the underlying
+   OS/Resource Manager does not support the necessary data collection.

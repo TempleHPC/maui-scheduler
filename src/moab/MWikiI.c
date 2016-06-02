@@ -1332,7 +1332,7 @@ int MWikiUpdateJob(
 
   while ((tail = MUStrChr(ptr,';')) != NULL)
     {
-    MUStrCpy(JobAttr,ptr,MIN(sizeof(JobAttr),(tail - ptr + 1)));
+    MUStrCpy(JobAttr,ptr,MIN((long)sizeof(JobAttr),(tail - ptr + 1)));
 
     MUPurgeEscape(JobAttr);
 

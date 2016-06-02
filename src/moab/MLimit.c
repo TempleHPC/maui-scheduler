@@ -66,7 +66,7 @@ int MLimitEnforceAll(
     if ((JobWCX >= 0) &&
         (J->WCLimit > 0) &&
         (MSched.Time > J->StartTime) &&
-       ((unsigned long)(MSched.Time - J->StartTime) > (J->WCLimit + J->SWallTime + JobWCX)))
+       ((MSched.Time - J->StartTime) > (J->WCLimit + J->SWallTime + JobWCX)))
       {
       DBG(2,fCORE) DPrint("ALERT:    job '%s' in state '%s' has exceeded its wallclock limit (%ld+S:%ld) by %s (job will be cancelled)\n",
         J->Name,
@@ -94,12 +94,20 @@ int MLimitEnforceAll(
         }
       else
         {
-        if (MRMJobCancel(J,"MOAB_INFO:  job exceeded wallclock limit\n",NULL) == FAILURE)
+        int nindex,isDown=0;
+
+        /* detect if any of the nodes are down. we cannot be certain, which one
+         * is the mother superior, so we assume if one is down it is the one */
+        for (nindex = 0; J->NodeList[nindex].N != NULL; ++nindex)
           {
-          /* extend job wallclock by JobWCX */
- 
-          /* NYI */
+              if (J->NodeList[0].N->State == mnsDown) isDown = 1;
           }
+
+        /* if a node is down, delete with prejudice on PBS/Torque */
+        if (isDown)
+          MRMJobCancel(J,"delpurge=1\nMAUI_INFO:  job exceeded wallclock limit\n",NULL);
+        else
+          MRMJobCancel(J,"MAUI_INFO:  job exceeded wallclock limit\n",NULL);
         }
       }    /* END if ((JobWCX >= 0) && ...) */
 

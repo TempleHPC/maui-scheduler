@@ -1400,13 +1400,10 @@ int ServerSetCreds(
 int ServerAuthenticate()
 
   {
-#ifndef __NT
-
   int uid;
   int gid;
 
   int index;
-#endif /* __NT */
 
   char  FileName[MAX_MLINE];
   FILE *fp;
@@ -1418,26 +1415,9 @@ int ServerAuthenticate()
   DBG(2,fALL) DPrint("%s()\n",
     FName);
 
-  /* verify server is not already running */
-
-  if ((MSched.Mode != msmTest) &&
-      (MFULock(MSched.HomeDir,MSched.LockFile) == FAILURE))
-    {
-    DBG(0,fALL) DPrint("ERROR:    scheduler is already running  (cannot obtain lock on file '%s')\n",
-      MSched.LockFile);
-
-    if (mlog.logfp != stderr)
-      fprintf(stderr,"ERROR:    scheduler is already running  (cannot obtain lock on file '%s')\n",
-        MSched.LockFile);
-
-    exit(1);
-    }
-
   /* verify scheduler is being run by scheduler admin user */
 
   ValidAdmin = FALSE;
-
-#ifndef __NT
 
   uid = MOSGetUID();
 
@@ -1511,8 +1491,6 @@ int ServerAuthenticate()
         strerror(errno));
       }
     }    /* END if ((fp = fopen(FileName,"w+")) != NULL) */
-
-#endif /* NOT __NT */
 
   return(SUCCESS);
   }  /* END ServerAuthenticate() */

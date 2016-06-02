@@ -113,7 +113,7 @@ int MTraceLoadResource(
     return(FAILURE);
     }
 
-  MUStrCpy(Line,ptr,MIN(sizeof(Line),tail - ptr + 1));
+  MUStrCpy(Line,ptr,MIN((long)sizeof(Line),tail - ptr + 1));
 
   /* eliminate comments */
 
@@ -947,7 +947,7 @@ int MTraceLoadWorkload(
 
   head = Buffer;
 
-  MUStrCpy(Line,head,MIN(tail - head + 1,sizeof(Line)));
+  MUStrCpy(Line,head,MIN(tail - head + 1,(long)sizeof(Line)));
 
   DBG(6,fSIM) DPrint("INFO:     parsing trace line '%s'\n",
     Line);
@@ -1402,7 +1402,7 @@ int MTraceLoadWorkload(
                   {
                   /* try short name */
 
-                  MUStrCpy(MReqHList,ptr,MIN(sizeof(MReqHList),(tail - ptr + 1)));
+                  MUStrCpy(MReqHList,ptr,MIN((long)sizeof(MReqHList),(tail - ptr + 1)));
                   }
                 else
                   {
@@ -1503,7 +1503,7 @@ int MTraceLoadWorkload(
   if (RQ[0]->DRes.Procs == 0)
     RQ[0]->DRes.Procs = 1;
 
-  if (J->SpecWCLimit[0] == (unsigned long)-1)
+  if (J->SpecWCLimit[0] == -1)
     J->SpecWCLimit[0] = MAX_MTIME;
 
   MUStrDup(&J->E.Cmd,tmpCmd);

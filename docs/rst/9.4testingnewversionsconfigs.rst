@@ -1,0 +1,69 @@
+Testing New Versions and Configurations
+#######################################
+
+'TEST' Mode
+***********
+
+Maui supports a scheduling mode called **TEST**. In this mode, the
+scheduler initializes, contacts the resource manager and other peer
+services, and conducts scheduling cycles exactly as it would if running
+in **NORMAL** or production mode. Job are prioritized, reservations
+created, policies and limits enforced, and admin and end-user commands
+enabled. The key difference is that although *live* resource management
+information is loaded, **TEST** mode disables Maui's ability to start,
+preempt, cancel, or otherwise modify jobs or resources. Maui continues
+to attempt to schedule exactly as it would in **NORMAL** mode but its
+ability to actually impact the system is disabled. Using this mode, a
+site can quickly verify correct resource manager configuration and
+scheduler operation. This mode can also be used to validate new policies
+and constraints. In fact, Maui can be run in **TEST** mode on a
+production system while another scheduler or even another version of
+Maui is running on the same system. This unique ability can allow new
+versions and configurations to be fully tested without any exposure to
+potential failures and with no cluster downtime.
+
+To run Maui in **TEST** mode, simply set the **MODE** attribute of the
+**SCHEDCFG** parameter to **TEST** and start Maui. Normal scheduler
+commands can be used to evaluate configuration and performance.
+`Diagnostic commands <14.1internaldiagnostics.html>`__ can be used to
+look for any potential issues. Further, the Maui log file can be used to
+determine which jobs Maui attempted to start, and which resources Maui
+attempted to allocate.
+
+If another instance of Maui is running in production and a site wishes
+to evaluate an alternate configuration or new version, this is easily
+done but care should be taken to avoid conflicts with the primary
+scheduler. Potential conflicts include statistics files, logs,
+checkpoint files, and user interface ports. One of the easiest ways to
+avoid these conflicts is to create a new 'test' directory with its own
+log and stats subdirectories. The new **maui.cfg** file can be created
+from scratch or based on the existing maui.cfg file already in use. In
+either case, make certain that the **PORT** attribute of the
+**SCHEDCFG** parameter differs from that used by the production
+scheduler by at least two ports. If testing with the production binary
+executable, the **MAUIHOMEDIR** environment variable should be set to
+point to the new test directory in order to prevent Maui from loading
+the production maui.cfg file.
+
+'INTERACTIVE' Mode
+******************
+
+**INTERACTIVE** mode allows for evaluation of new versions and
+configurations in a manner different from **TEST** mode. Instead of
+disabling all resource and job control functions, Maui sends the desired
+change request to the screen and *asks* for permission to complete it.
+For example, before starting a job, Maui may print something like the
+following to the screen
+
+::
+
+    Command:  start job 1139.ncsa.edu on node list test013,test017,test018,test021
+    Accept:  (y/n) [default: n]?
+
+The administrator must specifically accept each command request after
+verifying it correctly meets desired site policies. Maui will then
+execute the specified command. This mode is highly useful in validating
+scheduler behavior and can be used until configuration is appropriately
+tuned and all parties are comfortable with the scheduler's performance.
+In most cases, sites will want to set the scheduling mode to **NORMAL**
+after verifying correct behavior.

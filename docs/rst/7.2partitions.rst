@@ -1,0 +1,162 @@
+Partitions
+##########
+
+Partitions are a logical construct which divide available resources. By
+default, a given job may only utilize resources within a single
+partition and any resource (i.e., compute node) may only be associated
+with a single partition. In general, partitions are organized along
+physical or political boundaries. For example, a cluster may consist of
+256 nodes containing four 64 port switches. This cluster may receive
+excellent interprocess communication speeds for parallel job tasks
+located within the same switch but sub-stellar performance for tasks
+which span switches. To handle this, the site may choose to create four
+partitions, allowing jobs to run within any of the four partitions but
+not span them.
+
+While partitions do have value, it is important to note that within
+Maui, the `standing reservation <7.1.3standingreservations.html>`__
+facility provides significantly improved flexibility and should be used
+in the vast majority of cases where partitions are required under other
+resource management systems. Standing reservations provide time
+flexibility, improved access control features, and more extended
+resource specification options. Also, another Maui facility called `Node
+sets <8.3nodesetoverview.html>`__ allows intelligent aggregation of
+resources to improve per job node allocation decisions. In cases where
+system partitioning is considered for such reasons, node sets may be
+able to provide a better solution.
+
+Still, one key advantage of partitions over standing reservations and
+node sets is the ability to specify partition specific policies, limits,
+priorities, and scheduling algorithms although this feature is rarely
+required. An example of this need may be a cluster consisting of 48
+nodes owned by the Astronomy Department and 16 nodes owned by the
+Mathematics Department. Each department may be willing to allow sharing
+of resources but wants to specify how their partition will be used. As
+mentioned earlier, many of Maui's scheduling policies may be specified
+on a per partition basis allowing each department to control the
+scheduling goals within their partition.
+
+The partition associated with each node must be specified as indicated
+in the `Node Location <12.1nodelocation.html>`__ section. With this
+done, partition access lists may be specified on a per job or per QOS
+basis to constrain which resources a job may have access to (See the
+`QOS Overview <7.3qos.html>`__ for more information). By default, QOS's
+and jobs allow global partition access.
+
+If no partition is specified, Maui creates a single partition named
+'**DEFAULT**' into which all resources are placed. In addition to the
+DEFAULT partition, a pseudo-partition named '**[ALL]** ' is created
+which contains the aggregate resources of all partitions. **NOTE**:
+While DEFAULT is a real partition containing all resources not
+explicitly assigned to another partition, the [ALL] partition is only a
+convenience construct and is not a real partition; thus it cannot be
+requested by jobs or included in configuration ACL's.
+
+Defining Partitions
+*******************
+
+Node to partition mappings are established using the
+`NODECFG <a.fparameters.html#nodecfg>`__ parameter as shown in the
+example below.
+
+| ---
+| ``NODECFG[node001] PARTITION=astronomy``
+| ``NODECFG[node002] PARTITION=astronomy``
+| ``...``
+| ``NODECFG[node049] PARTITION=math``
+| ``...``
+| ---
+
+.. note::
+
+   By default, Maui only allows the creation of 4 partitions total. Two of these partitions, **DEFAULT**, and **[ALL]**,
+   are used internally, leaving only two additional partition definition slots available. If more partitions will be
+   needed, the maximum partition count should be adjusted. See Appendix D,
+   `Adjusting Default Limits <a.ddevelopment.html>`__, for information on increasing the maximum number of partitions.
+
+Managing Partition Access
+*************************
+
+Determining who can use which partition is specified using the **\*CFG**
+parameters (`USERCFG <a.fparameters.html#usercfg>`__ ,
+`GROUPCFG <a.fparameters.html#groupcfg>`__ ,
+`ACCOUNTCFG <a.fparameters.html#accountcfg>`__ ,
+`QOSCFG <a.fparameters.html#qoscfg>`__ ,
+`CLASSCFG <a.fparameters.html#classcfg>`__ , and
+`SYSTEMCFG <a.fparameters.html#systemcfg>`__ ). These parameters allow
+both a partition access list and default partition to be selected on a
+credential or system wide basis using the PLIST and PDEF keywords. By
+default, the access associated with any given job is the *logical or* of
+all partition access lists assigned to the job's credentials. Assume a
+site with two partitions, general, and test. The site management would
+like everybody to use the general partition by default. However, one
+user, steve, needs to perform the majority of his work on the test
+partition. Two special groups, staff and mgmt will also need access to
+use the test partition from time to time but will perform most of their
+work in the general partition. The example configuration below will
+enable the needed user and group access and defaults for this site.
+
+| ---
+| ``SYSCFG[base]  PLIST=  USERCFG[DEFAULT] PLIST=general``
+| ``USERCFG[steve] PLIST=general:test PDEF=test``
+| ``GROUPCFG[staff] PLIST=general:test PDEF=general``
+| ``GROUPCFG[mgmt] PLIST=general:test PDEF=general``
+| ---
+
+.. note::
+
+   By default, the system partition access list allows *global*
+   access to all partitions. If using *logically or* based partition access
+   lists, the system partition list should be explicitly constrained using
+   the **SYSCFG** parameter.
+
+While using a *logical or* approach allows sites to add access to
+certain jobs, some sites prefer to work the other way around. In these
+cases, access is granted by default and certain credentials are then
+restricted from access various partitions. To use this model, a system
+partition list must be specified. See the example below:
+
+| ---
+| ``SYSCFG[base]   PLIST=general,test&  USERCFG[demo]  PLIST=test&  GROUPCFG[staff] PLIST=general&``
+| ---
+
+In the above example, note the *ampersand* ('&'). This character, which
+can be located anywhere in the **PLIST** line, indicates that the
+specified partition list should be *logically and'd* with other
+partition access lists. In this case, the configuration will limit jobs
+from user **demo** to running in partition **test** and jobs from group
+**staff** to running in partition **general** . All other jobs will be
+allowed to run in either partition. **NOTE** : When using and based
+partition access lists, the base system access list must be specified
+with **SYSCFG**.
+
+Requesting Partitions
+*********************
+
+| Users may request to use any partition they have access to on a per
+  job basis. This is accomplished using the resource manager extensions
+  since most native batch systems do not support the partition concept.
+  For example, on a PBS system, a job submitted by a member of the group
+  staff could request that the job run in the test partition by adding
+  the line '#PBS -W x=PARTITION:test' to the command file. See the
+  `resource manager extension overview <13.3rmextensions.html>`__ for
+  more information on configuring and utilizing resource manager
+  extensions.
+
+Miscellaneous Partition Issues
+******************************
+
+Special jobs may be allowed to span the resources of multiple partitions
+if desired by associating the job with a QOS which has the flag
+'**SPAN**' set. (See the `QOSCFG <a.fparameters.html#qoscfg>`__
+parameter)
+
+A brief caution, use of partitions has been quite limited in recent
+years as other, more effective approaches are selected for site
+scheduling policies. Consequently, some aspects of partitions have
+received only minor testing. Still note that partitions are fully
+supported and any problem found will be rectified.
+
+**See Also:**
+
+Standing Reservations, Node Sets

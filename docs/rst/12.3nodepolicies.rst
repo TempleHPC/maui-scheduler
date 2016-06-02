@@ -1,0 +1,54 @@
+Node Specific Policies
+######################
+
+Specification of node policies is fairly limited within Maui mainly
+because the demand for such policies is limited. These policies allow a
+site to specify on a node by node basis what the node will and will not
+support. Node policies may be applied to specific nodes or applied
+system wide using the specification '``NODECFG[DEFAULT] ...``' Note that
+these policies were introduced over time so not all policies are
+supported in all versions.
+**MAXJOB**
+
+This policy constrains the number of total independent jobs a given node
+may run simultaneously. It can only be specified via the **NODECFG**
+parameter.
+
+**MAXJOBPERUSER**
+
+**** This policy constrains the number of total independent jobs a given
+node may run simultaneously associated with any single user. Like
+**MAXJOB**, it can only be specified via the
+`NODECFG <a.fparameters.html#nodecfg>`__ parameter.
+
+**MAXLOAD**
+
+**MAXLOAD** constrains the CPU load the node will support as opposed to
+the number of jobs. If the node's load exceeds the **MAXLOAD** limit and
+the `NODELOADPOLICY <a.fparameters.html#nodeloadpolicy>`__ parameter is
+set to **ADJUSTSTATE** , the node will be marked busy. Under Maui 3.0,
+the max load policy could be applied system wide using the parameter
+`NODEMAXLOAD <a.fparameters.html#nodemaxload>`__.
+
+|image4| Node policies are used strictly as constraints. If a node is
+defined as having a single processor or the
+`NODEACCESSPOLICY <a.fparameters.html#nodeaccesspolicy>`__ is set to
+**DEDICATED**, and a **MAXJOB** policy of 3 is specified, Maui will
+probably not run more than one job per node. A node's configured
+processors must be specified so that multiple jobs may run and then the
+**MAXJOB** policy will be effective. The number of configured processors
+per node is specified on a resource manager specific basis. PBS, for
+example, allows this to be adjusted by setting the number of virtual
+processors, 'np' per node in the PBS 'nodes' file.
+
+**Example:**
+
+| ---
+| ``# maui.cfg``\ ````
+
+| ``NODECFG[node024] MAXJOB=4 MAXJOBPERUSER=2``
+| ``NODECFG[node025] MAXJOB=2``
+| ``NODECFG[node026] MAXJOBPERUSER=1``
+| ``NODECFG[DEFAULT] MAXLOAD=2.5``
+| ...
+| ---

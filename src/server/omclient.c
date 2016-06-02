@@ -2955,7 +2955,7 @@ int MCShowReservedNodes(
     }  /* END if (Flags & (1 << mcmSummary)) */
 
   fprintf(stdout,"reservations on %s\n",
-    MULToDString((mulong *)&now));
+    MULToDString(&now));
 
   if (!(Mode & (1 << mcmRelative)))
     {
@@ -3054,7 +3054,7 @@ int MCShowReservedNodes(
           StartLine,
           DurationLine,
           (Flags & (1 << mcmVerbose)) ?
-             ctime(&tmpTime) : MULToDString((mulong *)&StartTime));
+             ctime(&tmpTime) : MULToDString(&StartTime));
         }  /* END else (Mode & (1 << mcmRelative)) */
 
       rcount++;
@@ -3266,7 +3266,7 @@ int MCShowIdle(
       SMPLine,
       MULToTString(WCLimit),
       jobClass,
-      MULToDString((mulong *)&qtime));
+      MULToDString(&qtime));
 
     DBG(3,fUI) DPrint("INFO:     Job[%03d] state: '%s' (char: '%c')\n",
       count,
@@ -3594,7 +3594,7 @@ int MCShowRun(
       procs,
       SMPLine,
       MULToTString(WCLimit - AWallTime),
-      MULToDString((mulong *)&stime));
+      MULToDString(&stime));
     }  /* END while (ptr) */
 
   if (C.DisplayFlags & (1 << dfNodeCentric))
@@ -3846,13 +3846,13 @@ int MCShowSchedulerStatistics(
   fprintf(stdout,"%s active for   %11s  stats initialized on %s",
     MSCHED_SNAME,
     MULToTString(SchedRunTime / 100),
-    MULToDString((mulong *)&InitializationTime));
+    MULToDString(&InitializationTime));
 
   if (Flags & (1 << mcmVerbose))
     {
     fprintf(stdout,"statistics for iteration %5d  scheduler started on %s",
       Iteration,
-      MULToDString((mulong *)&StartTime));
+      MULToDString(&StartTime));
     }
 
   fprintf(stdout,"\n");
@@ -4027,7 +4027,7 @@ int MCResetStats(
   Time = strtol(Buffer,NULL,0);
 
   fprintf(stdout,"statistics reset on %s\n",
-    MULToDString((mulong *)&Time));
+    MULToDString(&Time));
 
   return(SUCCESS);
   }  /* END MCResetStats() */
@@ -4258,7 +4258,7 @@ int MCShowJobDeadline(
         Name,
         CpuLimit,
         (Deadline - Now - CpuLimit),
-        MULToDString((mulong *)&Deadline));
+        MULToDString(&Deadline));
       }
     }
 
@@ -4624,7 +4624,7 @@ int MCShowQ(
       MJobState[state],
       procs,
       MULToTString(WCLimit - (Now - stime)),
-      MULToDString((mulong *)&stime));
+      MULToDString(&stime));
     }  /* END while (ptr) */
 
   sprintf(tmp,"%d Active Job%c   ",
@@ -4699,7 +4699,7 @@ int MCShowQ(
       MJobState[state],
       procs,
       MULToTString(WCLimit),
-      MULToDString((mulong *)&qtime));
+      MULToDString(&qtime));
     }
 
   fprintf(stdout,"\n%d Idle Job%c\n",
@@ -4759,7 +4759,7 @@ int MCShowQ(
       (state > 0) ? MJobState[state] : "-",
       procs,
       MULToTString(WCLimit),
-      MULToDString((mulong *)&qtime));
+      MULToDString(&qtime));
     }  /* END while (ptr) */
 
   fprintf(stdout,"\nTotal Jobs: %d   Active Jobs: %d   Idle Jobs: %d   Blocked Jobs: %d\n",

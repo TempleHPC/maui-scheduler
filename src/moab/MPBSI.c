@@ -549,7 +549,7 @@ int MPBSWorkloadQuery(
   short  TaskList[MAX_MTASK_PER_JOB + 1];
   char   Message[MAX_MLINE];
 
-  int    OldState;
+  long   OldState;
 
   mjob_t *JNext;
 
@@ -2152,7 +2152,7 @@ int MPBSJobCancel(
     return(MPBSJobCkpt(J,R,TRUE,Message,SC));
     }
 
-  MJobGetName(J,NULL,R,tmpJobName,sizeof(tmpJobName),mjnRMName);     
+  MJobGetName(J,NULL,R,tmpJobName,sizeof(tmpJobName),mjnRMName);
 
   rc = pbs_deljob(R->U.PBS.ServerSD,tmpJobName,Message);
 
@@ -2205,7 +2205,7 @@ int MPBSNodeLoad(
 
   char         *TokPtr;
 
-  mulong        tmpTime;
+  time_t        tmpTime;
 
   const char *FName = "MPBSNodeLoad";
 
@@ -2432,7 +2432,7 @@ int MPBSNodeLoad(
           int UseUtil = FALSE;
           int UseDed  = FALSE;
 
-          int OldState;
+          long OldState;
 
           OldState = N->State;
 
@@ -2634,7 +2634,7 @@ int MPBSQueryMOM(
 
   int    RCount;
 
-  mulong T;
+  time_t T;
 
   char   DiskLine[MAX_MLINE];
 
@@ -2647,10 +2647,8 @@ int MPBSQueryMOM(
     "arch",               /* the architecture of the machine */
     "physmem",            /* the amount of physical memory */
     "loadave",            /* the current load average */
-#if defined(__AIX43) || defined(__AIX51) || defined(__LINUX)  || defined(__CYGWIN) || defined(__IRIX)
     "availmem",
     "totmem",
-#endif /* AIX43 || LINUX || IRIX */
     NULL };
 
   char *PBS5ResList[] = {
@@ -2886,10 +2884,10 @@ int MPBSNodeUpdate(
 
   char         *TokPtr;
 
-  mulong        tmpTime;
+  time_t        tmpTime;
 
   int           tmpProcs;
-  int           OldState;
+  long          OldState;
 
   const char *FName = "MPBSNodeUpdate";
 
@@ -3574,7 +3572,7 @@ int MPBSJobUpdate(
   int                  RMIndex)  /* I */
 
   {
-  int           OldState;
+  long          OldState;
 
   char          tmpBuffer[MAX_MBUFFER];
 
@@ -4654,6 +4652,7 @@ int __MPBSGetTaskList(
     ppn = 1;
 
     strcpy(tmpHostName,ptr);
+    MUStrTok(tmpHostName,":",&TokPtr2);
 
     /* remove virtual host id */
 

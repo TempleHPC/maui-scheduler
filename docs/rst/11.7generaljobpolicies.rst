@@ -1,0 +1,38 @@
+General Job Policies
+####################
+
+The default scheduler configuration enables a number of policies which
+control functionality available to a job. These policies are described
+in detail in the sections below.
+
+Multi-Node Support
+******************
+
+By default, resources allocated to a job are allowed to span multiple
+nodes. To disable this behavior, the parameter
+`ENABLEMULTINODEJOBS <a.fparameters.html#ENABLEMULTINODEJOBS>`__ should
+be set to **FALSE**.
+
+Multi-Req Support
+*****************
+
+By default, jobs are only allowed to specify a single type of resource
+for allocation. For example, a job could request '4 nodes with 256 MB of
+memory' or '8 nodes with feature ``fast`` present'. However, the default
+behavior does not allow submission of a single job which requests both
+of these resource types. The parameter
+`ENABLEMULTIREQJOBS <a.fparameters.html#ENABLEMULTIREQJOBS>`__ can be
+set to **TRUE** to remove this constraint. (NOTE: only available in Moab
+4.0.0 and higher)
+
+Job Size Policy
+***************
+
+Moab 4.0.0 and higher allow jobs to request resource ranges. Using this
+range information, the scheduler is able to maximize the amount of
+resources available to the job while minimizing the amount of time the
+job is blocked waiting for resources. The
+`JOBSIZEPOLICY <a.fparameters.html#JOBSIZEPOLICY>`__ parameter can be
+used to set this behavior according to local site needs. NOTE: job
+resource ranges may only be specified when using a *local queue* as
+described in the `Using a Local Queue <11.8localqueue.html>`__ section.

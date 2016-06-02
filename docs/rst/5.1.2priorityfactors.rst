@@ -1,0 +1,428 @@
+Job Priority Factors
+####################
+
+Maui allows jobs to be prioritized based on a range of job related
+factors. These factors are broken down into a two-level hierarchy of
+priority factors and subfactors each of which can be independently
+assigned a weight. This approach provides the administrator with
+detailed yet straightforward control of the job selection process. The
+table below highlights the components and subcomponents which make up
+the total job priority.
+
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **Component**                              | **SubComponent**   | **Metric**                                                                                     |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **CRED**                                   | USER               | user specific priority (See `USERCFG <a.fparameters.html#usercfg>`__)                          |
+| (job credentials)                          |                    |                                                                                                |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | GROUP              | group specific priority (See `GROUPCFG <a.fparameters.html#groupcfg>`__)                       |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | ACCOUNT            | account specific priority (SEE `ACCOUNTCFG <a.fparameters.html#accountcfg>`__)                 |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | QOS                | QOS specific priority (See `QOSCFG <a.fparameters.html#qoscfg>`__)                             |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | CLASS              | class/queue specific priority (See `CLASSCFG <a.fparameters.html#classcfg>`__)                 |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **FS**                                     | FSUSER             | user based historical usage (See `Fairshare Overview <6.3fairshare.html#overview>`__)          |
+| (fairshare usage)                          |                    |                                                                                                |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | FSGROUP            | group based historical usage (See `Fairshare Overview <6.3fairshare.html#overview>`__)         |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | FSACCOUNT          | account based historical usage (See `Fairshare Overview <6.3fairshare.html#overview>`__)       |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | FSQOS              | QOS base historical usage (See `Fairshare Overview <6.3fairshare.html#overview>`__)            |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | FSCLASS            | class/queue based historical usage (See `Fairshare Overview <6.3fairshare.html#overview>`__)   |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **RES**                                    | NODE               | number of nodes requested                                                                      |
+| (requested job resources)                  |                    |                                                                                                |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | PROC               | number of processors requested                                                                 |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | MEM                | total real memory requested (in MB)                                                            |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | SWAP               | total virtual memory requested (in MB)                                                         |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | DISK               | total local disk requested (in MB)                                                             |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | PS                 | total proc-seconds requested                                                                   |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | PE                 | total processor-equivalent requested                                                           |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | WALLTIME           | total walltime requested (in seconds)                                                          |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **SERV**                                   | QUEUETIME          | time job has been queued (in minutes)                                                          |
+| (current service levels)                   |                    |                                                                                                |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | XFACTOR            | minimum job expansion factor                                                                   |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | BYPASS             | number of times job has been bypassed by backfill                                              |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **TARGET**                                 | TARGETQUEUETIME    | time until queuetime target is reached (exponential)                                           |
+| (target service levels)                    |                    |                                                                                                |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | TARGETXFACTOR      | distance to target expansion factor (exponential)                                              |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+| **USAGE**                                  | CONSUMED           | proc-seconds dedicated to date                                                                 |
+| (consumed resources -- active jobs only)   |                    |                                                                                                |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | REMAINING          | proc-seconds outstanding                                                                       |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | PERCENT            | percent of required walltime consumed                                                          |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+|                                            | EXECUTIONTIME      | seconds since job started                                                                      |
++--------------------------------------------+--------------------+------------------------------------------------------------------------------------------------+
+
+.. rubric:: ` <>`__\ 5.1.2.1 Credential (CRED) Component
+   :name: credential-cred-component
+
+The credential component allows a site to prioritize jobs based on
+political issues such as the relative importance of certain groups or
+accounts. This allows direct political priorities to be applied to jobs.
+
+The priority calculation for the credential component is:
+
+| `` Priority += CREDWEIGHT * (``
+| `` USERWEIGHT * J->U->Priority +``
+| `` GROUPWEIGHT * J->G->Priority +``
+| `` ACCOUNTWEIGHT * J->A->Priority +``
+| `` QOSWEIGHT * J->Q->Priority +``
+| `` CLASSWEIGHT * J->C->Priority)``
+
+All user, group, account, QoS, and class weights are specified by
+setting the **PRIORITY** attribute of using the respective '**\*CFG**'
+parameter, namely, **USERCFG**, **GROUPCFG**, **ACCOUNTCFG**,
+**QOSCFG**, and **CLASSCFG**.
+
+For example, to set user and group priorities, the following might be
+used.
+
+| ---
+| ``CREDWEIGHT 1``
+| ``USERWEIGHT 1``
+| ``GROUPWEIGHT 1``
+
+| ``USERCFG[john] PRIORITY=2000``
+| ``USERCFG[paul] PRIORITY=-1000``
+
+| ``GROUPCFG[staff] PRIORITY=10000``
+| ---
+
+|image5|\ Class (or queue) priority may also be specified via the
+resource manager where supported (i.e., PBS queue priorities). However,
+if Maui class priority values are also specified, the resource manager
+priority values will be overwritten.
+
+All priorities may be positive or negative.
+
+.. rubric:: ` <>`__\ 5.1.2.2 Fairshare (FS) Component
+   :name: fairshare-fs-component
+
+Fairshare components allow a site to favor jobs based on short term
+historical usage. The Fairshare Overview describes the configuration and
+use of Fairshare in detail.
+
+After the brief reprieve from complexity found in the QOS factor, we
+come to the Fairshare factor. This factor is used to adjust a job's
+priority based on the historical percentage system utilization of the
+jobs user, group, account, or QOS. This allows you to 'steer' the
+workload toward a particular usage mix across user, group, account, and
+QOS dimensions. The fairshare priority factor calculation is
+
+| `` Priority += FSWEIGHT * MIN(FSCAP, (``
+| `` FSUSERWEIGHT * DeltaUserFSUsage +``
+| `` FSGROUPWEIGHT * DeltaGroupFSUsage +``
+| `` FSACCOUNTWEIGHT * DeltaAccountFSUsage +``
+| `` FSQOSWEIGHT * DeltaQOSFSUsage +``
+| `` FSCLASSWEIGHT * DeltaClassFSUsage))``
+
+All '**\*WEIGHT**' parameters above are specified on a per partition
+basis in the maui.cfg file. The 'Delta\*Usage' components represents the
+difference in actual fairshare usage from a fairshare usage target.
+Actual fairshare usage is determined based on historical usage over the
+timeframe specified in the fairshare configuration. The target usage can
+be either a target, floor, or ceiling value as specified in the
+fairshare config file. The fairshare documentation covers this in detail
+but an example should help obfuscate things completely. Consider the
+following information associated with calculating the fairshare factor
+for job X.
+
+| Job X
+| User A
+| Group B
+| Account C
+| QOS D
+| Class E
+
+| User A
+| Fairshare Target: 50.0
+| Current Fairshare Usage: 45.0
+
+| Group B
+| Fairshare Target: [NONE]
+| Current Fairshare Usage: 65.0
+
+| Account C
+| Fairshare Target: 25.0
+| Current Fairshare Usage: 35.0
+
+| QOS 3
+| Fairshare Target: 10.0+
+| Current Fairshare Usage: 25.0
+
+| Class E
+| Fairshare Target: [NONE]
+| Current Fairshare Usage: 20.0
+
+| PriorityWeights:
+| FSWEIGHT 100
+| FSUSERWEIGHT 10
+| FSGROUPWEIGHT 20
+| FSACCOUNTWEIGHT 30
+| FSQOSWEIGHT 40
+| FSCLASSWEIGHT 0
+
+In this example, the Fairshare component calculation would be as
+follows:
+
+| Priority += 100 \* (
+| 10 \* 5 +
+| 20 \* 0 +
+| 30 \* (-10) +
+| 40 \* 0 +
+| 0 \* 0)
+
+User A is 5% below his target so fairshare increases the total fairshare
+factor accordingly. Group B has no target so group fairshare usage is
+ignored. Account C is above its 10% above its fairshare usage target so
+this component decreases the job's total fairshare factor. QOS 3 is 15%
+over its target but the '+' in the target specification indicates that
+this is a 'floor' target, only influencing priority when fairshare usage
+drops below the target value. Thus, the QOS 3 fairshare usage delta does
+not influence the fairshare factor.
+
+Fairshare is a great mechanism for influencing job turnaround time via
+priority to favor a particular distribution of jobs. However, it is
+important to realize that fairshare can only favor a particular
+distribution of jobs, it cannot force it. If user X has a fairshare
+target of 50% of the machine but does not submit enough jobs, no amount
+of priority favoring will get user X's usage up to 50%. See the
+`Fairshare Overview <6.3fairshare.html>`__ for more information.
+
+.. rubric:: ` <>`__\ 5.1.2.3 Resource (RES) Component
+   :name: resource-res-component
+
+Weighting jobs by the amount of resources requested allows a site to
+favor particular types of jobs. Such prioritization may allow a site to
+better meet site mission objectives, improve fairness, or even improve
+overall system utilization.
+
+Resource based prioritization is valuable when you want to favor jobs
+based on the resources requested. This is good in three main scenarios;
+first, when you need to favor large resource jobs because its part of
+your site's mission statement; second, when you want to level the
+response time distribution across large and small jobs (small jobs are
+more easily backfilled and thus generally have better turnaround time);
+and finally, when you want to improve system utilization. What? Yes,
+system utilization actually increases as large resource jobs are pushed
+to the front of the queue. This keeps the smaller jobs in the back where
+they can be selected for backfill and thus increase overall system
+utilization. Its a lot like the story about filling a cup with golf
+balls and sand. If you put the sand in first, it gets in the way when
+you try to put in the golf balls. However, if you put in the golf balls
+first, the sand can easily be poured in around them completely filling
+the cup.
+
+The calculation for determining the total resource priority factor is:
+
+| `` Priority += RESWEIGHT * MIN(RESCAP, (``
+| `` NODEWEIGHT * TotalNodesRequested +``
+| `` PROCWEIGHT * TotalProcessorsRequested +``
+| `` MEMWEIGHT * TotalMemoryRequested +``
+| `` SWAPWEIGHT * TotalSwapRequested +``
+| `` DISKWEIGHT * TotalDiskRequested +``
+| `` PEWEIGHT * TotalPERequested))``
+
+The sum of all weighted resources components is then multiplied by the
+**RESWEIGHT** parameter and capped by the **RESCAP** parameter. Memory,
+Swap, and Disk are all measured in megabytes (MB). The final resource
+component, PE, represents '`Processor
+Equivalents <3.2environment.html#PEoverview>`__'. This component can be
+viewed as a processor-weighted maximum 'percentage of total resources'
+factor. For example, if a job requested 25% of the processors and 50% of
+the total memory on a 128 processor O2K system, it would have a PE value
+of MAX(25,50) \* 128, or 64. The concept of PE's may be a little awkward
+to grasp initially but it is a highly effective metric in shared
+resource systems.
+
+.. rubric:: 5.1.2.4 Service (SERV) Component
+   :name: service-serv-component
+
+The Service component essentially specifies which service metrics are of
+greatest value to the site. Favoring one service subcomponent over
+another will generally cause that service metric to improve.
+
+.. rubric:: ` <>`__\ 5.1.2.4.1 QueueTime (QUEUETIME) Subcomponent
+   :name: queuetime-queuetime-subcomponent
+
+In the priority calculation, a job's queue time is a duration measured
+in minutes. Use of this subcomponent tends to prioritize jobs in a FIFO
+order. Favoring queue time improves queue time based fairness metrics
+and is probably the most widely used single job priority metric. In
+fact, under the initial default configuration, this is the only priority
+subcomponent enabled within Maui. It is important to note that within
+Maui, a job's queue time is not necessarily the amount of time since the
+job was submitted. The parameter
+`JOBPRIOACCRUALPOLICY <a.fparameters.html#jobprioaccrualpolicy>`__
+allows a site to select how a job will accrue queue time based on
+meeting various `throttling policies <6.2throttlingpolicies.html>`__.
+Regardless of the policy used to determine a job's queue time, this
+'effective' queue time is used in the calculation of the
+`QUEUETIME <#queuetimesubcomponent>`__, `XFACTOR <#xfactorsub>`__,
+`TARGETQUEUETIME <#target>`__, and `TARGETXFACTOR <#target>`__ priority
+subcomponent values.
+
+The need for a distinct *effective* queue time is necessitated by the
+fact that most sites have pretty smart users and pretty smart users like
+to work the system, whatever system it happens to be. A common practice
+at some long existent sites is for some users to submit a large number
+of jobs and then place them on hold. These jobs remain with a hold in
+place for an extended period of time and when the user is ready to run a
+job, the needed executable and data files are linked into place and the
+hold released on one of these 'pre submitted' jobs. The extended hold
+time guarantees that this job is now the highest priority job and will
+be the next to run. The use of the **JOBPRIOACCRUALPOLICY** parameter
+can prevent this practice as well as preventing 'queue stuffers' from
+doing similar things on a shorter time scale. These 'queue stuffer'
+users submit hundreds of jobs at once so as to swamp the machine and hog
+use of the available compute resources. This parameter prevents the user
+from gaining any advantage from stuffing the queue by not allowing these
+jobs to accumulate any queue time based priority until they meet certain
+idle and/or active Maui fairness policies. (i.e., max job per user, max
+idle job per user, etc.)
+
+As a final note, the parameter
+`QUEUETIMEWEIGHT <a.fparameters.html#queuetimeweight>`__ can be adjusted
+on a per QOS basis using the `QOSCFG <a.fparameters.html#qoscfg>`__
+parameter and the **QTWEIGHT** attribute. For example, the line
+'``QOSCFG[special] QTWEIGHT=5000``' will cause jobs utilizing the QOS
+``special`` to have their queue time subcomponent weight *increased* by
+5000.
+
+.. rubric:: ` <>`__\ 5.1.2.4.2 Expansion Factor (XFACTOR) Subcomponent
+   :name: expansion-factor-xfactor-subcomponent
+
+| The expansion factor subcomponent has an effect similar to the queue
+  time factor but favors shorter jobs based on their
+| requested wallclock run time. In its canonical form, the expansion
+  factor (XFactor) metric is calculated as
+
+`` XFACTOR = 1 + <QUEUETIME> / <EXECUTIONTIME>``
+
+However, a couple of aspects of this calculation make its use more
+difficult. First, the length of time the job will actually run,
+'Execution Time', is not actually known until the job completes. All
+that is known is how much time the job requests. Secondly, as described
+in the `Queue Time Subcomponent <#queuetimesubcomponent>`__ section,
+Maui does not necessarily use the *raw* time since job submission to
+determine 'QueueTime' so as to prevent various scheduler abuses.
+Consequently, Maui uses the following modified equation:
+
+``XFACTOR = 1 + <EFFQUEUETIME> / <WALLCLOCKLIMIT>``
+
+In the equation above, ``EFFQUEUETIME`` is the *effective* queue time
+subject to the
+`JOBPRIOACCRUALPOLICY <a.fparameters.html#jobprioaccrualpolicy>`__
+parameter and ``WALLCLOCKLIMIT`` is the user or system specified job
+wallclock limit.
+
+| Using this equation, it can be seen that short running jobs will have
+  an xfactor that will grow much faster over time
+| than the xfactor associated with long running jobs. The table below
+  demonstrates this *favoring* of short running jobs.
+
++--------------------------+----------------------+----------------------+----------------------+----------------------+-----------------------+
+| **Job Queue Time**       | 1 hour               | 2 hours              | 4 hours              | 8 hours              | 16 hours              |
++--------------------------+----------------------+----------------------+----------------------+----------------------+-----------------------+
+| XFactor for 1 hour job   | 1 + (1 / 1) = 2.00   | 1 + (2 / 1) = 3.00   | 1 + (4 / 1) = 5.00   | 1 + (8 / 1) = 9.00   | 1 + (16 / 1) = 17.0   |
++--------------------------+----------------------+----------------------+----------------------+----------------------+-----------------------+
+| XFactor for 4 hour job   | 1 + (1 / 4) = 1.25   | 1 + (2 / 4) = 1.50   | 1 + (4 / 4) = 2.00   | 1 + (8 / 4) = 3.00   | 1 + (16 / 4) = 5.0    |
++--------------------------+----------------------+----------------------+----------------------+----------------------+-----------------------+
+
+Since XFactor is calculated as a ratio of two values, it is possible for
+this subcomponent to be almost arbitrarily large potentially swamping
+the value of other priority subcomponents. This can be addressed either
+by using the subcomponent cap
+`XFACTORCAP <a.fparameters.html#xfactorcap>`__, or by using the
+`XFMINWCLIMIT <a.fparameters.html#xfminwclimit>`__ parameter. If the
+later is used, the calculation for the xfactor subcomponent value
+becomes:
+
+`` XFACTOR = 1 + <EFFQUEUETIME> / MAX(<XFMINWCLIMIT>,<WALLCLOCKLIMIT>)``
+
+The use of the **XFMINWCLIMIT** parameter allows a site to prevent very
+short jobs from causing the Xfactor subcomponent to grow inordinately.
+
+Some sites consider XFactor to be a more *fair* scheduling performance
+metric than queue time. At these sites, job XFactor is given far more
+weight than job queue time when calculating job priority and
+consequently, job XFactor distribution tends to be fairly level across a
+wide range of job durations. (i.e., A flat XFactor distribution of 1.0
+would result in a one minute job being queued on average one minute,
+while a 24 hour job would be queued an average of 24 hours).
+
+Like queue time, the effective XFactor subcomponent weight is the sum of
+two weights, the **XFACTORWEIGHT** parameter and the QOS specific
+XFWEIGHT setting. For example, the line
+'``QOSCFG[special] XFWEIGHT=5000``' will cause jobs utilizing the QOS
+``special`` to have their expansion factor subcomponent weight
+*increased* by 5000.
+
+.. rubric:: ` <>`__\ 5.1.2.4.3 Bypass (BYPASS) Subcomponent
+   :name: bypass-bypass-subcomponent
+
+The bypass factor is the forgotten stepchild of the priority
+subcomponent family. It was originally introduced to prevent backfill
+based starvation. It is based on the 'bypass' count of a job where the
+bypass count is increased by one every time the job is 'bypassed' by a
+lower priority job via backfill. The calculation for this factor is
+simply. Over the years, the anticipated backfill starvation has never
+been reported. The good news is that if it ever shows up, Maui is ready!
+
+.. rubric:: ` <>`__\ 5.1.2.5 Target Service (TARG) Component
+   :name: target-service-targ-component
+
+The target factor component of priority takes into account job
+scheduling performance targets. Currently, this is limited to target
+expansion factor and target queue time. Unlike the expansion factor and
+queue time factors described earlier which increase gradually over time,
+the target factor component is designed to grow exponentially as the
+target metric is approached. This behavior causes the scheduler to do
+essentially 'all in its power' to make certain the scheduling targets
+are met.
+
+The priority calculation for the target factor is:
+
+| `` Priority += TARGWEIGHT * (``
+| `` QueueTimeComponent +``
+| `` XFactorComponent)``
+
+The queue time and expansion factor target are specified on a per QOS
+basis using the 'QOSXFTARGET' and 'QOSQTTARGET' parameters. The
+QueueTime and XFactor component calculations are designed produce small
+values until the target value begins to approach at which point these
+components grow very rapidly. If the target is missed, these component
+will remain high and continue to grow but will not grow exponentially.
+
+.. rubric:: 5.1.2.6 Usage (USAGE) Component
+   :name: usage-usage-component
+
+The Usage component applies to active jobs only.
+
+The priority calculation for the usage priority factor is:
+
+| `` Priority += USAGEWEIGHT * (``
+| `` USAGECONSUMEDWEIGHT* ProcSecondsConsumed +``
+| `` USAGEREMAININGWEIGHT* ProcSecRemaining +``
+| `` USAGEEXECUTIONTIMEWEIGHT* SecondsSinceStart +``
+| `` USAGEPERCENTWEIGHT* WalltimePercent )``

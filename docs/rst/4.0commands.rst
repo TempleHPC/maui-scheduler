@@ -1,0 +1,16 @@
+Scheduler Commands
+##################
+
+.. toctree::
+
+   4.1clientoverview
+   4.2status-cmds
+   4.3jobmgmt-cmds
+   4.4reservation-cmds
+   4.5policy-cmds
+   4.6user-cmds
+   4.7misc-cmds
+
+.. note::
+
+  The `Commands Overview <a.gcommandoverview.html>`__ lists all available commands.

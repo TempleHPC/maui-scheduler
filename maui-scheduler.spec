@@ -1,5 +1,5 @@
 Name:           maui-scheduler
-Version:        3.4
+Version:        3.5
 Release:        1%{?dist}
 Summary:        Maui Cluster Scheduler for Torque
 
@@ -79,12 +79,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/showstate
 %{_bindir}/showstats
 %{_sbindir}/maui
-%{_sharedstatedir}/maui/maui-private.cfg
-%{_sharedstatedir}/maui/maui.cfg
+%{_unitdir}/maui-scheduler.service
+%config(noreplace) %{_sharedstatedir}/maui/maui-private.cfg
+%config(noreplace) %{_sharedstatedir}/maui/maui.cfg
 
-%doc LICENSE.mcompat README README.cygwin CHANGELOG LICENSE
+%doc LICENSE LICENSE.mcompat README CHANGELOG ChangeLog.TempleHPC
 
 %changelog
+* Mon May 30 2016 Axel Kohlmeyer <akohlmey@gmail.com> - 3.5-1
+- Update version to 3.5
+
 * Fri May 20 2016 Axel Kohlmeyer <akohlmey@gmail.com> - 3.4-1
 - Initial version of rpm spec file. Tested on Fedora 23
 

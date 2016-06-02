@@ -2357,7 +2357,7 @@ int MNodeFind(
  
   if ((ptr = strchr(NName,'.')) != NULL)
     {
-    MUStrCpy(QHostName,NName,MIN(sizeof(QHostName),ptr - NName + 1));
+    MUStrCpy(QHostName,NName,MIN((long)sizeof(QHostName),ptr - NName + 1));
     MUStrCpy(QNetwork,ptr,sizeof(QNetwork));
     }
   else
@@ -2397,7 +2397,7 @@ int MNodeFind(
  
     if ((ptr = strchr(N->Name,'.')) != NULL)
       {
-      MUStrCpy(LHostName,N->Name,MIN(sizeof(LHostName),ptr - N->Name + 1));
+      MUStrCpy(LHostName,N->Name,MIN((long)sizeof(LHostName),ptr - N->Name + 1));
       MUStrCpy(LNetwork,ptr,sizeof(LNetwork));
       }
     else
@@ -2616,7 +2616,7 @@ int MNodeShowState(
     {
     MUSNPrintF(&BPtr,&BSpace,"Expected State: %8s   SyncDeadline: %s",
       MAList[eNodeState][N->EState],
-      MULToDString((mulong *)&N->SyncDeadLine));
+      MULToDString(&N->SyncDeadLine));
     }
 
   /* display consumed resources */
@@ -4150,7 +4150,7 @@ int MNodeSetAttr(
 int MNodeSetState(
 
   mnode_t *N,       /* I */
-  int      NState,  /* I */
+  long     NState,  /* I */
   int      Mode)    /* I */
 
   {
@@ -5751,7 +5751,7 @@ int MNodeGetLocation(
  
   char *ptr;
  
-  long  Address=0;
+  unsigned long  Address=~0UL;
 
   mhost_t *S;
  
@@ -5775,17 +5775,17 @@ int MNodeGetLocation(
 
   if (MSched.Mode != msmSim)
     {
-    if (MOSGetHostName(N->Name,NULL,(unsigned long *)&Address) == FAILURE)
+    if (MOSGetHostName(N->Name,NULL,&Address) == FAILURE)
       {
       DBG(2,fCONFIG) DPrint("ALERT:    cannot determine address for host '%s'\n",
         N->Name);
  
-      Address = -1;
+      Address = ~0UL;
       }
     }
   else
     {
-    Address = -1;
+    Address = ~0UL;
     }
 
   /* attempt to locate node in cluster table */

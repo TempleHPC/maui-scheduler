@@ -1,0 +1,7 @@
+Managing Shared Resources - SMP Issues and Policies
+###################################################
+
+.. toctree::
+
+   10.1consumableresourcehandling
+   10.2loadbalancingfeatures

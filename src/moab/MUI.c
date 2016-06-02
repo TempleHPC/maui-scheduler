@@ -130,7 +130,7 @@ int UIFormatShowAllJobs(
       MJobState[state],
       procs,
       MULToTString(cpulimit - (Now - stime)),
-      MULToDString((mulong *)&stime));
+      MULToDString(&stime));
     strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
  
@@ -206,7 +206,7 @@ int UIFormatShowAllJobs(
       MJobState[state],
       procs,
       MULToTString(cpulimit),
-      MULToDString((mulong *)&qtime));
+      MULToDString(&qtime));
     }
  
   fprintf(stdout,"\n%d Idle Job%c\n",
@@ -264,7 +264,7 @@ int UIFormatShowAllJobs(
       MJobState[state],
       procs,
       MULToTString(cpulimit),
-      MULToDString((mulong *)&qtime));
+      MULToDString(&qtime));
     strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
  
@@ -402,7 +402,7 @@ int UIFormatHShowAllJobs(
       MJobState[state],
       procs,
       MULToTString(cpulimit - (Now - stime)),
-      MULToDString((mulong *)&stime));
+      MULToDString(&stime));
     strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
 
@@ -485,7 +485,7 @@ int UIFormatHShowAllJobs(
       MJobState[state],
       procs,
       MULToTString(cpulimit),
-      MULToDString((mulong *)&qtime));
+      MULToDString(&qtime));
     strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */
 
@@ -552,7 +552,7 @@ int UIFormatHShowAllJobs(
       MJobState[state],
       procs,
       MULToTString(cpulimit),
-      MULToDString((mulong *)&qtime),
+      MULToDString(&qtime),
       "N/A");
    strcat(DstBuffer,temp_str);
     }  /* END while (ptr) */

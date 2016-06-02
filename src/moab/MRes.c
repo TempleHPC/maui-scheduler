@@ -4809,7 +4809,7 @@ int MResPreempt(
   mres_t *R)
 
   {
-  unsigned long  MinPriority;
+  long  MinPriority;
  
   int            rindex;
  

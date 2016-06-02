@@ -323,7 +323,7 @@ int MUStrCat(
     return(SUCCESS);
     }
 
-  DEnd = MIN(strlen(Dst),DstSize);
+  DEnd = MIN((int)strlen(Dst),DstSize);
 
   for (index = 0;index < DstSize - DEnd;index++)
     {
@@ -2199,11 +2199,6 @@ int MUSScanF(
   }  /* END MUSScanf() */                    
 
 
-
-
-
-#ifndef __NT
-
 #define MAX_RXCACHE   32         
  
 int MUREToList(
@@ -2721,26 +2716,6 @@ int MUREToList(
   return(SUCCESS);
   }  /* MUREToList() */
  
-#else /* __NT */
- 
-int MUREToList(
- 
-  char  *Pattern,
-  int    ObjType,
-  int    PIndex,
-  short *List,
-  int   *Count,
-  char  *Buffer)
- 
-  {
-  return(FAILURE);
-  }  /* END MUREToList() */
- 
-#endif /* __NT */
-
-
-
-
 long MURSpecToL(
 
   char             *String,    /* I */
@@ -3122,20 +3097,14 @@ char *MUBStringTime(
 
 
 
-
-
 char *MULToDString(
 
-  mulong *Time) /* I */
+  time_t *Time) /* I */
 
   {
-  time_t tmpTime;
-
   static char String[MAX_MNAME];
 
-  tmpTime = (time_t)*Time;
-
-  strncpy(String,ctime(&tmpTime),19);
+  strncpy(String,ctime(Time),19);
 
   String[19] = '\n';
   String[20] = '\0';
@@ -3322,18 +3291,11 @@ int MUGetOpt(
 
 char *MUUIDToName(
 
-  int UID)  /* I */
+  uid_t UID)  /* I */
 
   {
   struct passwd *bufptr;
   static char    Line[MAX_MNAME];
-
-#ifdef __MTHREADS
-  struct passwd  buf;
-
-  char           pwbuf[MAX_MLINE];
-  int            rc;
-#endif /* __MTHREADS */
 
   const char *FName = "MUUIDToName";
 
@@ -3341,27 +3303,12 @@ char *MUUIDToName(
     FName,
     UID);
 
-  if (UID == -1)
+  if (UID == ~0U)
     {
     strcpy(Line,NONE);
 
     return(Line);
     }
-
-#ifdef __MTHREADS
-
-  rc = getpwuid_r(UID,&buf,pwbuf,MAX_MLINE,&bufptr);
-
-  if (rc == -1)
-    {
-    sprintf(Line,"UID%d",UID);
-    }
-  else
-    {
-    strcpy(Line,buf.pw_name);
-    }
-
-#else /* __MTHREADS */
 
   if ((bufptr = getpwuid(UID)) == NULL)
     {
@@ -3372,8 +3319,6 @@ char *MUUIDToName(
     strcpy(Line,bufptr->pw_name);
     }
 
-#endif /* __MTHREADS */
-
   return(Line);
   }  /* END MUUIDToName() */
 
@@ -3383,19 +3328,12 @@ char *MUUIDToName(
 
 char *MUGIDToName(
 
-  int GID)  /* I */
+  gid_t GID)  /* I */
 
   {
   struct group *bufptr;
 
   static char   Line[MAX_MNAME];
-
-#ifdef __MTHREADS
-  struct group  buf;
-
-  char          pwbuf[MAX_MLINE];
-  int           rc;
-#endif /* __MTHREADS */
 
   const char *FName = "MUGIDToName";
 
@@ -3403,28 +3341,12 @@ char *MUGIDToName(
     FName,
     GID);
 
-  if (GID == -1)
+  if (GID == ~0U)
     {
     strcpy(Line,NONE);
 
     return(Line);
     }
-
-#ifdef __MTHREADS
-
-  rc = getgrgid_r(GID,&buf,pwbuf,MAX_MLINE,&bufptr);
-
-  if (rc == -1)
-    {
-    sprintf(Line,"GID%d",
-      GID);
-    }
-  else
-    {
-    strcpy(Line,buf.gr_name);
-    }
-
-#else /* __MTHREADS */
 
   if ((bufptr = getgrgid(GID)) == NULL)
     {
@@ -3434,8 +3356,6 @@ char *MUGIDToName(
     {
     strcpy(Line,bufptr->gr_name);
     }
-
-#endif /* __MTHREADS */
 
   return(Line);
   }  /* END MUGIDToName() */
@@ -3485,41 +3405,18 @@ int MUGNameFromUName(
 
 
 
-int MUGIDFromUID(
+gid_t MUGIDFromUID(
 
-  int UID)  /* I */
+  uid_t UID)  /* I */
 
   {
   struct passwd *bufptr;
-
-#ifdef __MTHREADS
-  struct passwd  buf;
-
-  char           pwbuf[MAX_MLINE];
-
-  int            rc;
-#endif /* __MTHREADS */
 
   const char *FName = "MUGIDFromUID";
 
   DBG(10,fSTRUCT) DPrint("%s(%d)\n",
     FName,
     UID);
-
-#ifdef __MTHREADS
-
-  rc = getpwuid_r(UID,&buf,pwbuf,MAX_MLINE,&bufptr);
-
-  if (rc != -1)
-    {
-    return(buf.pw_gid);
-    }
-  else
-    {
-    return(-1);
-    }
-
-#else /* __MTHREADS */
 
   if ((bufptr = getpwuid(UID)) != NULL)
     {
@@ -3530,14 +3427,13 @@ int MUGIDFromUID(
     return(-1);
     }
 
-#endif /* __MTHREADS */
   }  /* END MUGIDFromUID() */
 
 
 
 
 
-int MUUIDFromName(
+uid_t MUUIDFromName(
 
   char *Name)  /* I */
 
@@ -3576,7 +3472,7 @@ int MUUIDFromName(
 
 
 
-int MUGIDFromName(
+gid_t MUGIDFromName(
 
   char *Name)  /* I */
 
@@ -4199,7 +4095,7 @@ int MUBMFromString(
 
 int MOSSetUID(
  
-  int UID)  /* I */
+  uid_t UID)  /* I */
  
   {
   if (MOSGetEUID() == UID)
@@ -4219,7 +4115,7 @@ int MOSSetUID(
  
 int MOSSetGID(
  
-  int GID)  /* I */
+  gid_t GID)  /* I */
  
   {
   if (getgid() == GID)
@@ -4227,11 +4123,7 @@ int MOSSetGID(
     return(0);
     }
  
-  #if defined(__OLDHPUX) || defined(__AIX43) || defined(__AIX51)
-    return(setegid(GID));
-  #else /* __OLDHPUX || defined(__AIX43) */
     return(setgid(GID));
-  #endif /* __OLDHPUX */
   }  /* END MOSSetGID() */
 
 
@@ -4486,11 +4378,6 @@ int MUThread(
   {
   int rc;
 
-#ifdef __MTHREADS 
-  int DelayTime;
-  int DelayInterval = 1;
-#endif
-
   int index;
 
   int MyLock;
@@ -4500,11 +4387,6 @@ int MUThread(
   va_list Args;
 
   /* NOTE:  if Lock specified, function is non-blocking */
-
-#ifdef __MTHREADS
-  pthread_t T;
-  pthread_attr_t TA;
-#endif /* __MTHREADS */
 
   if (F == NULL)
     {
@@ -4534,63 +4416,9 @@ int MUThread(
 
   va_end(Args);
 
-#ifdef __MTHREADS 
-  pthread_attr_init(&TA);
-
-  pthread_attr_setdetachstate(&TA,PTHREAD_CREATE_DETACHED);
-
-  pthread_setcanceltype(PTHREAD_CANCEL_ENABLE,NULL);
-
-  if ((rc = pthread_create(
-        &T,
-        &TA,
-        (void *(*)(void *))__MUTFunc,
-        (void *)&D)) != 0)
-    {
-    DBG(0,fCORE) DPrint("ALERT:    cannot create thread (rc: %d)\n",
-      rc);
- 
-    /* do not retry thread on this iteration */
-
-    if (RC != NULL)
-      *RC = FAILURE;
-
-    return(FAILURE);
-    }
-
-  /* poll waiting for thread to complete */
-
-  for (DelayTime = 0;*D.Lock == TRUE;DelayTime += DelayInterval)
-    {
-    if (DelayTime >= TimeOut)
-      break;
-
-    sleep(DelayInterval);
-    }  /* END for (DelayTime) */
- 
-  if (*D.Lock == TRUE)
-    {
-    /* if thread is not completed within timeout, kill thread */
- 
-    pthread_cancel(T);
- 
-    if (RC != NULL)
-      *RC = FAILURE;
-
-    DBG(0,fCORE) DPrint("ALERT:    thread killed (time out)\n");
- 
-    return(FAILURE);
-    }
-
-  if (RC != NULL)
-    *RC = SUCCESS;
-
-  return(SUCCESS);
-#else /* __MTHREADS */
   rc = __MUTFunc(&D);
 
-  return(rc);
-#endif /* __MTHREADS */
+  return rc;
   }  /* END MUThread() */
 
 
@@ -4607,10 +4435,6 @@ int __MUTFunc(
     {
     return(FAILURE);
     }
-
-#ifdef __MTHREADS
-  pthread_setcanceltype(PTHREAD_CANCEL_ENABLE,NULL);
-#endif /* __MTHREADS */
 
   D = (mut_t *)V;
 

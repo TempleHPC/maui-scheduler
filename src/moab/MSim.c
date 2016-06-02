@@ -466,7 +466,7 @@ int MSimGetWorkload()
           MSched.TimeOffset = MSched.Time - TraceTime;
  
         DBG(5,fSIM) DPrint("INFO:     new trace time detected (%s)\n",
-          MULToDString((mulong *)&TraceTime));
+          MULToDString(&TraceTime));
  
         DBG(2,fSIM) DPrint("INFO:     initial queue depth %d set (%d requested)\n",
           index,
@@ -572,8 +572,7 @@ int MSimGetWorkload()
 
       jindex = 0;
  
-      while ((unsigned long)MPar[0].L.IP->Usage[mptMaxPS][0] <
-             MSim.InitialQueueDepth)
+      while (MPar[0].L.IP->Usage[mptMaxPS][0] < MSim.InitialQueueDepth)
         {
         if (MSimJobSubmit(-1,&JTrace[jindex],NULL,jtNONE) == FAILURE)
           {
@@ -2011,7 +2010,7 @@ int MSimLoadWorkloadCache(
   DBG(3,fSIM) DPrint("INFO:     jobs loaded: %d  earliest start: %ld  %s",
     JobCount,
     EarliestQueueTime,
-    MULToDString((mulong *)&EarliestQueueTime));
+    MULToDString(&EarliestQueueTime));
  
   if (TraceCount != NULL)
     *TraceCount = JobCount;
@@ -2252,7 +2251,7 @@ int MSimSummarize()
   DBG(0,fSIM) DPrint("SUM:  scheduler running for %7ld seconds (%6.2lf hours) initialized on %s\n",
     SchedRunTime / 100,
     (double)SchedRunTime / 360000,
-    MULToDString((mulong *)&MStat.InitTime));
+    MULToDString(&MStat.InitTime));
  
   DBG(0,fSIM) DPrint("SUM:  active jobs:          %8d  eligible jobs:       %8d  idle jobs:      %5d\n",
     RunJobs,

@@ -1,0 +1,75 @@
+Configuring the Scheduler
+#########################
+
+Scheduler configuration is maintained using the flat text configfile
+**maui.cfg**. All config file entries consist of simple '<PARAMETER>
+<VALUE>' pairs which are whitespace delimited. Parameter names are not
+case sensitive but <VALUE> settings are. Some parameters are array
+values and should be specified as '<PARAMETER>[<INDEX>]', i.e.,
+'QOSCFG[hiprio] PRIORITY=1000' The <VALUE> settings may be integers,
+floats, strings, or arrays of these. Some parameters can be specified as
+arrays and in such, index values can be numeric or alphanumeric strings.
+If no array index is specified for an array parameter, an index of '0'
+is assumed. See the `parameters <a.fparameters.html>`__ documentation
+for information on specific parameters.
+All config files are read when Maui is started up. Also, the **`schedctl
+-R <commands/schedctl.html>`__** command can be used to reconfigure the
+scheduler at any time, forcing it to re-read all config files before
+continuing (**NOTE**: Only available in Moab 4.0 and later). The command
+`changeparam <commands/changeparam.html>`__ can be used to change
+individual parameter settings at any time, i.e.
+'``changeparam LOGLEVEL 3``'. Changes made by the changeparam command
+are not persistent so will be overwritten the next time the config file
+values are loaded. The current parameter settings can be viewed at any
+time using the `showconfig <commands/showconfig.html>`__ command.
+
+Adjusting Server Behavior
+*************************
+
+Most any aspect of Maui's behavior can be configured. This includes both
+scheduling policy behavior and daemon behavior. In terms of configuring
+server behavior, the following realms are most commonly modified.
+
+Logging
+=======
+
+| LOGDIR
+| LOGFACILITY
+| LOGFILE
+| LOGFILEMAXSIZE
+| LOGFILEROLLDEPTH
+| LOGLEVEL
+
+Checkpointing
+=============
+
+Maui checkpoints its internal state. The checkpoint file records
+attributes in the following areas:
+
+| Job: attributes, statistics
+| Node: attributes, statistics
+| Reservations: all aspects
+| Scheduler: attributes, statistics
+| Credentials: attributes, statistics (i.e., Credentials include user,
+  group, account, QoS, and class)
+
+**CPEXPIRATIONTIME**
+
+Indicates how long unmodified data should be kept after the associated
+object has disappeared. ie, job priority for a job no longer detected.
+
+**CPFILE**
+
+Indicates path name of checkpoint file
+
+**CPINTERVAL**
+
+Indicates interval between subsequent checkpoints.
+
+Service Port
+============
+
+| SERVERHOST
+| SERVERMODE
+| SERVERNAME
+| SERVERPORT

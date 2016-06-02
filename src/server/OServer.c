@@ -5,126 +5,15 @@ int ServerSetSignalHandlers()
   {
   /* trap TERM(15) QUIT(3) INT(2) HUP(1) */
  
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__IRIX) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
- 
-  signal(SIGINT,   SIG_IGN);
-  signal(SIGTERM,  (void(*)(int))MSysShutdown);
-  signal(SIGQUIT,  (void(*)(int))MSysShutdown);
-  signal(SIGIO,    (void(*)(int))MSysShutdown);
-  signal(SIGURG,   (void(*)(int))MSysShutdown);
- 
-#else /* ... */
- 
   signal(SIGINT,   SIG_IGN);
   signal(SIGTERM,  MSysShutdown);
   signal(SIGQUIT,  MSysShutdown);
   signal(SIGIO,    MSysShutdown);
   signal(SIGURG,   MSysShutdown);
  
-#endif /* ... */
- 
   /* handle SIGPIPE/SIGHUP/SIGSEGV/SIGILL */
- 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51)
-
-  {
-  char             *ptr;
-  struct sigaction  act;
-
-  act.sa_handler = SIG_IGN;
-  sigemptyset(&act.sa_mask);
-  act.sa_flags = 0;
- 
-  if (sigaction(SIGPIPE,&act,NULL) == -1) 
-    {
-    DBG(0,fCORE) DPrint("ERROR:    cannot ignore SIGPIPE, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
-    }
- 
-/* NOTE:  HUP temporarily disabled
-  signal(SIGHUP,   (void(*)(int))ReloadConfig);
-*/
-  signal(SIGHUP,SIG_IGN);
- 
-  /* set up SIGSEGV and SIGILL signal handlers */
- 
-  sigaction(SIGSEGV,0,&act);
- 
-  act.sa_flags |= SA_FULLDUMP;
- 
-  if ((ptr = getenv(MSCHED_ENVCRASHVAR)) == NULL)
-    {
-    act.sa_handler = (void(*)(int))SIG_DFL;
-    }
-  else if (!strcasecmp(ptr,"trap"))
-    {
-    act.sa_handler = (void(*)(int))CrashMode;
-    }
-  else if (!strcasecmp(ptr,"ignore"))
-    {
-    act.sa_handler = (void(*)(int))SIG_IGN;
-    }
-  else if (!strcasecmp(ptr,"die"))
-    {
-    act.sa_handler = (void(*)(int))SIG_DFL;
-    }
-  else
-    {
-    act.sa_handler = (void(*)(int))ServerRestart;
-    } 
- 
-  /* create full core dumps on SEGV and ILL */
- 
-  if (sigaction(SIGSEGV,&act,NULL) < 0)
-    {
-    perror("cannot set up SIGSEGV signal handler");
- 
-    DBG(0,fALL) DPrint("ERROR:    cannot set up SEGV error handler, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
-    }
- 
-  sigaction(SIGILL,0,&act);
- 
-  act.sa_flags |= SA_FULLDUMP;
- 
-  if ((ptr = getenv(MSCHED_ENVCRASHVAR)) == NULL)
-    {
-    act.sa_handler = (void(*)(int))SIG_DFL;
-    }
-  else if (!strcasecmp(ptr,"trap"))
-    {
-    act.sa_handler = (void(*)(int))CrashMode;
-    }
-  else if (!strcasecmp(ptr,"ignore"))
-    {
-    act.sa_handler = (void(*)(int))SIG_IGN;
-    }
-  else if (!strcasecmp(ptr,"die"))
-    {
-    act.sa_handler = (void(*)(int))SIG_DFL;
-    }
-  else
-    {
-    act.sa_handler = (void(*)(int))ServerRestart;
-    } 
- 
-  if (sigaction(SIGILL,&act,NULL) < 0)
-    {
-    perror("cannot set up SIGILL signal handler");
- 
-    DBG(0,fALL) DPrint("ERROR:    cannot set up SIGILL signal handler, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
-    }
-  }    /* END BLOCK */ 
-
-#elif defined(__LINUX) || defined(__CYGWIN) || defined(__IRIX) || defined(__HPUX) || defined(__SOLARIS) || defined(__OSF)
 
   ServerLoadSignalConfig();
- 
-#else /* PIPE/HUP/SEGV */
  
 /* NOTE: HUP temporarily disabled  *
   signal(SIGHUP,   (void(*)(int))ReloadConfig);
@@ -133,8 +22,6 @@ int ServerSetSignalHandlers()
   signal(SIGPIPE,  SIG_IGN);
   signal(SIGSEGV,  MSysShutdown);
   signal(SIGILL,   MSysShutdown);
- 
-#endif /* PIPE/HUP/SEGV */
 
   return(SUCCESS);
   }  /* END ServerSetSignalHandlers() */
@@ -144,11 +31,7 @@ int ServerSetSignalHandlers()
 
 int ServerDemonize()
 {
-#ifndef __CYGRUNSRV
-
-#ifndef __NT
   int   pid;
-#endif /* __NT */
 
   const char *FName = "ServerDemonize";
 
@@ -159,12 +42,7 @@ int ServerDemonize()
 
   if (MSched.Mode != msmSim)
     {
-#if !defined(__NT) && !defined(__HPUX)
-#if defined(__OSF) || defined(__FREEBSD)
-    if (setpgrp((pid_t)0,(pid_t)0) == -1)
-#else /* __OSF */
-    if (setpgrp() == -1)
-#endif /* __OSF */
+    if (setpgid(0,0) == -1)
       {
       perror("cannot set process group");
 
@@ -172,7 +50,6 @@ int ServerDemonize()
         errno,
         strerror(errno));
       }
-#endif /* !defined(__NT) && !defined(__HPUX) */
 
     fflush(mlog.logfp);
 
@@ -181,8 +58,6 @@ int ServerDemonize()
       /* only background if not in debug mode */
 
       /* NOTE:  setsid() disconnects from controlling-terminal */
-
-#ifndef __NT
 
       if ((pid = fork()) == -1)
         {
@@ -227,11 +102,9 @@ int ServerDemonize()
 
       fclose(stderr);
 
-#endif /* __NT */
       }
     }    /* END if (MSched.Mode != msmSim) */
 
-#endif /* __CYGRUNSRV */
   return(SUCCESS);
   }  /* END ServerDemonize() */
 
@@ -240,7 +113,7 @@ int ServerDemonize()
 
 
 
-int CrashMode(
+void CrashMode(
 
   int signo)
 
@@ -263,13 +136,13 @@ int CrashMode(
   DBG(1,fALL) DPrint("CRASH MODE:  crash occurred on iteration %d (Debug: %d) time: %s\n",
     MSched.Iteration,
     mlog.Threshold,
-    MULToDString((mulong *)&Time));
+    MULToDString(&Time));
  
   if (MSched.Mode == msmSim)
     {
     DBG(1,fALL) DPrint("CRASH MODE:  SIMULATION TIME: (%ld) %s\n",
       MSched.Time,
-      MULToDString((mulong *)&MSched.Time));
+      MULToDString(&MSched.Time));
     }
 
   mlog.Threshold = 20;
@@ -302,32 +175,16 @@ int CrashMode(
 
   if (signo == SIGSEGV)
     {
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__CYGWIN) || defined(__CYGWIN) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
-
-    signal(SIGSEGV,(void(*)(int))CrashMode);
-
-#else
-
-    signal(SIGSEGV,(CrashMode));
-
-#endif
+    signal(SIGSEGV,CrashMode);
     }
   else if (signo == SIGILL)
     {
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
-
-    signal(SIGILL,(void(*)(int))CrashMode);
-
-#else
-
-    signal(SIGILL,(CrashMode));
-
-#endif
+    signal(SIGILL,CrashMode);
     }
 
   DBG(0,fALL) DPrint("INFO:     exiting CRASH MODE\n");
 
-  return(SUCCESS);
+  return;
   }  /* END CrashMode() */
 
 
@@ -363,7 +220,7 @@ void ServerRestart(
 
 
 
-int ReloadConfig(
+void ReloadConfig(
 
   int signo)
 
@@ -375,17 +232,9 @@ int ReloadConfig(
 
   MSched.Reload = TRUE;
 
-#if defined(__AIX41) || defined(__AIX42) || defined(__AIX43) || defined(__AIX51) || defined(__LINUX) || defined(__CYGWIN) || defined(__HPUX) || defined(__IRIX) || defined(__SOLARIS) || defined(__OSF) || defined(__FREEBSD)
-
-  signal(SIGHUP,(void(*)(int))ReloadConfig);
-
-#else
-
   signal(SIGHUP,ReloadConfig);
 
-#endif
-
-  return(SUCCESS);
+  return;
   }  /* END ReloadConfig() */
 
 /* END OServer.c */

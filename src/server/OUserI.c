@@ -794,7 +794,7 @@ int ShowBackfillWindow(
       UserName,
       GroupName,
       PName,
-      MULToDString((mulong *)&MSched.Time));
+      MULToDString(&MSched.Time));
 
     PCount = 0;
 

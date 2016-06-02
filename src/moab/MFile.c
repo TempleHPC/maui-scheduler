@@ -15,7 +15,7 @@
 
 extern mlog_t mlog;
 
-mulong    *STime;
+time_t    *STime;
 
 mfcache_t  MFileCache[MAX_FILECACHE];   
 mfindex_t  MIndexState[MAX_FILECACHE];
@@ -30,7 +30,7 @@ int __MFUCacheFile(char *,char *,int);
 
 int MFUCacheInitialize(
 
-  mulong *SysTime) /* I */
+  time_t *SysTime) /* I */
 
   {
   int index;
@@ -1172,120 +1172,6 @@ int MFUGetInfo(
   }  /* END MFUGetInfo() */
 
 
-
-
-
-int MFULock(
-
-  char *Directory,  /* I */
-  char *LockFile)   /* I */
-
-  {
-#if !defined(__LINUX) && !defined(__CYGWIN) && !defined(__HPUX) && !defined(__NT)
-  int          fd;
-  struct flock lock;
-  char         Name[MAX_MLINE];
-#endif /* !__LINUX) && !__HPUX && !__NT */
-
-  const char *FName = "MFULock";
-
-  DBG(3,fALL) DPrint("%s(%s,%s)\n",
-    FName,
-    Directory,
-    LockFile);
-
-#if !defined(__LINUX) && !defined(__CYGWIN) && !defined(__HPUX) && !defined(__NT)
-
-  if (!strstr(LockFile,Directory))
-    {
-    if (Directory[strlen(Directory) - 1] == '/')
-      {
-      sprintf(Name,"%s%s",
-        Directory,
-        LockFile);
-      }
-    else
-      {
-      sprintf(Name,"%s/%s",
-        Directory,
-        LockFile);
-      }
-    }
-  else
-    {
-    strcpy(Name,LockFile);
-    }
-
-  if ((fd = open(Name,O_RDWR | O_CREAT,(S_IRWXU | S_IRWXG | S_IRWXO))) == -1)
-    {
-    perror("cannot open lockfile");
-
-    DBG(1,fALL) DPrint("ERROR:    cannot open lockfile '%s', errno: %d (%s)\n",
-      LockFile,
-      errno,
-      strerror(errno));
-
-    return(FAILURE);
-    }
-
-  lock.l_type   = F_WRLCK;
-  lock.l_start  = 0;
-  lock.l_whence = SEEK_SET;
-  lock.l_len    = 0;
-  lock.l_pid    = MOSGetPID();
-
-  if (fcntl(fd,F_GETLK,&lock) == -1)
-    {
-    perror("cannot obtain lock information");
-
-    DBG(1,fALL) DPrint("ERROR:    cannot obtain lock information on file '%s', errno: %d (%s)\n",
-      LockFile,
-      errno,
-      strerror(errno));
-
-    close(fd);
-
-    return(FAILURE);
-    }
-
-  if (lock.l_type != F_UNLCK)
-    {
-    DBG(1,fALL) DPrint("ERROR:    cannot lock file '%s'  (lock held by PID: %d)\n",
-      LockFile,
-      lock.l_pid);
-
-    close(fd);
-
-    return(FAILURE);
-    }
-
-  lock.l_type = F_WRLCK;
-
-  if (fcntl(fd,F_SETLK,&lock) == -1)
-    {
-    perror("cannot set lock");
-
-    DBG(1,fALL) DPrint("ERROR:    unable to establish lock on file '%s', errno: %d (%s)\n",
-      LockFile,
-      errno,
-      strerror(errno));
-
-    close(fd);
-
-    return(FAILURE);
-    }
-
-  DBG(3,fALL) DPrint("INFO:     server lock successful\n");
-
-#endif /* !__LINUX && !__HP && !__NT */ 
-
-  return(SUCCESS);
-  }  /* END MFULock() */
-
-
-
-
-		
 int MFUCacheInvalidate(
 
   char *FileName) /* I */
@@ -1354,13 +1240,13 @@ int MFUGetCurrentIndex(
 
 int MFUGetAttributes(
 
-  char *PathName,  /* I */
-  int  *Perm,      /* O */
-  long *MTime,     /* O */
-  long *Size,      /* O */
-  int  *UID,       /* O */
-  int  *IsPrivate, /* O */
-  int  *IsExe)     /* O */
+  char   *PathName,  /* I */
+  int    *Perm,      /* O */
+  time_t *MTime,     /* O */
+  long   *Size,      /* O */
+  uid_t  *UID,       /* O */
+  int    *IsPrivate, /* O */
+  int    *IsExe)     /* O */
 
   {
   struct stat S;
@@ -1376,16 +1262,16 @@ int MFUGetAttributes(
     }
 
   if (MTime != NULL)
-    *MTime = (long)S.st_mtime;
+    *MTime = S.st_mtime;
 
   if (Size != NULL)
-    *Size = (unsigned long)S.st_size;
+    *Size = S.st_size;
 
   if (Perm != NULL)
     *Perm = (int)S.st_mode;
 
   if (UID != NULL)
-    *UID = (int)S.st_uid;
+    *UID = S.st_uid;
 
   if (IsPrivate != NULL)
     {

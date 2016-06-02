@@ -1,0 +1,89 @@
+Node Attributes
+###############
+
+Nodes can possess a large number of attributes describing their
+configuration. The majority of these attributes such as operating system
+or configured network interfaces can only be specified by the direct
+resource manager interface. However, the number and detail of node
+attributes varies widely from resource manager to resource manager.
+Sites often have interest in making scheduling decisions based on
+scheduling attributes not directly supplied by the resource manager.
+Configurable node attributes are listed below.
+
+**NODETYPE**
+
+**** The **NODETYPE** attribute is most commonly used in conjunction
+with an allocation management system such as QBank. In these cases, each
+node is assigned a node type and within the allocation management
+system, each node type is assigned a charge rate. For example, a site
+may wish to charge users more for using large memory nodes and may
+assign a node type of 'BIGMEM' to these nodes. The allocation management
+system would then charge a premium rate for jobs using BIGMEM nodes.
+(See the `Allocation Manager Overview <6.4allocationmanagement.html>`__
+for more information.)
+
+Node types are specified as simple strings. If no node type is
+explicitly set, the node will possess the default node type of
+'[DEFAULT]'. Node type information can be specified directly using
+`NODECFG <a.fparameters.html#nodecfg>`__ or through use of the
+`FEATURENODETYPEHEADER <a.fparameters.html#featurenodetypeheader>`__
+parameter.
+
+**Example:**
+
+| ---
+| ``# maui.cfg``
+
+| ``NODECFG[node024] NODETYPE=BIGMEM``
+| ...
+| ---
+
+**PROCSPEED**
+
+**** Knowing a node's processor speed can help the scheduler improve
+intra-job efficiencies by allocating nodes of similar speeds together.
+This helps reduce losses due to poor internal job load balancing. Maui's
+`Node Set <8.3nodesetoverview.html>`__ scheduling policies allow a site
+to control processor speed based allocation behavior.
+
+| Processor speed information is specified in MHz and can be indicated
+  directly using `NODECFG <a.fparameters.html#nodecfg>`__ or through use
+  of the
+  `FEATUREPROCSPEEDHEADER <a.fparameters.html#featureprocspeedheader>`__
+  parameter.
+
+**SPEED**
+
+A node's speed is very similar to its procspeed but is specified as a
+relative value. In general use, the speed of a base node is determined
+and assigned a speed of 1.0. A node that is 50% faster would be assigned
+a value of 1.5 while a slower node may receive a value which is
+proportionally less than 1.0. Node speeds do not have to be directly
+proportional to processor speeds and may take into account factors such
+as memory size or networking interface. Generally, node speed
+information is used to determine proper wallclock limit and CPU time
+scaling adjustments.
+
+Node speed information is specified as a unitless floating point ratio
+and can be specified through the resource manager or with the
+`NODECFG <a.fparameters.html#nodecfg>`__ parameter.
+
+.. note::
+
+  The **SPEED** specification must be in the range of 0.01 to 100.0.
+
+**FEATURES**
+
+Not all resource managers allow specification of opaque node
+features. For these systems, the
+`NODECFG <a.fparameters.html#nodecfg>`__ parameter can be used to
+directly assign a list of node features to individual nodes.
+
+**NETWORK**
+
+The ability to specify which networks are available to a given node
+is limited to only a few resource manager. Using the **NETWORK**
+attribute, administrators can establish this node to network connection
+directly through the scheduler. The
+`NODECFG <a.fparameters.html#nodecfg>`__ parameter allows this list to
+be specified in a comma delimited list.

@@ -40,11 +40,20 @@ bin/*
 .*.swp
 *.orig
 
+# auto-generated documentation and support files
+/docs/docenv
+/docs/html
+/docs/guide
+/docs/latex
+/docs/refman
+/docs/refman.pdf
+
 # autoconf and configure output
 /Makefile
+/docs/Doxyfile
 autom4te.cache
-config.log
-config.status
+/config.log
+/config.status
 etc/maui.csh
 etc/maui.sh
 include/Makefile.inc.ll
@@ -61,6 +70,7 @@ maui-private.cfg
 maui-private.cfg.dist
 maui.cfg.dist
 maui.ck
+/maui-scheduler.service
 
 # eclipse project
 .settings

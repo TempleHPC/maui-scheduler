@@ -94,7 +94,7 @@ int MJobGetStartPriority(
   double        tmpD;
   char          tmpS[MAX_MNAME];
 
-  unsigned long MinWCLimit;
+  time_t        MinWCLimit;
 
   const char *FName = "MJobGetStartPriority";
 

@@ -1,0 +1,24 @@
+End User Commands
+#################
+
+While the majority of Maui commands are tailored for use by system
+administrators, a number of commands are designed to extend the
+knowledge and capabilities of end users. The table below covers the
+commands available to end users. The `Commands
+Overview <a.gcommandoverview.html>`__ lists all available commands.
+
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| **Command**                               | **Flags**   | **Description**                                                                                                                           |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| `canceljob <commands/canceljob.html>`__   |             | cancel existing job                                                                                                                       |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| `checkjob <commands/checkjob.html>`__     |             | display job state, resource requirements, environment, constraints, credentials, history, allocated resources, and resource utilization   |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| `showbf <commands/showbf.html>`__         |             | show resource availability for jobs with specific resource requirements                                                                   |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| `showq <commands/showq.html>`__           |             | display detailed prioritized list of active and idle jobs                                                                                 |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| `showstart <commands/showstart.html>`__   |             | show estimated start time of idle jobs                                                                                                    |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+
+| `showstats <commands/showstats.html>`__   |             | show detailed usage statistics for users, groups, and accounts which the end user has access to                                           |
++-------------------------------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------------------+

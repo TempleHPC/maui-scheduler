@@ -1,0 +1,8 @@
+7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities
+##############################################################################
+
+.. toctree::
+
+   7.1advancereservations
+   7.2partitions
+   7.3qos
