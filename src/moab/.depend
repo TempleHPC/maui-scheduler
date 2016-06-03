@@ -1,13 +1,13 @@
 # FastDep v2.1 for LAMMPS
 # Search path: .:..:../../include:/home/akohlmey/compile/maui-scheduler/../maui-bin/maui/include:/usr/include/torque
-#    49 sources
-#    20 includes
+#    48 sources
+#    19 includes
 #    51 depfiles
 MAcct.o : MAcct.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MACL.o : MACL.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MAM.o : MAM.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MAppSim.o : MAppSim.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
-mauth.o : mauth.c ./MGUtil.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ./MLog.c ../../include/mcom-proto.h ../../include/moab-local.h ./../mcom/MSec.c ./MFile.c ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+mauth.o : mauth.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ./MLog.c ../../include/mcom-proto.h ../../include/moab-local.h ./../mcom/MSec.c ./MFile.c ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MAuth.o : MAuth.c
 MBF.o : MBF.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MClass.o : MClass.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
@@ -21,7 +21,6 @@ MFile.o : MFile.c ../../include/msched-common.h ../../include/moab-utils.h ../..
 MFS.o : MFS.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 __MGridStub.o : __MGridStub.c
 MGroup.o : MGroup.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
-MGUtil.o : MGUtil.c
 MJob.o : MJob.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MLimit.o : MLimit.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MLLI.o : MLLI.c
@@ -48,7 +47,7 @@ MTime.o : MTime.c ../../include/msched-common.h ../../include/moab-utils.h ../..
 MTrace.o : MTrace.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MUI.o : MUI.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MUser.o : MUser.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
-MUtil.o : MUtil.c ./MGUtil.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
+MUtil.o : MUtil.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MWikiI.o : MWikiI.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h
 MXConfig.o : MXConfig.c
 MXI.o : MXI.c ../../include/msched-common.h ../../include/moab-utils.h ../../include/moab-wiki.h ../../include/moab-proto.h ../../include/msched.h ../../include/mcom-proto.h ../../include/moab-local.h ../../include/msched-proto.h ../../include/mcom.h ../../include/moab.h ../../include/msched-version.h

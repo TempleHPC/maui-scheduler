@@ -96,7 +96,6 @@ int MRMInitialize()
   {
   int rmindex;
   int Failure;
-  int rc;
   int SC;
  
   mrm_t *R;
@@ -128,16 +127,7 @@ int MRMInitialize()
       continue;
       }
  
-    MUThread(
-      (int (*)(void))*MRMFunc[R->Type].RMInitialize,
-      R->P[0].Timeout,
-      &rc,
-      2,
-      NULL,
-      R,
-      &SC);
- 
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].RMInitialize(R,&SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot initialize RM (RM '%s' failed in function '%s')\n",
         R->Name,
@@ -382,16 +372,7 @@ int MRMClusterQuery(
 
     __MRMStartFunc(R,mrmClusterQuery);
 
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].ClusterQuery,
-      R->P[0].Timeout,
-      &rc,
-      4,
-      NULL,
-      R,
-      &tmpRCount,
-      NULL,  /* EMsg */
-      SC);
+    rc = MRMFunc[R->Type].ClusterQuery(R,&tmpRCount,NULL,SC);
 
     __MRMEndFunc(R,mrmClusterQuery);
 
@@ -484,15 +465,7 @@ int MRMWorkloadQuery(
 
     __MRMStartFunc(R,mrmWorkloadQuery);
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].WorkloadQuery,
-      R->P[0].Timeout,
-      &rc,
-      3,
-      NULL,
-      R,
-      &tmpWCount,
-      SC);
+    rc = MRMFunc[R->Type].WorkloadQuery(R,&tmpWCount,SC);
 
     __MRMEndFunc(R,mrmWorkloadQuery);
  
@@ -665,16 +638,7 @@ int MRMJobStart(
 
     __MRMStartFunc(R,mrmJobStart);
 
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobStart,
-      R->P[0].Timeout,
-      &rc,
-      4,
-      NULL,
-      J,
-      R,
-      MPtr,
-      SC);
+    rc = MRMFunc[R->Type].JobStart(J,R,MPtr,SC);
 
     __MRMEndFunc(R,mrmJobStart);
 
@@ -805,17 +769,7 @@ int MRMJobCancel(
 
     __MRMStartFunc(R,mrmJobCancel);
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobCancel,
-      R->P[0].Timeout,
-      &rc,
-      5,
-      NULL,
-      J,
-      R,
-      Message,
-      NULL,
-      SC);
+    rc = MRMFunc[R->Type].JobCancel(J,R,Message,NULL,SC);
 
     __MRMEndFunc(R,mrmJobCancel);
  
@@ -895,20 +849,8 @@ int MRMJobGetProximateMNL(
     return(FAILURE);
     }
 
-  MUThread(
-    (int (*)(void))MRMFunc[R->Type].JobGetProximateTasks,
-    R->P[0].Timeout,
-    &rc,
-    8,
-    NULL,
-    J,
-    R,
-    SMNL,
-    DMNL,
-    StartTime,
-    DoExactMatch,
-    Message,
-    SC);
+  rc = MRMFunc[R->Type].JobGetProximateTasks(J,R,SMNL,DMNL,StartTime,
+                                             DoExactMatch,Message,SC);
 
   if (rc == FAILURE)
     {
@@ -940,8 +882,6 @@ int MRMJobModify(
   int rmindex;
   int rmcount;
  
-  int rc;
-
   mrm_t *R;
  
   int RMList[MAX_MRM];
@@ -1035,21 +975,7 @@ int MRMJobModify(
       return(FAILURE);
       }
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobModify,
-      R->P[0].Timeout,
-      &rc,
-      7,
-      NULL,
-      J,
-      R,
-      Attr,
-      SubAttr,
-      Value,
-      NULL,
-      SC);
- 
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].JobModify(J,R,Attr,SubAttr,Value,NULL,SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot modify job %s (RM '%s' failed in function '%s')\n",
         J->Name,
@@ -1076,8 +1002,6 @@ int MRMJobMigrate(
   int rqindex;
   int rmindex;
   int rmcount;
-
-  int rc;
 
   mrm_t *R;
 
@@ -1169,19 +1093,7 @@ int MRMJobMigrate(
       return(FAILURE);
       }
 
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobMigrate,
-      R->P[0].Timeout,
-      &rc,
-      5,
-      NULL,
-      J,
-      R,
-      NL,
-      NULL,
-      SC);
-
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].JobMigrate(J,R,NL,NULL,SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot migrate job %s (RM '%s' failed in function '%s')\n",
         J->Name,
@@ -1208,8 +1120,6 @@ int MRMJobRequeue(
   int rqindex;
   int rmindex;
   int rmcount;
- 
-  int rc;
  
   mrm_t *R;
  
@@ -1294,19 +1204,7 @@ int MRMJobRequeue(
       return(FAILURE);
       }
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobRequeue,
-      R->P[0].Timeout,
-      &rc,
-      5,
-      NULL,
-      J,
-      R,
-      JPeer,
-      NULL,
-      SC);
- 
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].JobRequeue(J,R,JPeer,NULL,SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot requeue job %s (RM '%s' failed in function '%s')\n",
         J->Name,
@@ -1331,9 +1229,7 @@ int MRMJobSubmit(
   char    *JobName,  /* O */
   char    *Msg,      /* O */
   int     *SC)       /* O */
-
   {
-  int rc;
 
   if (MSched.Mode == msmSim)
     {
@@ -1342,20 +1238,7 @@ int MRMJobSubmit(
     return(FAILURE);
     }
 
-  MUThread(
-    (int (*)(void))MRMFunc[R->Type].JobSubmit,
-    R->P[0].Timeout,
-    &rc,
-    6,
-    NULL,
-    JobDesc,
-    R,
-    J,
-    JobName,
-    Msg,
-    SC);
-
-  if (rc == FAILURE)
+  if (MRMFunc[R->Type].JobSubmit(JobDesc,R,J,JobName,Msg,SC) == FAILURE)
     {
     DBG(3,fRM) DPrint("ALERT:    cannot submit job (RM '%s' failed in function '%s')\n",
       R->Name,
@@ -1380,8 +1263,6 @@ int MRMJobSuspend(
   int rqindex;
   int rmindex;
   int rmcount;
- 
-  int rc;
  
   mrm_t *R;
  
@@ -1444,18 +1325,7 @@ int MRMJobSuspend(
       return(FAILURE);
       }
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobSuspend,
-      R->P[0].Timeout,
-      &rc,
-      4,
-      NULL,
-      J,
-      R,
-      Msg,
-      SC);
- 
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].JobSuspend(J,R,Msg,SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot suspend job %s (RM '%s' failed in function '%s')\n",
         J->Name,
@@ -1483,8 +1353,6 @@ int MRMJobCheckpoint(
   int rqindex;
   int rmindex;
   int rmcount;
- 
-  int rc;
  
   mrm_t *R;
  
@@ -1548,19 +1416,7 @@ int MRMJobCheckpoint(
       return(FAILURE);
       }
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobCheckpoint,
-      R->P[0].Timeout,
-      &rc,
-      5,
-      NULL,
-      J,
-      R,
-      TerminateJob,
-      Msg,
-      SC);
- 
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].JobCheckpoint(J,R,TerminateJob,Msg,SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot checkpoint job %s (RM '%s' failed in function '%s')\n",
         J->Name,
@@ -1590,8 +1446,6 @@ int MRMJobResume(
   int rmcount;
 
   int nindex;
- 
-  int rc;
  
   mrm_t   *R;
   mreq_t  *RQ;
@@ -1656,18 +1510,7 @@ int MRMJobResume(
       return(FAILURE);
       }
  
-    MUThread(
-      (int (*)(void))MRMFunc[R->Type].JobResume,
-      R->P[0].Timeout,
-      &rc,
-      4,
-      NULL,
-      J,
-      R,
-      Msg,
-      SC);
- 
-    if (rc == FAILURE)
+    if (MRMFunc[R->Type].JobResume(J,R,Msg,SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot resume job %s (RM '%s' failed in function '%s')\n",
         J->Name,
@@ -2818,12 +2661,9 @@ int MRMJobPreUpdate(
   }  /* END MRMJobPreUpdate() */
 
 
-
-
 int MRMFinalizeCycle()
 
   {
-  int rc;
   int SC;
 
   int rmindex;
@@ -2843,16 +2683,7 @@ int MRMFinalizeCycle()
       continue;
       }
 
-    MUThread(
-      (int (*)(void))*MRMFunc[R->Type].CycleFinalize,
-      R->P[0].Timeout,
-      &rc,
-      2,
-      NULL,
-      R,
-      &SC);
-
-    if (rc == FAILURE)
+    if(MRMFunc[R->Type].CycleFinalize(R,&SC) == FAILURE)
       {
       DBG(3,fRM) DPrint("ALERT:    cannot finalize RM cycle (RM '%s' failed in function '%s')\n",
         R->Name,

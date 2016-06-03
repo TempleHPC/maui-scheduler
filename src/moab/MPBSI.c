@@ -2289,7 +2289,7 @@ int MPBSNodeLoad(
 
     if ((Status != mnsDown) && (Status != mnsDrained))
       {
-      if (MUThread((int (*)())MPBSQueryMOM,10,NULL,4,NULL,N,R,NULL,NULL) == FAILURE)
+        if (MPBSQueryMOM(N,R,NULL,NULL) == FAILURE)
         {
         N->State = mnsDown;
         }
@@ -2972,7 +2972,7 @@ int MPBSNodeUpdate(
     {
     if ((NState != mnsDown) && (NState != mnsDrained))
       {
-      if (MUThread((int (*)())MPBSQueryMOM,10,NULL,4,NULL,N,R,NULL,NULL) == FAILURE)   
+        if (MPBSQueryMOM(N,R,NULL,NULL) == FAILURE)   
         {
         MUStrDup(&N->Message,"unable to obtain node information from MOM");
 

@@ -7088,8 +7088,6 @@ int MResAdjustDRes(
     (JName == NULL) ? "NULL" : JName,
     (ForceEval == TRUE) ? "TRUE" : "FALSE");
 
-  /* NOTE:  not thread safe */
-
   /* must calculate BRes for each 'container' reservation at         */
   /* each 'job' event boundary.  collapse container reservations     */
   /* where possible using memcmp.  Insert all container reservation  */

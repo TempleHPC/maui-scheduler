@@ -73,7 +73,7 @@ int UIProcessCommand(
 
   S->SBuffer = SBuffer;
 
-  strcpy(CurrentHostName,S->Host);  /* NOTE:  not very threadsafe :) */
+  strcpy(CurrentHostName,S->Host);
 
   if ((X.XUIHandler != (int (*)())0) && 
     ((*X.XUIHandler)(X.xd,S,MSched.DefaultCSKey,0) == SUCCESS))

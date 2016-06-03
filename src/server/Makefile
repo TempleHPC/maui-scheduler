@@ -14,14 +14,14 @@ SHELL  =/bin/sh
   IP   =$(SCHEDIP) $(LLIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched-proto.h $(INC)msched-common.h
   DEFS =-D$(OPSYS) $(LLDEF) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) \
-        $(REGEXDEF) $(RMSDEF) $(SECDEF) $(THREADDEF) $(DAEMONDEF)
+        $(REGEXDEF) $(RMSDEF) $(SECDEF) $(DAEMONDEF)
 
 SERVER   =maui
 SCHEDLIB =moab
 COMLIB   =mcom
 
 MBINS    =$(SERVER) mclient mprof
-LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(THREADLIB) $(MXLIB) $(LLLIB) $(SDRLIB) \
+LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(MXLIB) $(LLLIB) $(SDRLIB) \
 	  $(REGEXLIB) $(SECLIB) -lm
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
