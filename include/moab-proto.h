@@ -712,7 +712,6 @@ int MWikiTestJob(char *);
 
 /* util object */
 
-int MUThread(int (*)(),long,int *,int,int *,...);
 int MUStrCat(char *,char *,int);
 int MUStrDup(char **,char *);
 int MUMemCCmp(char *Data,char,int);
