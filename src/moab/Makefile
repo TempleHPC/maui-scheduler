@@ -14,7 +14,7 @@ SHELL  =/bin/sh
   IP   =$(SCHEDIP) $(LLIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched.h
   DEFS =-D$(OPSYS) $(LLDEF) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) $(REGEXDEF) \
-        $(SECDEF) $(RMSDEF) $(THREADDEF) $(DAEMONDEF)
+        $(SECDEF) $(RMSDEF) $(DAEMONDEF)
 
 MOAB     =libmoab.a
 LOBJECTS =MFile.o MConfig.o MQOS.o MLog.o MCred.o MSched.o MAM.o MSR.o MRes.o \

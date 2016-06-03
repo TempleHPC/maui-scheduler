@@ -45,7 +45,6 @@ extern const char *MCKeyword[];
 extern const char *MSockAttr[];
 
 char tmpSBuf[MMSG_BUFFER];  /* NOTE: global to avoid compiler-specific stack failures */
-                            /* (not threadsafe) */
 
 
 msocket_t MClS[MMAX_CLIENT];  /* no longer used in live code */
@@ -935,7 +934,7 @@ int MSUSendData(
   CKLine[0]='\0';
   SHeader[0]='\0';
 
-  tmpSBuf[0] = '\0';  /* tmpSBuf is global (not threadsafe) */
+  tmpSBuf[0] = '\0';  /* tmpSBuf is global */
 
   switch (S->WireProtocol)
     {

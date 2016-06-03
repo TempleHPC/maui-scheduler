@@ -4,11 +4,6 @@
 #ifndef __M_COMMON_H__
 #define __M_COMMON_H__
 
-#ifdef __MTHREADS
-#  include <pthread.h>
-#endif /* __MTHREADS */
-
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
