@@ -13,12 +13,12 @@ AC_PROG_CC
 AC_PROG_LN_S
 
 # Assign desired prefix default
-AC_PREFIX_DEFAULT([/usr/local/maui])
+AC_PREFIX_DEFAULT([/usr/local])
 
 # Handle spooldir (homedir)
 AC_ARG_WITH(spooldir,
-  [  --with-spooldir=DIR     where config files, log and stat directories are maintained [[/usr/local/maui]]],
-      SPOOLDIR=$withval, SPOOLDIR=/usr/local/maui)
+  [  --with-spooldir=DIR     where config files, log and stat directories are maintained [[/var/spool/maui]]],
+      SPOOLDIR=$withval, SPOOLDIR=/var/spool/maui)
 AC_SUBST(SPOOLDIR)
 
 # Machine Name
@@ -117,16 +117,6 @@ if test "$LLVERSION" != 'FALSE'; then
 	AC_SUBST(LLDEF)
 	AC_SUBST_FILE(ll_definitions)
 	ll_definitions=include/Makefile.inc.ll
-fi
-
-# SDR
-AC_ARG_WITH(sdr,
-	[  --with-sdr              use the IBM SP2 SDR to obtain node info],
-	[USESDR='TRUE'],
-	[USESDR='FALSE'])
-if test "$USESDR" != 'FALSE'; then
-	AC_SUBST_FILE(sdr_definitions)
-	sdr_definitions=include/Makefile.inc.sdr
 fi
 
 # PBS
@@ -516,7 +506,6 @@ AC_CHECK_FUNCS([gethostbyaddr gethostbyname gethostname gettimeofday inet_ntoa m
 
 # Configure the output files, and generate them.
 AC_CONFIG_FILES([include/Makefile.inc.ll
-                 include/Makefile.inc.sdr
                  include/Makefile.inc.pbs
                  include/Makefile.inc.sge
                  include/Makefile.inc.lsf
@@ -544,8 +533,4 @@ if test -z "`echo $PATH | grep \"$prefix\" 2>/dev/null`"; then
 	AC_MSG_NOTICE([
 Remember to add $prefix/bin to your PATH])
 fi
-AC_MSG_NOTICE([NOTE:  link 'docs/mauidocs.html' to your local website for access to user and admin documentation
-NOTE:  latest downloads, patches, etc are available at 'http://supercluster.org/maui'
-
-configure successful.])
 
