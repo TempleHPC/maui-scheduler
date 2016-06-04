@@ -1358,7 +1358,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-spooldir=DIR     where config files, log and stat directories are maintained [/var/spool/maui]
-  --with-machine=NAME     system name (defaults to uppercased hostname)
+  --with-machine=NAME     system name (defaults to LOCALHOST)
   --with-key=SEED         security checksum key (defaults to a random integer)
   --with-loadl[=VERSION]  use LoadLeveler Resource Manager (version [3])
   --with-pbs[=DIR]        use PBS Resource Manager (target directory (location of pbs lib dir) [/usr/local])
@@ -3049,13 +3049,12 @@ fi
 
 
 # Machine Name
-MACHINENAME=`echo ${ac_hostname} | tr '[:lower:]' '[:upper:]'`
 
 # Check whether --with-machine was given.
 if test "${with_machine+set}" = set; then :
   withval=$with_machine; MACHINE=$withval
 else
-  MACHINE=$MACHINENAME
+  MACHINE=LOCALHOST
 fi
 
 
@@ -3074,42 +3073,14 @@ fi
 # Determine OPSYS
 OS=`uname`
 if test "$OS" = "AIX"; then
-  if test `uname -v` = 4; then
-    if test `uname -r` = 1; then
-      OPSYS="__AIX41"
-    elif test `uname -r` = 2; then
-      OPSYS="__AIX42"
-    elif test `uname -r` = 3; then
-      OPSYS="__AIX43"
-    else
-      OPSYS="__AIX43"
-      RELEASE=`uname -r`
-      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS" >&5
-$as_echo "$as_me: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS" >&2;}
-    fi
-  else
-    OPSYS=__AIX43
-    OSLEVEL=`oslevel`
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&5
-$as_echo "$as_me: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&2;}
-  fi
-elif echo "$OS" | grep -q "CYGWIN"; then
-  OPSYS="__CYGWIN"
+  OPSYS=__AIX43
 elif test "$OS" = "Linux"; then
   OPSYS="__LINUX"
-elif test "$OS" = "HP-UX"; then
-  OPSYS="__HPUX"
 elif test "$OS" = "HP-UX"; then
   OPSYS="__HPUX"
 elif test "$OS" = "IRIX" -o "$OS" = "IRIX64"; then
   OPSYS="__IRIX"
   OS="IRIX"
-elif test "$OS" = "NT"; then
-  OPSYS="__NT"
-  OS="NT"
-elif test "$OS" = "OSF1"; then
-  OPSYS="__OSF"
-  OS="OSF"
 else
   OPSYS="__LINUX"
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" >&5
