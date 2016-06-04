@@ -13,7 +13,7 @@ SHELL  =/bin/sh
   LP   =-L$(LIB) $(SCHEDLP) $(LLLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
   IP   =$(SCHEDIP) $(LLIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched-proto.h $(INC)msched-common.h
-  DEFS =-D$(OPSYS) $(LLDEF) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) \
+  DEFS =-D$(OPSYS) $(LLDEF) $(PBSDEF) $(OSDEF) $(MXDEF) \
         $(REGEXDEF) $(RMSDEF) $(SECDEF) $(DAEMONDEF)
 
 SERVER   =maui
@@ -21,7 +21,7 @@ SCHEDLIB =moab
 COMLIB   =mcom
 
 MBINS    =$(SERVER) mclient mprof
-LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(MXLIB) $(LLLIB) $(SDRLIB) \
+LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(MXLIB) $(LLLIB) \
 	  $(REGEXLIB) $(SECLIB) -lm
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
@@ -29,7 +29,7 @@ MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
           showbf showconfig showgrid showhold showstart showq showtasks showres \
           showstate showstats mschedctl mjobctl mnodectl mdiag mstat mbal
 
-SOBJECTS =Server.o UserI.o SDR.o LLI.o
+SOBJECTS =Server.o UserI.o LLI.o
 
 POBJECTS =mprof.o
 

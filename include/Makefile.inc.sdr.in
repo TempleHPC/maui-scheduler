@@ -1,4 +1,0 @@
-
-# SDR Definitions
-export SDRDEF = -D__MSDR
-export SDRLIB = -lSDR

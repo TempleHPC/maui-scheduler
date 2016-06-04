@@ -166,8 +166,6 @@ int main(
     ServerAuthenticate();
     }
 
-  SDRGetSystemConfig();
-
   MSysStartServer(MSched.FBActive);
 
   while(1)
@@ -1297,15 +1295,6 @@ int ServerProcessRequests()
       }
 
     MStatProfInitialize(&MStat.P);
-
-#ifdef __MSDR
-
-    if (MSched.Mode != msmSim)
-      {
-      SDRGetSystemConfig();
-      }
-
-#endif /* __MSDR */
 
     if (FC->FSPolicy != fspNONE)
       {

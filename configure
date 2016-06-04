@@ -586,7 +586,7 @@ PACKAGE_BUGREPORT='hpc@temple.edu'
 PACKAGE_URL='https://github.com/TempleHPC/maui-scheduler'
 
 ac_unique_file="src/mcom/MConst.c"
-ac_default_prefix=/usr/local/maui
+ac_default_prefix=/usr/local
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -714,7 +714,6 @@ PATH_SEPARATOR
 SHELL'
 ac_subst_files='rm_config
 ll_definitions
-sdr_definitions
 pbs_definitions
 sge_definitions
 lsf_definitions
@@ -726,7 +725,6 @@ with_spooldir
 with_machine
 with_key
 with_loadl
-with_sdr
 with_pbs
 with_rms
 with_sge
@@ -1359,11 +1357,10 @@ if test -n "$ac_init_help"; then
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-spooldir=DIR     where config files, log and stat directories are maintained [/usr/local/maui]
+  --with-spooldir=DIR     where config files, log and stat directories are maintained [/var/spool/maui]
   --with-machine=NAME     system name (defaults to uppercased hostname)
   --with-key=SEED         security checksum key (defaults to a random integer)
   --with-loadl[=VERSION]  use LoadLeveler Resource Manager (version [3])
-  --with-sdr              use the IBM SP2 SDR to obtain node info
   --with-pbs[=DIR]        use PBS Resource Manager (target directory (location of pbs lib dir) [/usr/local])
   --with-rms[=standalone] use Quadrics RMS (default is not as a standalone Resource Manager [])
   --with-sge[=DIR]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [/usr/local/sge/source])
@@ -3046,7 +3043,7 @@ fi
 if test "${with_spooldir+set}" = set; then :
   withval=$with_spooldir; SPOOLDIR=$withval
 else
-  SPOOLDIR=/usr/local/maui
+  SPOOLDIR=/var/spool/maui
 fi
 
 
@@ -3169,20 +3166,6 @@ if test "$LLVERSION" != 'FALSE'; then
 
 
 	ll_definitions=include/Makefile.inc.ll
-fi
-
-# SDR
-
-# Check whether --with-sdr was given.
-if test "${with_sdr+set}" = set; then :
-  withval=$with_sdr; USESDR='TRUE'
-else
-  USESDR='FALSE'
-fi
-
-if test "$USESDR" != 'FALSE'; then
-
-	sdr_definitions=include/Makefile.inc.sdr
 fi
 
 # PBS
@@ -5469,7 +5452,7 @@ done
 
 
 # Configure the output files, and generate them.
-ac_config_files="$ac_config_files include/Makefile.inc.ll include/Makefile.inc.sdr include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
+ac_config_files="$ac_config_files include/Makefile.inc.ll include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
 
 ac_config_files="$ac_config_files Makefile"
 
@@ -6192,7 +6175,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "include/Makefile.inc.ll") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.ll" ;;
-    "include/Makefile.inc.sdr") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.sdr" ;;
     "include/Makefile.inc.pbs") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pbs" ;;
     "include/Makefile.inc.sge") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.sge" ;;
     "include/Makefile.inc.lsf") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.lsf" ;;
@@ -6717,12 +6699,4 @@ Remember to add $prefix/bin to your PATH" >&5
 $as_echo "$as_me:
 Remember to add $prefix/bin to your PATH" >&6;}
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: NOTE:  link 'docs/mauidocs.html' to your local website for access to user and admin documentation
-NOTE:  latest downloads, patches, etc are available at 'http://supercluster.org/maui'
-
-configure successful." >&5
-$as_echo "$as_me: NOTE:  link 'docs/mauidocs.html' to your local website for access to user and admin documentation
-NOTE:  latest downloads, patches, etc are available at 'http://supercluster.org/maui'
-
-configure successful." >&6;}
 
