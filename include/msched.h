@@ -1076,7 +1076,6 @@ typedef struct {
   /* interface */
 
   enum MRMTypeEnum    Type;
-  enum MRMSubTypeEnum SubType;
 
   mpsi_t P[MAX_MRMSUBTYPE];     /* peer interface */
 

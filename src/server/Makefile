@@ -14,7 +14,7 @@ SHELL  =/bin/sh
   IP   =$(SCHEDIP) $(LLIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched-proto.h $(INC)msched-common.h
   DEFS =-D$(OPSYS) $(LLDEF) $(PBSDEF) $(OSDEF) $(MXDEF) \
-        $(REGEXDEF) $(RMSDEF) $(SECDEF) $(DAEMONDEF)
+        $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 SERVER   =maui
 SCHEDLIB =moab

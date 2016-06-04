@@ -84,8 +84,6 @@ const char *MRMType[] = {
   "NATIVE",
   NULL };
 
-const char *MRMSubType[]   = { NONE, "RMS", NULL };        
-
 /* sync w/MRMFuncEnum */
 
 const char *MRMFuncType[]  = {

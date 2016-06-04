@@ -14,13 +14,13 @@ SHELL  =/bin/sh
   IP   =$(SCHEDIP) $(LLIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched.h
   DEFS =-D$(OPSYS) $(LLDEF) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) $(REGEXDEF) \
-        $(SECDEF) $(RMSDEF) $(DAEMONDEF)
+        $(SECDEF) $(DAEMONDEF)
 
 MOAB     =libmoab.a
 LOBJECTS =MFile.o MConfig.o MQOS.o MLog.o MCred.o MSched.o MAM.o MSR.o MRes.o \
           MUser.o MGroup.o MAcct.o MClass.o MTime.o MNode.o MConst.o MACL.o MStats.o \
           MLocal.o MUtil.o MTrace.o MAppSim.o MQueue.o MLimit.o MXI.o MSim.o \
-          MRMSI.o MBF.o MJob.o MPriority.o MPolicy.o MPreempt.o MFS.o MPar.o MRM.o \
+          MBF.o MJob.o MPriority.o MPolicy.o MPreempt.o MFS.o MPar.o MRM.o \
           MPBSI.o MWikiI.o MSys.o MCP.o MUI.o $(SSSOBJ)
 
     LD =$(CC)

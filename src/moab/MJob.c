@@ -8674,10 +8674,6 @@ int MReqGetFNL(
 
   int  tmpRSS;
 
-  mrm_t *RM;
-
-  mnalloc_t tmpNodeList[MAX_MPAR][MAX_MNODE];
-
   const char *FName = "MReqGetFNL";
 
   DBG(4,fSCHED) DPrint("%s(%s,%d,%s,%s,DstNL,NC,TC,%ld,%ld)\n",
@@ -8883,61 +8879,6 @@ int MReqGetFNL(
       }  /* END for (rindex) */
     }    /* END if ((MPar[0].NodeSetDelay == 0) && ...) */
 
-  if (J->RM != NULL)
-    RM = J->RM;
-  else
-    RM = &MRM[0];
-
-  switch(RM->SubType)
-    {
-    case mrmstRMS:
-
-      {
-      int sindex;
-
-      MRMSSelectAdjacentNodes(
-        P->Index,
-        J->TasksRequested,
-        (mnalloc_t *)DstNL,
-        tmpNodeList);
-
-      /* merge all feasible slots */
-
-      tc = 0;
-      rindex = 0;
-
-      for (sindex = 0;sindex < MAX_MPAR;sindex++)
-        {
-        if (tmpNodeList[sindex][0].N == NULL)
-          break;
-
-        for (nindex = 0;nindex < MAX_MNODE;nindex++)
-          {
-          if (tmpNodeList[sindex][nindex].N == NULL)
-            break;
-
-          memcpy(
-            &DstNL[rindex],
-            &tmpNodeList[sindex][nindex],
-            sizeof(DstNL[0]));
-
-          rindex++;
-
-          tc += tmpNodeList[sindex][nindex].TC;
-          }  /* END for (nindex) */
-        }    /* END for (sindex) */
-
-      DstNL[rindex].N = NULL;
-      }  /* END BLOCK */
-
-      break;
-
-    default:
-
-      /* NO-OP */
-
-      break;
-    }  /* END switch(RM->SubType) */
 
   DBG(2,fSCHED) DPrint("INFO:     %d feasible tasks found for job %s:%d in partition %s (%d Needed)\n",
     tc,
@@ -13079,6 +13020,202 @@ int MJobGetLocalTL(
   }  /* END MJobGetLocalTL() */
 
 
+
+int MJobSelectAdjacentNodes(
+
+  int         PIndex,
+  int         MinTasks,
+  mnalloc_t NodeList[],
+  mnalloc_t AdjNodeList[][MAX_MNODE])
+
+  {
+  int StartIndex;
+  int index;
+  int rindex;
+  int nindex;
+
+  mnalloc_t tmpNodeList[MAX_MNODE];
+
+  int TC;
+
+  mnode_t *N;
+
+  memset(tmpNodeList,0,sizeof(tmpNodeList));
+
+  for (nindex = 0;NodeList[nindex].N != NULL;nindex++)
+    {
+    N = NodeList[nindex].N;
+
+    if (N->PtIndex != PIndex)
+      continue;
+
+    memcpy(&tmpNodeList[MAX(0,N->SlotIndex)],&NodeList[nindex],sizeof(tmpNodeList[0]));
+    }  /* END for (nindex) */
+
+  rindex = 0;
+
+  TC = 0;
+  StartIndex = 0;
+
+  for (nindex = 0;nindex < MAX_MNODE;nindex++) 
+    {
+    if (tmpNodeList[nindex].TC > 0)
+      {
+      if (TC == 0)
+        StartIndex = nindex;
+
+      TC += tmpNodeList[nindex].TC;
+
+      continue;
+      }
+    else if (TC >= MinTasks)
+      {
+      /* save range */
+
+      for (index = StartIndex;index < nindex;index++)
+        {
+        memcpy(&AdjNodeList[rindex][index - StartIndex],&tmpNodeList[index],sizeof(tmpNodeList[0]));   
+        }
+
+      AdjNodeList[rindex][index - StartIndex].N = NULL;
+
+      rindex++;
+
+      if (rindex >= MAX_MPAR)
+        break;
+      }
+
+    TC = 0;
+    }  /* END for (nindex) */
+
+  AdjNodeList[rindex][0].N = NULL;
+
+  if (rindex == 0)
+    return(FAILURE);
+
+  return(SUCCESS);
+  }  /* END MJobSelectAdjacentNodes() */
+
+
+
+
+int MJobAllocateContiguous(
+ 
+  mjob_t *J,                /* IN: job allocating nodes                           */
+  mreq_t *RQ,               /* IN: req allocating nodes                           */
+  mnalloc_t *NodeList,      /* IN: eligible nodes                                 */
+  int     RQIndex,          /* IN: index of job req to evaluate                   */
+  int    *MinTPN,           /* IN: min tasks per node allowed                     */
+  int    *MaxTPN,           /* IN: max tasks per node allowed                     */
+  char   *NodeMap,          /* IN: array of node alloc states                     */
+  int     AffinityLevel,    /* IN: current reservation affinity level to evaluate */
+  int    *NodeIndex,        /* IN/OUT: index of next node to find in BestList     */
+  mnalloc_t *BestList[MAX_MREQ_PER_JOB],   /* IN/OUT: list of selected nodes      */
+  int    *TaskCount,        /* IN/OUT: total tasks allocated to req               */
+  int    *NodeCount)        /* IN/OUT: total nodes allocated to req               */
+ 
+  {
+  int nindex;
+  int TC;
+ 
+  mnode_t *N;
+ 
+  mnalloc_t MyNodeList[MAX_MNODE];
+  int         MyNIndex;
+
+  mnalloc_t tmpNodeList[MAX_MPAR][MAX_MNODE];
+ 
+  /* select first 'RQ->TaskCount' adjacent procs */
+
+  MyNIndex = 0;
+
+  for (nindex = 0;NodeList[nindex].N != NULL;nindex++)
+    {
+    N  = NodeList[nindex].N;
+    TC = NodeList[nindex].TC;
+ 
+    if (NodeMap[N->Index] != AffinityLevel)
+      {
+      /* node unavailable */ 
+ 
+      continue;
+      }
+ 
+    if (TC < MinTPN[RQIndex])
+      continue;
+ 
+    TC = MIN(TC,MaxTPN[RQIndex]);
+ 
+    /* add node to private list */
+ 
+    MyNodeList[MyNIndex].TC = TC;
+    MyNodeList[MyNIndex].N  = N;
+
+    MyNIndex++;
+    }  /* END for (nindex) */
+
+  if (MyNIndex == 0)
+    {
+    /* no nodes located */
+ 
+    return(FAILURE);
+    }
+ 
+  MyNodeList[MyNIndex].N = NULL;
+
+  /* select adjacent nodes */      
+
+  if (MJobSelectAdjacentNodes(
+        NodeList[0].N->PtIndex,
+        J->TasksRequested,
+        MyNodeList,
+        tmpNodeList) == FAILURE)
+    {
+    /* cannot locate adequate adjacent nodes */
+ 
+    return(FAILURE);
+    }
+ 
+  /* NOT IMPLEMENTED */
+ 
+  /* populate BestList with selected nodes */
+ 
+  for (nindex = 0;MyNodeList[nindex].N != NULL;nindex++)
+    {
+    N  = tmpNodeList[0][nindex].N;
+    TC = tmpNodeList[0][nindex].TC;
+ 
+    BestList[RQIndex][NodeIndex[RQIndex]].N  = N;
+    BestList[RQIndex][NodeIndex[RQIndex]].TC = TC;
+ 
+    NodeIndex[RQIndex] ++;
+    TaskCount[RQIndex] += TC;
+    NodeCount[RQIndex] ++; 
+ 
+    /* mark node as used */
+ 
+    NodeMap[N->Index] = nmUnavailable;
+ 
+    if (TaskCount[RQIndex] >= RQ->TaskCount)
+      {
+      /* all required tasks found */
+ 
+      /* NOTE:  HANDLED BY DIST */
+ 
+      if ((RQ->NodeCount == 0) ||
+          (NodeCount[RQIndex] >= RQ->NodeCount))
+        {
+        /* terminate BestList */
+ 
+        BestList[RQIndex][NodeIndex[RQIndex]].N = NULL;
+ 
+        break;
+        }
+      }
+    }     /* END for (nindex) */
+ 
+  return(SUCCESS);
+  }  /* END MJobAllocateContiguous() */
 
 
 int MReqAllocateLocalRes(

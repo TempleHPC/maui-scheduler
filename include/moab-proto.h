@@ -642,7 +642,7 @@ int MRMProcessConfig(mrm_t *,char *);
 int MRMCheckConfig(mrm_t *);
 int MRMJobGetProximateMNL(mjob_t *,mrm_t *,mnodelist_t,mnodelist_t,long,int,char *,int *);
 int MRMCheckEvents(void);
-int MRMJobSubmit(char *,mrm_t *,mjob_t **,char *,char *,int *);
+int MRMJobSubmit(char *,mrm_t *,mjob_t **,int *);
 int MRMJobSuspend(mjob_t *,char *,int *);
 int MRMJobResume(mjob_t *,char *,int *);
 int MRMJobCheckpoint(mjob_t *,int,char *,int *);

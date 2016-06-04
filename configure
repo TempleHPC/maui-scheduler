@@ -726,7 +726,6 @@ with_machine
 with_key
 with_loadl
 with_pbs
-with_rms
 with_sge
 with_lsf
 with_wiki
@@ -1361,8 +1360,7 @@ Optional Packages:
   --with-machine=NAME     system name (defaults to LOCALHOST)
   --with-key=SEED         security checksum key (defaults to a random integer)
   --with-loadl[=VERSION]  use LoadLeveler Resource Manager (version [3])
-  --with-pbs[=DIR]        use PBS Resource Manager (target directory (location of pbs lib dir) [/usr/local])
-  --with-rms[=standalone] use Quadrics RMS (default is not as a standalone Resource Manager [])
+  --with-pbs[=DIR]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [/usr/local])
   --with-sge[=DIR]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [/usr/local/sge/source])
   --with-lsf[=DIR]        use LSF Resource Manager (install directory (location of LSF include and lib directories) [/usr/local/lsf])
   --with-wiki             use Wiki Resource Manager
@@ -3177,29 +3175,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	pbs_definitions=include/Makefile.inc.pbs
 fi
 
-# RMS
-
-# Check whether --with-rms was given.
-if test "${with_rms+set}" = set; then :
-  withval=$with_rms; USERMS=$withval
-else
-  USERMS='FALSE'
-fi
-
-if test "$USERMS" != 'FALSE'; then
-	if test "$USERMS" = 'yes'; then
-		USERMS='supporting';
-	fi
-	if test "$USERMS" = 'standalone'; then
-		if test "$RMTYPE" = ''; then
-			RMTYPE=RMS
-		else
-    			as_fn_error $? "Only one Resource Manager can be specified (RMS, $RMTYPE)" "$LINENO" 5
-		fi
-		#AC_SUBST_FILE(rms_definitions)
-		#rms_definitions=include/Makefile.inc.rms
-	fi
-fi
 
 # SGE
 

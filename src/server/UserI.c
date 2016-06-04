@@ -100,7 +100,6 @@ extern const char *MAMType[];
 extern const char *MAMProtocol[];
 extern const char *MAMChargePolicy[];
 extern const char *MRMType[];
-extern const char *MRMSubType[];
 extern const char *MRMAuthType[];
 extern const char *MGridCtlCmds[];
 extern const char *MJobCtlCmds[];
@@ -3437,7 +3436,7 @@ int MUIJobCtl(
     {
     /* NOTE:  hardcode job submissions to first resource manager */
 
-    if ((rc = MRMSJobSubmit(ArgString,&MRM[0],&J,NULL)) == FAILURE)
+    if ((rc = MRMJobSubmit(ArgString,&MRM[0],&J,NULL)) == FAILURE)
       {
       sprintf(tmpLine,"ERROR:    cannot submit job\n");
       }

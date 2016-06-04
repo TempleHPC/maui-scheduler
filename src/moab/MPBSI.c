@@ -295,21 +295,6 @@ int MPBSInitialize(
   R->U.PBS.PBS5IsEnabled = -1;
   R->U.PBS.SSSIsEnabled  = -1;
 
-  switch(R->SubType)
-    {
-    case mrmstRMS:
- 
-      MRMSInitialize();
- 
-      break;
- 
-    default:
-
-      /* NO-OP */
- 
-      break;
-    }  /* END switch(R->SubType) */
-
   /* load/update server info */
 
   __MPBSSystemQuery(R,SC);
@@ -1234,13 +1219,6 @@ int MPBSClusterQuery(
   if (NewNode == TRUE)
     {
     MPBSLoadQueueInfo(R,NULL,TRUE,NULL);
-
-    if (R->SubType == mrmstRMS)
-      {
-#ifdef __MRMS
-      MRMSInitialize();
-#endif /* __MRMS */
-      }
     }
 
   return(SUCCESS);
@@ -1777,94 +1755,21 @@ int MPBSJobStart(
     return(FAILURE);
     }
 
-  if (R->SubType != mrmstRMS)
-    {
-    __MPBSNLToTaskString(J->NodeList,R,HostList,sizeof(HostList));
+  __MPBSNLToTaskString(J->NodeList,R,HostList,sizeof(HostList));
 
-    if (HostList[0] == '\0')
-      {
-      DBG(0,fPBS) DPrint("ERROR:    job '%s' cannot be started: (empty hostlist)\n",
+  if (HostList[0] == '\0')
+    {
+    DBG(0,fPBS) DPrint("ERROR:    job '%s' cannot be started: (empty hostlist)\n",
         J->Name);
 
-      if (Msg != NULL)
+    if (Msg != NULL)
         strcpy(Msg,"job cannot be started - empty hostlist");
 
-      if (SC != NULL)
+    if (SC != NULL)
         *SC = mscBadParam;
 
-      return(FAILURE);
-      }
+    return(FAILURE);
     }
-  else
-    {
-    /* handle RMS */
-
-    static char  RMSNodeSpec[MAX_MLINE];
-
-    /* NOTE:  first field, base node number, is relative to RMS partition  */
-    /*        The code below requires a single full partition with PBS     */
-    /*        reporting all nodes in partition order                       */
-
-    sprintf(RMSNodeSpec,"%d/%d:%d",
-      J->NodeList[0].N->SlotIndex,
-      J->Req[0]->NodeCount,
-      J->Req[0]->TaskCount);
-
-    if (MPBSJobModify(J,R,ATTR_l,"rmsnodes",RMSNodeSpec,NULL,NULL) == FAILURE)
-      {
-      DBG(0,fPBS) DPrint("ERROR:    job '%s' cannot set RMS node spec: (RMSNodeSpec: '%s')\n",
-        J->Name,
-        RMSNodeSpec);
-
-      if (R->FailIteration != MSched.Iteration)
-        {
-        R->FailIteration = MSched.Iteration;
-        R->FailCount     = 0;
-        }
-
-      R->FailCount++;
-
-      return(FAILURE);
-      }
-    else
-      {
-      DBG(7,fPBS) DPrint("INFO:     RMS node spec for job '%s' set to '%s'\n",
-        J->Name,
-        RMSNodeSpec);
-      }
-
-    if (J->NodeList[0].N->PtIndex > 0)
-      {
-      if (MPBSJobModify(
-            J,
-            R,
-            ATTR_l,
-            "rmspartition",
-            MPar[J->NodeList[0].N->PtIndex].Name,NULL,NULL) == FAILURE)
-        {
-        DBG(0,fPBS) DPrint("ERROR:    job '%s' cannot set RMS node spec: (RMSNodeSpec: '%s')\n",
-          J->Name,
-          RMSNodeSpec);
-
-        if (R->FailIteration != MSched.Iteration)
-          {
-          R->FailIteration = MSched.Iteration;
-          R->FailCount     = 0;
-          }
-
-        R->FailCount++;
-
-        return(FAILURE);
-        }
-      else
-        {
-        DBG(7,fPBS) DPrint("INFO:     RMS partition for job '%s' set to '%s'\n",
-          J->Name,
-          MPar[J->NodeList[0].N->PtIndex].Name);
-        }
-      }
-    }    /* END else (R->SubType != mrmstRMS) */
-
   /* NOTE:  may want to change to pbs_asyrunjob() */
 
   /* NOTE:  pbs allows specification of a MasterHost */
@@ -2005,13 +1910,6 @@ int MPBSJobSuspend(
     return(FAILURE);
     }
 
-  if (R->SubType == mrmstRMS)
-    {
-    /* issue RMS job suspension */
-
-    MRMSJobControl(J,"suspend",NULL,NULL);
-    }
-
   /* adjust state */
 
   MJobSetState(J,mjsSuspended);
@@ -2093,13 +1991,6 @@ int MPBSJobResume(
       }
  
     return(FAILURE);
-    }
- 
-  if (R->SubType == mrmstRMS)
-    {
-    /* issue RMS job suspension */
- 
-    MRMSJobControl(J,"resume",NULL,NULL);
     }
  
   /* adjust state */
@@ -2350,14 +2241,6 @@ int MPBSNodeLoad(
       /* FORMAT:  <JOBID>[,<WS><JOBID>] */
 
       /* NOTE: if node is space_shared, only single job in list? */
-
-      if (R->SubType == mrmstRMS)
-        {
-        /* NOTE:  in RMS, the partition base node is reported as running all jobs */
-        /* NOTE:  job to node linking must occur elsewhere                        */
-
-        continue;
-        }
 
       MUStrCpy(tmpBuffer,AP->value,sizeof(tmpBuffer));
 
@@ -3041,14 +2924,6 @@ int MPBSNodeUpdate(
 
       /* NOTE: if node is space_shared, only single job in list */
 
-      if (R->SubType == mrmstRMS)
-        {
-        /* NOTE:  in RMS, the partition base node is reported as running all jobs */
-        /* NOTE:  job to node linking must occur elsewhere                        */
-
-        continue;
-        }
-
       strcpy(tmpBuffer,AP->value);
 
       DBG(3,fPBS) DPrint("INFO:     node %s has joblist '%s'\n",
@@ -3416,45 +3291,6 @@ int MPBSJobLoad(
 
     MPBSJobSetAttr(J,(void *)AP,NULL,&TA,TaskList,0);
     }    /* END for (AP) */
-
-  if (MRM[RMIndex].SubType == mrmstRMS)
-    {
-    /* determine RMS job ID and obtain RMS specific info for job */
-
-    if (MJOBISACTIVE(J))
-      {
-      int TaskCount = 1;
-
-#ifdef __MRMS
-      MRMSQueryJob(J,TaskList,&TaskCount);
-#endif /* __MRMS */
-
-      J->TasksRequested = TaskCount;
-      RQ->TaskCount     = TaskCount;
-      }
-
-    if (J->TasksRequested == 0)
-      {
-      int NC;
-
-      DBG(2,fPBS) DPrint("ALERT:    no job task info located for job '%s' (assigning taskcount to 1)\n",
-        J->Name);
-
-      /* assume homegeneous nodes */
-
-      /* assume dedicated nodes */
-
-      NC = (MNode[0] != NULL) ? MNode[0]->CRes.Procs : 1;
-
-      J->TasksRequested = NC;
-      RQ->TaskCount     = NC;
-
-      RQ->TasksPerNode  = NC;
-
-      J->NodesRequested = 1;
-      RQ->NodeCount     = 1;
-      }
-    }    /* END if (R->SubType == mrmstRMS) */
 
   MPBSJobAdjustResources(J,&TA,&MRM[RMIndex]);
 
@@ -4024,23 +3860,6 @@ int MPBSJobUpdate(
  
     J->DispatchTime = J->StartTime;
     }  /* END if (MJOBISALLOC(J) && ...) */                 
-
-  if (MRM[RMIndex].SubType == mrmstRMS)
-    {
-    /* determine RMS job ID and obtain RMS specific info for job */
-
-    if (MJOBISACTIVE(J))
-      {
-      int TaskCount = 1;
-
-#ifdef __MRMS
-      MRMSQueryJob(J,TaskList,&TaskCount);
-#endif /* __MRMS */
-
-      J->TasksRequested = TaskCount;
-      RQ->TaskCount     = TaskCount;
-      }
-    }
 
   DBG(4,fPBS) DPrint("INFO:     job %s starttime: %ld (%s)  presenttime: %ld  wclimit: %ld  mtime: %ld  etime: %ld  walltime: %ld  state: %s\n",
     J->Name,
@@ -5483,14 +5302,10 @@ int MPBSJobSetAttr(
     {
     /* load job node list */
 
-    if (R->SubType != mrmstRMS)
-      { 
-      DBG(6,fPBS) DPrint("INFO:     processing job %s exechost list '%s'\n",
-        J->Name,
-        AP->value);
+    DBG(6,fPBS) DPrint("INFO:     processing job %s exechost list '%s'\n",
+        J->Name, AP->value);
  
-      MJobParsePBSExecHost(J,AP->value,TaskList,NULL);
-      }
+    MJobParsePBSExecHost(J,AP->value,TaskList,NULL);
     }
   else if (!strcmp(AP->name,ATTR_r))
     {
@@ -5914,87 +5729,6 @@ int MPBSJobSetAttr(
       /* 'per processor' CPU limit */
 
       TA->ProcCPULimit = MPBSGetResKVal(AP->value);
-      }
-    else if (!strcmp(AP->resource,"rmsnodes"))
-      {
-      if (R->SubType == mrmstRMS)
-        {
-        char *ptr;
-        char *tptr;
-
-        char *TokPtr;
-
-        DBG(3,fPBS) DPrint("INFO:     processing rmsnode line '%s'\n",
-          AP->value);
-
-        /* process RMS nodes info of the format <BASENODEID>/<NODECOUNT>:<TASKCOUNT> */
-
-        if (strchr(AP->value,'/') != NULL)
-          {
-          /* base node is specified (NOTE:  should only occur if job is already running) */
-
-          /* node layout info is obtained directly from RMS */
-          }
-        else
-          {
-          int TPN;
-          int TaskCount;
-          int NodeCount;
-
-          if ((ptr = MUStrTok(AP->value,":",&TokPtr)) != NULL)
-            {
-            NodeCount = (int)strtol(ptr,NULL,10);
-
-            /* NOTE:  assume proc/node homogeneous cluster */
-
-            if ((tptr = MUStrTok(NULL,":",&TokPtr)) != NULL)
-              {
-              TaskCount = (int)strtol(tptr,NULL,10);
-
-              TPN = NodeCount / TaskCount;
-              }
-            else
-              {
-              TPN = (MNode[0] != NULL) ? MNode[0]->CRes.Procs : 1;
-
-              TaskCount = NodeCount * TPN;
-              }
-
-            J->TasksRequested = TaskCount;
-            J->TaskCount      = TaskCount;
-            RQ->TaskCount     = TaskCount;
-
-            RQ->TasksPerNode  = TPN;
-
-            RQ->NodeCount     = NodeCount;
-            J->NodesRequested = NodeCount;
-
-            TA->NodesRequested = NodeCount;
-            }
-          else
-            {
-            /* corrupt RMSNode ptr */
-            }
-          }
-        }
-      }
-    else if (!strcmp(AP->resource,"rmspartition"))
-      {
-      if (R->SubType == mrmstRMS)
-        {
-        mpar_t *P;
-
-        /* process RMS partition */
-
-        if (MParAdd(AP->value,&P) == SUCCESS)
-          {
-          int tmpI;
-
-          tmpI = MUMAFromString(ePartition,AP->value,mAdd);
-
-          memcpy(&J->SpecPAL[0],&tmpI,sizeof(J->SpecPAL[0]));
-          }
-        }
       }
     else if (!strcmp(AP->resource,"software"))
       {

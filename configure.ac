@@ -94,7 +94,7 @@ fi
 
 # PBS
 AC_ARG_WITH(pbs,
-	[  --with-pbs[[=DIR]]        use PBS Resource Manager (target directory (location of pbs lib dir) [[/usr/local]])],
+	[  --with-pbs[[=DIR]]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [[/usr/local]])],
 	[PBSTARGETDIR=$withval],
 	[PBSTARGETDIR='FALSE'])
 if test "$PBSTARGETDIR" != 'FALSE'; then
@@ -126,25 +126,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	pbs_definitions=include/Makefile.inc.pbs
 fi
 
-# RMS
-AC_ARG_WITH(rms,
-	[  --with-rms[[=standalone]] use Quadrics RMS (default is not as a standalone Resource Manager [[]])],
-	[USERMS=$withval],
-	[USERMS='FALSE'])
-if test "$USERMS" != 'FALSE'; then
-	if test "$USERMS" = 'yes'; then
-		USERMS='supporting';
-	fi
-	if test "$USERMS" = 'standalone'; then
-		if test "$RMTYPE" = ''; then
-			RMTYPE=RMS
-		else
-    			AC_MSG_ERROR([Only one Resource Manager can be specified (RMS, $RMTYPE)])
-		fi
-		#AC_SUBST_FILE(rms_definitions)
-		#rms_definitions=include/Makefile.inc.rms
-	fi
-fi
 
 # SGE
 AC_ARG_WITH(sge,
