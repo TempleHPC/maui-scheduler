@@ -82,8 +82,8 @@ int MLogInitialize(
 
   if (SigSet == 0)
     {
-    signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
-    signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
+    signal(SIGUSR1,MLogLevelAdjust);
+    signal(SIGUSR2,MLogLevelAdjust);
     SigSet = 1;
     }
 
@@ -404,7 +404,7 @@ void MLogLevelAdjust(
         mlog.Threshold);
       }
 
-    signal(SIGUSR1,(void(*)(int))MLogLevelAdjust);
+    signal(SIGUSR1,MLogLevelAdjust);
     }
   else if (signo == SIGUSR2)
     {
@@ -423,7 +423,7 @@ void MLogLevelAdjust(
         mlog.Threshold);
       }
 
-    signal(SIGUSR2,(void(*)(int))MLogLevelAdjust);
+    signal(SIGUSR2,MLogLevelAdjust);
 
     }
 

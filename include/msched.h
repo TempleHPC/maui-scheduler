@@ -2178,7 +2178,6 @@ typedef struct {
 
   int    SecureMode;        /* (state boolean) */
   int    DebugMode;         /* (state boolean) */
-  int    CrashMode;         /* (state boolean) */
 
   time_t CurrentFSInterval;
   long   DisplayFlags;      /* (BM) */

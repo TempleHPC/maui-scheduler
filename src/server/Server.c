@@ -1,7 +1,5 @@
 /* HEADER */
 
-#define __BASEMODULE
- 
 #include "moab.h"
 #include "msched-proto.h"
  
@@ -64,9 +62,104 @@ extern const char *MJobFlags[];
 extern const char *MAMOType[];
 extern const char *MSSSCName[];
  
-int MGlobalTLock = FALSE;
+int ServerSetSignalHandlers()
+  {
+  /* trap TERM(15) INT(2) HUP(1) */
  
-#include "OServer.c"
+  signal(SIGINT,   SIG_IGN);
+  signal(SIGHUP,   SIG_IGN);
+  signal(SIGPIPE,  SIG_IGN);
+
+  signal(SIGTERM,  MSysShutdown);
+  signal(SIGQUIT,  MSysShutdown);
+  signal(SIGIO,    MSysShutdown);
+  signal(SIGURG,   MSysShutdown);
+  signal(SIGSEGV,  MSysShutdown);
+  signal(SIGILL,   MSysShutdown);
+
+  return(SUCCESS);
+  }  /* END ServerSetSignalHandlers() */
+
+
+int ServerDemonize()
+{
+  int   pid;
+
+  const char *FName = "ServerDemonize";
+
+  DBG(2,fALL) DPrint("%s()\n",
+    FName);
+
+  /* create private process group */
+
+  if (MSched.Mode != msmSim)
+    {
+    if (setpgid(0,0) == -1)
+      {
+      perror("cannot set process group");
+
+      DBG(0,fALL) DPrint("ERROR:    cannot setpgrp, errno: %d (%s)\n",
+        errno,
+        strerror(errno));
+      }
+
+    fflush(mlog.logfp);
+
+    if (MSched.DebugMode == FALSE)
+      {
+      /* only background if not in debug mode */
+
+      /* NOTE:  setsid() disconnects from controlling-terminal */
+
+      if ((pid = fork()) == -1)
+        {
+        perror("cannot fork");
+
+        DBG(0,fALL) DPrint("ALERT:    cannot fork into background, errno: %d (%s)\n",
+          errno,
+          strerror(errno));
+        }
+
+      if (pid != 0)
+        {
+        /* exit if parent */
+
+        DBG(3,fALL) DPrint("INFO:     parent is exiting\n");
+
+        fflush(mlog.logfp);
+
+        exit(0);
+        }
+      else
+        {
+        DBG(3,fALL) DPrint("INFO:     child process in background\n");
+        }
+
+      if (setsid() == -1)
+        {
+        MDB(3,fALL) MLog("INFO:     could not disconnect from controlling-terminal, errno=%d - %s\n",
+          errno,
+          strerror(errno));
+        }
+
+      /* disconnect stdin */
+
+      fclose(stdin);
+
+      /* disconnect stdout */
+
+      fclose(stdout);
+
+      /* disconnect stderr */
+
+      fclose(stderr);
+
+      }
+    }    /* END if (MSched.Mode != msmSim) */
+
+  return(SUCCESS);
+  }  /* END ServerDemonize() */
+
 
 
 
@@ -88,22 +181,11 @@ int main(
   char    *ptr;
   const char *FName = "main";
 
-#ifdef __MPURIFY
-  int Trigger_Purify;
-#endif /* __MPURIFY */
-
   memset(temp_str,0,MMAX_LINE);
 
   MUGetTime(&MSched.Time,mtmInit,&MSched);
 
   ServerInitializeLog(ArgC,ArgV);
-
-#ifdef __MPURIFY
-  if (Trigger_Purify == 0)
-    {
-    DBG(3,fCONFIG) DPrint("INFO:     purify triggered\n");
-    }
-#endif /* __MPURIFY */
 
   DBG(5,fCORE) DPrint("%s(%d,ArgV)\n",
     FName,
@@ -1155,56 +1237,6 @@ int ServerShowUsage(
  
   return(SUCCESS);
   }  /* END ServerShowUsage() */
-
-
-
-
-int ServerLoadSignalConfig()
-
-  {
-  char *ptr;
-
-  /* NOTE:  CHLD interferes with some RM API's */
-
-  /* signal(SIGCHLD,  (void(*)(int))SIG_IGN); */
-
-/* NOTE: HUP temporarily disabled  *
-  signal(SIGHUP,   (void(*)(int))ReloadConfig);
-*/
-  signal(SIGHUP,   (void(*)(int))SIG_IGN);
-  signal(SIGPIPE,  (void(*)(int))SIG_IGN);
- 
-  if ((ptr = getenv(MSCHED_ENVCRASHVAR)) == NULL)
-    {
-    /* use default signal handling */
-    }
-  else if (!strcmp(ptr,"TRAP") || !strcmp(ptr,"trap"))
-    {
-    signal(SIGSEGV,  (void(*)(int))CrashMode);
-    signal(SIGILL,   (void(*)(int))CrashMode);
-    }
-  else if (!strcmp(ptr,"IGNORE") || !strcmp(ptr,"ignore"))
-    {
-    signal(SIGSEGV,  (void(*)(int))SIG_IGN);
-    signal(SIGILL,   (void(*)(int))SIG_IGN);
-    }
-  else if (!strcmp(ptr,"DIE") || !strcmp(ptr,"die"))
-    {
-    signal(SIGSEGV,  (void(*)(int))SIG_DFL);
-    signal(SIGILL,   (void(*)(int))SIG_DFL);
-    }
-  else
-    {
-    /* unknown signal config */
-
-    signal(SIGSEGV,  (void(*)(int))ServerRestart);
-    signal(SIGILL,   (void(*)(int))ServerRestart);
-    }
-
-  return(SUCCESS);
-  }  /* END ServerLoadSignalConfig() */
-
-
 
 
 int ServerUpdate()
