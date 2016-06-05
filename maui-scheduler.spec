@@ -11,7 +11,7 @@ Source0:        %{name}-%{version}-TempleHPC.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  torque-devel
-#Requires:       
+Requires(pre):  shadow-utils torque-server
 
 %description
 This package contains the Maui Scheduler, an advance reservation based HPC 
@@ -42,7 +42,6 @@ rm -rf ${RPM_BUILD_ROOT}/usr/lib/libmoab.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %files
 %defattr(-,root,root,-)
@@ -78,10 +77,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/showstart
 %{_bindir}/showstate
 %{_bindir}/showstats
-%{_sbindir}/maui
+%attr(0511,-,-) %{_sbindir}/maui
 %{_unitdir}/maui-scheduler.service
-%config(noreplace) %{_sharedstatedir}/maui/maui-private.cfg
-%config(noreplace) %{_sharedstatedir}/maui/maui.cfg
+%attr(0600,maui,maui) %config(noreplace) %{_sharedstatedir}/maui/maui-private.cfg
+%attr(0644,maui,maui) %config(noreplace) %{_sharedstatedir}/maui/maui.cfg
+%attr(0755,maui,maui) %dir %{_sharedstatedir}/maui
+%attr(0755,maui,maui) %dir %{_sharedstatedir}/maui/log
+%attr(0755,maui,maui) %dir %{_sharedstatedir}/maui/stats
+%attr(0755,maui,maui) %dir %{_sharedstatedir}/maui/traces
+
+%pre
+# add maui user and group and make it server manager
+getent group maui > /dev/null || groupadd -r maui
+getent passwd maui > /dev/null || \
+    useradd -r -g maui -d %{_sharedstatedir}/maui -s /sbin/nologin \
+    -c "Maui Job Scheduler" maui
+PBSSERVER=localhost
+test -f %{_sharedstatedir}/torque/server_name && PBSSERVER=`cat %{_sharedstatedir}/torque/server_name`
+qmgr -c "set server managers += maui@$PBSSERVER"
+exit 0
 
 %doc LICENSE LICENSE.mcompat README CHANGELOG ChangeLog.TempleHPC
 

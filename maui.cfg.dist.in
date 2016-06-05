@@ -2,7 +2,8 @@
 
 SERVERHOST            @HOSTNAME@
 # primary admin must be first in list
-ADMIN1                @USER@
+ADMIN1                maui root
+ADMIN2                @USER@
 
 # Resource Manager Definition
 
