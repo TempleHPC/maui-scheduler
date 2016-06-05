@@ -6,10 +6,7 @@
 
 #include "moab-proto.h"
 
-int main(int,char **);
-int SDRGetSystemConfig(void);
 int ServerProcessRequests(void);
-int ServerLoadSignalConfig(void);
 int ServerShowCopy(void);
 int ServerUpdate(void);
 int ServerProcessArgs(int,char **,int);
@@ -20,9 +17,6 @@ int MServerConfigShow(char *,int,int);
 int ServerDemonize(void);
 int ServerAuthenticate(void);
 int ServerSetCreds(int,int);
-void CrashMode(int);
-void ServerRestart(int);
-void ReloadConfig(int);
 int ServerShowUsage(char *);
 int UIProcessClients(msocket_t *,long);
 int UIFormatShowAllJobs(char *,char *,int); 

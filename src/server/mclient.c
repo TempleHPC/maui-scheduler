@@ -229,9 +229,6 @@ extern const char *MSchedMode[];
 /* scheduler user interface client */
 
 #include "omclient.c"
-#include "mclient-stub.c"
-
-
 
 
 int main(

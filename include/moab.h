@@ -545,10 +545,6 @@ enum MJobSearchEnum {
   mjsmExtended,
   mjsmInternal };
 
-enum MRMSubTypeEnum {
-  mrmstNONE = 0,
-  mrmstRMS };
-
 #ifndef __M_H
 #define __M_H
 #endif /* !__M_H */

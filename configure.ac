@@ -22,10 +22,9 @@ AC_ARG_WITH(spooldir,
 AC_SUBST(SPOOLDIR)
 
 # Machine Name
-MACHINENAME=`echo ${ac_hostname} | tr '[[:lower:]]' '[[:upper:]]'`
 AC_ARG_WITH(machine,
-  [  --with-machine=NAME     system name (defaults to uppercased hostname)],
-      MACHINE=$withval, MACHINE=$MACHINENAME)
+  [  --with-machine=NAME     system name (defaults to LOCALHOST)],
+      MACHINE=$withval, MACHINE=LOCALHOST)
 AC_SUBST(MACHINE)
 
 # Handle Checksum seed
@@ -36,40 +35,14 @@ AC_SUBST(SEED)
 # Determine OPSYS
 OS=`uname`
 if test "$OS" = "AIX"; then
-  if test `uname -v` = 4; then
-    if test `uname -r` = 1; then
-      OPSYS="__AIX41"
-    elif test `uname -r` = 2; then
-      OPSYS="__AIX42"
-    elif test `uname -r` = 3; then
-      OPSYS="__AIX43"
-    else
-      OPSYS="__AIX43"
-      RELEASE=`uname -r`
-      AC_MSG_WARN([Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS])
-    fi
-  else
-    OPSYS=__AIX43
-    OSLEVEL=`oslevel`
-    AC_MSG_WARN([Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS])
-  fi
-elif echo "$OS" | grep -q "CYGWIN"; then
-  OPSYS="__CYGWIN"
+  OPSYS=__AIX43
 elif test "$OS" = "Linux"; then
   OPSYS="__LINUX"
-elif test "$OS" = "HP-UX"; then
-  OPSYS="__HPUX"
 elif test "$OS" = "HP-UX"; then
   OPSYS="__HPUX"
 elif test "$OS" = "IRIX" -o "$OS" = "IRIX64"; then
   OPSYS="__IRIX"
   OS="IRIX"
-elif test "$OS" = "NT"; then
-  OPSYS="__NT"
-  OS="NT"
-elif test "$OS" = "OSF1"; then
-  OPSYS="__OSF"
-  OS="OSF"
 else
   OPSYS="__LINUX"
   AC_MSG_WARN([Unsupported OS: $OS, attempting build with OPSYS=$OPSYS])
@@ -87,41 +60,10 @@ AC_SUBST([USER], `whoami`)
 AC_SUBST([BUILDDATE], `date`)
 AC_SUBST([BUILDDIR], `pwd`)
 
-# LoadLeveler
-AC_ARG_WITH(loadl,
-	[  --with-loadl[[=VERSION]]  use LoadLeveler Resource Manager (version [[3]])],
-	[LLVERSION=$withval],
-	[LLVERSION='FALSE'])
-if test "$LLVERSION" != 'FALSE'; then
-	if test "$LLVERSION" = 'yes'; then
-		LLVERSION=3;
-	else
-		LLVERSION=${withval%.*};
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=LL
-		AC_SUBST(RMTYPE)
-		AC_SUBST_FILE(rm_config)
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-    AC_MSG_ERROR([Only one Resource Manager can be specified (LL, $RMTYPE)])
-	fi
-	if test "$LLVERSION" -lt "3"; then
-		LLDIR="/usr/lpp/LoadL/full"
-		LLDEF="-D__MLL22"
-	else
-		LLDIR="/home/loadl"
-		LLDEF="-D__MLL31"
-	fi
-	AC_SUBST(LLDIR)
-	AC_SUBST(LLDEF)
-	AC_SUBST_FILE(ll_definitions)
-	ll_definitions=include/Makefile.inc.ll
-fi
 
 # PBS
 AC_ARG_WITH(pbs,
-	[  --with-pbs[[=DIR]]        use PBS Resource Manager (target directory (location of pbs lib dir) [[/usr/local]])],
+	[  --with-pbs[[=DIR]]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [[/usr/local]])],
 	[PBSTARGETDIR=$withval],
 	[PBSTARGETDIR='FALSE'])
 if test "$PBSTARGETDIR" != 'FALSE'; then
@@ -153,25 +95,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	pbs_definitions=include/Makefile.inc.pbs
 fi
 
-# RMS
-AC_ARG_WITH(rms,
-	[  --with-rms[[=standalone]] use Quadrics RMS (default is not as a standalone Resource Manager [[]])],
-	[USERMS=$withval],
-	[USERMS='FALSE'])
-if test "$USERMS" != 'FALSE'; then
-	if test "$USERMS" = 'yes'; then
-		USERMS='supporting';
-	fi
-	if test "$USERMS" = 'standalone'; then
-		if test "$RMTYPE" = ''; then
-			RMTYPE=RMS
-		else
-    			AC_MSG_ERROR([Only one Resource Manager can be specified (RMS, $RMTYPE)])
-		fi
-		#AC_SUBST_FILE(rms_definitions)
-		#rms_definitions=include/Makefile.inc.rms
-	fi
-fi
 
 # SGE
 AC_ARG_WITH(sge,
@@ -505,8 +428,7 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([gethostbyaddr gethostbyname gethostname gettimeofday inet_ntoa memchr memset pow putenv regcmp regcomp select setlocale socket strchr strdup strerror strrchr strstr strtol strtoul])
 
 # Configure the output files, and generate them.
-AC_CONFIG_FILES([include/Makefile.inc.ll
-                 include/Makefile.inc.pbs
+AC_CONFIG_FILES([include/Makefile.inc.pbs
                  include/Makefile.inc.sge
                  include/Makefile.inc.lsf
                  include/Makefile.inc.mx

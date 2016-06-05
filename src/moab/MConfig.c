@@ -1211,7 +1211,6 @@ extern const char *MAMType[];
 extern const char *MAMProtocol[];
 extern const char *MAMChargePolicy[];
 extern const char *MResourceType[];
-extern const char *MRMSubType[];
 extern const char *RMAuthType[];
 extern const char *MNAllocPolicy[];
 extern const char *MResFlags[];

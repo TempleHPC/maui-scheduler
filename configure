@@ -654,8 +654,6 @@ LSFDIR
 SGEOSDIR
 SGEBUILDDIR
 PBSTARGETDIR
-LLDEF
-LLDIR
 RMTYPE
 BUILDDIR
 BUILDDATE
@@ -713,7 +711,6 @@ PACKAGE_NAME
 PATH_SEPARATOR
 SHELL'
 ac_subst_files='rm_config
-ll_definitions
 pbs_definitions
 sge_definitions
 lsf_definitions
@@ -724,9 +721,7 @@ enable_option_checking
 with_spooldir
 with_machine
 with_key
-with_loadl
 with_pbs
-with_rms
 with_sge
 with_lsf
 with_wiki
@@ -1358,11 +1353,9 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-spooldir=DIR     where config files, log and stat directories are maintained [/var/spool/maui]
-  --with-machine=NAME     system name (defaults to uppercased hostname)
+  --with-machine=NAME     system name (defaults to LOCALHOST)
   --with-key=SEED         security checksum key (defaults to a random integer)
-  --with-loadl[=VERSION]  use LoadLeveler Resource Manager (version [3])
-  --with-pbs[=DIR]        use PBS Resource Manager (target directory (location of pbs lib dir) [/usr/local])
-  --with-rms[=standalone] use Quadrics RMS (default is not as a standalone Resource Manager [])
+  --with-pbs[=DIR]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [/usr/local])
   --with-sge[=DIR]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [/usr/local/sge/source])
   --with-lsf[=DIR]        use LSF Resource Manager (install directory (location of LSF include and lib directories) [/usr/local/lsf])
   --with-wiki             use Wiki Resource Manager
@@ -3049,13 +3042,12 @@ fi
 
 
 # Machine Name
-MACHINENAME=`echo ${ac_hostname} | tr '[:lower:]' '[:upper:]'`
 
 # Check whether --with-machine was given.
 if test "${with_machine+set}" = set; then :
   withval=$with_machine; MACHINE=$withval
 else
-  MACHINE=$MACHINENAME
+  MACHINE=LOCALHOST
 fi
 
 
@@ -3074,42 +3066,14 @@ fi
 # Determine OPSYS
 OS=`uname`
 if test "$OS" = "AIX"; then
-  if test `uname -v` = 4; then
-    if test `uname -r` = 1; then
-      OPSYS="__AIX41"
-    elif test `uname -r` = 2; then
-      OPSYS="__AIX42"
-    elif test `uname -r` = 3; then
-      OPSYS="__AIX43"
-    else
-      OPSYS="__AIX43"
-      RELEASE=`uname -r`
-      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS" >&5
-$as_echo "$as_me: WARNING: Unexpected OS release 'AIX4$RELEASE', attempting build with OPSYS=$OPSYS" >&2;}
-    fi
-  else
-    OPSYS=__AIX43
-    OSLEVEL=`oslevel`
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&5
-$as_echo "$as_me: WARNING: Unexpected AIX level: $OSLEVEL, attempting build with OPSYS=$OPSYS" >&2;}
-  fi
-elif echo "$OS" | grep -q "CYGWIN"; then
-  OPSYS="__CYGWIN"
+  OPSYS=__AIX43
 elif test "$OS" = "Linux"; then
   OPSYS="__LINUX"
-elif test "$OS" = "HP-UX"; then
-  OPSYS="__HPUX"
 elif test "$OS" = "HP-UX"; then
   OPSYS="__HPUX"
 elif test "$OS" = "IRIX" -o "$OS" = "IRIX64"; then
   OPSYS="__IRIX"
   OS="IRIX"
-elif test "$OS" = "NT"; then
-  OPSYS="__NT"
-  OS="NT"
-elif test "$OS" = "OSF1"; then
-  OPSYS="__OSF"
-  OS="OSF"
 else
   OPSYS="__LINUX"
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Unsupported OS: $OS, attempting build with OPSYS=$OPSYS" >&5
@@ -3132,41 +3096,6 @@ BUILDDATE=`date`
 BUILDDIR=`pwd`
 
 
-# LoadLeveler
-
-# Check whether --with-loadl was given.
-if test "${with_loadl+set}" = set; then :
-  withval=$with_loadl; LLVERSION=$withval
-else
-  LLVERSION='FALSE'
-fi
-
-if test "$LLVERSION" != 'FALSE'; then
-	if test "$LLVERSION" = 'yes'; then
-		LLVERSION=3;
-	else
-		LLVERSION=${withval%.*};
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=LL
-
-
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-    as_fn_error $? "Only one Resource Manager can be specified (LL, $RMTYPE)" "$LINENO" 5
-	fi
-	if test "$LLVERSION" -lt "3"; then
-		LLDIR="/usr/lpp/LoadL/full"
-		LLDEF="-D__MLL22"
-	else
-		LLDIR="/home/loadl"
-		LLDEF="-D__MLL31"
-	fi
-
-
-
-	ll_definitions=include/Makefile.inc.ll
-fi
 
 # PBS
 
@@ -3206,29 +3135,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 	pbs_definitions=include/Makefile.inc.pbs
 fi
 
-# RMS
-
-# Check whether --with-rms was given.
-if test "${with_rms+set}" = set; then :
-  withval=$with_rms; USERMS=$withval
-else
-  USERMS='FALSE'
-fi
-
-if test "$USERMS" != 'FALSE'; then
-	if test "$USERMS" = 'yes'; then
-		USERMS='supporting';
-	fi
-	if test "$USERMS" = 'standalone'; then
-		if test "$RMTYPE" = ''; then
-			RMTYPE=RMS
-		else
-    			as_fn_error $? "Only one Resource Manager can be specified (RMS, $RMTYPE)" "$LINENO" 5
-		fi
-		#AC_SUBST_FILE(rms_definitions)
-		#rms_definitions=include/Makefile.inc.rms
-	fi
-fi
 
 # SGE
 
@@ -5452,7 +5358,7 @@ done
 
 
 # Configure the output files, and generate them.
-ac_config_files="$ac_config_files include/Makefile.inc.ll include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
+ac_config_files="$ac_config_files include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
 
 ac_config_files="$ac_config_files Makefile"
 
@@ -6174,7 +6080,6 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "include/Makefile.inc.ll") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.ll" ;;
     "include/Makefile.inc.pbs") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pbs" ;;
     "include/Makefile.inc.sge") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.sge" ;;
     "include/Makefile.inc.lsf") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.lsf" ;;

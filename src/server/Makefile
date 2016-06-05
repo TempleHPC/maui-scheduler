@@ -10,26 +10,25 @@
 SCHEDIP=-I$(INC) -I$(TOP)/include 
 SHELL  =/bin/sh
 
-  LP   =-L$(LIB) $(SCHEDLP) $(LLLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
-  IP   =$(SCHEDIP) $(LLIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
+  LP   =-L$(LIB) $(SCHEDLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
+  IP   =$(SCHEDIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched-proto.h $(INC)msched-common.h
-  DEFS =-D$(OPSYS) $(LLDEF) $(PBSDEF) $(OSDEF) $(MXDEF) \
-        $(REGEXDEF) $(RMSDEF) $(SECDEF) $(DAEMONDEF)
+  DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(MXDEF) \
+        $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 SERVER   =maui
 SCHEDLIB =moab
 COMLIB   =mcom
 
 MBINS    =$(SERVER) mclient mprof
-LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(MXLIB) $(LLLIB) \
-	  $(REGEXLIB) $(SECLIB) -lm
+LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(MXLIB) $(REGEXLIB) $(SECLIB) -lm
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
           releaseres resetstats runjob schedctl sethold setqos setres setspri \
           showbf showconfig showgrid showhold showstart showq showtasks showres \
           showstate showstats mschedctl mjobctl mnodectl mdiag mstat mbal
 
-SOBJECTS =Server.o UserI.o LLI.o
+SOBJECTS =Server.o UserI.o 
 
 POBJECTS =mprof.o
 

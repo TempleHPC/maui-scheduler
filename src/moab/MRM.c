@@ -11,7 +11,6 @@ extern mam_t       MAM[];
 extern const char *MRMState[]; 
 extern const char *MRMType[];
 extern const char *MRMAuthType[];
-extern const char *MRMSubType[];
 extern const char *MComp[];
 extern const char *MDefReason[];
 extern const char *MNodeState[];
@@ -46,12 +45,6 @@ extern mx_t        X;
 int __MRMStartFunc(mrm_t *,int);
 int __MRMEndFunc(mrm_t *,int);
 
-#include "MLLI.c"
-
-
-
-
-
 int MRMLoadModules()
 
   {
@@ -59,10 +52,6 @@ int MRMLoadModules()
 
   DBG(2,fRM) DPrint("%s()\n",
     FName);
-
-#if defined(__MLL22) || defined(__MLL31)
-  MLLLoadModule(&MRMFunc[mrmtLL]);
-#endif /* __MLL22 || __MLL31 */
 
 #ifdef __MPBS
   MPBSLoadModule(&MRMFunc[mrmtPBS]);
@@ -73,10 +62,6 @@ int MRMLoadModules()
 #endif /* __MSGE */
 
   MS3LoadModule(&MRMFunc[mrmtSSS]);
-
-#ifdef __MRMS
-  MRMSLoadModule(&MRMFunc[mrmtRMS]);
-#endif /* __MRMS */
 
 #ifdef __MLSF
   MLSFLoadModule(&MRMFunc[mrmtLSF]);
@@ -1219,37 +1204,167 @@ int MRMJobRequeue(
   }  /* END MRMJobRequeue() */
 
 
-
-
 int MRMJobSubmit(
 
-  char    *JobDesc,  /* I */
-  mrm_t   *R,        /* I */
-  mjob_t **J,        /* O */
-  char    *JobName,  /* O */
-  char    *Msg,      /* O */
-  int     *SC)       /* O */
-  {
-
-  if (MSched.Mode == msmSim)
-    {
-    /* return(MSimJobSubmit(MSched.Time,JobDesc,NULL,0)); */
-
-    return(FAILURE);
-    }
-
-  if (MRMFunc[R->Type].JobSubmit(JobDesc,R,J,JobName,Msg,SC) == FAILURE)
-    {
-    DBG(3,fRM) DPrint("ALERT:    cannot submit job (RM '%s' failed in function '%s')\n",
-      R->Name,
-      MRMFuncType[mrmJobSubmit]);
+  char    *JobDesc,
+  mrm_t   *R,
+  mjob_t **JPtr,
+  int     *SC)
  
-    return(FAILURE);
-    }
+  {
+  mjob_t   *J;
+  mreq_t   *RQ;
+  mclass_t *C;
+
+  long Walltime;
+  int  ProcCount;
+
+  char ExecString[MAX_MLINE];
+  char QueueName[MAX_MLINE];
+  char JobName[MAX_MLINE];
+
+  char tmpJobID[MAX_MNAME];
+
+  mqos_t *QDef;
+
+  short TaskList[MAX_MNODE];
+
+  char *JobString;
+
+  char *ptr;
+  char *TokPtr;
+
+  time_t T;
+
+  /* FORMAT:  <PROCCOUNT> <WALLTIME> <QUEUENAME> <EXECUTABLE> <JOBNAME> */
+
+  JobString = MUStrTok(JobDesc,"+\n",&TokPtr);
+
+  while (JobString != NULL)
+    {
+    for (ptr = JobString;*ptr != '\0';ptr++)
+      {
+      if (*ptr == ',')
+        *ptr = ' ';
+      }
+
+    MUSScanF(JobString,"%ld %ld %x%s %x%s %x%s",
+      &ProcCount,
+      &Walltime,
+      sizeof(QueueName),
+      QueueName,
+      sizeof(ExecString),
+      ExecString,
+      sizeof(JobName),
+      JobName);
+    
+    /* NOTE:  
+       - Create Job
+       - RMPreload Job
+       - Set QueueTime, WallTime, DefaultU, DefaultG, Executable, Args
+       - Set State=Idle
+    */
+
+    MSimJobCreateName(tmpJobID,R);
+
+    if (MJobCreate(tmpJobID,TRUE,&J) == FAILURE)
+      {
+      return(FAILURE);
+      }
+
+    if (MReqCreate(J,NULL,&RQ,FALSE) == FAILURE)
+      {
+      DBG(1,fPBS) DPrint("ALERT:    cannot add requirements to job '%s'\n",
+        J->Name);
+ 
+      MJobRemove(J);
+ 
+      return(FAILURE);
+      }
+ 
+    MRMReqPreLoad(RQ);
+
+    /* if new job, load data */
+ 
+    MRMJobPreLoad(J,tmpJobID,R->Index);
+
+    J->TasksRequested             = ProcCount;
+    J->Req[0]->TaskCount          = ProcCount;
+    J->Req[0]->TaskRequestList[0] = ProcCount;
+    J->Req[0]->TaskRequestList[1] = ProcCount;
+
+    J->WCLimit        = Walltime;
+    J->SpecWCLimit[0] = Walltime;
+    J->SpecWCLimit[1] = Walltime;
+
+    J->ATime = MSched.Time;
+
+    /* must incorporate queue */
+
+    MUStrDup(&J->E.Cmd,ExecString);
+
+    MUStrDup(&J->E.Args,JobName);
+
+    if (MJobSetCreds(J,"DEFAULT","DEFAULT","DEFAULT") == FAILURE)
+      {
+      DBG(1,fPBS) DPrint("ERROR:    cannot authenticate job '%s' (U: %s  G: %s  A: '%s')\n",
+        J->Name,
+        "DEFAULT",
+        "DEFAULT",
+        "DEFAULT");
+ 
+      MJobRemove(J);
+ 
+      return(FAILURE);
+      }
+
+    if (MClassFind(QueueName,&C) == FAILURE)
+      {
+      DBG(1,fPBS) DPrint("ERROR:    cannot locate requested class '%s' for job '%s'\n",
+        QueueName,
+        J->Name);
+ 
+      MJobRemove(J);
+ 
+      return(FAILURE);
+      }
+
+    RQ->DRes.PSlot[0].count        += 1;
+    RQ->DRes.PSlot[C->Index].count += 1;
+
+    if ((MQOSGetAccess(J,J->QReq,NULL,&QDef) == FAILURE) ||
+        (J->QReq == NULL))
+      {
+      MJobSetQOS(J,QDef,0);
+      }
+    else
+      {
+      MJobSetQOS(J,J->QReq,0);
+      }
+
+    /* job is newly submitted so guaranteed idle */
+
+    J->State = mjsIdle;         
+
+    TaskList[0] = -1;
+
+    MRMJobPostLoad(J,TaskList,R);
+
+    time(&T);
+ 
+    R->LastSubmissionTime = MAX(MSched.Time,(long)T);
+ 
+    DBG(2,fPBS)
+      MJobShow(J,0,NULL);
+
+    if (JPtr != NULL)
+      *JPtr = J;
+
+    JobString = MUStrTok(NULL,"+\n",&TokPtr);
+    }  /* END while (JobString != NULL) */
 
   return(SUCCESS);
   }  /* END MRMJobSubmit() */
-
 
 
 
@@ -2014,13 +2129,6 @@ int MRMAToString(
       if (R->Type != mrmtNONE)
         {
         strcpy(SVal,MRMType[R->Type]);
-
-        if (R->SubType != mrmstNONE)
-          {
-          sprintf(temp_str,":%s",
-            MRMSubType[R->SubType]);
-          strcat(SVal,temp_str);
-          }
         }    /* END if (R->Type != mrmtNONE) */
 
       break;
@@ -2197,10 +2305,6 @@ int MRMProcessConfig(
  
         R->Type = MUGetIndex(ptr,MRMType,FALSE,mrmtNONE);
  
-        if ((ptr = MUStrTok(NULL,":",&TokPtr)) != NULL)
-          {
-          R->SubType = MUGetIndex(ptr,MRMSubType,FALSE,mrmstNONE);
-          }
         }    /* END BLOCK */
 
         break;
@@ -2492,10 +2596,6 @@ int MRMConfigShow(
     /* display loaded RM modules */
 
     MUSNPrintF(&BPtr,&BSpace,"# RM MODULES: ");
-
-#if defined(__MLL22) || defined(__MLL31)
-    MUSNPrintF(&BPtr,&BSpace,"LL ");
-#endif /* __MLL22 || __MLL31 */
 
 #ifdef __MLSF
     MUSNPrintF(&BPtr,&BSpace,"LSF ");
@@ -4927,10 +5027,6 @@ int MRMProcessOConfig(
 
       R->Type = MUGetIndex(ptr,MRMType,FALSE,mrmtNONE);
 
-      if ((ptr = MUStrTok(NULL,":",&TokPtr)) != NULL)
-        {
-        R->SubType = MUGetIndex(ptr,MRMSubType,FALSE,mrmstNONE);
-        }
       }    /* END BLOCK */
 
       break;
