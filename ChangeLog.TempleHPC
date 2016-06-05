@@ -1,3 +1,49 @@
+commit b883a4f7a4e534fb610875963f63f022a4796fa3
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun Jun 5 09:50:46 2016 -0400
+
+    correct minor issues found by gcc's sanitizer framework
+
+commit 7aa4c8ae96e3fbb71b50211bf14e11db0f281ead
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun Jun 5 00:40:12 2016 -0400
+
+    correct typo
+
+commit 5aa2ff5e9e048035fd7563a504f082ec507b29c9
+Merge: 70ae88c 19aaea1
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun Jun 5 00:35:45 2016 -0400
+
+    Merge branch 'enable-internal-tests' into devel-akohlmey
+
+commit 19aaea1c64531f96c1e2ae4041fb04089cdfa79c
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun Jun 5 00:35:22 2016 -0400
+
+    activate some of the internal test features in maui
+
+commit 70ae88cdce2098efe2dc4e017bbeda2cd6103ab9
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 21:29:22 2016 -0400
+
+    remove support for LSF (was broken anyway)
+
+commit de20a1aeeeb87ee9fa71af927319af7dac6b0585
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 21:19:28 2016 -0400
+
+    update exported changelog
+
+commit 566bd4ad89c24153f87f44546836729329b64e89
+Merge: 813ed54 59fa357
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 21:14:06 2016 -0400
+
+    Merge branch 'devel-akohlmey'
+    
+    a few more steps towards resolving issue #26
+
 commit 59fa357ab616c951c4f3fa746f3c4138e76ecb0f
 Author: Axel Kohlmeyer <akohlmey@gmail.com>
 Date:   Sat Jun 4 21:07:10 2016 -0400
