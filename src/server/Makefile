@@ -7,7 +7,7 @@
    SRC =$(TOP)/src/moab
    LIB =$(TOP)/lib
 
-SCHEDIP=-I$(INC) -I$(TOP)/include 
+SCHEDIP=-I$(INC)
 SHELL  =/bin/sh
 
   LP   =-L$(LIB) $(SCHEDLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
