@@ -648,9 +648,6 @@ RMHOST
 RMPORT
 PBSLDFLAGS
 PBSCFLAGS
-LSFDEFS
-LSFLIBS
-LSFDIR
 SGEOSDIR
 SGEBUILDDIR
 PBSTARGETDIR
@@ -713,7 +710,6 @@ SHELL'
 ac_subst_files='rm_config
 pbs_definitions
 sge_definitions
-lsf_definitions
 mx_definitions
 pcre_definitions'
 ac_user_opts='
@@ -723,10 +719,7 @@ with_machine
 with_key
 with_pbs
 with_sge
-with_lsf
 with_wiki
-with_bamboo
-with_sss_rm
 with_warehouse
 with_qbank
 with_gold
@@ -1357,10 +1350,7 @@ Optional Packages:
   --with-key=SEED         security checksum key (defaults to a random integer)
   --with-pbs[=DIR]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [/usr/local])
   --with-sge[=DIR]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [/usr/local/sge/source])
-  --with-lsf[=DIR]        use LSF Resource Manager (install directory (location of LSF include and lib directories) [/usr/local/lsf])
   --with-wiki             use Wiki Resource Manager
-  --with-bamboo           use Bamboo Resource Manager
-  --with-sss-rm[=PORT]    use SSS Resource Manager (default port [7865])
   --with-warehouse        use Warehouse System Monitor
   --with-qbank            use QBank Allocation Manager
   --with-gold             use Gold Allocation Manager
@@ -3164,44 +3154,6 @@ if test "$SGEBUILDDIR" != 'FALSE'; then
 	sge_definitions=include/Makefile.inc.sge
 fi
 
-
-# LSF
-
-
-# Check whether --with-lsf was given.
-if test "${with_lsf+set}" = set; then :
-  withval=$with_lsf; LSFDIR=$withval
-else
-  LSFDIR='FALSE'
-fi
-
-if test "$LSFDIR" != 'FALSE'; then
-	if test "$LSFDIR" = 'yes'; then
-		LSFDIR='/usr/local/lsf';
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=LSF
-
-
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-    as_fn_error $? "Only one Resource Manager can be specified (LSF, $RMTYPE)" "$LINENO" 5
-	fi
-	if test "$USERMS" = 'supporting'; then
-		LSFLIBS="-lextsch -lbat -llsf -lrmsemu -lnsl -ldl"
-		LSFDEFS="-D__MLSF -D__MLSFRMS"
-	else
-		LSFLIBS="-lextsch -lbat -llsf -lnsl -ldl"
-		LSFDEFS="-D__MLSF"
-	fi
-
-
-
-
-	lsf_definitions=include/Makefile.inc.lsf
-fi
-
-
 # Wiki
 
 
@@ -3220,61 +3172,6 @@ if test "$USEWIKI" != 'FALSE'; then
 
   RMTYPE=WIKI
 fi
-
-
-# Bamboo Job Manager
-
-
-# Check whether --with-bamboo was given.
-if test "${with_bamboo+set}" = set; then :
-  withval=$with_bamboo; USEBAMBOO='TRUE'
-else
-  USEBAMBOO='FALSE'
-fi
-
-
-if test "$USEBAMBOO" != 'FALSE'; then
-  if test "$RMTYPE" != ''; then
-    as_fn_error $? "Only one Resource Manager can be specified (BAMBOO, $RMTYPE)" "$LINENO" 5
-  fi
-
-  RMTYPE=SSS
-  RMPORT=" PORT=4204"
-  RMHOST=" HOST=$HOSTNAME"
-  RMSOCKETPROTOCOL=" SOCKETPROTOCOL=HTTP"
-  RMWIREPROTOCOL=" WIREPROTOCOL=SSS2"
-  RMVERSION=" VERSION=SSS2.0"
-fi
-
-
-# Other SSS Resource Manager
-
-
-# Check whether --with-sss-rm was given.
-if test "${with_sss_rm+set}" = set; then :
-  withval=$with_sss_rm; SSSRMPORT=$withval
-else
-  SSSRMPORT='FALSE'
-fi
-
-
-if test "$SSSRMPORT" != 'FALSE'; then
-  if test "$SSSRMPORT" = 'yes'; then
-    SSSRMPORT='7865';
-  fi
-
-  if test "$RMTYPE" != ''; then
-    as_fn_error $? "Only one Resource Manager can be specified (SSS-RM, $RMTYPE)" "$LINENO" 5
-  fi
-
-  RMTYPE=SSS
-  RMPORT=" PORT=$SSSRMPORT"
-  RMHOST=" HOST=$HOSTNAME"
-  RMSOCKETPROTOCOL=" SOCKETPROTOCOL=HTTP"
-  RMWIREPROTOCOL=" WIREPROTOCOL=SSS2"
-  RMVERSION=" VERSION=SSS2.0"
-fi
-
 
 if test "$RMTYPE" = ''; then
        { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Resource Manager not specified - attempting build with pbs" >&5
@@ -5358,7 +5255,7 @@ done
 
 
 # Configure the output files, and generate them.
-ac_config_files="$ac_config_files include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
+ac_config_files="$ac_config_files include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.mx include/Makefile.inc.pcre"
 
 ac_config_files="$ac_config_files Makefile"
 
@@ -6082,7 +5979,6 @@ do
   case $ac_config_target in
     "include/Makefile.inc.pbs") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pbs" ;;
     "include/Makefile.inc.sge") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.sge" ;;
-    "include/Makefile.inc.lsf") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.lsf" ;;
     "include/Makefile.inc.mx") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.mx" ;;
     "include/Makefile.inc.pcre") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pcre" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;

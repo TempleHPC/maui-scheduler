@@ -63,10 +63,6 @@ int MRMLoadModules()
 
   MS3LoadModule(&MRMFunc[mrmtSSS]);
 
-#ifdef __MLSF
-  MLSFLoadModule(&MRMFunc[mrmtLSF]);
-#endif /* __MLSF */
-
   MWikiLoadModule(&MRMFunc[mrmtWiki]);
 
   return(SUCCESS);
@@ -2596,10 +2592,6 @@ int MRMConfigShow(
     /* display loaded RM modules */
 
     MUSNPrintF(&BPtr,&BSpace,"# RM MODULES: ");
-
-#ifdef __MLSF
-    MUSNPrintF(&BPtr,&BSpace,"LSF ");
-#endif /* __MLSF */
 
 #ifdef __MPBS
     MUSNPrintF(&BPtr,&BSpace,"PBS ");

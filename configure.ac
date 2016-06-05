@@ -120,40 +120,6 @@ if test "$SGEBUILDDIR" != 'FALSE'; then
 	sge_definitions=include/Makefile.inc.sge
 fi
 
-
-# LSF
-
-AC_ARG_WITH(lsf,
-	[  --with-lsf[[=DIR]]        use LSF Resource Manager (install directory (location of LSF include and lib directories) [[/usr/local/lsf]])],
-	[LSFDIR=$withval],
-	[LSFDIR='FALSE'])
-if test "$LSFDIR" != 'FALSE'; then
-	if test "$LSFDIR" = 'yes'; then
-		LSFDIR='/usr/local/lsf';
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=LSF
-		AC_SUBST(RMTYPE)
-		AC_SUBST_FILE(rm_config)
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-    AC_MSG_ERROR([Only one Resource Manager can be specified (LSF, $RMTYPE)])
-	fi
-	if test "$USERMS" = 'supporting'; then
-		LSFLIBS="-lextsch -lbat -llsf -lrmsemu -lnsl -ldl"
-		LSFDEFS="-D__MLSF -D__MLSFRMS"
-	else
-		LSFLIBS="-lextsch -lbat -llsf -lnsl -ldl"
-		LSFDEFS="-D__MLSF"
-	fi
-	AC_SUBST(LSFDIR)
-	AC_SUBST(LSFLIBS)
-	AC_SUBST(LSFDEFS)
-	AC_SUBST_FILE(lsf_definitions)
-	lsf_definitions=include/Makefile.inc.lsf
-fi
-
-
 # Wiki
 
 AC_ARG_WITH(wiki,
@@ -168,53 +134,6 @@ if test "$USEWIKI" != 'FALSE'; then
 
   RMTYPE=WIKI
 fi
-
-
-# Bamboo Job Manager
-
-AC_ARG_WITH(bamboo,
-	[  --with-bamboo           use Bamboo Resource Manager],
-	[USEBAMBOO='TRUE'],
-	[USEBAMBOO='FALSE'])
-
-if test "$USEBAMBOO" != 'FALSE'; then
-  if test "$RMTYPE" != ''; then
-    AC_MSG_ERROR([Only one Resource Manager can be specified (BAMBOO, $RMTYPE)])
-  fi
-
-  RMTYPE=SSS
-  RMPORT=" PORT=4204"
-  RMHOST=" HOST=$HOSTNAME"
-  RMSOCKETPROTOCOL=" SOCKETPROTOCOL=HTTP"
-  RMWIREPROTOCOL=" WIREPROTOCOL=SSS2"
-  RMVERSION=" VERSION=SSS2.0"
-fi
-
-
-# Other SSS Resource Manager
-
-AC_ARG_WITH(sss-rm,
-	[  --with-sss-rm[[=PORT]]    use SSS Resource Manager (default port [[7865]])],
-	[SSSRMPORT=$withval],
-	[SSSRMPORT='FALSE'])
-
-if test "$SSSRMPORT" != 'FALSE'; then
-  if test "$SSSRMPORT" = 'yes'; then
-    SSSRMPORT='7865';
-  fi
-
-  if test "$RMTYPE" != ''; then
-    AC_MSG_ERROR([Only one Resource Manager can be specified (SSS-RM, $RMTYPE)])
-  fi
-
-  RMTYPE=SSS
-  RMPORT=" PORT=$SSSRMPORT"
-  RMHOST=" HOST=$HOSTNAME"
-  RMSOCKETPROTOCOL=" SOCKETPROTOCOL=HTTP"
-  RMWIREPROTOCOL=" WIREPROTOCOL=SSS2"
-  RMVERSION=" VERSION=SSS2.0"
-fi
-
 
 if test "$RMTYPE" = ''; then
        AC_MSG_WARN([Resource Manager not specified - attempting build with pbs])
@@ -430,7 +349,6 @@ AC_CHECK_FUNCS([gethostbyaddr gethostbyname gethostname gettimeofday inet_ntoa m
 # Configure the output files, and generate them.
 AC_CONFIG_FILES([include/Makefile.inc.pbs
                  include/Makefile.inc.sge
-                 include/Makefile.inc.lsf
                  include/Makefile.inc.mx
                  include/Makefile.inc.pcre])
 AC_CONFIG_FILES([Makefile], [chmod 700 Makefile])
