@@ -220,6 +220,22 @@ int XAllocLoadBased()
   return(FAILURE);
   }  /* END XAllocLoadBased() */
 
+
+int XRMResetState(
+
+  void  *X,
+  mrm_t *SpecR)
+
+  {
+  const char *FName = "XRMResetState";
+
+  DBG(8,fALL) DPrint("%s(%s)\n",
+    FName,
+    (SpecR != NULL) ? SpecR->Name : "NULL");
+
+  return(FAILURE);
+  }  /* END XRMResetState() */
+
 int XRMVerifyData(
 
   void  *X,
