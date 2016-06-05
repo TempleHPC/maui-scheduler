@@ -10,10 +10,10 @@
 SCHEDIP=-I$(INC)
 SHELL  =/bin/sh
 
-  LP   =-L$(LIB) $(SCHEDLP) $(MXLP) $(REGEXLP)
-  IP   =$(SCHEDIP) $(REGEXIP) $(MXIP)
+  LP   =-L$(LIB) $(SCHEDLP) $(REGEXLP)
+  IP   =$(SCHEDIP) $(REGEXIP)
   INCS =$(INC)moab.h $(INC)moab-proto.h 
-  DEFS =-D$(OPSYS) $(OSDEF) $(MXDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
+  DEFS =-D$(OPSYS) $(OSDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 LIBMCOM  =libmcom.a
 LOBJECTS =MSU.o MSec.o MS3I.o MXML.o MConst.o

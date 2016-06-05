@@ -10,10 +10,10 @@
 SCHEDIP=-I$(INC)
 SHELL  =/bin/sh
 
-  LP   =-L$(LIB) $(SCHEDLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
-  IP   =$(SCHEDIP) $(SGEIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
+  LP   =-L$(LIB) $(SCHEDLP) $(REGEXLP) $(PBSLDFLAGS)
+  IP   =$(SCHEDIP) $(REGEXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched-proto.h $(INC)msched-common.h
-  DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(MXDEF) \
+  DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) \
         $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 SERVER   =maui
@@ -21,7 +21,7 @@ SCHEDLIB =moab
 COMLIB   =mcom
 
 MBINS    =$(SERVER) mclient mprof
-LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(MXLIB) $(REGEXLIB) $(SECLIB) -lm
+LIBS     =-l$(SCHEDLIB) -l$(COMLIB) $(REGEXLIB) $(SECLIB) -lm
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
           releaseres resetstats runjob schedctl sethold setqos setres setspri \

@@ -96,29 +96,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 fi
 
 
-# SGE
-AC_ARG_WITH(sge,
-	[  --with-sge[[=DIR]]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [[/usr/local/sge/source]])],
-	[SGEBUILDDIR=$withval],
-	[SGEBUILDDIR='FALSE'])
-if test "$SGEBUILDDIR" != 'FALSE'; then
-	if test "$SGEBUILDDIR" = 'yes'; then
-		SGEBUILDDIR='/usr/local/sge/source';
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=SGE
-		AC_SUBST(RMTYPE)
-		AC_SUBST_FILE(rm_config)
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-		AC_MSG_ERROR([Only one Resource Manager can be specified (SGE, $RMTYPE)])
-	fi
-	SGEOSDIR=`(cd $SGEBUILDDIR; ./aimk -no-mk)`
-	AC_SUBST(SGEBUILDDIR)
-	AC_SUBST(SGEOSDIR)
-	AC_SUBST_FILE(sge_definitions)
-	sge_definitions=include/Makefile.inc.sge
-fi
 
 # Wiki
 
@@ -276,16 +253,6 @@ AC_SUBST(AMOTHER)
 # END AM CONFIG ---------------------------------
 
 
-# MX
-AC_ARG_WITH(mx,
-	[  --with-mx               use MX],
-	[USEMX='TRUE'],
-	[USEMX='FALSE'])
-if test "$USEMX" != 'FALSE'; then
-	AC_SUBST_FILE(mx_definitions)
-	mx_definitions=include/Makefile.inc.mx
-fi
-
 # PCRE
 AC_ARG_WITH(pcre,
 	[  --with-pcre[[=DIR]]       use PCRE (pcre dir (location of PCRE include and lib directories) [[/path/to/pcre]]],
@@ -299,14 +266,6 @@ if test "$PCREDIR" != 'FALSE'; then
 	AC_SUBST_FILE(pcre_definitions)
 	pcre_definitions=include/Makefile.inc.pcre
 fi
-
-
-# CYGRUNSRV
-AC_ARG_WITH(cygrunsrv,
-	[  --with-cygrunsrv        run as Windows service for Cygwin (do not use a background daemon)],
-	[DAEMONDEF="-D__CYGRUNSRV"],
-	[DAEMONDEF=""])
-AC_SUBST(DAEMONDEF)
 
 
 # Make sure one RM was specified
@@ -348,8 +307,6 @@ AC_CHECK_FUNCS([gethostbyaddr gethostbyname gethostname gettimeofday inet_ntoa m
 
 # Configure the output files, and generate them.
 AC_CONFIG_FILES([include/Makefile.inc.pbs
-                 include/Makefile.inc.sge
-                 include/Makefile.inc.mx
                  include/Makefile.inc.pcre])
 AC_CONFIG_FILES([Makefile], [chmod 700 Makefile])
 AC_CONFIG_FILES([include/maui.cfg.dist.inc.rm

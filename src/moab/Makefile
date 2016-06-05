@@ -10,16 +10,16 @@
 SCHEDIP=-I$(INC)
 SHELL  =/bin/sh
 
-  LP   =-L$(LIB) $(SCHEDLP) $(MXLP) $(REGEXLP) $(PBSLDFLAGS)
-  IP   =$(SCHEDIP) $(REGEXIP) $(MXIP) $(PBSCFLAGS)
+  LP   =-L$(LIB) $(SCHEDLP) $(REGEXLP) $(PBSLDFLAGS)
+  IP   =$(SCHEDIP) $(REGEXIP) $(PBSCFLAGS)
   INCS =$(INC)moab.h $(INC)msched.h
-  DEFS =-D$(OPSYS) $(SDRDEF) $(PBSDEF) $(OSDEF) $(MXDEF) $(REGEXDEF) \
+  DEFS =-D$(OPSYS) $(SDRDEF) $(PBSDEF) $(OSDEF) $(REGEXDEF) \
         $(SECDEF) $(DAEMONDEF)
 
 MOAB     =libmoab.a
 LOBJECTS =MFile.o MConfig.o MQOS.o MLog.o MCred.o MSched.o MAM.o MSR.o MRes.o \
           MUser.o MGroup.o MAcct.o MClass.o MTime.o MNode.o MConst.o MACL.o MStats.o \
-          MLocal.o MUtil.o MTrace.o MAppSim.o MQueue.o MLimit.o MXI.o MSim.o \
+          MLocal.o MUtil.o MTrace.o MAppSim.o MQueue.o MLimit.o MSim.o \
           MBF.o MJob.o MPriority.o MPolicy.o MPreempt.o MFS.o MPar.o MRM.o \
           MPBSI.o MWikiI.o MSys.o MCP.o MUI.o $(SSSOBJ)
 

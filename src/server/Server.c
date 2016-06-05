@@ -224,7 +224,7 @@ int main(
       }
     }
  
-  XInitialize(&X,MSCHED_VERSION,&ArgC,ArgV,MSched.HomeDir);
+  memset(&X,0,sizeof(mx_t));
 
   MSysDoTest();
  
