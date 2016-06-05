@@ -1651,7 +1651,7 @@ char *MUListAttrs(
 
   Line[0] = '\0';
 
-  for (i = 1;i < M64.INTBITS;i++)
+  for (i = 1;i < (M64.INTBITS-1);i++)
     {
     if ((Value & (1 << i)) && (MAList[Attr][i][0] != '\0'))
       {
@@ -1690,7 +1690,7 @@ char *MUMAList(
 
   for (findex = 0;findex < (MapSize >> M64.INTSHIFT);findex++)
     {
-    for (index = 0;index < M64.INTBITS;index++)
+    for (index = 0;index < (M64.INTBITS-1);index++)
       {
       if ((ValueMap[findex] & (1 << index)) && 
           (MAList[AttrIndex][index][0] != '\0'))

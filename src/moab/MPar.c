@@ -513,7 +513,7 @@ int MParAdd(
 
   MParInitialize(P,NULL);
 
-  memcpy(MAList[ePartition][pindex],PName,MAX_MNAME);
+  MUStrCpy(MAList[ePartition][pindex],PName,MAX_MNAME);
 
   if (P->L.IP == NULL)
     P->L.IP = (mpu_t *)calloc(1,sizeof(mpu_t));

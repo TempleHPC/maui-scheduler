@@ -534,6 +534,7 @@ enum MRMTypeEnum {
   mrmtSGE,
   mrmtSSS,
   mrmtWiki,
+  mrmtRMS,
   mrmtLSF,
   mrmtNative };
 

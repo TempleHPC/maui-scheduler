@@ -2530,7 +2530,7 @@ int MJobBuildCL(
 
   /* add job attr info */
 
-  for (cindex = 0;cindex < 32;cindex++)
+  for (cindex = 0;cindex < (8*(int)sizeof(cindex)-1);cindex++)
     {
     if (J->AttrBM & (1 << cindex))
       {
