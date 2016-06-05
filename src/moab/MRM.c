@@ -45,12 +45,6 @@ extern mx_t        X;
 int __MRMStartFunc(mrm_t *,int);
 int __MRMEndFunc(mrm_t *,int);
 
-#include "MLLI.c"
-
-
-
-
-
 int MRMLoadModules()
 
   {
@@ -58,10 +52,6 @@ int MRMLoadModules()
 
   DBG(2,fRM) DPrint("%s()\n",
     FName);
-
-#if defined(__MLL22) || defined(__MLL31)
-  MLLLoadModule(&MRMFunc[mrmtLL]);
-#endif /* __MLL22 || __MLL31 */
 
 #ifdef __MPBS
   MPBSLoadModule(&MRMFunc[mrmtPBS]);
@@ -2606,10 +2596,6 @@ int MRMConfigShow(
     /* display loaded RM modules */
 
     MUSNPrintF(&BPtr,&BSpace,"# RM MODULES: ");
-
-#if defined(__MLL22) || defined(__MLL31)
-    MUSNPrintF(&BPtr,&BSpace,"LL ");
-#endif /* __MLL22 || __MLL31 */
 
 #ifdef __MLSF
     MUSNPrintF(&BPtr,&BSpace,"LSF ");

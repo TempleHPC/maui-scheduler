@@ -60,37 +60,6 @@ AC_SUBST([USER], `whoami`)
 AC_SUBST([BUILDDATE], `date`)
 AC_SUBST([BUILDDIR], `pwd`)
 
-# LoadLeveler
-AC_ARG_WITH(loadl,
-	[  --with-loadl[[=VERSION]]  use LoadLeveler Resource Manager (version [[3]])],
-	[LLVERSION=$withval],
-	[LLVERSION='FALSE'])
-if test "$LLVERSION" != 'FALSE'; then
-	if test "$LLVERSION" = 'yes'; then
-		LLVERSION=3;
-	else
-		LLVERSION=${withval%.*};
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=LL
-		AC_SUBST(RMTYPE)
-		AC_SUBST_FILE(rm_config)
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-    AC_MSG_ERROR([Only one Resource Manager can be specified (LL, $RMTYPE)])
-	fi
-	if test "$LLVERSION" -lt "3"; then
-		LLDIR="/usr/lpp/LoadL/full"
-		LLDEF="-D__MLL22"
-	else
-		LLDIR="/home/loadl"
-		LLDEF="-D__MLL31"
-	fi
-	AC_SUBST(LLDIR)
-	AC_SUBST(LLDEF)
-	AC_SUBST_FILE(ll_definitions)
-	ll_definitions=include/Makefile.inc.ll
-fi
 
 # PBS
 AC_ARG_WITH(pbs,
@@ -459,8 +428,7 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([gethostbyaddr gethostbyname gethostname gettimeofday inet_ntoa memchr memset pow putenv regcmp regcomp select setlocale socket strchr strdup strerror strrchr strstr strtol strtoul])
 
 # Configure the output files, and generate them.
-AC_CONFIG_FILES([include/Makefile.inc.ll
-                 include/Makefile.inc.pbs
+AC_CONFIG_FILES([include/Makefile.inc.pbs
                  include/Makefile.inc.sge
                  include/Makefile.inc.lsf
                  include/Makefile.inc.mx

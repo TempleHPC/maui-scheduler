@@ -43,8 +43,6 @@
   X->QueuePrioritizeJobs  = MQueuePrioritizeJobs;     
   X->QueueScheduleJobs    = MQueueScheduleIJobs;      
 
-  X->LL2ShowError         = LL2ShowError;
-
   X->SimJobSubmit         = MSimJobSubmit;
   X->SRCreate             = MSRSetRes;
   X->WikiLoadJob          = MWikiJobLoad;

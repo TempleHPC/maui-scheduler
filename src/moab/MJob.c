@@ -2274,13 +2274,6 @@ int MJobFind(
 
   mjob_t *tmpJ;
 
-# if defined(__MLL) || defined(__MLL2) || defined(__MLL31)
-  int count;
-
-  char *split;
-
-# endif /* __MLL || __MLL2 || _MLL31 */
-
   char QJobID[MAX_MNAME];
   char QHostName[MAX_MNAME];
 
@@ -2309,48 +2302,8 @@ int MJobFind(
 
   if (Mode == 1)
     {
-#   if defined(__MLL) || defined(__MLL2) || defined(__MLL31)
+#if defined(__MPBS)
 
-    {
-    char *ptr;
-
-    /* FORMAT:  <SUBMITHOST>[.<DOMAIN>].<JOBID>.<STEPID> */
-
-    count = 0;
-
-    for (ptr = JobName + strlen(JobName) - 1;*ptr != '\0';ptr--)
-      {
-      if (*ptr == '.')
-        {
-        count++;
-
-        if (count == 2)
-          split = ptr;
-        }
-      }
-
-    if (count > 2)
-      {
-      /* fully qualified submit hostname specified */
-
-      MUStrCpy(QJobID,JobName,sizeof(QJobID));
-      }
-    else
-      {
-      /* non-fully qualified submit hostname specified */
-      /* insert DefaultDomain                          */
-
-      MUStrCpy(QJobID,JobName,MIN(sizeof(QJobID),split - JobName + 1));
-
-      strcat(QJobID,MSched.DefaultDomain);
-
-      strcat(QJobID,split);
-      }
-    }
-
-#   elif defined(__MPBS)
-
-    {
     char *ptr;
 
     /* try PBS format name */
@@ -2367,13 +2320,12 @@ int MJobFind(
       MUStrCpy(QJobID,JobName,sizeof(QJobID));
       MUStrCpy(QHostName,MSched.DefaultQMHost,sizeof(QHostName));
       }
-    }
 
-#   else /* __MPBS */
+#else /* !__MPBS */
 
     MUStrCpy(QJobID,JobName,sizeof(QJobID));
 
-#   endif /* else defined(__MLL) || defined(__MLL2) || defined(__MLL31) */
+#endif /* !__MBPS */
     }
   else
     {

@@ -654,8 +654,6 @@ LSFDIR
 SGEOSDIR
 SGEBUILDDIR
 PBSTARGETDIR
-LLDEF
-LLDIR
 RMTYPE
 BUILDDIR
 BUILDDATE
@@ -713,7 +711,6 @@ PACKAGE_NAME
 PATH_SEPARATOR
 SHELL'
 ac_subst_files='rm_config
-ll_definitions
 pbs_definitions
 sge_definitions
 lsf_definitions
@@ -724,7 +721,6 @@ enable_option_checking
 with_spooldir
 with_machine
 with_key
-with_loadl
 with_pbs
 with_sge
 with_lsf
@@ -1359,7 +1355,6 @@ Optional Packages:
   --with-spooldir=DIR     where config files, log and stat directories are maintained [/var/spool/maui]
   --with-machine=NAME     system name (defaults to LOCALHOST)
   --with-key=SEED         security checksum key (defaults to a random integer)
-  --with-loadl[=VERSION]  use LoadLeveler Resource Manager (version [3])
   --with-pbs[=DIR]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [/usr/local])
   --with-sge[=DIR]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [/usr/local/sge/source])
   --with-lsf[=DIR]        use LSF Resource Manager (install directory (location of LSF include and lib directories) [/usr/local/lsf])
@@ -3101,41 +3096,6 @@ BUILDDATE=`date`
 BUILDDIR=`pwd`
 
 
-# LoadLeveler
-
-# Check whether --with-loadl was given.
-if test "${with_loadl+set}" = set; then :
-  withval=$with_loadl; LLVERSION=$withval
-else
-  LLVERSION='FALSE'
-fi
-
-if test "$LLVERSION" != 'FALSE'; then
-	if test "$LLVERSION" = 'yes'; then
-		LLVERSION=3;
-	else
-		LLVERSION=${withval%.*};
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=LL
-
-
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-    as_fn_error $? "Only one Resource Manager can be specified (LL, $RMTYPE)" "$LINENO" 5
-	fi
-	if test "$LLVERSION" -lt "3"; then
-		LLDIR="/usr/lpp/LoadL/full"
-		LLDEF="-D__MLL22"
-	else
-		LLDIR="/home/loadl"
-		LLDEF="-D__MLL31"
-	fi
-
-
-
-	ll_definitions=include/Makefile.inc.ll
-fi
 
 # PBS
 
@@ -5398,7 +5358,7 @@ done
 
 
 # Configure the output files, and generate them.
-ac_config_files="$ac_config_files include/Makefile.inc.ll include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
+ac_config_files="$ac_config_files include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.lsf include/Makefile.inc.mx include/Makefile.inc.pcre"
 
 ac_config_files="$ac_config_files Makefile"
 
@@ -6120,7 +6080,6 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "include/Makefile.inc.ll") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.ll" ;;
     "include/Makefile.inc.pbs") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pbs" ;;
     "include/Makefile.inc.sge") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.sge" ;;
     "include/Makefile.inc.lsf") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.lsf" ;;

@@ -31,21 +31,6 @@
 
 #endif /* LIBGEN */
 
-#define DEFAULT_LLBINPATH "/usr/lpp/LoadL/full/bin"
-
-#if defined(__MLL) || defined(__MLL2) || defined(__MLL31)
-# define __LLAPI
-# include "llapi.h"
-#else /* __MLL || __MLL2 || __MLL31 */
-# include "msched-llapi.h"
-#endif /* __MLL || __MLL2  || __MLL31 */
-
-#if defined(__MLL2) || defined(__MLL31) || defined(__O2K)
-#ifndef __SMP
-#define __SMP
-#endif /* __SMP */
-#endif /* __MLL2 || __MLL31 || __O2K */
-
 #define GetLimit(PL,P,PS,PH,Limit)              \
   switch (PL)                                   \
     {                                           \
@@ -87,16 +72,10 @@
 #define DEFAULT_WORKLOAD_TRACE_VERSION         230
 #define DEFAULT_RESOURCE_TRACE_VERSION         230
 
-#define MCKPT_VERSION                         "322"
-#define MCKPT_SVERSIONLIST                    "322"
+#define MCKPT_VERSION                         "350"
+#define MCKPT_SVERSIONLIST                    "350"
  
-/* temporary fix to handle LL API bug */
-
-#ifndef LL_NOTQUEUED
-# define LL_NOTQUEUED                     10
-#endif /* LL_NOTQUEUED */
-
-#define DEFAULT_PBSQSUBPATHNAME                "/usr/local/bin/qsub"
+#define DEFAULT_PBSQSUBPATHNAME                "/usr/bin/qsub"
  
 /* default scheduler values */
 

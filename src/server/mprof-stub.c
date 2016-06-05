@@ -1,9 +1,6 @@
 /*
 */
 
-#include "mclient-stub.c"
-
-        
 int JobPReserve(
 
   mjob_t *J,

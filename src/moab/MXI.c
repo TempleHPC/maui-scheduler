@@ -37,10 +37,6 @@ extern char        CurrentHostName[];
 
 extern int XInitializeMInterface(void *,char *,int *,char **,char *);
 
-extern int LL2ShowError(int,mjob_t *);
-extern int LL2FreeData(mrm_t *);
-
-
 int XInitialize(
 
   mx_t  *X,
@@ -223,118 +219,6 @@ int XAllocLoadBased()
 
   return(FAILURE);
   }  /* END XAllocLoadBased() */
-
-
-
-int XLL2JobLoad(
-
-  void   *X,
-  mjob_t *J,
-  void   *LLStep)
-
-  {
-  const char *FName = "XLL2JobLoad";
-
-  DBG(6,fALL) DPrint("INFO:     %s not supported\n",
-    FName);
-
-  return(FAILURE);
-  }  /* END XLL2JobLoad() */
-
-
-
-int XLL2JobUpdate(
-
-  void   *X,
-  mjob_t *J,
-  void   *LLStep)
-
-  {
-  const char *FName = "XLL2JobUpdate";
-
-  DBG(6,fALL) DPrint("INFO:     %s not supported\n",
-    FName);
-
-  return(FAILURE);
-  }  /* END XLL2JobUpdate() */
-
-
-
-
-int XLL2NodeLoad(
-
-  void    *X,
-  mnode_t *N,
-  void    *LLMachine)
-
-  {
-  const char *FName = "XLL2NodeLoad";
-
-  DBG(6,fALL) DPrint("INFO:     %s not supported\n",
-    FName);
-
-  return(FAILURE);
-  }  /* END XLL2NodeLoad() */
-
-
-
-int XLL2NodeUpdate(
-
-  void    *X,
-  mnode_t *N,
-  void    *LLMachine)
-
-  {
-  const char *FName = "XLL2NodeUpdate";
-
-  DBG(6,fALL) DPrint("INFO:     %s not supported\n",
-    FName);
-
-  return(FAILURE);
-  }  /* END XLL2NodeUpdate() */
-
-
-
-
-int XRMResetState(
-
-  void  *X,
-  mrm_t *SpecR)
-
-  {
-  const char *FName = "XRMResetState";
-
-  int rmindex;
-
-  mrm_t *R;
-
-  DBG(8,fALL) DPrint("%s(%s)\n",
-    FName,
-    (SpecR != NULL) ? SpecR->Name : "NULL");
-
-  for (rmindex = 0;rmindex < MAX_MRM;rmindex++)
-    {
-    R = &MRM[rmindex];
-
-    switch (R->Type)
-      {
-      case mrmtLL:
-
-        LL2FreeData(R);
-
-        break;
-
-      default:
-
-        break;
-      }  /* END switch(tmpR->Type) */
-    }    /* END for (rmindex)      */
-
-  return(FAILURE);
-  }  /* END XRMResetState() */
-
-
-
 
 int XRMVerifyData(
 
