@@ -660,11 +660,8 @@ int MRMSetFailure(mrm_t *,int,char *);
 int MRMLoadModules(void);
 
 int MPBSLoadModule(mrmfunc_t *);
-int MSGELoadModule(mrmfunc_t *);
-int MLLLoadModule(mrmfunc_t *);
 int MWikiLoadModule(mrmfunc_t *);
 int MSSSLoadModule(mrmfunc_t *);
-int MLSFLoadModule(mrmfunc_t *);
 
 int MRMProcessOConfig(mrm_t *,int,int,double,char *,char **);
 int MRMLoadConfig(char *);

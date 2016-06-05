@@ -631,7 +631,6 @@ LIBOBJS
 EGREP
 GREP
 CPP
-DAEMONDEF
 PCREDIR
 AMOTHER
 AMWIREPROTOCOL
@@ -648,8 +647,6 @@ RMHOST
 RMPORT
 PBSLDFLAGS
 PBSCFLAGS
-SGEOSDIR
-SGEBUILDDIR
 PBSTARGETDIR
 RMTYPE
 BUILDDIR
@@ -709,8 +706,6 @@ PATH_SEPARATOR
 SHELL'
 ac_subst_files='rm_config
 pbs_definitions
-sge_definitions
-mx_definitions
 pcre_definitions'
 ac_user_opts='
 enable_option_checking
@@ -718,15 +713,12 @@ with_spooldir
 with_machine
 with_key
 with_pbs
-with_sge
 with_wiki
 with_warehouse
 with_qbank
 with_gold
 with_sss_am
-with_mx
 with_pcre
-with_cygrunsrv
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1349,15 +1341,12 @@ Optional Packages:
   --with-machine=NAME     system name (defaults to LOCALHOST)
   --with-key=SEED         security checksum key (defaults to a random integer)
   --with-pbs[=DIR]        use PBS/Torque Resource Manager (target directory (location of pbs lib dir) [/usr/local])
-  --with-sge[=DIR]        use SGE Resource Manager (build directory (location of SGE include and lib directories) [/usr/local/sge/source])
   --with-wiki             use Wiki Resource Manager
   --with-warehouse        use Warehouse System Monitor
   --with-qbank            use QBank Allocation Manager
   --with-gold             use Gold Allocation Manager
   --with-sss-am[=PORT]    use SSS Allocation Manager (default port [8865])
-  --with-mx               use MX
   --with-pcre[=DIR]       use PCRE (pcre dir (location of PCRE include and lib directories) [/path/to/pcre]
-  --with-cygrunsrv        run as Windows service for Cygwin (do not use a background daemon)
 
 Some influential environment variables:
   CC          C compiler command
@@ -3126,33 +3115,6 @@ if test "$PBSTARGETDIR" != 'FALSE'; then
 fi
 
 
-# SGE
-
-# Check whether --with-sge was given.
-if test "${with_sge+set}" = set; then :
-  withval=$with_sge; SGEBUILDDIR=$withval
-else
-  SGEBUILDDIR='FALSE'
-fi
-
-if test "$SGEBUILDDIR" != 'FALSE'; then
-	if test "$SGEBUILDDIR" = 'yes'; then
-		SGEBUILDDIR='/usr/local/sge/source';
-	fi
-	if test "$RMTYPE" = ''; then
-		RMTYPE=SGE
-
-
-		rm_config=include/maui.cfg.dist.inc.rm
-	else
-		as_fn_error $? "Only one Resource Manager can be specified (SGE, $RMTYPE)" "$LINENO" 5
-	fi
-	SGEOSDIR=`(cd $SGEBUILDDIR; ./aimk -no-mk)`
-
-
-
-	sge_definitions=include/Makefile.inc.sge
-fi
 
 # Wiki
 
@@ -3331,20 +3293,6 @@ fi
 # END AM CONFIG ---------------------------------
 
 
-# MX
-
-# Check whether --with-mx was given.
-if test "${with_mx+set}" = set; then :
-  withval=$with_mx; USEMX='TRUE'
-else
-  USEMX='FALSE'
-fi
-
-if test "$USEMX" != 'FALSE'; then
-
-	mx_definitions=include/Makefile.inc.mx
-fi
-
 # PCRE
 
 # Check whether --with-pcre was given.
@@ -3362,18 +3310,6 @@ if test "$PCREDIR" != 'FALSE'; then
 
 	pcre_definitions=include/Makefile.inc.pcre
 fi
-
-
-# CYGRUNSRV
-
-# Check whether --with-cygrunsrv was given.
-if test "${with_cygrunsrv+set}" = set; then :
-  withval=$with_cygrunsrv; DAEMONDEF="-D__CYGRUNSRV"
-else
-  DAEMONDEF=""
-fi
-
-
 
 
 # Make sure one RM was specified
@@ -5255,7 +5191,7 @@ done
 
 
 # Configure the output files, and generate them.
-ac_config_files="$ac_config_files include/Makefile.inc.pbs include/Makefile.inc.sge include/Makefile.inc.mx include/Makefile.inc.pcre"
+ac_config_files="$ac_config_files include/Makefile.inc.pbs include/Makefile.inc.pcre"
 
 ac_config_files="$ac_config_files Makefile"
 
@@ -5978,8 +5914,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "include/Makefile.inc.pbs") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pbs" ;;
-    "include/Makefile.inc.sge") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.sge" ;;
-    "include/Makefile.inc.mx") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.mx" ;;
     "include/Makefile.inc.pcre") CONFIG_FILES="$CONFIG_FILES include/Makefile.inc.pcre" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "include/maui.cfg.dist.inc.rm") CONFIG_FILES="$CONFIG_FILES include/maui.cfg.dist.inc.rm" ;;

@@ -1,5 +1,5 @@
 # FastDep v2.1 for LAMMPS
-# Search path: .:..:../../include:/home/akohlmey/compile/maui-scheduler/../maui-bin/maui/include
+# Search path: .:..:../../include
 #     6 sources
 #    11 includes
 #    10 depfiles

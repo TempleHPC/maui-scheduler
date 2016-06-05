@@ -57,19 +57,12 @@ int MRMLoadModules()
   MPBSLoadModule(&MRMFunc[mrmtPBS]);
 #endif /* __MPBS */
 
-#ifdef __MSGE
-  MSGELoadModule(&MRMFunc[mrmtSGE]);
-#endif /* __MSGE */
-
   MS3LoadModule(&MRMFunc[mrmtSSS]);
 
   MWikiLoadModule(&MRMFunc[mrmtWiki]);
 
   return(SUCCESS);
   }  /* END MRMLoadModules() */
-
-
-
 
 
 int MRMInitialize()
@@ -2596,14 +2589,6 @@ int MRMConfigShow(
 #ifdef __MPBS
     MUSNPrintF(&BPtr,&BSpace,"PBS ");
 #endif /* __MPBS */
-
-#ifdef __MRMS
-    MUSNPrintF(&BPtr,&BSpace,"RMS ");
-#endif /* __MRMS */
-
-#ifdef __MSGE
-    MUSNPrintF(&BPtr,&BSpace,"SGE ");
-#endif /* __MSGE */
 
     MUSNPrintF(&BPtr,&BSpace,"SSS ");
 
