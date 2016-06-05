@@ -5219,8 +5219,6 @@ int MPBSJobSetAttr(
   char tmpResource[MAX_MNAME];
   char tmpValue[MAX_MLINE];
 
-  mrm_t *R;
-
   mreq_t *RQ;
 
   if ((J == NULL) || ((A == NULL) && (ValLine == NULL)))
@@ -5229,8 +5227,6 @@ int MPBSJobSetAttr(
     }
 
   memset(&tmpAP,0,sizeof(tmpAP));            
-
-  R = &MRM[J->Req[0]->RMIndex];
 
   if (A != NULL)
     {
