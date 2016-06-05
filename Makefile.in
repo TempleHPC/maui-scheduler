@@ -8,7 +8,6 @@ BUILDROOT ?=
 DESTDIR ?=${BUILDROOT}
 export MSCHED_HOME=${DESTDIR}@SPOOLDIR@
 export INST_DIR=${DESTDIR}@prefix@
-export DAEMONDEF=@DAEMONDEF@
 export OPSYS=@OPSYS@
 export OS=@OS@
 export CC=@CC@
