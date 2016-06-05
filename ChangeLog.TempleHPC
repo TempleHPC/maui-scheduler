@@ -1,3 +1,171 @@
+commit 59fa357ab616c951c4f3fa746f3c4138e76ecb0f
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 21:07:10 2016 -0400
+
+    restore function that was accidentally deleted beyond need
+
+commit 46aecbb72bd011f5f23bdebdfd2ffe1636195851
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 20:57:04 2016 -0400
+
+    remove support for IBM load-leveler
+
+commit 2d895e65fcf43f67d3ee5e87fb885d7c10aa91ac
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 20:37:15 2016 -0400
+
+    delete unused variable
+
+commit 9af8226b267c567c8dee4efe19a1b573d63f4efc
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 15:39:27 2016 -0400
+
+    we need to do a "make clean" after updating config and generated files
+
+commit e1335a22b6853fcd96a016c89ec48e8af2b7dcc2
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 14:41:04 2016 -0400
+
+    remove support for RMS
+    
+    this was a nasty one, as some of the RMS functions had been used
+    for the case of RMS not being enabled and replaced other functions
+    that were meant to be used in general. hopefully, this commit
+    doesn't break anything...
+
+commit 1067be7d647d5ab60171aa4f24b792155e670862
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 13:50:14 2016 -0400
+
+    trim down list of supported operating systems
+
+commit a0608e80b1c246721a7b32d7263d5bc42222a8db
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 13:40:51 2016 -0400
+
+    clean up signal handler setup
+
+commit 813ed54ef98d604dc08583a80b8efaca5024d967
+Merge: 129c835 4a47bbd
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 08:09:58 2016 -0400
+
+    Merge branch 'remove-sdr-support'
+    
+    first step to address issue #26
+
+commit 4a47bbde74b662cb95b0cb2ddb2965f47a3bd4bd
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sat Jun 4 08:09:09 2016 -0400
+
+    remove support for obsolete IBM SP2 SDR
+
+commit 129c835f13ddb52f9a48c9a7985805f0711f6e9c
+Merge: 047bc92 5d0150a
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri Jun 3 14:49:25 2016 -0400
+
+    Merge branch 'remove_muthread_wrapper'
+    
+    This closes #28
+
+commit 5d0150ac780ee037ad396138b14339315acf0f70
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri Jun 3 14:46:42 2016 -0400
+
+    remove last reference to threads
+
+commit c4c69587560c46ffba8e3a8040ba01300d69a8a4
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Fri Jun 3 14:35:22 2016 -0400
+
+    eliminate MUThread() wrapper for thread dispatch.
+
+commit 047bc92417553c0a3bd027c51b25a839f4e5b061
+Merge: d378ae6 fc3b1d6
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Thu Jun 2 15:08:22 2016 -0400
+
+    Merge pull request #33 from TempleHPC/query_tasks
+    
+    Adds a way to query the number of tasks running for a given user
+
+commit fc3b1d68a7e13423b05ce7e2ecf2e8a0024a3712
+Merge: 31fd451 d378ae6
+Author: dalin <tuf69906@temple.edu>
+Date:   Thu Jun 2 14:56:23 2016 -0400
+
+    Merge remote-tracking branch 'origin/master' into query_tasks
+
+commit 31fd4516b367d0ceaa1061a4a0d43e33d5a111af
+Author: dalin <tuf69906@temple.edu>
+Date:   Thu Jun 2 11:34:05 2016 -0400
+
+    Adds a show usage functionality to showtasks command
+
+commit e4d6309f5f68513880922b9caeab6f8d991e670f
+Author: dalin <tuf69906@temple.edu>
+Date:   Wed Jun 1 19:04:30 2016 -0400
+
+    Adds a way to query the number of tasks running for a given user
+    
+    Move the logic to the server side, so the sever counts the number of tasks
+    for a specific user and returns the result to the client.
+
+commit f92a5a6298d975b6c706a1c471420ccc807353f7
+Author: dalin <tuf69906@temple.edu>
+Date:   Wed Jun 1 18:26:24 2016 -0400
+
+    Remove eclipse project files
+
+commit 9d1adfcbd965e65b3867ac74bd0eb99f53a20775
+Author: dalin <tuf69906@temple.edu>
+Date:   Wed Jun 1 18:13:32 2016 -0400
+
+    Adds gcov files to ignore files
+
+commit 66e5e3d2a04d099b1443983ebcdf1de5c2a127b6
+Author: dalin <tuf69906@temple.edu>
+Date:   Tue May 31 14:35:03 2016 -0400
+
+    Adds a way to query the number of tasks running for a given user
+    Creates showTasksPerUser() to handle the new command
+    Adds a global variable named TempArgv to save the argument
+    Adds a new enum named svcShowTasks
+    Adds one line in file maui-scheduler.spec to generate the executable file for command showtasks
+
+commit d378ae627e1db9354c88ed6e68d95557dc366319
+Merge: ef60ede c074afe
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 30 19:52:19 2016 -0400
+
+    Merge branch 'add-systemd-unit'
+    
+    This closes #17
+
+commit c074afefb6e9cdabf21f3ea8e17a592179d6666f
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Mon May 30 19:49:07 2016 -0400
+
+    first add systemd unit file adapted from torque
+
+commit ef60edee589cf7fa3d64f58389985e0d4aa4e93f
+Merge: 1390095 efac4d5
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 29 22:48:28 2016 -0400
+
+    Merge branch 'prep_3.5_release'
+    
+    Version 3.5 release.
+    This version includes the fix against e-mail floods and has been
+    tested safe for compilation with gcc 4 and beyond.
+
+commit efac4d58595bb11889968dcc97f2b5ddfcc84786
+Author: Axel Kohlmeyer <akohlmey@gmail.com>
+Date:   Sun May 29 22:46:55 2016 -0400
+
+    Step version number to 3.5
+
 commit 1390095b0a2c110778e22b2d474aadce3642029a
 Merge: 1c1b318 d410b79
 Author: Axel Kohlmeyer <akohlmey@gmail.com>
