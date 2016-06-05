@@ -1961,6 +1961,7 @@ int MSchedTest()
   short tmpTaskMap[MAX_MTASK_PER_JOB];
   mnalloc_t tmpNodeList2[MAX_MNODE_PER_JOB];
 
+  memset(&tmpJ,0,sizeof(tmpJ));
   strcpy(tmpJ.Name,"test");
   tmpJ.Req[0]         = &tmpRQ;
   tmpJ.Req[1]         = NULL;
@@ -1999,7 +2000,7 @@ int MSchedTest()
   tmpNodeList[7].N  = NULL;
   tmpNodeList[7].TC = 0;
 
-  MRM[0].Type = mrmtLL;
+  MRM[0].Type = mrmtPBS;
 
   MJobDistributeTasks(&tmpJ,&MRM[0],tmpNodeList2,tmpTaskMap);
 

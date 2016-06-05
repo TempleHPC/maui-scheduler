@@ -739,7 +739,10 @@ int __MSysTestJobGetSNRange()
   memset(&tmpN,0,sizeof(tmpN));
   memset(&tmpRQ,0,sizeof(tmpRQ));
   memset(NAvailPolicy,0,sizeof(NAvailPolicy));
- 
+  memset(&R,0,sizeof(R));
+  memset(&RE,0,sizeof(RE));
+  memset(&RC,0,sizeof(RC));
+
   /* configure general */
  
   MSched.Time     = 1025;
