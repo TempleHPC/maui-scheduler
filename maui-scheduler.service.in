@@ -4,6 +4,7 @@ After=syslog.target network.target pbs_server.service
 
 [Service]
 Type=forking
+User=maui
 ExecStart=@prefix@/sbin/maui
 PIDFile=@SPOOLDIR@/maui.pid
 
