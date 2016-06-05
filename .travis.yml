@@ -21,3 +21,4 @@ compiler:
 script:
   - ./configure --with-pbs CFLAGS="-Wall -O2 -g -fno-strict-aliasing"
   - make
+  - make test

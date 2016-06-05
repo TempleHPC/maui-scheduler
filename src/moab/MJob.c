@@ -2201,6 +2201,7 @@ int MJobMkTemp(
     }
 
   memset(J,0,sizeof(mjob_t));
+  strcpy(J->Name,"testjob");
 
   memset(RQ,0,sizeof(mreq_t));
 
@@ -12506,6 +12507,7 @@ int MJobTestDist()
 
   mrm_t     tmpRM;
 
+  memset(&tmpJ,0,sizeof(tmpJ));
   MJobMkTemp(&tmpJ,&tmpRQ,tmpACL,tmpCL,NULL,tmpNodeList);
 
   /* configure RM */
