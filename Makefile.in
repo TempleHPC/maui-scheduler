@@ -34,22 +34,16 @@ export OSLDFLAGS=@LDFLAGS@
 # ============================
 
 all: config.status
-	${MAKE} -C src/moab all
-	${MAKE} -C src/mcom all
-	${MAKE} -C src/server all
-	${MAKE} -C src/server setup   
+	${MAKE} -C src all
+	${MAKE} -C src setup   
 
 dep:
 	${MAKE} -C tools fastdep.exe
-	${MAKE} -C src/moab dep
-	${MAKE} -C src/mcom dep
-	${MAKE} -C src/server dep
+	${MAKE} -C src dep
 
 clean:
 	${MAKE} -C tools clean
-	${MAKE} -C src/moab clean
-	${MAKE} -C src/mcom clean
-	${MAKE} -C src/server clean
+	${MAKE} -C src clean
 
 test:
 	env MAUILOGSTDERR=1 MAUIHOMEDIR=$$PWD MAUITEST=SCHED ./bin/maui -d
@@ -69,14 +63,10 @@ test:
 	env MAUILOGSTDERR=1 MAUIHOMEDIR=$$PWD MAUITEST=SUBMIT:PBS ./bin/maui -d || :
 
 install:
-	${MAKE} -C src/moab install
-	${MAKE} -C src/mcom install
-	${MAKE} -C src/server install    
+	${MAKE} -C src install
 
 uninstall:
-	${MAKE} -C src/moab uninstall
-	${MAKE} -C src/mcom uninstall
-	${MAKE} -C src/server uninstall
+	${MAKE} -C src uninstall
 
 doc:
 	${MAKE} -C docs guide refman
@@ -85,7 +75,7 @@ pdf:	doc
 	${MAKE} -C docs pdf
 
 setup:
-	${MAKE} -C src/server setup        
+	${MAKE} -C src setup        
 
 distclean: clean
 	${MAKE} -C docs clean-all

@@ -585,7 +585,7 @@ PACKAGE_STRING='Maui Cluster Scheduler 3.5-TempleHPC'
 PACKAGE_BUGREPORT='hpc@temple.edu'
 PACKAGE_URL='https://github.com/TempleHPC/maui-scheduler'
 
-ac_unique_file="src/mcom/MConst.c"
+ac_unique_file="src/MComConst.c"
 ac_default_prefix=/usr/local
 # Factoring default headers for most tests.
 ac_includes_default="\
