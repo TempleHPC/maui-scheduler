@@ -43,12 +43,22 @@ LN =ln
 
 CFLAGS = $(OSCCFLAGS)
 
+default:
+	@echo "Please run make only in the top-level directory"
+
+.PHONY: all dep setup default \
+	install install_lib install_server \
+	clean clean_lib clean_server \
+	uninstall uninstall_lib uninstall_server
+
 all:    $(LIBMAUI) $(MBINS)
 
 setup:  
 	mkdir -p ./bin $(TOP)/include     
 	(cd $(TOP);mkdir -p spool stats log traces tools)
 	chmod 1777 $(TOP)/spool
+
+install: install_lib install_server
 
 install_lib: all
 	mkdir -p $(INST_DIR)/bin $(INST_DIR)/sbin $(INST_DIR)/include $(INST_DIR)/lib
@@ -67,7 +77,7 @@ install_server: all
 	cp $(INC)/moab.h $(INST_DIR)/include
 	cp $(LIB)/lib$(SCHEDLIB).a $(INST_DIR)/lib
 	cp $(TOP)/maui-scheduler.service $(INST_DIR)/lib/systemd/system/
-     
+
 	(cd $(INST_DIR)/bin; \
 	for i in $(MCLIENTS); do \
           if [ ! -f $$i ]; \
@@ -97,11 +107,11 @@ sinclude .depend
 $(LIBMAUI): $(LOBJECTS)
 	ar rcs $(LIB)/$(LIBMAUI) $(LOBJECTS)
 
-$(SERVER): $(SOBJECTS)
+$(SERVER): $(SOBJECTS) $(LIBMAUI)
 	$(LD) $(SOBJECTS) -o $(BIN)/$@ $(LIBS) $(OSLDFLAGS) $(LP)
 	chmod 711 $(BIN)/$@ || true
 
-mclient: mclient.o
+mclient: mclient.o $(LIBMAUI)
 	$(LD) mclient.o -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS)    $(LP)
 	chmod 751 $(BIN)/$@
 	for i in $(MCLIENTS); do \
@@ -109,7 +119,7 @@ mclient: mclient.o
 	  chmod 751 $(BIN)/$$i; \
 	done
 
-mprof:  $(POBJECTS)
+mprof:  $(POBJECTS) $(LIBMAUI)
 	$(LD) $(POBJECTS) -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS)     $(LP)
 	chmod 751 $(BIN)/$@
 
@@ -117,29 +127,25 @@ mprof:  $(POBJECTS)
 # cleanup
 #------------------------------------------------------------------------------
 
+clean: clean_lib clean_server
+
+uninstall: uninstall_lib uninstall_server
+
 clean_lib:
 	$(RM) *.o $(LIB)/$(LIBMAUI)
 
 clean_server:
-	rm -f *.o $(BIN)/maui $(BIN)/mclient $(BIN)/mprof
+	$(RM) *.o $(BIN)/maui $(BIN)/mclient $(BIN)/mprof
 	cd $(BIN) && rm -f $(MCLIENTS)
 
-remove_lib:
-	$(RM) $(INST_DIR)/lib/$(LIBMAUI)
-
-remove_server:
-	rm $(INST_DIR)/bin/mclient
-	rm $(INST_DIR)/bin/mprof
-	rm $(INST_DIR)/sbin/maui
-	rm $(INST_DIR)/include/moab.h
-
-clean: clean_lib clean_server
-
-remove: remove_lib remove_server
-
 uninstall_lib:
+	$(RM) $(INST_DIR)/lib/$(LIBMAUI)
 	$(RM) $(INST_DIR)/include/moab.h
-	$(RM) $(LIB)/$(LIBMAUI)  
 
-uninstall:
-	rm -f $(INST_DIR)/include/moab.h
+uninstall_server:
+	$(RM) $(INST_DIR)/bin/mclient
+	$(RM) $(INST_DIR)/bin/mprof
+	$(RM) $(INST_DIR)/sbin/maui
+
+
+

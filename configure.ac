@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.57)
 AC_INIT(Maui Cluster Scheduler, 3.5-TempleHPC, hpc@temple.edu, maui-scheduler, https://github.com/TempleHPC/maui-scheduler)
-AC_CONFIG_SRCDIR([src/mcom/MConst.c])
+AC_CONFIG_SRCDIR([src/MConst.c])
 #AC_CONFIG_HEADER([config.h])
 
 
@@ -254,6 +254,7 @@ AC_SUBST(AMOTHER)
 
 
 # PCRE
+pcre_definitions=""
 AC_ARG_WITH(pcre,
 	[  --with-pcre[[=DIR]]       use PCRE (pcre dir (location of PCRE include and lib directories) [[/path/to/pcre]]],
 	[PCREDIR=$withval],
@@ -262,10 +263,10 @@ if test "$PCREDIR" != 'FALSE'; then
 	if test "$PCREDIR" = 'yes'; then
 		PCREDIR='/path/to/pcre';
 	fi
-	AC_SUBST(PCREDIR)
-	AC_SUBST_FILE(pcre_definitions)
-	pcre_definitions=include/Makefile.inc.pcre
+        AC_SUBST(PCREDIR)
+        pcre_definitions=include/Makefile.inc.pcre
 fi
+AC_SUBST_FILE(pcre_definitions)
 
 
 # Make sure one RM was specified
