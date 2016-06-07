@@ -7,8 +7,8 @@ int _Insure_ptr_info(void **pptr);
 long _Insure_list_allocated_memory(int mode);
 #endif /* __MINSURE */
 
-#include "mcom-proto.h"
 #include "moab.h"
+#include "mcom-proto.h"
 
 /* CP object */
 

@@ -4,8 +4,8 @@
 #if !defined(__MOAB_H)
 #define __MOAB_H
 
-#include "mcom.h"
 #include "moab-local.h"
+#include "mcom.h"
 
 #define MOAB_VERSION "3.3.2"
 
