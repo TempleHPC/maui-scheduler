@@ -1,147 +1,114 @@
 /* HEADER */
 
-#include "moab.h"
 #include "moab-proto.h"
+#include "moab.h"
 
-#define MUNAMETOK  "AUTH="
+#define MUNAMETOK "AUTH="
 
 void MAAuthorize(char *);
 
 mlog_t mlog;
 
-#include "MLog.c"
 #include "../mcom/MSec.c"
 #include "MFile.c"
 #include "MGUtil.c"
-
-
-
+#include "MLog.c"
 
 int main(
 
-  int    argc,
-  char **argv)
+    int argc, char **argv)
 
-  {
-  char  KeyFile[MAX_MLINE];
+{
+    char KeyFile[MAX_MLINE];
 
-  char  CSBuf[MAX_MLINE];
+    char CSBuf[MAX_MLINE];
 
-  char *Digest;
+    char *Digest;
 
-  char *Buf;
-  char *ptr;
+    char *Buf;
+    char *ptr;
 
-  int   i;
+    int i;
 
-  if (argv[1] == NULL)
-    {
-    exit(1);
-    }
-   
-  Buf = argv[1];
-
-  /* determine key file */
-
-  if ((ptr = getenv(MSCHED_ENVHOMEVAR)) != NULL) 
-    { 
-    sprintf(KeyFile,"%s/%s",
-      ptr,
-      MSCHED_KEYFILE);
-    }
-  else 
-    { 
-    sprintf(KeyFile,"%s/%s",
-      MBUILD_HOMEDIR,
-      MSCHED_KEYFILE);
+    if (argv[1] == NULL) {
+        exit(1);
     }
 
-  /* check authorization */
+    Buf = argv[1];
 
-  MAAuthorize(Buf);
+    /* determine key file */
 
-  /* open keyfile */
-
-  if ((Digest = MFULoad(KeyFile,1,macmRead,NULL,NULL)) == NULL)
-    {
-    fprintf(stderr, "ERROR:  cannot open keyfile '%s' for reading: %s\n", 
-      KeyFile,
-      strerror(errno));
-
-    exit(errno);
+    if ((ptr = getenv(MSCHED_ENVHOMEVAR)) != NULL) {
+        sprintf(KeyFile, "%s/%s", ptr, MSCHED_KEYFILE);
+    } else {
+        sprintf(KeyFile, "%s/%s", MBUILD_HOMEDIR, MSCHED_KEYFILE);
     }
 
-  for (i = strlen(Digest) - 1;i > 0;i--)
-    {
-    if (!isspace(Digest[i]))
-      break;
+    /* check authorization */
 
-    Digest[i] = '\0';
-    }  /* END for (i) */
+    MAAuthorize(Buf);
 
-  /* compute keyed hash for data and key */
+    /* open keyfile */
 
-  MSecGetChecksum(
-    Buf,
-    strlen(Buf),
-    CSBuf,
-    NULL,
-    mcsaHMAC,
-    Digest);
+    if ((Digest = MFULoad(KeyFile, 1, macmRead, NULL, NULL)) == NULL) {
+        fprintf(stderr, "ERROR:  cannot open keyfile '%s' for reading: %s\n",
+                KeyFile, strerror(errno));
 
-  fprintf(stdout,"%s\n",
-    CSBuf);
+        exit(errno);
+    }
 
-  return(0);
-  }  /* END main() */
+    for (i = strlen(Digest) - 1; i > 0; i--) {
+        if (!isspace(Digest[i])) break;
 
+        Digest[i] = '\0';
+    } /* END for (i) */
 
+    /* compute keyed hash for data and key */
 
+    MSecGetChecksum(Buf, strlen(Buf), CSBuf, NULL, mcsaHMAC, Digest);
 
+    fprintf(stdout, "%s\n", CSBuf);
+
+    return (0);
+} /* END main() */
 
 void MAAuthorize(
- 
-  char *Buf)
 
-  {
-  char *ptr;
+    char *Buf)
 
-  int   i;
+{
+    char *ptr;
 
-  struct passwd *passwd_s;
+    int i;
 
-  if ((ptr = strstr(Buf,MUNAMETOK)) == NULL)
-    {
-    fprintf(stderr,"ERROR:  data string must contain %s<user>\n",
-      MUNAMETOK);
+    struct passwd *passwd_s;
 
-    exit(1);
+    if ((ptr = strstr(Buf, MUNAMETOK)) == NULL) {
+        fprintf(stderr, "ERROR:  data string must contain %s<user>\n",
+                MUNAMETOK);
+
+        exit(1);
     }
 
-  if ((passwd_s = getpwuid(getuid())) == NULL)
-    {
-    fprintf(stderr,"ERROR:  cannot determine current user\n");
+    if ((passwd_s = getpwuid(getuid())) == NULL) {
+        fprintf(stderr, "ERROR:  cannot determine current user\n");
 
-    exit(1);
+        exit(1);
     }
 
-  ptr += strlen(MUNAMETOK);
+    ptr += strlen(MUNAMETOK);
 
-  for (i = 0;i < strlen(ptr);i++)
-    {
-    if (isspace(ptr[i]))
-      break;
-    }  /* END for (i) */
+    for (i = 0; i < strlen(ptr); i++) {
+        if (isspace(ptr[i])) break;
+    } /* END for (i) */
 
-  if (strncmp(passwd_s->pw_name,ptr,i))
-    {
-    fprintf(stderr,"ERROR:  %s is unauthorized to create a checksum for %s\n",
-      passwd_s->pw_name, 
-      ptr);
+    if (strncmp(passwd_s->pw_name, ptr, i)) {
+        fprintf(stderr,
+                "ERROR:  %s is unauthorized to create a checksum for %s\n",
+                passwd_s->pw_name, ptr);
 
-    exit(1);
+        exit(1);
     }
 
-  return;
-  }  /* END MAAuthorize() */
-
+    return;
+} /* END MAAuthorize() */

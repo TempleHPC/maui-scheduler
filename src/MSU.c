@@ -1,6 +1,5 @@
 /* HEADER */
 
-        
 /* Contains:                                           *
  *   int MSUListen(S)                                  *
  *   int MSUInitialize(S,Host,Port,TimeOut,SocketType) *
@@ -21,9 +20,8 @@
  *   int MSUDisconnect(S)                              *
  *                                                     */
 
-
+#include "moab-proto.h"
 #include "moab.h"
-#include "moab-proto.h"  
 #include "msu.h"
 
 extern char *MSON[];
@@ -31,3966 +29,3417 @@ extern const char *MBool[];
 
 #include <arpa/inet.h>
 
-#define SOCKETQUEUESIZE      64
-#define SOCKETFLAGS      (int)0
+#define SOCKETQUEUESIZE 64
+#define SOCKETFLAGS (int)0
 
-extern mlog_t    mlog;
+extern mlog_t mlog;
 
-extern msched_t  MSched;
-extern mpid_t    MPID[];
+extern msched_t MSched;
+extern mpid_t MPID[];
 
-extern mx_t      X;
+extern mx_t X;
 
 extern const char *MCKeyword[];
 extern const char *MSockAttr[];
 
-char tmpSBuf[MMSG_BUFFER];  /* NOTE: global to avoid compiler-specific stack failures */
+char tmpSBuf[MMSG_BUFFER]; /* NOTE: global to avoid compiler-specific stack
+                              failures */
 
+msocket_t MClS[MMAX_CLIENT]; /* no longer used in live code */
 
-msocket_t MClS[MMAX_CLIENT];  /* no longer used in live code */
-
-int MSUClientCount = 0;       /* keeps a count of number of connected clients */
+int MSUClientCount = 0; /* keeps a count of number of connected clients */
 
 /* local prototypes */
 
-int MAIX_ISSET(int,int *);
-int MAIX_SET(int,int *);
-int MAIX_CLR(int,int *);
+int MAIX_ISSET(int, int *);
+int MAIX_SET(int, int *);
+int MAIX_CLR(int, int *);
 
 /* END local prototypes */
 
-
-
-
 int MSUIPCInitialize()
 
-  {
-  int index;
+{
+    int index;
 
-  const char *FName = "MSUIPCInitialize";
+    const char *FName = "MSUIPCInitialize";
 
-  MDB(2,fSOCK) MLog("%s()\n",
-    FName);
+    MDB(2, fSOCK) MLog("%s()\n", FName);
 
 #ifdef __MGSS
-  /* initialize grid credential handler */
+    /* initialize grid credential handler */
 
-  MSched.CredHandler = MGSSPostCred;
+    MSched.CredHandler = MGSSPostCred;
 #endif /* __MGSS */
 
-  memset(MClS,0,sizeof(MClS));
+    memset(MClS, 0, sizeof(MClS));
 
-  for (index = 0;index < MMAX_CLIENT;index++)
-    {
-    MClS[index].sd = -1;
-    }  /* END for (index) */
+    for (index = 0; index < MMAX_CLIENT; index++) {
+        MClS[index].sd = -1;
+    } /* END for (index) */
 
-  return(SUCCESS);
-  }  /* END MSUIPCInitialize() */
-
-
-
+    return (SUCCESS);
+} /* END MSUIPCInitialize() */
 
 int MSUInitialize(
 
-  msocket_t *S,          /* I (modified) */
-  char      *RHostName,  /* I (optional) */
-  int        RPort,      /* I */
-  long       CTimeout,   /* I */
-  long       SFlags)     /* I */
+    msocket_t *S,    /* I (modified) */
+    char *RHostName, /* I (optional) */
+    int RPort,       /* I */
+    long CTimeout,   /* I */
+    long SFlags)     /* I */
 
-  {
-  if (S == NULL)
-    {
-    return(FAILURE);
+{
+    if (S == NULL) {
+        return (FAILURE);
     }
 
-  memset(S,0,sizeof(msocket_t));
+    memset(S, 0, sizeof(msocket_t));
 
-  S->sd         = -1;
+    S->sd = -1;
 
-  /* version is unknown, known versions are > 0 */
+    /* version is unknown, known versions are > 0 */
 
-  S->Version    = -1;
+    S->Version = -1;
 
-  MUStrCpy(S->RemoteHost,RHostName,sizeof(S->RemoteHost));
+    MUStrCpy(S->RemoteHost, RHostName, sizeof(S->RemoteHost));
 
-  S->RemotePort = RPort;
+    S->RemotePort = RPort;
 
-  S->Timeout    = CTimeout;
+    S->Timeout = CTimeout;
 
-  S->Flags      = SFlags;
+    S->Flags = SFlags;
 
-  return(SUCCESS);
-  }  /* END MSUInitialize() */
-
-
-
+    return (SUCCESS);
+} /* END MSUInitialize() */
 
 int MUISExtractData(
 
-  msocket_t *S)  /* I */
+    msocket_t *S) /* I */
 
-  {
-  if (S == NULL)
-    {
-    return(FAILURE);
+{
+    if (S == NULL) {
+        return (FAILURE);
     }
 
-  /* NYI */
+    /* NYI */
 
-  return(SUCCESS);
-  }  /* END MUISExtractData() */
-
-
-
+    return (SUCCESS);
+} /* END MUISExtractData() */
 
 int MUISCreateFrame(
 
-  msocket_t *S,          /* I (modified) */
-  mbool_t    DoCompress, /* I */
-  mbool_t    IsResponse) /* I */
+    msocket_t *S,       /* I (modified) */
+    mbool_t DoCompress, /* I */
+    mbool_t IsResponse) /* I */
 
-  {
-  const char *FName = "MUISCreateFrame";
+{
+    const char *FName = "MUISCreateFrame";
 
-  if (S == NULL)
-    {
-    return(FAILURE);
+    if (S == NULL) {
+        return (FAILURE);
     }
 
-  switch (S->WireProtocol)
-    {
-    case mwpS32:
+    switch (S->WireProtocol) {
+        case mwpS32:
 
-      {
-      mxml_t *E = NULL;
-      mxml_t *tE;
-      mxml_t *BE;
-      mxml_t *RE;
-      mxml_t *SE = NULL;
-
-      char Signature[MMAX_LINE];
-      char Digest[MMAX_LINE];
-
-      int   BufSize;
-
-      char *tmpBuf = NULL;
-
-      /* create message framing */
-
-      if (S->SE != NULL)
         {
-        /* frame previously created */
+            mxml_t *E = NULL;
+            mxml_t *tE;
+            mxml_t *BE;
+            mxml_t *RE;
+            mxml_t *SE = NULL;
 
-        return(SUCCESS);
-        }
+            char Signature[MMAX_LINE];
+            char Digest[MMAX_LINE];
 
-      MXMLCreateE(&E,MSON[msonEnvelope]);
+            int BufSize;
 
-      MXMLSetAttr(E,"count",(void *)"1",mdfString);
-      MXMLSetAttr(E,"name",(void *)MSCHED_SNAME,mdfString);
+            char *tmpBuf = NULL;
 
-      if ((S->IsNonBlocking == TRUE) && (IsResponse == FALSE))
-        {
-        MXMLSetAttr(E,"type",(void *)"nonblocking",mdfString);
-        }
+            /* create message framing */
 
-      MXMLSetAttr(E,"version",(void *)MOAB_VERSION,mdfString);
-      MXMLSetAttr(E,"component",(void *)"ClusterScheduler",mdfString);
+            if (S->SE != NULL) {
+                /* frame previously created */
 
-      if (S->CSAlgo != mcsaNONE)
-        {
-        SE = NULL;
-
-        MXMLCreateE(&SE,"Signature");
-        MXMLAddE(E,SE);
-
-        /* NOTE:  signature currently not populated */
-        }
-
-      BE = NULL;
-
-      MXMLCreateE(&BE,MSON[msonBody]);
-
-      /* NOTE:  actor not needed in body for S3 3.0 */
-
-      if (S->ClientName != NULL)
-        MXMLSetAttr(BE,"actor",(void *)S->ClientName,mdfString);
-      else
-        MXMLSetAttr(BE,"actor",(void *)MUUIDToName(MOSGetEUID()),mdfString);
-
-      MXMLAddE(E,BE);
-
-      S->SE = (void *)E;
-
-      if (IsResponse == TRUE)
-        {
-        tE = NULL;
-
-        MXMLCreateE(
-          &tE,
-          MSON[msonResponse]);
-
-        MXMLAddE(BE,tE);
-
-        /* add status information */
-
-        /* get first 'Body' child (ignore signature) */
-
-        if ((MXMLGetChild((mxml_t *)S->SE,MSON[msonBody],NULL,&BE) == FAILURE) ||
-            (MXMLGetChild(BE,NULL,NULL,&RE) == FAILURE))
-          {
-          return(FAILURE);
-          }
-
-        if (MS3SetStatus(
-             RE,
-             (S->StatusCode == 0) ? (char *)"Success" : (char *)"Failure",
-             (enum MSFC)(S->StatusCode % 1000),
-             S->SMsg) == FAILURE)
-          {
-          return(FAILURE);
-          }
- 
-        /* add data */
-
-        if (S->SDE == NULL)
-          {
-          MXMLCreateE((mxml_t **)&S->SDE,MSON[msonData]);
-
-          if ((DoCompress == TRUE) && (S->SPtr != NULL))
-            {
-            if (MSecCompress(
-                  (unsigned char *)S->SPtr,  /* I/O */
-                  strlen(S->SPtr),
-                  NULL,
-                  MCONST_CKEY) == FAILURE)
-              {
-              MDB(0,fSOCK) MLog("WARNING:  cannot compress data in %s\n",
-                FName);
-
-              return(FAILURE);
-              }
+                return (SUCCESS);
             }
-          else
-            {
-            /* NOTE:  handle proper freeing of send data */
 
-            ((mxml_t *)S->SDE)->Val = S->SPtr;
+            MXMLCreateE(&E, MSON[msonEnvelope]);
 
-            /* should S->SPtr be set to null?  should S->SBuffer be freed? */
-            }  /* END if ((DoCompress == TRUE) && ...) */
-          }
+            MXMLSetAttr(E, "count", (void *)"1", mdfString);
+            MXMLSetAttr(E, "name", (void *)MSCHED_SNAME, mdfString);
 
-        MXMLAddE(RE,(mxml_t *)S->SDE);
+            if ((S->IsNonBlocking == TRUE) && (IsResponse == FALSE)) {
+                MXMLSetAttr(E, "type", (void *)"nonblocking", mdfString);
+            }
 
-        S->SDE = NULL;
-        }  /* END if (IsResponse == TRUE) */
-      else
-        {
-        /* message is request */
+            MXMLSetAttr(E, "version", (void *)MOAB_VERSION, mdfString);
+            MXMLSetAttr(E, "component", (void *)"ClusterScheduler", mdfString);
 
-        /* add data */
+            if (S->CSAlgo != mcsaNONE) {
+                SE = NULL;
 
-        if (S->SDE != NULL)
-          {
-          RE = (mxml_t *)S->SDE;
+                MXMLCreateE(&SE, "Signature");
+                MXMLAddE(E, SE);
 
-          S->SDE = NULL;
-          }
-        else
-          {
-          RE = NULL;
+                /* NOTE:  signature currently not populated */
+            }
 
-          MXMLFromString(&RE,S->SBuffer,NULL,NULL);
-          }
+            BE = NULL;
 
-        if (S->ClientName != NULL)
-          MXMLSetAttr(RE,"actor",(void *)S->ClientName,mdfString);
-        else
-          MXMLSetAttr(RE,"actor",(void *)MUUIDToName(MOSGetEUID()),mdfString);
+            MXMLCreateE(&BE, MSON[msonBody]);
 
-        MXMLAddE(BE,RE);
-        }  /* END else (IsResponse == TRUE) */
+            /* NOTE:  actor not needed in body for S3 3.0 */
 
-      /* NOTE:  do not check exit status, only checksum first 64K */
+            if (S->ClientName != NULL)
+                MXMLSetAttr(BE, "actor", (void *)S->ClientName, mdfString);
+            else
+                MXMLSetAttr(BE, "actor", (void *)MUUIDToName(MOSGetEUID()),
+                            mdfString);
 
-      MXMLToXString(BE,&tmpBuf,&BufSize,MMAX_BUFFER << 5,NULL,TRUE);
+            MXMLAddE(E, BE);
 
-      if (S->DoEncrypt == TRUE)
-        {
-        /* encrypt body element */
+            S->SE = (void *)E;
 
-        /* NYI */ 
-        }
+            if (IsResponse == TRUE) {
+                tE = NULL;
 
-      /* generate checksum on first 64k body element */
+                MXMLCreateE(&tE, MSON[msonResponse]);
 
-      if (SE != NULL)
-        {
-        MSecGetChecksum(
-          tmpBuf,
-          strlen(tmpBuf),
-          Signature,
-          Digest,
-          mcsaHMAC64,
-          S->CSKey);
+                MXMLAddE(BE, tE);
 
-        tE = NULL;
-        MXMLCreateE(&tE,"DigestValue");
+                /* add status information */
 
-        MXMLSetVal(
-          tE,
-          (void *)Digest,
-          mdfString);
+                /* get first 'Body' child (ignore signature) */
 
-        MXMLAddE(SE,tE);
+                if ((MXMLGetChild((mxml_t *)S->SE, MSON[msonBody], NULL, &BE) ==
+                     FAILURE) ||
+                    (MXMLGetChild(BE, NULL, NULL, &RE) == FAILURE)) {
+                    return (FAILURE);
+                }
 
-        tE = NULL;
-        MXMLCreateE(&tE,"SignatureValue");
+                if (MS3SetStatus(RE, (S->StatusCode == 0) ? (char *)"Success"
+                                                          : (char *)"Failure",
+                                 (enum MSFC)(S->StatusCode % 1000),
+                                 S->SMsg) == FAILURE) {
+                    return (FAILURE);
+                }
 
-        MXMLSetVal(
-          tE,
-          (void *)Signature,
-          mdfString);
+                /* add data */
 
-        MXMLAddE(SE,tE);
-        }  /* END if (SE != NULL) */
+                if (S->SDE == NULL) {
+                    MXMLCreateE((mxml_t **)&S->SDE, MSON[msonData]);
 
-      MUFree(&tmpBuf);
-      }    /* END BLOCK */
+                    if ((DoCompress == TRUE) && (S->SPtr != NULL)) {
+                        if (MSecCompress((unsigned char *)S->SPtr, /* I/O */
+                                         strlen(S->SPtr), NULL,
+                                         MCONST_CKEY) == FAILURE) {
+                            MDB(0, fSOCK)
+                            MLog("WARNING:  cannot compress data in %s\n",
+                                 FName);
 
-      break;
+                            return (FAILURE);
+                        }
+                    } else {
+                        /* NOTE:  handle proper freeing of send data */
 
-    case mwpXML:
+                        ((mxml_t *)S->SDE)->Val = S->SPtr;
 
-      /* NO-OP */
+                        /* should S->SPtr be set to null?  should S->SBuffer be
+                         * freed? */
+                    } /* END if ((DoCompress == TRUE) && ...) */
+                }
 
-      break;
+                MXMLAddE(RE, (mxml_t *)S->SDE);
 
-    default:
+                S->SDE = NULL;
+            } /* END if (IsResponse == TRUE) */
+            else {
+                /* message is request */
 
-      /* NO-OP */
+                /* add data */
 
-      break;
-    }  /* END switch(S->WireProtocol) */
+                if (S->SDE != NULL) {
+                    RE = (mxml_t *)S->SDE;
 
-  return(SUCCESS);
-  }  /* END MUISCreateFrame() */
+                    S->SDE = NULL;
+                } else {
+                    RE = NULL;
 
+                    MXMLFromString(&RE, S->SBuffer, NULL, NULL);
+                }
 
+                if (S->ClientName != NULL)
+                    MXMLSetAttr(RE, "actor", (void *)S->ClientName, mdfString);
+                else
+                    MXMLSetAttr(RE, "actor", (void *)MUUIDToName(MOSGetEUID()),
+                                mdfString);
 
+                MXMLAddE(BE, RE);
+            } /* END else (IsResponse == TRUE) */
+
+            /* NOTE:  do not check exit status, only checksum first 64K */
+
+            MXMLToXString(BE, &tmpBuf, &BufSize, MMAX_BUFFER << 5, NULL, TRUE);
+
+            if (S->DoEncrypt == TRUE) {
+                /* encrypt body element */
+
+                /* NYI */
+            }
+
+            /* generate checksum on first 64k body element */
+
+            if (SE != NULL) {
+                MSecGetChecksum(tmpBuf, strlen(tmpBuf), Signature, Digest,
+                                mcsaHMAC64, S->CSKey);
+
+                tE = NULL;
+                MXMLCreateE(&tE, "DigestValue");
+
+                MXMLSetVal(tE, (void *)Digest, mdfString);
+
+                MXMLAddE(SE, tE);
+
+                tE = NULL;
+                MXMLCreateE(&tE, "SignatureValue");
+
+                MXMLSetVal(tE, (void *)Signature, mdfString);
+
+                MXMLAddE(SE, tE);
+            } /* END if (SE != NULL) */
+
+            MUFree(&tmpBuf);
+        } /* END BLOCK */
+
+        break;
+
+        case mwpXML:
+
+            /* NO-OP */
+
+            break;
+
+        default:
+
+            /* NO-OP */
+
+            break;
+    } /* END switch(S->WireProtocol) */
+
+    return (SUCCESS);
+} /* END MUISCreateFrame() */
 
 int MSUListen(
 
-  msocket_t *S)  /* I */
+    msocket_t *S) /* I */
 
-  {
-  int                sd;
-  int                flags;
-  int                on;
+{
+    int sd;
+    int flags;
+    int on;
 
-  struct sockaddr_in sin;
+    struct sockaddr_in sin;
 
 #ifndef __MPROD
-  const char *FName = "MSUListen";
+    const char *FName = "MSUListen";
 
-  MDB(2,fSOCK) MLog("%s(%s)\n",
-    FName,
-    (S != NULL) ? "S" : "NULL");
+    MDB(2, fSOCK) MLog("%s(%s)\n", FName, (S != NULL) ? "S" : "NULL");
 #endif /* !__MPROD */
 
-  if (S == NULL)
-    {
-    return(FAILURE);
+    if (S == NULL) {
+        return (FAILURE);
     }
 
-  /* create stream socket, listen on S->RemotePort */
+    /* create stream socket, listen on S->RemotePort */
 
-  if ((sd = socket(
-              AF_INET,
-              MISSET(S->Flags,msftTCP) ? SOCK_STREAM : SOCK_DGRAM,
-              0)) == -1)
-    {
-    MDB(0,fSOCK) MLog("WARNING:  cannot open service socket, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
+    if ((sd = socket(AF_INET,
+                     MISSET(S->Flags, msftTCP) ? SOCK_STREAM : SOCK_DGRAM,
+                     0)) == -1) {
+        MDB(0, fSOCK)
+        MLog("WARNING:  cannot open service socket, errno: %d (%s)\n", errno,
+             strerror(errno));
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  flags = fcntl(sd,F_GETFD,0);
+    flags = fcntl(sd, F_GETFD, 0);
 
-  if (flags >= 0)
-    {
-    flags |= FD_CLOEXEC;
+    if (flags >= 0) {
+        flags |= FD_CLOEXEC;
 
-    fcntl(sd,F_SETFD,flags);
+        fcntl(sd, F_SETFD, flags);
     }
 
-  /* allow port re-use */
+    /* allow port re-use */
 
-  on = 1;
+    on = 1;
 
-  if (setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)) == -1)
-    {
-    MDB(1,fSOCK) MLog("WARNING:  cannot set socket REUSEADDR option, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
+    if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
+        MDB(1, fSOCK)
+        MLog("WARNING:  cannot set socket REUSEADDR option, errno: %d (%s)\n",
+             errno, strerror(errno));
     }
 
-  memset((char *)&sin,0,sizeof(sin));
+    memset((char *)&sin, 0, sizeof(sin));
 
-  sin.sin_family = AF_INET;
-  sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    sin.sin_family = AF_INET;
+    sin.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  /* assign port/bind socket to IP address and port */
+    /* assign port/bind socket to IP address and port */
 
-  if (S->RemotePort == -1)
-    {
-    for (S->RemotePort = 10000;S->RemotePort < 20000;S->RemotePort++)
-      {
-      sin.sin_port = htons((unsigned short)S->RemotePort);
+    if (S->RemotePort == -1) {
+        for (S->RemotePort = 10000; S->RemotePort < 20000; S->RemotePort++) {
+            sin.sin_port = htons((unsigned short)S->RemotePort);
 
-      if (bind(sd,(struct sockaddr *)&sin,sizeof(sin)) == -1)
-        {
-        if (errno == EADDRINUSE)
-          continue;
+            if (bind(sd, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
+                if (errno == EADDRINUSE) continue;
 
-        MDB(0,fSOCK) MLog("WARNING:  cannot bind to port %d, errno: %d (%s)\n",
-          S->RemotePort,
-          errno,
-          strerror(errno));
+                MDB(0, fSOCK)
+                MLog("WARNING:  cannot bind to port %d, errno: %d (%s)\n",
+                     S->RemotePort, errno, strerror(errno));
 
-        close(sd);
+                close(sd);
 
-        return(FAILURE);
+                return (FAILURE);
+            } else {
+                break;
+            }
         }
-      else
-        {
-        break;
+
+        if (S->RemotePort == 20000) {
+            MDB(0, fSOCK) MLog("ERROR:    cannot locate available port\n");
+
+            close(sd);
+
+            return (FAILURE);
         }
-      }
+    } else {
+        sin.sin_port = htons((unsigned short)S->RemotePort);
 
-    if (S->RemotePort == 20000)
-      {
-      MDB(0,fSOCK) MLog("ERROR:    cannot locate available port\n");
+        if (bind(sd, (struct sockaddr *)&sin, sizeof(sin)) == -1) {
+            MDB(0, fSOCK)
+            MLog("WARNING:  cannot bind to port %d, errno: %d (%s)\n",
+                 S->RemotePort, errno, strerror(errno));
 
-      close(sd);
+            close(sd);
 
-      return(FAILURE);
-      }
-    }
-  else
-    {
-    sin.sin_port = htons((unsigned short)S->RemotePort);
-
-    if (bind(sd,(struct sockaddr *)&sin,sizeof(sin)) == -1)
-      {
-      MDB(0,fSOCK) MLog("WARNING:  cannot bind to port %d, errno: %d (%s)\n",
-        S->RemotePort,
-        errno,
-        strerror(errno));
-
-      close(sd);
-
-      return(FAILURE);
-      }
+            return (FAILURE);
+        }
     }
 
-  MDB(6,fSOCK) MLog("INFO:     socket bound to port %d\n",
-    S->RemotePort);
+    MDB(6, fSOCK) MLog("INFO:     socket bound to port %d\n", S->RemotePort);
 
-  if (MISSET(S->Flags,msftTCP))
-    {
-    /* enable non-blocking mode */
+    if (MISSET(S->Flags, msftTCP)) {
+        /* enable non-blocking mode */
 
-    if ((flags = fcntl(sd,F_GETFL,0)) == -1)
-      {
-      MDB(0,fSOCK) MLog("WARNING:  cannot get socket attribute values, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
+        if ((flags = fcntl(sd, F_GETFL, 0)) == -1) {
+            MDB(0, fSOCK)
+            MLog(
+                "WARNING:  cannot get socket attribute values, errno: %d "
+                "(%s)\n",
+                errno, strerror(errno));
 
-      close(sd);
+            close(sd);
 
-      return(FAILURE);
-      }
+            return (FAILURE);
+        }
 
-    if (fcntl(sd,F_SETFL,(flags | O_NDELAY)) == -1)
-      {
-      MDB(0,fSOCK) MLog("WARNING:  cannot set socket NDELAY attribute, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
+        if (fcntl(sd, F_SETFL, (flags | O_NDELAY)) == -1) {
+            MDB(0, fSOCK)
+            MLog(
+                "WARNING:  cannot set socket NDELAY attribute, errno: %d "
+                "(%s)\n",
+                errno, strerror(errno));
 
-      close(sd);
+            close(sd);
 
-      return(FAILURE);
-      }
+            return (FAILURE);
+        }
 
-    /* establish queue size */
+        /* establish queue size */
 
-    listen(sd,SOCKETQUEUESIZE);
+        listen(sd, SOCKETQUEUESIZE);
     }
 
-  MDB(2,fSOCK) MLog("INFO:     opened service socket on port %d\n",
-    S->RemotePort);
+    MDB(2, fSOCK)
+    MLog("INFO:     opened service socket on port %d\n", S->RemotePort);
 
-  MDB(6,fSOCK) MLog("INFO:     fd: %d  family: %d  addr: %p\n",
-    sd,
-    sin.sin_family,
-    &sin.sin_addr);
+    MDB(6, fSOCK)
+    MLog("INFO:     fd: %d  family: %d  addr: %p\n", sd, sin.sin_family,
+         &sin.sin_addr);
 
-  S->sd = sd;
+    S->sd = sd;
 
-  return(SUCCESS);
-  }  /* END MSUListen() */
-
-
-
-
+    return (SUCCESS);
+} /* END MSUListen() */
 
 int MSUConnect(
 
-  msocket_t *S,     /* I (modified) */
-  mbool_t    Force, /* I */
-  char      *EMsg)  /* O (optional,minsize=MMAX_LINE) */
+    msocket_t *S,  /* I (modified) */
+    mbool_t Force, /* I */
+    char *EMsg)    /* O (optional,minsize=MMAX_LINE) */
 
-  {
-  struct sockaddr_in  s_sockaddr;
-  struct hostent     *s_hostent;
-  struct in_addr      in;
+{
+    struct sockaddr_in s_sockaddr;
+    struct hostent *s_hostent;
+    struct in_addr in;
 
-  int                 flags;
+    int flags;
 
-  char               *hptr = "localhost";
+    char *hptr = "localhost";
 
 #ifndef __MPROD
-  const char *FName = "MSUConnect";
+    const char *FName = "MSUConnect";
 
-  MDB(4,fSOCK) MLog("%s(%s,%s,EMsg)\n",
-    FName,
-    (S != NULL) ? "S" : "NULL",
-    MBool[Force]);
+    MDB(4, fSOCK)
+    MLog("%s(%s,%s,EMsg)\n", FName, (S != NULL) ? "S" : "NULL", MBool[Force]);
 #endif /* !__MPROD */
 
-  if (EMsg != NULL)
-    EMsg[0] = '\0';
+    if (EMsg != NULL) EMsg[0] = '\0';
 
-  if (S == NULL)
-    {
-    if (EMsg != NULL)
-      strcpy(EMsg,"invalid parameter");
-  
-    return(FAILURE);
+    if (S == NULL) {
+        if (EMsg != NULL) strcpy(EMsg, "invalid parameter");
+
+        return (FAILURE);
     }
 
-  if (S->sd >= 0)
-    {
-    if (Force == FALSE)
-      {
-      /* connection already established */
+    if (S->sd >= 0) {
+        if (Force == FALSE) {
+            /* connection already established */
 
-      return(SUCCESS);
-      }
-
-    MSUDisconnect(S);
-    }
-
-  S->sd = -1;
-
-  memset(&s_sockaddr,0,sizeof(s_sockaddr));
-
-  if ((S->RemoteHost[0] != '\0'))
-    {
-    hptr = S->RemoteHost;
-    }
-
-  if (inet_aton(hptr,&in) == 0)
-    {
-    if ((s_hostent = gethostbyname(hptr)) == (struct hostent *)NULL)
-      {
-      MDB(1,fSOCK) MLog("ERROR:    cannot resolve IP address from hostname '%s', errno: %d (%s)\n",
-        hptr,
-        errno,
-        strerror(errno));
-
-      if (EMsg != NULL)
-        strcpy(EMsg,"cannot resolve address");
-
-      return(FAILURE);
-      }
-
-    memcpy(&s_sockaddr.sin_addr,s_hostent->h_addr,s_hostent->h_length);
-    }
-  else
-    {
-    memcpy(&s_sockaddr.sin_addr,&in.s_addr,sizeof(s_sockaddr.sin_addr));
-    }
-
-  MDB(5,fSOCK) MLog("INFO:     trying to connect to %s (Port: %d)\n",
-    inet_ntoa(s_sockaddr.sin_addr),
-    S->RemotePort);
-
-  s_sockaddr.sin_family = AF_INET;
-
-  s_sockaddr.sin_port = htons(S->RemotePort);
-
-  if ((S->sd = socket(
-        PF_INET,
-        MISSET(S->Flags,msftTCP) ? SOCK_STREAM : SOCK_DGRAM,
-        0)) < 0)
-    {
-    MDB(1,fSOCK) MLog("ERROR:    cannot create socket, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
-
-    if (EMsg != NULL)
-      strcpy(EMsg,"cannot create socket");
-
-    return(FAILURE);
-    }
-
-  fcntl(S->sd,F_SETFD,1);
-
-  if (MISSET(S->Flags,msftTCP) && 
-     (S->Timeout > 0) &&
-     (S->SocketProtocol != mspHalfSocket) &&
-     (S->SocketProtocol != mspS3Challenge))
-    {
-    /* enable non-blocking mode on client */
-
-    if ((flags = fcntl(S->sd,F_GETFL,0)) == -1)
-      {
-      MDB(1,fSOCK) MLog("WARNING:  cannot get socket attribute values, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
-
-      close(S->sd);
-
-      if (EMsg != NULL)
-        strcpy(EMsg,"cannot enable non-blocking mode");
-
-      return(FAILURE);
-      }
-
-    if (fcntl(S->sd,F_SETFL,(flags | O_NDELAY)) == -1)
-      {
-      MDB(0,fSOCK) MLog("WARNING:  cannot set socket NDELAY attribute, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
-
-      close(S->sd);
-
-      if (EMsg != NULL)
-        strcpy(EMsg,"cannot enable non-blocking mode");
-
-      return(FAILURE);
-      }
-
-    MDB(5,fSOCK) MLog("INFO:     non-blocking mode established\n");
-    }
-
-  if (connect(S->sd,(struct sockaddr*)&s_sockaddr,sizeof(s_sockaddr)) == -1)
-    {
-    if ((errno == EINPROGRESS) && (S->Timeout > 0))
-      {
-      /* wait if non-blocking */
-
-      if (MSUSelectWrite(S->sd,S->Timeout) == FAILURE)
-        {
-        /* connect() has taken too long */
-
-        MDB(4,fSOCK) MLog("ERROR:    cannot connect to server '%s' on port %d, errno: %d (%s)\n",
-          hptr,
-          S->RemotePort,
-          errno,
-          strerror(errno));
-
-        close(S->sd);
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot establish connection");
-
-        return(FAILURE);
-        }
-      }
-    else
-      {
-      MDB(4,fSOCK) MLog("ERROR:    cannot connect to server '%s' on port %d, errno: %d (%s)\n",
-        (hptr != NULL) ? hptr : "NULL",
-        S->RemotePort,
-        errno,
-        strerror(errno));
-
-      close(S->sd);
-
-      if (EMsg != NULL)
-        {
-        sprintf(EMsg,"cannot establish connection - %s",
-          strerror(errno));
+            return (SUCCESS);
         }
 
-      return(FAILURE);
-      }   /* END if (errno == EINPROGRESS) && ...) */
+        MSUDisconnect(S);
+    }
+
+    S->sd = -1;
+
+    memset(&s_sockaddr, 0, sizeof(s_sockaddr));
+
+    if ((S->RemoteHost[0] != '\0')) {
+        hptr = S->RemoteHost;
+    }
+
+    if (inet_aton(hptr, &in) == 0) {
+        if ((s_hostent = gethostbyname(hptr)) == (struct hostent *)NULL) {
+            MDB(1, fSOCK)
+            MLog(
+                "ERROR:    cannot resolve IP address from hostname '%s', "
+                "errno: %d (%s)\n",
+                hptr, errno, strerror(errno));
+
+            if (EMsg != NULL) strcpy(EMsg, "cannot resolve address");
+
+            return (FAILURE);
+        }
+
+        memcpy(&s_sockaddr.sin_addr, s_hostent->h_addr, s_hostent->h_length);
+    } else {
+        memcpy(&s_sockaddr.sin_addr, &in.s_addr, sizeof(s_sockaddr.sin_addr));
+    }
+
+    MDB(5, fSOCK)
+    MLog("INFO:     trying to connect to %s (Port: %d)\n",
+         inet_ntoa(s_sockaddr.sin_addr), S->RemotePort);
+
+    s_sockaddr.sin_family = AF_INET;
+
+    s_sockaddr.sin_port = htons(S->RemotePort);
+
+    if ((S->sd = socket(PF_INET,
+                        MISSET(S->Flags, msftTCP) ? SOCK_STREAM : SOCK_DGRAM,
+                        0)) < 0) {
+        MDB(1, fSOCK)
+        MLog("ERROR:    cannot create socket, errno: %d (%s)\n", errno,
+             strerror(errno));
+
+        if (EMsg != NULL) strcpy(EMsg, "cannot create socket");
+
+        return (FAILURE);
+    }
+
+    fcntl(S->sd, F_SETFD, 1);
+
+    if (MISSET(S->Flags, msftTCP) && (S->Timeout > 0) &&
+        (S->SocketProtocol != mspHalfSocket) &&
+        (S->SocketProtocol != mspS3Challenge)) {
+        /* enable non-blocking mode on client */
+
+        if ((flags = fcntl(S->sd, F_GETFL, 0)) == -1) {
+            MDB(1, fSOCK)
+            MLog(
+                "WARNING:  cannot get socket attribute values, errno: %d "
+                "(%s)\n",
+                errno, strerror(errno));
+
+            close(S->sd);
+
+            if (EMsg != NULL) strcpy(EMsg, "cannot enable non-blocking mode");
+
+            return (FAILURE);
+        }
+
+        if (fcntl(S->sd, F_SETFL, (flags | O_NDELAY)) == -1) {
+            MDB(0, fSOCK)
+            MLog(
+                "WARNING:  cannot set socket NDELAY attribute, errno: %d "
+                "(%s)\n",
+                errno, strerror(errno));
+
+            close(S->sd);
+
+            if (EMsg != NULL) strcpy(EMsg, "cannot enable non-blocking mode");
+
+            return (FAILURE);
+        }
+
+        MDB(5, fSOCK) MLog("INFO:     non-blocking mode established\n");
+    }
+
+    if (connect(S->sd, (struct sockaddr *)&s_sockaddr, sizeof(s_sockaddr)) ==
+        -1) {
+        if ((errno == EINPROGRESS) && (S->Timeout > 0)) {
+            /* wait if non-blocking */
+
+            if (MSUSelectWrite(S->sd, S->Timeout) == FAILURE) {
+                /* connect() has taken too long */
+
+                MDB(4, fSOCK)
+                MLog(
+                    "ERROR:    cannot connect to server '%s' on port %d, "
+                    "errno: %d (%s)\n",
+                    hptr, S->RemotePort, errno, strerror(errno));
+
+                close(S->sd);
+
+                if (EMsg != NULL) strcpy(EMsg, "cannot establish connection");
+
+                return (FAILURE);
+            }
+        } else {
+            MDB(4, fSOCK)
+            MLog(
+                "ERROR:    cannot connect to server '%s' on port %d, errno: %d "
+                "(%s)\n",
+                (hptr != NULL) ? hptr : "NULL", S->RemotePort, errno,
+                strerror(errno));
+
+            close(S->sd);
+
+            if (EMsg != NULL) {
+                sprintf(EMsg, "cannot establish connection - %s",
+                        strerror(errno));
+            }
+
+            return (FAILURE);
+        } /* END if (errno == EINPROGRESS) && ...) */
     }     /* END if (connect() == -1) */
 
-  MDB(5,fSOCK) MLog("INFO:     successful connect to %s server (sd: %d)\n",
-    MISSET(S->Flags,msftTCP) ? "TCP" : "UDP",
-    S->sd);
+    MDB(5, fSOCK)
+    MLog("INFO:     successful connect to %s server (sd: %d)\n",
+         MISSET(S->Flags, msftTCP) ? "TCP" : "UDP", S->sd);
 
-  return(SUCCESS);
-  }  /* END MSUConnect() */
-
-
-
+    return (SUCCESS);
+} /* END MSUConnect() */
 
 /* NOTE:  MSUAcceptClient() should be combined with MSUReadData() */
 
 int MSUAcceptClient(
 
-  msocket_t  *S,           /* I */
-  msocket_t  *C,           /* O (modified) */
-  char       *HostName,    /* O (optional) */
-  int         SocketType)  /* I (bitmap of enum MSockFTypeEnum) */
+    msocket_t *S,   /* I */
+    msocket_t *C,   /* O (modified) */
+    char *HostName, /* O (optional) */
+    int SocketType) /* I (bitmap of enum MSockFTypeEnum) */
 
-  {
-  int sd;
+{
+    int sd;
 
-  socklen_t          addrlen;     
-  struct sockaddr_in c_sockaddr;
-  int                flags;
-  char              *NetAddr;
-  struct hostent    *hoststruct;
+    socklen_t addrlen;
+    struct sockaddr_in c_sockaddr;
+    int flags;
+    char *NetAddr;
+    struct hostent *hoststruct;
 
-  struct in_addr    *NA;
+    struct in_addr *NA;
 
-  const char *FName = "MSUAcceptClient";
+    const char *FName = "MSUAcceptClient";
 
-  MDB(9,fSOCK) MLog("%s(%d,ClientSD,HostName,%s)\n",
-    FName,
-    S->sd,
-    MISSET(SocketType,msftTCP) ? "TCP" : "UDP");
+    MDB(9, fSOCK)
+    MLog("%s(%d,ClientSD,HostName,%s)\n", FName, S->sd,
+         MISSET(SocketType, msftTCP) ? "TCP" : "UDP");
 
-  if ((S == NULL) && (C == NULL))
-    {
-    return(FAILURE);
+    if ((S == NULL) && (C == NULL)) {
+        return (FAILURE);
     }
 
-  addrlen = sizeof(struct sockaddr_in);
+    addrlen = sizeof(struct sockaddr_in);
 
-  if ((sd = accept(S->sd,(struct sockaddr *)&c_sockaddr,&addrlen)) == -1)
-    { 
-    if (errno == EAGAIN || errno == EWOULDBLOCK)
-      {
-      return(FAILURE);
-      }
+    if ((sd = accept(S->sd, (struct sockaddr *)&c_sockaddr, &addrlen)) == -1) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            return (FAILURE);
+        }
 
-    MDB(9,fSOCK) MLog("INFO:     accept call failed, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
+        MDB(9, fSOCK)
+        MLog("INFO:     accept call failed, errno: %d (%s)\n", errno,
+             strerror(errno));
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  NA = (struct in_addr *)&c_sockaddr.sin_addr.s_addr;
+    NA = (struct in_addr *)&c_sockaddr.sin_addr.s_addr;
 
-  NetAddr = inet_ntoa(*NA);
+    NetAddr = inet_ntoa(*NA);
 
-  MDB(3,fSOCK) MLog("INFO:     connect request from %s\n",
-    NetAddr);
+    MDB(3, fSOCK) MLog("INFO:     connect request from %s\n", NetAddr);
 
-  if (MISSET(SocketType,msftTCP))
-    {
-    /* enable non-blocking mode on client */
+    if (MISSET(SocketType, msftTCP)) {
+        /* enable non-blocking mode on client */
 
-    if ((flags = fcntl(sd,F_GETFL,0)) == -1)
-      {
-      MDB(0,fSOCK) MLog("WARNING:  cannot get client socket attribute values, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
+        if ((flags = fcntl(sd, F_GETFL, 0)) == -1) {
+            MDB(0, fSOCK)
+            MLog(
+                "WARNING:  cannot get client socket attribute values, errno: "
+                "%d (%s)\n",
+                errno, strerror(errno));
 
-      close(sd);
+            close(sd);
 
-      return(FAILURE);
-      }
+            return (FAILURE);
+        }
 
-    if (fcntl(sd,F_SETFL,(flags | O_NDELAY)) == -1)
-      {
-      MDB(0,fSOCK) MLog("WARNING:  cannot set client socket NDELAY attribute, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
+        if (fcntl(sd, F_SETFL, (flags | O_NDELAY)) == -1) {
+            MDB(0, fSOCK)
+            MLog(
+                "WARNING:  cannot set client socket NDELAY attribute, errno: "
+                "%d (%s)\n",
+                errno, strerror(errno));
 
-      close(sd);
+            close(sd);
 
-      return(FAILURE);
-      }
+            return (FAILURE);
+        }
 
-    MDB(8,fSOCK) MLog("INFO:     non-blocking mode established\n");
+        MDB(8, fSOCK) MLog("INFO:     non-blocking mode established\n");
 
-    {
-    struct linger Linger;
+        {
+            struct linger Linger;
 
-    /* enable linger mode */
+            /* enable linger mode */
 
-    Linger.l_onoff  = 1;
-    Linger.l_linger = 60;
+            Linger.l_onoff = 1;
+            Linger.l_linger = 60;
 
-    if (setsockopt(sd,SOL_SOCKET,SO_LINGER,&Linger,sizeof(struct linger)) == -1)
-      {
-      MDB(1,fSOCK) MLog("WARNING:  cannot set client socket LINGER attribute, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
-      }
+            if (setsockopt(sd, SOL_SOCKET, SO_LINGER, &Linger,
+                           sizeof(struct linger)) == -1) {
+                MDB(1, fSOCK)
+                MLog(
+                    "WARNING:  cannot set client socket LINGER attribute, "
+                    "errno: %d (%s)\n",
+                    errno, strerror(errno));
+            }
 
-    MDB(6,fSOCK) MLog("INFO:     socket linger enabled\n");
-    }  /* END BLOCK */
+            MDB(6, fSOCK) MLog("INFO:     socket linger enabled\n");
+        } /* END BLOCK */
 
-    }  /* END if (MISSET(SocketType,msftTCP)) */
+    } /* END if (MISSET(SocketType,msftTCP)) */
 
-  if ((hoststruct = gethostbyaddr(
-                      (char *)&c_sockaddr.sin_addr.s_addr,
-                      sizeof(c_sockaddr.sin_addr.s_addr),
-                      AF_INET)) == (struct hostent *)NULL)
-    {
-    MDB(2,fSOCK)
-      {
-      MDB(2,fSOCK) MLog("WARNING:  cannot get hostname of client, errno %d (%s)\n",
-        errno,
-        strerror(errno));
-      }
-/*
-    close(sd);
+    if ((hoststruct = gethostbyaddr((char *)&c_sockaddr.sin_addr.s_addr,
+                                    sizeof(c_sockaddr.sin_addr.s_addr),
+                                    AF_INET)) == (struct hostent *)NULL) {
+        MDB(2, fSOCK) {
+            MDB(2, fSOCK)
+            MLog("WARNING:  cannot get hostname of client, errno %d (%s)\n",
+                 errno, strerror(errno));
+        }
+        /*
+            close(sd);
 
-    return(FAILURE);
-*/
-    }
-  else
-    {
-    MDB(2,fSOCK) MLog("INFO:     received service request from host '%s'\n",
-      hoststruct->h_name);
+            return(FAILURE);
+        */
+    } else {
+        MDB(2, fSOCK)
+        MLog("INFO:     received service request from host '%s'\n",
+             hoststruct->h_name);
     }
 
-  if (HostName != NULL)
-    {
-    if (hoststruct == NULL)
-      strcpy(HostName,"[UNKNOWN]");
-    else
-      strcpy(HostName,hoststruct->h_name);
+    if (HostName != NULL) {
+        if (hoststruct == NULL)
+            strcpy(HostName, "[UNKNOWN]");
+        else
+            strcpy(HostName, hoststruct->h_name);
     }
 
-  C->sd = sd;
+    C->sd = sd;
 
-  MDB(5,fSOCK) MLog("INFO:     %s client connected at sd %d\n",
-    MISSET(SocketType,msftTCP) ? "TCP" : "UDP",
-    sd);
- 
-  return(SUCCESS);
-  }  /* END MSUAcceptClient() */
+    MDB(5, fSOCK)
+    MLog("INFO:     %s client connected at sd %d\n",
+         MISSET(SocketType, msftTCP) ? "TCP" : "UDP", sd);
 
-
-
-
+    return (SUCCESS);
+} /* END MSUAcceptClient() */
 
 #define MCONST_SMALLPACKETSIZE 8192
 
 int MSUSendData(
 
-  msocket_t *S,          /* I */
-  long       TimeLimit,  /* I */
-  mbool_t    DoSocketLayerAuth, /* I */
-  mbool_t    IsResponse) /* I */
+    msocket_t *S,              /* I */
+    long TimeLimit,            /* I */
+    mbool_t DoSocketLayerAuth, /* I */
+    mbool_t IsResponse)        /* I */
 
-  {
-  char TSLine[MMAX_LINE];
-  char CKLine[MMAX_LINE];
-  char SHeader[MMAX_LINE + MCONST_SMALLPACKETSIZE];
+{
+    char TSLine[MMAX_LINE];
+    char CKLine[MMAX_LINE];
+    char SHeader[MMAX_LINE + MCONST_SMALLPACKETSIZE];
 
-  char CKSum[MMAX_LINE];
+    char CKSum[MMAX_LINE];
 
-  /* NOTE:  RH7.x compiler fails on full local MMAX_SBUFFER tmpSBuf */
+    /* NOTE:  RH7.x compiler fails on full local MMAX_SBUFFER tmpSBuf */
 
-  time_t Now;
+    time_t Now;
 
-  long   PacketSize;
+    long PacketSize;
 
-  char  *sptr = NULL;
+    char *sptr = NULL;
 
-  enum MStatusCodeEnum SC;
+    enum MStatusCodeEnum SC;
 
-  const char *FName = "MSUSendData";
+    const char *FName = "MSUSendData";
 
 #ifndef __MPROD
-  MDB(2,fSOCK) MLog("%s(%s,%ld,%s,%s)\n",
-    FName,
-    (S != NULL) ? "S" : "NULL",
-    TimeLimit,
-    (DoSocketLayerAuth == TRUE) ? "TRUE" : "FALSE",
-    (IsResponse == TRUE) ? "TRUE" : "FALSE");
+    MDB(2, fSOCK)
+    MLog("%s(%s,%ld,%s,%s)\n", FName, (S != NULL) ? "S" : "NULL", TimeLimit,
+         (DoSocketLayerAuth == TRUE) ? "TRUE" : "FALSE",
+         (IsResponse == TRUE) ? "TRUE" : "FALSE");
 #endif /* !__MPROD */
 
-  /* initialize */
-  TSLine[0]='\0';
-  CKLine[0]='\0';
-  SHeader[0]='\0';
+    /* initialize */
+    TSLine[0] = '\0';
+    CKLine[0] = '\0';
+    SHeader[0] = '\0';
 
-  tmpSBuf[0] = '\0';  /* tmpSBuf is global */
+    tmpSBuf[0] = '\0'; /* tmpSBuf is global */
 
-  switch (S->WireProtocol)
-    {
-    case mwpS32:
+    switch (S->WireProtocol) {
+        case mwpS32:
 
-      /* create message framing */
+            /* create message framing */
 
-      MUISCreateFrame(S,TRUE,IsResponse);
+            MUISCreateFrame(S, TRUE, IsResponse);
 
-      MXMLToString(
-        (mxml_t *)S->SE,
-        tmpSBuf,
-        sizeof(tmpSBuf),
-        NULL,
-        !MSched.EnableEncryption);
-
-      sptr = S->SBuffer;
-
-      S->SBuffer  = tmpSBuf;
-      S->SBufSize = strlen(tmpSBuf);
-
-      DoSocketLayerAuth = FALSE;
-
-      break;
-
-    case mwpXML:
-
-      if (S->SE != NULL)
-        {
-        char tmpStatus[MMAX_LINE];
-
-        int  HeadSize;
-        int  Align;
-
-        /* package string */
-
-        switch (S->SocketProtocol)
-          {
-          case mspHTTP:
-          case mspHTTPClient:
-
-            {
-            int   len;
-
-            char *BPtr;
-            int   BSpace;
-
-            /* mxml_t *tE = NULL; */
-
-            BPtr   = tmpSBuf;
-            BSpace = sizeof(tmpSBuf);
-
-            /* build XML header */
-
-            /* NOTE:  S->E appended to end of header (tE ignored) */
-
-            len = snprintf(BPtr,BSpace,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-            if (len >= 0) { BPtr += len; BSpace -= len; }
-
-            /*
-            MXMLCreateE(&tE,"Message");
-
-            MXMLSetAttr(
-              tE,
-              "xmlns",
-              "http://www.scidac.org/ScalableSystems/AllocationManager",
-              mdfString);
-
-            MXMLSetAttr(
-              tE,
-              "xmlns:xsi",
-              "http://www.w3.org/2001/XMLSchema-instance",
-              mdfString);
-
-            MXMLSetAttr(
-              tE,
-              "xsi:schemaLocation",
-              "http://www.scidac.org/ScalableSystems/AllocationManager am.xsd",
-              mdfString);
-
-            MXMLAddE(tE,S->E);
-            */
-
-            MXMLToString(
-              (mxml_t *)S->SE,
-              BPtr,
-              BSpace,
-              NULL,
-              TRUE);
-         
-            /* 
-            MXMLDestroyE(&tE); 
-            S->SE = NULL;
-            */
-
-            MXMLDestroyE((mxml_t **)&S->SE);
-            }  /* END BLOCK */
- 
-            break;
-
-          default:
-
-            {
-            char *BPtr;
-            int   BSpace;
+            MXMLToString((mxml_t *)S->SE, tmpSBuf, sizeof(tmpSBuf), NULL,
+                         !MSched.EnableEncryption);
 
             sptr = S->SBuffer;
 
             S->SBuffer = tmpSBuf;
+            S->SBufSize = strlen(tmpSBuf);
 
-            MUSNInit(&BPtr,&BSpace,tmpSBuf,sizeof(tmpSBuf));
+            DoSocketLayerAuth = FALSE;
 
-            MUSNPrintF(&BPtr,&BSpace,"%s%d ",
-              MCKeyword[mckStatusCode],
-              scSUCCESS);
+            break;
 
-            Align = (int)strlen(tmpSBuf) + (int)strlen(MCKeyword[mckArgs]);
+        case mwpXML:
 
-            MUSNPrintF(&BPtr,&BSpace,"%*s%s",
-              16 - (Align % 16),
-              " ",
-              MCKeyword[mckData]);
+            if (S->SE != NULL) {
+                char tmpStatus[MMAX_LINE];
 
-            HeadSize = (int)strlen(S->SBuffer);
+                int HeadSize;
+                int Align;
 
-            MXMLToString(
-              (mxml_t *)S->SE,
-              S->SBuffer + HeadSize,
-              sizeof(tmpSBuf),
-              NULL,
-              TRUE);
- 
-            if (MXMLGetAttr((mxml_t *)S->SE,"status",NULL,tmpStatus,sizeof(tmpStatus)) == SUCCESS) 
-              {
-              char *ptr;
- 
-              ptr = S->SBuffer + strlen(MCKeyword[mckStatusCode]);
+                /* package string */
 
-              *ptr = tmpStatus[0];
-              }
+                switch (S->SocketProtocol) {
+                    case mspHTTP:
+                    case mspHTTPClient:
+
+                    {
+                        int len;
+
+                        char *BPtr;
+                        int BSpace;
+
+                        /* mxml_t *tE = NULL; */
+
+                        BPtr = tmpSBuf;
+                        BSpace = sizeof(tmpSBuf);
+
+                        /* build XML header */
+
+                        /* NOTE:  S->E appended to end of header (tE ignored) */
+
+                        len = snprintf(
+                            BPtr, BSpace,
+                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+                        if (len >= 0) {
+                            BPtr += len;
+                            BSpace -= len;
+                        }
+
+                        /*
+                        MXMLCreateE(&tE,"Message");
+
+                        MXMLSetAttr(
+                          tE,
+                          "xmlns",
+                          "http://www.scidac.org/ScalableSystems/AllocationManager",
+                          mdfString);
+
+                        MXMLSetAttr(
+                          tE,
+                          "xmlns:xsi",
+                          "http://www.w3.org/2001/XMLSchema-instance",
+                          mdfString);
+
+                        MXMLSetAttr(
+                          tE,
+                          "xsi:schemaLocation",
+                          "http://www.scidac.org/ScalableSystems/AllocationManager
+                        am.xsd",
+                          mdfString);
+
+                        MXMLAddE(tE,S->E);
+                        */
+
+                        MXMLToString((mxml_t *)S->SE, BPtr, BSpace, NULL, TRUE);
+
+                        /*
+                        MXMLDestroyE(&tE);
+                        S->SE = NULL;
+                        */
+
+                        MXMLDestroyE((mxml_t **)&S->SE);
+                    } /* END BLOCK */
+
+                    break;
+
+                    default:
+
+                    {
+                        char *BPtr;
+                        int BSpace;
+
+                        sptr = S->SBuffer;
+
+                        S->SBuffer = tmpSBuf;
+
+                        MUSNInit(&BPtr, &BSpace, tmpSBuf, sizeof(tmpSBuf));
+
+                        MUSNPrintF(&BPtr, &BSpace, "%s%d ",
+                                   MCKeyword[mckStatusCode], scSUCCESS);
+
+                        Align = (int)strlen(tmpSBuf) +
+                                (int)strlen(MCKeyword[mckArgs]);
+
+                        MUSNPrintF(&BPtr, &BSpace, "%*s%s", 16 - (Align % 16),
+                                   " ", MCKeyword[mckData]);
+
+                        HeadSize = (int)strlen(S->SBuffer);
+
+                        MXMLToString((mxml_t *)S->SE, S->SBuffer + HeadSize,
+                                     sizeof(tmpSBuf), NULL, TRUE);
+
+                        if (MXMLGetAttr((mxml_t *)S->SE, "status", NULL,
+                                        tmpStatus,
+                                        sizeof(tmpStatus)) == SUCCESS) {
+                            char *ptr;
+
+                            ptr = S->SBuffer + strlen(MCKeyword[mckStatusCode]);
+
+                            *ptr = tmpStatus[0];
+                        }
+                    }
+
+                    break;
+                } /* END switch(S->SocketProtocol) */
+
+                S->SBufSize = strlen(S->SBuffer) + 1;
+            } /* END if (S->SE != NULL) */
+
+            break;
+
+        default:
+
+            /* no where else is this set until here */
+
+            if (S->SBuffer != NULL) {
+                S->SBufSize = strlen(S->SBuffer);
+            } else {
+                S->SBufSize = 0;
+
+                /* FAIL and exit below */
             }
 
             break;
-          }  /* END switch(S->SocketProtocol) */
+    } /* END switch (S->WireProtocol) */
 
-        S->SBufSize = strlen(S->SBuffer) + 1;
-        }  /* END if (S->SE != NULL) */ 
+    /* initialize connection/build header */
 
-      break;
+    if (S->SBuffer == NULL) {
+        MDB(2, fSOCK) MLog("ALERT:    empty message in %s\n", FName);
 
-    default:
-
-      /* no where else is this set until here */
-
-      if (S->SBuffer != NULL)
-        {
-        S->SBufSize = strlen(S->SBuffer);
-        }
-      else
-        {
-        S->SBufSize = 0;
-
-        /* FAIL and exit below */
-        }
-
-      break;
-    }  /* END switch (S->WireProtocol) */
-
-  /* initialize connection/build header */
-
-  if (S->SBuffer == NULL)
-    {
-    MDB(2,fSOCK) MLog("ALERT:    empty message in %s\n",
-      FName);
-
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  SHeader[0] = '\0';
+    SHeader[0] = '\0';
 
-  switch (S->SocketProtocol)
-    {
-    case mspHalfSocket:
+    switch (S->SocketProtocol) {
+        case mspHalfSocket:
 
-      /* NO-OP */
+            /* NO-OP */
 
-      break;
+            break;
 
-    case mspS3Challenge:
+        case mspS3Challenge:
 
-      {
-      char *ptr;
-  
-      char  tmpChallenge[MMAX_LINE];
-      char  tmpResponse[MMAX_LINE];
-
-      char  tmpLine[MMAX_LINE];
-
-      /* NOTE:  assume previously connected */
-
-      if (S->CSKey[0] != '\0')
         {
-        /* must receive challenge to generate header */
+            char *ptr;
 
-        /* NOTE:  read to first '\n' */
+            char tmpChallenge[MMAX_LINE];
+            char tmpResponse[MMAX_LINE];
 
-        ptr = tmpChallenge;
+            char tmpLine[MMAX_LINE];
 
-        if (MSURecvPacket(
-             S->sd,
-             &ptr,
-             MMAX_LINE,
-             "\n",
-             MAX(1000000,TimeLimit),
-             NULL) == FAILURE)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot read half socket data\n");
+            /* NOTE:  assume previously connected */
 
-          return(FAILURE);
-          }
+            if (S->CSKey[0] != '\0') {
+                /* must receive challenge to generate header */
 
-        /* remove '\n' */
+                /* NOTE:  read to first '\n' */
 
-        ptr[strlen(ptr) - 1] = '\0';
+                ptr = tmpChallenge;
 
-        if (MSecGetChecksum(
-             tmpChallenge,
-             strlen(tmpChallenge),
-             tmpResponse,
-             NULL,
-             mcsaMD5,
-             S->CSKey) == FAILURE)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot determine digest\n");
+                if (MSURecvPacket(S->sd, &ptr, MMAX_LINE, "\n",
+                                  MAX(1000000, TimeLimit), NULL) == FAILURE) {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    cannot read half socket data\n");
 
-          return(FAILURE);
-          }
+                    return (FAILURE);
+                }
 
-        /* FORMAT:  <DIGEST>\n */
+                /* remove '\n' */
 
-        sprintf(tmpLine,"%s\n",
-          tmpResponse);
+                ptr[strlen(ptr) - 1] = '\0';
 
-        if (MSUSendPacket(
-              S->sd,
-              tmpLine,
-              strlen(tmpLine),
-              MAX(1000000,TimeLimit),
-              &SC) == FAILURE)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot send packet data\n");
+                if (MSecGetChecksum(tmpChallenge, strlen(tmpChallenge),
+                                    tmpResponse, NULL, mcsaMD5,
+                                    S->CSKey) == FAILURE) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot determine digest\n");
 
-          return(FAILURE);
-          }
+                    return (FAILURE);
+                }
 
-        /* receive response */
+                /* FORMAT:  <DIGEST>\n */
 
-        if (MSURecvPacket(
-             S->sd,
-             &ptr,
-             1,
-             NULL,
-             MAX(1000000,TimeLimit),
-             NULL) == FAILURE)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot read half socket data\n");
+                sprintf(tmpLine, "%s\n", tmpResponse);
 
-          return(FAILURE);
-          }
+                if (MSUSendPacket(S->sd, tmpLine, strlen(tmpLine),
+                                  MAX(1000000, TimeLimit), &SC) == FAILURE) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot send packet data\n");
 
-        if (ptr[0] != '1')
-          {
-          MDB(1,fSOCK) MLog("ALERT:    invalid challenge response '%c'\n",
-            ptr[0]);
+                    return (FAILURE);
+                }
 
-          return(FAILURE);
-          }
-        }    /* END if (S->CSKey[0] != '\0') */
+                /* receive response */
 
-      /* FORMAT:  <BYTECOUNT> <MESSAGE> */
+                if (MSURecvPacket(S->sd, &ptr, 1, NULL, MAX(1000000, TimeLimit),
+                                  NULL) == FAILURE) {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    cannot read half socket data\n");
 
-      sprintf(SHeader,"%d ",
-        (int)strlen(S->SBuffer));
-      }    /* END BLOCK */
+                    return (FAILURE);
+                }
 
-      break;
+                if (ptr[0] != '1') {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    invalid challenge response '%c'\n", ptr[0]);
 
-    case mspHTTPClient:
-    case mspHTTP:
+                    return (FAILURE);
+                }
+            } /* END if (S->CSKey[0] != '\0') */
 
-      {
-      if (S->URI != NULL)
+            /* FORMAT:  <BYTECOUNT> <MESSAGE> */
+
+            sprintf(SHeader, "%d ", (int)strlen(S->SBuffer));
+        } /* END BLOCK */
+
+        break;
+
+        case mspHTTPClient:
+        case mspHTTP:
+
         {
-        /* FORMAT:  'GET <URI> %s\r\n\r\n' */
+            if (S->URI != NULL) {
+                /* FORMAT:  'GET <URI> %s\r\n\r\n' */
 
-        sprintf(SHeader,"GET %s %s\r\n\r\n",
-          S->URI,
-          "HTTP/1.0");
-        }
-      else
-        {
-        char tmpBuf[MMAX_NAME];
+                sprintf(SHeader, "GET %s %s\r\n\r\n", S->URI, "HTTP/1.0");
+            } else {
+                char tmpBuf[MMAX_NAME];
 
-        /* FORMAT:  'POST /SSSRMAP3 HTTP/1.1\r\nContent-Type: text/xml; '  */
-        /*          'charset="UTF-8"\r\nContent-Length:_<LENGTH>\r\n\r\n' */
+                /* FORMAT:  'POST /SSSRMAP3 HTTP/1.1\r\nContent-Type: text/xml;
+                 * '  */
+                /*          'charset="UTF-8"\r\nContent-Length:_<LENGTH>\r\n\r\n'
+                 */
 
-        sprintf(tmpBuf,"%x",
-          (unsigned int)strlen(S->SBuffer));
+                sprintf(tmpBuf, "%x", (unsigned int)strlen(S->SBuffer));
 
-        MUStrToUpper(tmpBuf,NULL,0);
+                MUStrToUpper(tmpBuf, NULL, 0);
 
-        /* remove 'Connection: close' */
+                /* remove 'Connection: close' */
 
-        sprintf(SHeader,"POST /%s %s\r\nContent-Type: %s; charset=\"utf-8\"\r\nTransfer-Encoding: %s;\r\n\r\n%s\r\n",
-          "SSSRMAP3",
-          "HTTP/1.1",
-          "text/xml",
-          "chunked",
-          tmpBuf);
-        }
+                sprintf(SHeader,
+                        "POST /%s %s\r\nContent-Type: %s; "
+                        "charset=\"utf-8\"\r\nTransfer-Encoding: "
+                        "%s;\r\n\r\n%s\r\n",
+                        "SSSRMAP3", "HTTP/1.1", "text/xml", "chunked", tmpBuf);
+            }
 
-      /* append chunk terminator */
+            /* append chunk terminator */
 
-      /* perform bounds checking (NYI) */
+            /* perform bounds checking (NYI) */
 
-      S->SBuffer[S->SBufSize] = '0';
-      S->SBuffer[S->SBufSize++] = '\r';
-      S->SBuffer[S->SBufSize++] = '\n';
-      S->SBuffer[S->SBufSize++] = '\0';
+            S->SBuffer[S->SBufSize] = '0';
+            S->SBuffer[S->SBufSize++] = '\r';
+            S->SBuffer[S->SBufSize++] = '\n';
+            S->SBuffer[S->SBufSize++] = '\0';
 
-      }  /* END BLOCK */
+        } /* END BLOCK */
 
-      break;
+        break;
 
-    default:
+        default:
 
-      /* FORMAT:  <SIZE><CHAR>CK=<CKSUM><WS>TS=<TS><WS>ID=<ID><WS>[CLIENT=<CLIENT><WS>]DT=<MESSAGE> */
+            /* FORMAT:
+             * <SIZE><CHAR>CK=<CKSUM><WS>TS=<TS><WS>ID=<ID><WS>[CLIENT=<CLIENT><WS>]DT=<MESSAGE>
+             */
 
-      CKLine[0] = '\0';
+            CKLine[0] = '\0';
 
-      SHeader[sizeof(SHeader) - 1] = '\0';
+            SHeader[sizeof(SHeader) - 1] = '\0';
 
-      if (DoSocketLayerAuth == TRUE)
-        {
-        char tmpStr[MMAX_BUFFER];
+            if (DoSocketLayerAuth == TRUE) {
+                char tmpStr[MMAX_BUFFER];
 
-        time(&Now);
+                time(&Now);
 
-        sprintf(tmpStr,"%s%ld %s%s",
-          MCKeyword[mckTimeStamp],
-          (long)Now,
-          MCKeyword[mckAuth],
-          MUUIDToName(MOSGetEUID()));
+                sprintf(tmpStr, "%s%ld %s%s", MCKeyword[mckTimeStamp],
+                        (long)Now, MCKeyword[mckAuth],
+                        MUUIDToName(MOSGetEUID()));
 
-        if (S->Name[0] != '\0')
-          {
-          sprintf(temp_str," %s%s",
-            MCKeyword[mckClient],
-            S->Name);
-          strcat(TSLine,temp_str);
-          }
+                if (S->Name[0] != '\0') {
+                    sprintf(temp_str, " %s%s", MCKeyword[mckClient], S->Name);
+                    strcat(TSLine, temp_str);
+                }
 
-        sprintf(TSLine,"%s %s",
-          tmpStr,
-          MCKeyword[mckData]);
-        
-        MSecGetChecksum2(
-          TSLine,
-          strlen(TSLine),
-          S->SBuffer,
-          strlen(S->SBuffer),  /* NOTE:  was S->SBufSize */
-          CKSum,
-          NULL,
-          S->CSAlgo,
-          S->CSKey);
+                sprintf(TSLine, "%s %s", tmpStr, MCKeyword[mckData]);
 
-        sprintf(CKLine,"%s%s %s",
-          MCKeyword[mckCheckSum], 
-          CKSum,
-          TSLine);
-        }  /* END if (DoSocketLayerAuth == TRUE) */
-        
-      PacketSize = S->SBufSize;
+                MSecGetChecksum2(
+                    TSLine, strlen(TSLine), S->SBuffer,
+                    strlen(S->SBuffer), /* NOTE:  was S->SBufSize */
+                    CKSum, NULL, S->CSAlgo, S->CSKey);
 
-      if (isprint(S->SBuffer[0]))
-        {
-        /* check for binary data - FIXME */
+                sprintf(CKLine, "%s%s %s", MCKeyword[mckCheckSum], CKSum,
+                        TSLine);
+            } /* END if (DoSocketLayerAuth == TRUE) */
 
-        PacketSize = strlen(S->SBuffer);
-        }
+            PacketSize = S->SBufSize;
 
-      sprintf(SHeader,"%08ld\n%s",
-        PacketSize + (long)strlen(CKLine),
-        CKLine);
+            if (isprint(S->SBuffer[0])) {
+                /* check for binary data - FIXME */
 
-      break;
-    }  /* END switch (S->SocketProtocol) */
+                PacketSize = strlen(S->SBuffer);
+            }
 
-  MDB(7,fSOCK) MLog("INFO:     header created '%s'\n",
-    SHeader);
+            sprintf(SHeader, "%08ld\n%s", PacketSize + (long)strlen(CKLine),
+                    CKLine);
 
-  /* send data */
+            break;
+    } /* END switch (S->SocketProtocol) */
 
-  switch (S->SocketProtocol)
-    {
-    case mspS3Challenge:
-    case mspHalfSocket:
+    MDB(7, fSOCK) MLog("INFO:     header created '%s'\n", SHeader);
 
-      if (SHeader[0] != '\0')
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot send packet header '%s'\n",
-          SHeader);
+    /* send data */
 
-        if (MSUSendPacket(
-              S->sd,
-              SHeader,
-              strlen(SHeader),
-              MAX(1000000,TimeLimit),
-              &SC) == FAILURE)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot send packet header '%s'\n",
-            SHeader);
+    switch (S->SocketProtocol) {
+        case mspS3Challenge:
+        case mspHalfSocket:
 
-          return(FAILURE);
-          }
-        }    /* END if (SHeader[0] != '\0') */
+            if (SHeader[0] != '\0') {
+                MDB(1, fSOCK)
+                MLog("ALERT:    cannot send packet header '%s'\n", SHeader);
 
-      if (MSUSendPacket(
-            S->sd,
-            S->SBuffer,
-            S->SBufSize,
-            MAX(1000000,TimeLimit),
-            &SC) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot send packet data\n");
+                if (MSUSendPacket(S->sd, SHeader, strlen(SHeader),
+                                  MAX(1000000, TimeLimit), &SC) == FAILURE) {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    cannot send packet header '%s'\n", SHeader);
 
-        return(FAILURE);
-        }
+                    return (FAILURE);
+                }
+            } /* END if (SHeader[0] != '\0') */
 
-      if (shutdown(S->sd,SHUT_WR) == -1)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot close send connections (%d : %s)\n",
-          errno,
-          strerror(errno));
+            if (MSUSendPacket(S->sd, S->SBuffer, S->SBufSize,
+                              MAX(1000000, TimeLimit), &SC) == FAILURE) {
+                MDB(1, fSOCK) MLog("ALERT:    cannot send packet data\n");
 
-        if (errno != ENOTCONN)
-          {
-          /* cannot properly close connection */
+                return (FAILURE);
+            }
 
-          /* NOTE:  cannot be certain data was successfully transferred */
+            if (shutdown(S->sd, SHUT_WR) == -1) {
+                MDB(1, fSOCK)
+                MLog("ALERT:    cannot close send connections (%d : %s)\n",
+                     errno, strerror(errno));
 
-          return(FAILURE);
-          }
-        }
+                if (errno != ENOTCONN) {
+                    /* cannot properly close connection */
 
-      break;
+                    /* NOTE:  cannot be certain data was successfully
+                     * transferred */
 
-    case mspHTTP:
-    default:
+                    return (FAILURE);
+                }
+            }
 
-      PacketSize = (long)strlen(SHeader);
+            break;
 
-      if (S->SBufSize <= MCONST_SMALLPACKETSIZE)
-        {
-        memcpy(
-          SHeader + PacketSize,
-          S->SBuffer,
-          S->SBufSize);
-  
-        PacketSize += S->SBufSize; 
+        case mspHTTP:
+        default:
 
-        MDB(6,fSOCK) MLog("INFO:     sending short packet '%.512s'\n",
-          MUPrintBuffer(SHeader,PacketSize));
-        }
+            PacketSize = (long)strlen(SHeader);
 
-      if (MSUSendPacket(
-            S->sd,
-            SHeader,
-            PacketSize,
-            TimeLimit,
-            &SC) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot send packet header info, '%.128s'\n",
-          SHeader);
+            if (S->SBufSize <= MCONST_SMALLPACKETSIZE) {
+                memcpy(SHeader + PacketSize, S->SBuffer, S->SBufSize);
 
-        if (SC == mscNoEnt)
-          S->StatusCode = msfConnRejected;
-        else
-          S->StatusCode = msfEGWireProtocol;
+                PacketSize += S->SBufSize;
 
-        return(FAILURE);
-        }
+                MDB(6, fSOCK)
+                MLog("INFO:     sending short packet '%.512s'\n",
+                     MUPrintBuffer(SHeader, PacketSize));
+            }
 
-      if (S->SBufSize > MCONST_SMALLPACKETSIZE)
-        {
-        if (MSUSendPacket(
-              S->sd,
-              S->SBuffer,
-              S->SBufSize,
-              TimeLimit,
-              &SC) == FAILURE)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot send packet data\n");
+            if (MSUSendPacket(S->sd, SHeader, PacketSize, TimeLimit, &SC) ==
+                FAILURE) {
+                MDB(1, fSOCK)
+                MLog("ALERT:    cannot send packet header info, '%.128s'\n",
+                     SHeader);
 
-          return(FAILURE);
-          }
-        }
-      
-      break;
-    }  /* END switch (S->SocketProtocol) */
+                if (SC == mscNoEnt)
+                    S->StatusCode = msfConnRejected;
+                else
+                    S->StatusCode = msfEGWireProtocol;
 
-  /* clean up data */
+                return (FAILURE);
+            }
 
-  switch (S->WireProtocol)
-    {
-    case mwpS32:
+            if (S->SBufSize > MCONST_SMALLPACKETSIZE) {
+                if (MSUSendPacket(S->sd, S->SBuffer, S->SBufSize, TimeLimit,
+                                  &SC) == FAILURE) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot send packet data\n");
 
-      S->SBuffer = sptr;
+                    return (FAILURE);
+                }
+            }
 
-      break;
+            break;
+    } /* END switch (S->SocketProtocol) */
 
-    case mwpXML:
+    /* clean up data */
 
-      if (S->SE != NULL)
-        {
-        MXMLDestroyE((mxml_t **)&S->SE);
-        }
+    switch (S->WireProtocol) {
+        case mwpS32:
 
-      S->SBuffer = sptr;
-   
-      break;
+            S->SBuffer = sptr;
 
-    default:
+            break;
 
-      /* NO-OP */
+        case mwpXML:
 
-      break;
-    }  /* END switch (S->WireProtocol) */
+            if (S->SE != NULL) {
+                MXMLDestroyE((mxml_t **)&S->SE);
+            }
 
-  return(SUCCESS);
-  }  /* END MSUSendData() */
+            S->SBuffer = sptr;
 
+            break;
 
+        default:
 
+            /* NO-OP */
 
+            break;
+    } /* END switch (S->WireProtocol) */
+
+    return (SUCCESS);
+} /* END MSUSendData() */
 
 int MSUSendPacket(
 
-  int                   sd,      /* I */
-  char                 *Buf,     /* I */
-  long                  BufSize, /* I */
-  long                  TimeOut, /* I */
-  enum MStatusCodeEnum *SC)      /* O (optional) */
+    int sd,                   /* I */
+    char *Buf,                /* I */
+    long BufSize,             /* I */
+    long TimeOut,             /* I */
+    enum MStatusCodeEnum *SC) /* O (optional) */
 
-  {
-  int rc;
-  int count;
+{
+    int rc;
+    int count;
 
 /*  extern int errno; */
 
 #ifndef __MPROD
-  const char *FName = "MSUSendPacket";
+    const char *FName = "MSUSendPacket";
 
-  MDB(5,fSOCK) MLog("%s(%d,Buf,%ld,%ld,SC)\n",
-    FName,
-    sd,
-    BufSize,
-    TimeOut);
+    MDB(5, fSOCK) MLog("%s(%d,Buf,%ld,%ld,SC)\n", FName, sd, BufSize, TimeOut);
 #endif /* !__MPROD */
 
-  if (SC != NULL)
-    *SC = mscNoError;
+    if (SC != NULL) *SC = mscNoError;
 
-  MDB(9,fSOCK) MLog("INFO:     sending packet '%s'\n",
-    MUPrintBuffer(Buf,BufSize));
+    MDB(9, fSOCK)
+    MLog("INFO:     sending packet '%s'\n", MUPrintBuffer(Buf, BufSize));
 
-  count = 0;
+    count = 0;
 
-  TimeOut = MAX(50000,TimeOut);
+    TimeOut = MAX(50000, TimeOut);
 
-  while (count < BufSize)
-    {
-    if (MSUSelectWrite(sd,TimeOut) == FAILURE)
-      {
-      MDB(2,fSOCK) MLog("WARNING:  cannot send message within %1.6f second timeout (aborting)\n",
-        (double)TimeOut / 1000000);
+    while (count < BufSize) {
+        if (MSUSelectWrite(sd, TimeOut) == FAILURE) {
+            MDB(2, fSOCK)
+            MLog(
+                "WARNING:  cannot send message within %1.6f second timeout "
+                "(aborting)\n",
+                (double)TimeOut / 1000000);
 
-      return(FAILURE);
-      }
-
-    if ((rc = send(sd,(Buf + count),(BufSize - count),SOCKETFLAGS)) < 0)
-      {
-      if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
-        {
-        /* should never occur with select */
-
-        MDB(0,fSOCK) MLog("ERROR:    socket blocked (select() indicated socket was available)\n");
-
-        continue;
+            return (FAILURE);
         }
 
-      MDB(1,fSOCK) MLog("WARNING:  cannot send packet, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
+        if ((rc = send(sd, (Buf + count), (BufSize - count), SOCKETFLAGS)) <
+            0) {
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+                /* should never occur with select */
 
-      rc = errno;
+                MDB(0, fSOCK)
+                MLog(
+                    "ERROR:    socket blocked (select() indicated socket was "
+                    "available)\n");
 
-      if (SC != NULL)
-        {
-        if (errno == ECONNREFUSED)
-          {
-          /* no service available at remote port */
-
-          *SC = mscNoEnt;
-          }
-        else
-          {
-          /* default connection failure */
-
-          *SC = mscNoEnt;
-          }
-        }
-
-      return(FAILURE);
-      }
-    else if (rc == 0)
-      {
-      /* should never occur with select */
-
-      MDB(1,fSOCK) MLog("ERROR:    no data sent (select() indicated socket was available)\n");
-
-      continue;
-      }
-    else
-      {
-      MDB(2,fSOCK)
-        {
-        MDB(4,fSOCK)
-          {
-          MDB(4,fSOCK) MLog("INFO:     packet sent (%d bytes of %ld)\n",
-            rc,
-            BufSize);
-          }
-        else
-          {
-          if (rc != 0)
-            {
-            MDB(0,fSOCK) MLog("INFO:     packet sent (%d bytes of %ld)\n",
-              rc,
-              BufSize);
+                continue;
             }
-          }
-        }
-      }    /* END else ... */
 
-    if (rc > 0)
-      count += rc;
-    }    /* END while (count < BufSize) */
+            MDB(1, fSOCK)
+            MLog("WARNING:  cannot send packet, errno: %d (%s)\n", errno,
+                 strerror(errno));
 
-  return(SUCCESS);
-  }  /* END MSUSendPacket() */
+            rc = errno;
 
+            if (SC != NULL) {
+                if (errno == ECONNREFUSED) {
+                    /* no service available at remote port */
 
+                    *SC = mscNoEnt;
+                } else {
+                    /* default connection failure */
 
+                    *SC = mscNoEnt;
+                }
+            }
 
+            return (FAILURE);
+        } else if (rc == 0) {
+            /* should never occur with select */
+
+            MDB(1, fSOCK)
+            MLog(
+                "ERROR:    no data sent (select() indicated socket was "
+                "available)\n");
+
+            continue;
+        } else {
+            MDB(2, fSOCK) {
+                MDB(4, fSOCK) {
+                    MDB(4, fSOCK)
+                    MLog("INFO:     packet sent (%d bytes of %ld)\n", rc,
+                         BufSize);
+                }
+                else {
+                    if (rc != 0) {
+                        MDB(0, fSOCK)
+                        MLog("INFO:     packet sent (%d bytes of %ld)\n", rc,
+                             BufSize);
+                    }
+                }
+            }
+        } /* END else ... */
+
+        if (rc > 0) count += rc;
+    } /* END while (count < BufSize) */
+
+    return (SUCCESS);
+} /* END MSUSendPacket() */
 
 int MSURecvData(
 
-  msocket_t *S,               /* I (modified) */
-  long       TimeLimit,       /* I */
-  mbool_t    DoAuthenticate,  /* I */
-  enum MStatusCodeEnum *SC,   /* O (optional) */
-  char      *EMsg)            /* O (optional,minsize=MMAX_LINE) */
+    msocket_t *S,             /* I (modified) */
+    long TimeLimit,           /* I */
+    mbool_t DoAuthenticate,   /* I */
+    enum MStatusCodeEnum *SC, /* O (optional) */
+    char *EMsg)               /* O (optional,minsize=MMAX_LINE) */
 
-  {
-  char    tmpLine[MMAX_LINE];
+{
+    char tmpLine[MMAX_LINE];
 
-  long    TSVal;
+    long TSVal;
 
-  char    CKLine[MMAX_LINE];
-  char    CKSum[MMAX_LINE];
+    char CKLine[MMAX_LINE];
+    char CKSum[MMAX_LINE];
 
-  char   *ptr;
-  char   *ptr2;
+    char *ptr;
+    char *ptr2;
 
-  char   *dptr;
+    char *dptr;
 
-  time_t  Now;
+    time_t Now;
 
-  char    TMarker[MMAX_NAME];
+    char TMarker[MMAX_NAME];
 
-
-  /* read data from socket.  socket is NOT closed */
+/* read data from socket.  socket is NOT closed */
 
 #ifndef __MPROD
-  const char *FName = "MSURecvData";
+    const char *FName = "MSURecvData";
 
-  MDB(2,fSOCK) MLog("%s(%s,%ld,%s,SC,EMsg)\n",
-    FName,
-    (S != NULL) ? "S" : "NULL",
-    TimeLimit,
-    MBool[DoAuthenticate]);
+    MDB(2, fSOCK)
+    MLog("%s(%s,%ld,%s,SC,EMsg)\n", FName, (S != NULL) ? "S" : "NULL",
+         TimeLimit, MBool[DoAuthenticate]);
 #endif /* !__MPROD */
 
-  /* initialize */
+    /* initialize */
 
-  if (SC != NULL)
-    *SC = mscNoError;
+    if (SC != NULL) *SC = mscNoError;
 
-  if (EMsg != NULL)
-    EMsg[0] = '\0';
+    if (EMsg != NULL) EMsg[0] = '\0';
 
-  if (S == NULL)
-    {
-    MDB(1,fSOCK) MLog("ALERT:    invalid socket pointer received\n");
+    if (S == NULL) {
+        MDB(1, fSOCK) MLog("ALERT:    invalid socket pointer received\n");
 
-    if (EMsg != NULL)
-      strcpy(EMsg,"invalid socket received");
+        if (EMsg != NULL) strcpy(EMsg, "invalid socket received");
 
-    if (SC != NULL)
-      *SC = mscBadParam;
+        if (SC != NULL) *SC = mscBadParam;
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  if (S->sd <= 0)
-    {
-    MDB(1,fSOCK) MLog("ALERT:    socket is closed\n");
+    if (S->sd <= 0) {
+        MDB(1, fSOCK) MLog("ALERT:    socket is closed\n");
 
-    if (EMsg != NULL)
-      strcpy(EMsg,"socket is closed");
+        if (EMsg != NULL) strcpy(EMsg, "socket is closed");
 
-    if (SC != NULL)
-      *SC = mscNoEnt;
+        if (SC != NULL) *SC = mscNoEnt;
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  S->RBuffer = NULL;
+    S->RBuffer = NULL;
 
-  TMarker[0] = '\0';
+    TMarker[0] = '\0';
 
-  switch (S->SocketProtocol)
-    {
-    case mspS3Challenge:
+    switch (S->SocketProtocol) {
+        case mspS3Challenge:
 
-      {
-      char  tmpLine[MMAX_LINE];
-
-      char *ptr;
-
-      /* read bytecount */
-
-      ptr = tmpLine;
-
-      memset(tmpLine,0,MMAX_LINE);
-
-      if (MSURecvPacket(S->sd,&ptr,0," ",TimeLimit,SC) == FAILURE)
         {
-        MDB(1,fSOCK) MLog("ALERT:    cannot read bytecount\n");
+            char tmpLine[MMAX_LINE];
 
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot read byte count");
+            char *ptr;
 
-        if (SC != NULL)
-          *SC = mscNoEnt;
+            /* read bytecount */
 
-        return(FAILURE);
-        }
+            ptr = tmpLine;
 
-      /* terminate buffer */
+            memset(tmpLine, 0, MMAX_LINE);
 
-      /* NYI */
+            if (MSURecvPacket(S->sd, &ptr, 0, " ", TimeLimit, SC) == FAILURE) {
+                MDB(1, fSOCK) MLog("ALERT:    cannot read bytecount\n");
 
-      S->RBufSize = strtol(ptr,NULL,10);
+                if (EMsg != NULL) strcpy(EMsg, "cannot read byte count");
 
-      if ((S->RBufSize > MMSG_BUFFER) || (S->RBufSize <= 0))
-        {
-        /* reject empty messages and potential denial of service attacks */
-        /* allow packets between 1 and 2MB bytes */
+                if (SC != NULL) *SC = mscNoEnt;
 
-        MDB(1,fSOCK) MLog("ALERT:    invalid packet size (%ld)\n",
-          S->RBufSize);
-
-        if (EMsg != NULL)
-          {
-          sprintf(EMsg,"invalid packet size requested - %ld bytes",
-            S->RBufSize);
-          }
-
-        if (SC != NULL)
-          *SC = mscNoMemory;
-
-        return(FAILURE);
-        }
-      if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
-        {
-        MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
-          S->RBufSize,
-          errno,
-          strerror(errno));
-
-        if (EMsg != NULL)
-          {
-          sprintf(EMsg,"cannot allocate %ld bytes for message",
-            S->RBufSize);
-          }
-
-        if (SC != NULL)
-          *SC = mscNoMemory;
-
-        return(FAILURE);
-        }
-
-      if (MSURecvPacket(
-            S->sd,
-            &S->RBuffer,
-            S->RBufSize,
-            NULL,
-            MAX(TimeLimit,1000000),
-            NULL) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot receive packet (%ld bytes requested)\n",
-          S->RBufSize);
-
-        MUFree(&S->RBuffer);
-
-        if (EMsg != NULL)
-          {
-          sprintf(EMsg,"cannot receive %ld bytes for message",
-            S->RBufSize);
-          }
-
-        return(FAILURE);
-        }
-      }  /* END BLOCK */
-
-      break;
-
-    case mspHalfSocket:
-
-      if (S->RBuffer == NULL)
-        {
-        /* allocate large receive space */
-
-        S->RBufSize = MMAX_BUFFER << 4;
-        if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
-          {
-          MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
-            S->RBufSize,
-            errno,
-            strerror(errno));
-
-          if (EMsg != NULL)
-            {
-            sprintf(EMsg,"cannot allocate %ld bytes for message",
-              S->RBufSize);
+                return (FAILURE);
             }
 
-          return(FAILURE);
-          }
+            /* terminate buffer */
 
-        }
+            /* NYI */
 
-      if (MSURecvPacket(S->sd,&S->RBuffer,0,NULL,TimeLimit,NULL) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot read half socket data\n");
+            S->RBufSize = strtol(ptr, NULL, 10);
 
-        if (EMsg != NULL)
-          {
-          sprintf(EMsg,"cannot receive %ld bytes for message",
-            S->RBufSize);
-          }
+            if ((S->RBufSize > MMSG_BUFFER) || (S->RBufSize <= 0)) {
+                /* reject empty messages and potential denial of service attacks
+                 */
+                /* allow packets between 1 and 2MB bytes */
 
-        return(FAILURE);
-        }
+                MDB(1, fSOCK)
+                MLog("ALERT:    invalid packet size (%ld)\n", S->RBufSize);
 
-      break;
+                if (EMsg != NULL) {
+                    sprintf(EMsg, "invalid packet size requested - %ld bytes",
+                            S->RBufSize);
+                }
 
-    case mspHTTP:
-    case mspHTTPClient:
+                if (SC != NULL) *SC = mscNoMemory;
 
-      /* FORMAT:  'Content-Length: ' or 'Transfer-Encoding' marker */
+                return (FAILURE);
+            }
+            if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL) {
+                MDB(1, fSOCK)
+                MLog(
+                    "ERROR:    cannot allocate buffer space (%ld bytes "
+                    "requested)  errno: %d (%s)\n",
+                    S->RBufSize, errno, strerror(errno));
 
-      {
-      ptr = tmpLine;
+                if (EMsg != NULL) {
+                    sprintf(EMsg, "cannot allocate %ld bytes for message",
+                            S->RBufSize);
+                }
 
-      /* load HTTP header */
+                if (SC != NULL) *SC = mscNoMemory;
 
-      if (MSURecvPacket(
-           S->sd,
-           &ptr,
-           sizeof(tmpLine),
-           "\r\n\r\n",
-           MAX(TimeLimit,1000000),
-           NULL) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot load HTTP header\n");
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot read message header");
-
-        if (SC != NULL)
-          *SC = mscNoEnt;
-
-        return(FAILURE);
-        }
-
-      S->RBufSize = 0;
-
-      if ((ptr2 = MUStrStr(ptr,"transfer-encoding:",0,TRUE,FALSE)) != NULL)
-        {
-        ptr2 += strlen("transfer-encoding:") + 1;
-
-        /* check if chunked */
-
-        if (MUStrStr(ptr,"chunked",0,TRUE,FALSE) != NULL)
-          {
-          /* read initial chunk size */
-
-          if (MSURecvPacket(
-             S->sd,
-             &ptr2,
-             sizeof(tmpLine),
-             "\r\n",
-             MAX(TimeLimit,1000000),
-             NULL) == FAILURE)
-            {
-            MDB(1,fSOCK) MLog("ALERT:    cannot load HTTP chunk size\n");
-
-            if (EMsg != NULL)
-              strcpy(EMsg,"cannot load initial chunk size");
-
-            if (SC != NULL)
-              *SC = mscNoMemory;
-
-            return(FAILURE);
+                return (FAILURE);
             }
 
-          /* NOTE:  chunks are in hex */
+            if (MSURecvPacket(S->sd, &S->RBuffer, S->RBufSize, NULL,
+                              MAX(TimeLimit, 1000000), NULL) == FAILURE) {
+                MDB(1, fSOCK)
+                MLog("ALERT:    cannot receive packet (%ld bytes requested)\n",
+                     S->RBufSize);
 
-          if ((S->RBufSize = strtol(ptr2,NULL,16)) <= 0)
-            {
-            /* invalid packet length located */
+                MUFree(&S->RBuffer);
 
-            MDB(1,fSOCK) MLog("ALERT:    cannot determine packet size\n");
+                if (EMsg != NULL) {
+                    sprintf(EMsg, "cannot receive %ld bytes for message",
+                            S->RBufSize);
+                }
 
-            if (EMsg != NULL)
-              {
-              sprintf(EMsg,"cannot parse initial chunk size - %.16s",
-                ptr2);
-              }
-
-            return(FAILURE);
+                return (FAILURE);
             }
-          }
-        }     /* if ((ptr2 = MUStrStr(ptr)) != NULL) */
-
-      if (S->RBufSize != 0)
-        {
-        /* chunk length already located */
-
-        /* NO-OP */
-        }
-      else if (((ptr2 = MUStrStr(ptr,"content-length:",0,TRUE,FALSE)) != NULL) ||
-               ((ptr2 = MUStrStr(ptr,"content-length:",0,TRUE,FALSE)) != NULL)) 
-        {
-        /* extract packet length */
-
-        ptr2 += strlen("content-length:") + 1;
-
-        if ((S->RBufSize = strtol(ptr2,NULL,10)) <= 0)
-          {
-          /* invalid packet length located */
-  
-          MDB(1,fSOCK) MLog("ALERT:    cannot determine packet size\n");
-
-          if (EMsg != NULL)
-            {
-            sprintf(EMsg,"invalid http packet size received - %.16s",
-              ptr2);
-            }
-
-          return(FAILURE);
-          }
-        }
-      else
-        {
-        MDB(6,fSOCK) MLog("NOTE:     packet length not specified (%.32s)\n",
-          ptr);
-
-        strcpy(TMarker,"</html>");
-
-        /* create 'adequate' buffer */
-
-        S->RBufSize = MMAX_BUFFER;
-        }
-
-      if (S->RBuffer == NULL) 
-        {
-        /* allocate receive space */
-        if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
-          {
-          MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
-            S->RBufSize,
-            errno,
-            strerror(errno));
-
-          if (EMsg != NULL)
-            {
-            sprintf(EMsg,"cannot allocate %d bytes for message",
-              (int)S->RBufSize);
-            }
-
-          if (SC != NULL)
-            *SC = mscNoMemory;
-
-          return(FAILURE);
-          }
-
-        }
-
-      /* read data */
-
-      if (MSURecvPacket(
-           S->sd,
-           &S->RBuffer,
-           S->RBufSize,
-           (TMarker[0] != '\0') ? TMarker : NULL,
-           MAX(TimeLimit,1000000),
-           NULL) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot read HTTP data\n");
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot load HTTP data");
-
-        if (SC != NULL)
-          *SC = mscNoEnt;
-
-        return(FAILURE);
-        }
-
-      /* terminate buffer */
-
-      S->RBuffer[S->RBufSize] = '\0';
-
-      /* NOTE:  no timestamp, version, or checksum */
-      }  /* END BLOCK */
-
-      break;
-
-    default:
-
-      ptr = tmpLine;
-
-      ptr[0] = '\0';
-
-      if (TimeLimit != 0)
-        {
-        /* allow polling */
-        /* TODO: place this logic in other areas? */
-
-        TimeLimit = MAX(TimeLimit,1000000);
-        }
-
-      if (MSURecvPacket(
-           S->sd,
-           &ptr,
-           9 * sizeof(char),
-           NULL,
-           TimeLimit,
-           SC) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot determine packet size\n");
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot load packet size");
-
-        if ((SC != NULL) && (*SC != mscNoData))
-          *SC = mscNoEnt;
-
-        return(FAILURE);
-        }
-
-      if (!strncmp(tmpLine,"GET ",strlen("GET ")))
-        {
-        if (MSched.HTTPProcessF == NULL)
-          {
-          /* HTTP processing not supported */
-
-          if (EMsg != NULL)
-            strcpy(EMsg,"http processing not supported");
-
-          return(FAILURE);
-          }
-
-        (*MSched.HTTPProcessF)(S,tmpLine);
-
-        if (shutdown(S->sd,SHUT_WR) == -1)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot close send connections (%d : %s)\n",
-            errno,
-            strerror(errno));
-
-          if (errno != ENOTCONN)
-            {
-            /* cannot properly close connection */
- 
-            /* NOTE:  cannot be certain data was successfully transferred */
-
-            if (EMsg != NULL)
-              strcpy(EMsg,"cannot close connection");
- 
-            return(FAILURE);
-            }
-          }
-
-        MSUDisconnect(S);
-
-        /* NOTE:  return failure to prevent additional processing (temp) */ 
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"socket is closed");
- 
-        return(FAILURE);
-        }  /* END if (!strncmp(tmpLine,"GET ",strlen("GET "))) */
-
-      tmpLine[8] = '\0';
-
-      /* NOTE:  some strtol() routines fail on zero pad */
-
-      sscanf(tmpLine,"%ld",
-        &S->RBufSize);
-
-      if ((S->RBufSize > (MMAX_BUFFER << 5)) || (S->RBufSize <= 0))
-        {
-        /* reject empty messages and potential denial of service attacks */
-        /* allow packets between 1 and 2MB bytes */
-
-        MDB(1,fSOCK) MLog("ALERT:    invalid packet size (%ld)\n",
-          S->RBufSize);
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"packet size is invalid");
-
-        if (SC != NULL)
-          *SC = mscNoMemory;
-
-        return(FAILURE);
-        }
-      if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL)
-        {
-        MDB(1,fSOCK) MLog("ERROR:    cannot allocate buffer space (%ld bytes requested)  errno: %d (%s)\n",
-          S->RBufSize,
-          errno,
-          strerror(errno));
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot allocate memory for message");
-
-        if (SC != NULL)
-          *SC = mscNoMemory;
-
-        return(FAILURE);
-        }
-
-      if (MSURecvPacket(
-            S->sd,
-            &S->RBuffer,
-            S->RBufSize,
-            NULL,
-            MAX(TimeLimit,1000000),
-            NULL) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    cannot receive packet (%ld bytes requested)\n",
-          S->RBufSize);
-
-        MUFree(&S->RBuffer);
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot read message");
-
-        if (SC != NULL)
-          *SC = mscNoEnt;
-
-        return(FAILURE);
-        }
-
-      S->RBuffer[S->RBufSize] = '\0';
-
-      break;
-    }  /* switch (S->SocketProtocol) */
-
-  if (S->WireProtocol == mwpNONE)
-    {
-    /* determine wire protocol */
-
-    if (strstr(S->RBuffer,"<Envelope") != NULL)
-      {
-      S->WireProtocol = mwpS32;
-
-      /* set default algorithm */
-
-      S->CSAlgo = MSched.DefaultCSAlgo;
-      }
-    }    /* END if (S->WireProtocol == mwpNONE) */
-
-  /* adjust state */
-
-  switch (S->WireProtocol)
-    {
-    case mwpS32:
-
-      /* no socket level authentication required */
-
-      DoAuthenticate = FALSE;
-
-      break;
-
-    default:
-
-      /* NO-OP */
-
-      break;
-    }  /* END switch (S->WireProtocol) */
-
-  /* authenticate message */
-
-  if (DoAuthenticate == TRUE)
-    {
-    switch (S->SocketProtocol)
-      {
-      case mspS3Challenge:
-      case mspHalfSocket:
-      case mspHTTP:
-      case mspHTTPClient:
-
-        /* NO-OP */
+        } /* END BLOCK */
 
         break;
 
-      default:
+        case mspHalfSocket:
 
-        /* verify packet */
+            if (S->RBuffer == NULL) {
+                /* allocate large receive space */
 
-        /* NOTE:  client marker must not be in args */
+                S->RBufSize = MMAX_BUFFER << 4;
+                if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL) {
+                    MDB(1, fSOCK)
+                    MLog(
+                        "ERROR:    cannot allocate buffer space (%ld bytes "
+                        "requested)  errno: %d (%s)\n",
+                        S->RBufSize, errno, strerror(errno));
 
-        /* locate data marker */
-
-        if ((dptr = strstr(S->RBuffer,MCKeyword[mckData])) == NULL)
-          {
-          MDB(3,fSOCK) MLog("ALERT:    cannot locate command data (%.60s)\n",
-            S->RBuffer);
-
-          MUFree(&S->RBuffer);
-
-          if (EMsg != NULL)
-            strcpy(EMsg,"cannot locate command data");
-
-          return(FAILURE);
-          }
-
-        if ((ptr = strstr(S->RBuffer,MCKeyword[mckArgs])) != NULL)
-          {
-          /* arg marker located */
-
-          dptr = ptr;
-          }
-
-        /* set defaults */
-
-        S->Version = 0;
-
-        strcpy(S->Name,NONE);
-
-        if (S->CSKey[0] == '\0')
-          strcpy(S->CSKey,MSched.DefaultCSKey);
-
-        S->CSAlgo = MSched.DefaultCSAlgo;
-
-        /* extract client name */
-
-        if (((ptr = strstr(S->RBuffer,MCKeyword[mckClient])) != NULL) &&
-             (ptr < dptr))
-          {
-          ptr += strlen(MCKeyword[mckClient]);
-
-          if ((X.XGetClientInfo != (int (*)(void *,msocket_t *,char *))0) && 
-             ((*X.XGetClientInfo)(X.xd,S,ptr) == SUCCESS))
-            {
-            /* NOTE:  enable logging only during unit testing */
-
-            /*
-            MDB(1,fSOCK) MLog("INFO:     using checksum seed '%s' for client '%s'\n",
-              S->SKey,
-              S->Name);
-            */
-            }
-          else
-            {
-            /* use default client detection */
-
-            for (ptr2 = ptr;(ptr2 - ptr) < MMAX_NAME;ptr2++)
-              {
-              if ((*ptr2 == '\0') || (*ptr2 == ':') || isspace(*ptr2))
-                {
-#ifdef __M32COMPAT
-                extern mclient_t MClient[]; 
-
-                mclient_t *C;
-                  
-                int        index;   
-
-                MUStrCpy(S->Name,ptr,MIN((long)sizeof(S->Name),ptr2 - ptr + 1));
-                                                                             
-                for (index = 0;index < MMAX_CLIENT;index++)
-                  {
-                  C = &MClient[index];
-                                                                            
-                  if (C->Name[0] == '\0')
-                    break;
-                                                                           
-                  if (C->Name[0] == '\1')
-                    continue;
-                                                                          
-                  if (!strcmp(S->Name,C->Name))
-                    {
-                    strcpy(S->CSKey,C->CSKey);
-                                                                         
-                    break;
+                    if (EMsg != NULL) {
+                        sprintf(EMsg, "cannot allocate %ld bytes for message",
+                                S->RBufSize);
                     }
-                  }    /* END for (index) */
-#else /* __M32COMPAT */
-                mpsi_t *P;
 
-                MUStrCpy(S->Name,ptr,MIN((int)sizeof(S->Name),ptr2 - ptr + 1));
-
-                if (MPeerFind(S->Name,&P,FALSE) == SUCCESS)
-                  {
-                  if (P->CSKey != NULL)
-                    strcpy(S->CSKey,P->CSKey);
-                  }
-#endif /* __M32COMPAT */
-
-                if (*ptr2 == ':')
-                  {
-                  ptr2++;
-
-                  S->Version = strtol(ptr2,NULL,10);
-                  }
-     
-                break;
+                    return (FAILURE);
                 }
-              }  /* END for (ptr2) */
-            }    /* END else (X.XGetClientInfo != NULL) */
-          }      /* END if (((ptr = strstr(S->RBuffer,MCKeyword[mckClient])) != NULL)... */
- 
-        /* get checksum */
+            }
 
-        if ((ptr = strstr(S->RBuffer,MCKeyword[mckCheckSum])) == NULL)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot locate checksum '%s'\n",
-            MUPrintBuffer(S->RBuffer,S->RBufSize));
+            if (MSURecvPacket(S->sd, &S->RBuffer, 0, NULL, TimeLimit, NULL) ==
+                FAILURE) {
+                MDB(1, fSOCK) MLog("ALERT:    cannot read half socket data\n");
 
-          free(S->RBuffer);
+                if (EMsg != NULL) {
+                    sprintf(EMsg, "cannot receive %ld bytes for message",
+                            S->RBufSize);
+                }
 
-          S->RBuffer = NULL;
-     
-          if (EMsg != NULL)
-            strcpy(EMsg,"cannot locate checksum");
-
-          if (SC != NULL)
-            *SC = mscNoAuth;
- 
-          return(FAILURE);
-          }
-
-        ptr += strlen(MCKeyword[mckCheckSum]);
-
-        MUStrCpy(CKLine,ptr,sizeof(CKLine));
-
-        for (ptr2 = &CKLine[0];*ptr2 != '\0';ptr2++)
-          {
-          if (isspace(*ptr2))
-            {
-            *ptr2 = '\0';
+                return (FAILURE);
+            }
 
             break;
-            }
-          }    /* END for (ptr2) */
 
-        ptr += strlen(CKLine);
+        case mspHTTP:
+        case mspHTTPClient:
 
-        if ((ptr = strstr(ptr,MCKeyword[mckTimeStamp])) == NULL)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot locate timestamp\n");
+            /* FORMAT:  'Content-Length: ' or 'Transfer-Encoding' marker */
 
-          MUFree(&S->RBuffer);
-
-          if (EMsg != NULL)
-            strcpy(EMsg,"cannot locate timestamp");
-
-          if (SC != NULL)
-            *SC = mscNoAuth;
-
-          return(FAILURE);
-          }
-
-        /* verify checksum */
-
-        if (S->CSAlgo != mcsaNONE)
-          {
-          MSecGetChecksum(
-            ptr,
-            strlen(ptr),
-            CKSum,
-            NULL,
-            S->CSAlgo,
-            S->CSKey);
-
-          if (strcmp(CKSum,CKLine) != 0)
             {
-            MDB(1,fSOCK) MLog("ALERT:    checksum does not match (%s:%s)  request '%.120s'\n",
-              CKSum,
-              CKLine,
-	      ptr);
+                ptr = tmpLine;
 
-#ifdef __M32COMPAT
-            if (strcmp(MSched.Admin4User[0],"ALL"))
-#else /* __M32COMPAT */
-            if (strcmp(MSched.Admin[4].UName[0],"ALL"))
-#endif /* __M32COMPAT */
-              {
-              MUFree(&S->RBuffer);
+                /* load HTTP header */
 
-              if (EMsg != NULL)
-                strcpy(EMsg,"invalid message authentication");
+                if (MSURecvPacket(S->sd, &ptr, sizeof(tmpLine), "\r\n\r\n",
+                                  MAX(TimeLimit, 1000000), NULL) == FAILURE) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot load HTTP header\n");
 
-              if (SC != NULL)
-                *SC = mscNoAuth;
+                    if (EMsg != NULL)
+                        strcpy(EMsg, "cannot read message header");
 
-              return(FAILURE);
-              }
-            }    /* END if (strcmp(CKSum,CKLine) != 0) */
-          }      /* END if (S->CSKey != NULL) */
+                    if (SC != NULL) *SC = mscNoEnt;
 
-        /* get timestamp */
-
-        ptr += strlen(MCKeyword[mckTimeStamp]);
-
-        TSVal = strtol(ptr,NULL,10);
-
-        /* locate data */
-
-        if ((ptr = strstr(ptr,MCKeyword[mckData])) == NULL)
-          {
-          MDB(1,fSOCK) MLog("ALERT:    cannot locate data\n");
-
-          MUFree(&S->RBuffer);
-
-          if (EMsg != NULL)
-            strcpy(EMsg,"cannot locate message data");
-
-          return(FAILURE);
-          }
-
-        /* verify timestamp */
-
-        time(&Now);
-
-        if ((((long)Now - TSVal) > 3600) || 
-            (((long)Now - TSVal) < -3600))
-          {
-          MDB(1,fSOCK) MLog("ALERT:    timestamp does not match (%lu:%lu)\n",
-            (unsigned long)Now,
-            (unsigned long)TSVal);
-
-          MUFree(&S->RBuffer);
-
-          if (EMsg != NULL)
-            strcpy(EMsg,"invalid timestamp detected");
-
-          if (SC != NULL)
-            *SC = mscNoAuth;
-
-          return(FAILURE);
-          }
-
-        break;
-      }  /* END switch(S->SocketProtocol) */
-    }    /* END if (DoAuthenticate == TRUE) */
-
-  /* validate message */
-
-  switch (S->WireProtocol)
-    {
-    case mwpS32:
-
-      {
-      mxml_t *EE = NULL;
-      mxml_t *SE;
-      mxml_t *BE;
-      mxml_t *RE;
-      mxml_t *DE;
-
-      char    AName[MMAX_LINE];   /* actor name */
-      char    tmpLine[MMAX_LINE];
-      char    tEMsg[MMAX_LINE];
-
-      /* validate envelope */
-
-      if (MXMLFromString(&EE,S->RBuffer,NULL,tEMsg) == FAILURE)
-        {
-        MDB(1,fSOCK) MLog("ALERT:    invalid socket request received (cannot process XML - %s)\n",
-          tEMsg);
-
-        MUFree(&S->RBuffer);
-        
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot parse XML data");
-
-        return(FAILURE);
-        }
-
-      S->RE = (void *)EE;
-
-      if (MXMLGetChild(EE,"Body",NULL,&BE) == FAILURE)
-        {
-        MXMLDestroyE((mxml_t **)&S->RE);
-
-        MDB(1,fSOCK) MLog("ALERT:    invalid socket request received (cannot locate body)\n");
-
-        MUFree(&S->RBuffer);
-
-        if (EMsg != NULL)
-          strcpy(EMsg,"cannot locate message body");
-
-        return(FAILURE);
-        }
-
-      /* NOTE: 'should' be deprecated - actor located in Request element (S3 3.0) */
-
-      if (MXMLGetAttr(BE,"actor",NULL,AName,sizeof(AName)) == SUCCESS)
-        {
-        MUStrDup(&S->RID,AName);
-        }
-
-      if (MXMLGetAttr(EE,"type",NULL,tmpLine,sizeof(tmpLine)) == SUCCESS)
-        {
-        if (!strcasecmp(tmpLine,"nonblocking"))
-          {
-          S->IsNonBlocking = TRUE;
-          }
-        }
-
-      if (S->CSAlgo != mcsaNONE)
-        { 
-        if (MXMLGetChild(EE,"Signature",NULL,&SE) == SUCCESS)
-          {
-          mxml_t *DVE;
-          mxml_t *SVE;
-
-          char *BString;
-          char  TChar;
-          char *tail;
-
-          char tmpLine[MMAX_LINE];
-
-          mpsi_t *P = NULL;
-
-          /* process signature */
-     
-          MXMLGetChild(SE,"DigestValue",NULL,&DVE);
-          MXMLGetChild(SE,"SignatureValue",NULL,&SVE);
-
-          tmpLine[0] = '\0';
-
-          /* extract body string */
-
-          if ((BString = strstr(S->RBuffer,"<Body")) != NULL)
-            {
-            if ((tail = strstr(BString,"</Body>")) != NULL)
-              {
-              tail += strlen("</Body>");
-
-              TChar = *tail;
-              *tail = '\0';
-
-              if (S->CSKey[0] == '\0')
-                {
-                /* determine key from actor */
-
-#ifdef __M32COMPAT
-                strcpy(S->CSKey,MSched.DefaultCSKey);
-#else /* __M32COMPAT */
-                if ((MPeerFind(AName,&P,FALSE) == SUCCESS) && (P->CSKey != NULL))
-                  {
-                  strcpy(S->CSKey,P->CSKey);
-                  }
-                else if ((MPeerFind(S->RemoteHost,&P,TRUE) == SUCCESS) && (P->CSKey != NULL))
-                  {
-                  /* try to look-up using hostname */
-
-                  strcpy(S->CSKey,P->CSKey);
-
-                  /* add peer to auth */
-
-                  MSchedAddAdmin(AName,P->RIndex);
-                  }
-                else
-                  {
-                  /* use default */
-
-                  strcpy(S->CSKey,MSched.DefaultCSKey);
-                  }
-#endif /* __M32COMPAT */
+                    return (FAILURE);
                 }
 
-              MSecGetChecksum(
-                BString,
-                strlen(BString),
-                tmpLine,
-                NULL,
-                mcsaHMAC64,
-                S->CSKey);
-           
-              *tail = TChar;
-              }
+                S->RBufSize = 0;
+
+                if ((ptr2 = MUStrStr(ptr, "transfer-encoding:", 0, TRUE,
+                                     FALSE)) != NULL) {
+                    ptr2 += strlen("transfer-encoding:") + 1;
+
+                    /* check if chunked */
+
+                    if (MUStrStr(ptr, "chunked", 0, TRUE, FALSE) != NULL) {
+                        /* read initial chunk size */
+
+                        if (MSURecvPacket(S->sd, &ptr2, sizeof(tmpLine), "\r\n",
+                                          MAX(TimeLimit, 1000000),
+                                          NULL) == FAILURE) {
+                            MDB(1, fSOCK)
+                            MLog("ALERT:    cannot load HTTP chunk size\n");
+
+                            if (EMsg != NULL)
+                                strcpy(EMsg, "cannot load initial chunk size");
+
+                            if (SC != NULL) *SC = mscNoMemory;
+
+                            return (FAILURE);
+                        }
+
+                        /* NOTE:  chunks are in hex */
+
+                        if ((S->RBufSize = strtol(ptr2, NULL, 16)) <= 0) {
+                            /* invalid packet length located */
+
+                            MDB(1, fSOCK)
+                            MLog("ALERT:    cannot determine packet size\n");
+
+                            if (EMsg != NULL) {
+                                sprintf(
+                                    EMsg,
+                                    "cannot parse initial chunk size - %.16s",
+                                    ptr2);
+                            }
+
+                            return (FAILURE);
+                        }
+                    }
+                } /* if ((ptr2 = MUStrStr(ptr)) != NULL) */
+
+                if (S->RBufSize != 0) {
+                    /* chunk length already located */
+
+                    /* NO-OP */
+                } else if (((ptr2 = MUStrStr(ptr, "content-length:", 0, TRUE,
+                                             FALSE)) != NULL) ||
+                           ((ptr2 = MUStrStr(ptr, "content-length:", 0, TRUE,
+                                             FALSE)) != NULL)) {
+                    /* extract packet length */
+
+                    ptr2 += strlen("content-length:") + 1;
+
+                    if ((S->RBufSize = strtol(ptr2, NULL, 10)) <= 0) {
+                        /* invalid packet length located */
+
+                        MDB(1, fSOCK)
+                        MLog("ALERT:    cannot determine packet size\n");
+
+                        if (EMsg != NULL) {
+                            sprintf(EMsg,
+                                    "invalid http packet size received - %.16s",
+                                    ptr2);
+                        }
+
+                        return (FAILURE);
+                    }
+                } else {
+                    MDB(6, fSOCK)
+                    MLog("NOTE:     packet length not specified (%.32s)\n",
+                         ptr);
+
+                    strcpy(TMarker, "</html>");
+
+                    /* create 'adequate' buffer */
+
+                    S->RBufSize = MMAX_BUFFER;
+                }
+
+                if (S->RBuffer == NULL) {
+                    /* allocate receive space */
+                    if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) ==
+                        NULL) {
+                        MDB(1, fSOCK)
+                        MLog(
+                            "ERROR:    cannot allocate buffer space (%ld bytes "
+                            "requested)  errno: %d (%s)\n",
+                            S->RBufSize, errno, strerror(errno));
+
+                        if (EMsg != NULL) {
+                            sprintf(EMsg,
+                                    "cannot allocate %d bytes for message",
+                                    (int)S->RBufSize);
+                        }
+
+                        if (SC != NULL) *SC = mscNoMemory;
+
+                        return (FAILURE);
+                    }
+                }
+
+                /* read data */
+
+                if (MSURecvPacket(S->sd, &S->RBuffer, S->RBufSize,
+                                  (TMarker[0] != '\0') ? TMarker : NULL,
+                                  MAX(TimeLimit, 1000000), NULL) == FAILURE) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot read HTTP data\n");
+
+                    if (EMsg != NULL) strcpy(EMsg, "cannot load HTTP data");
+
+                    if (SC != NULL) *SC = mscNoEnt;
+
+                    return (FAILURE);
+                }
+
+                /* terminate buffer */
+
+                S->RBuffer[S->RBufSize] = '\0';
+
+                /* NOTE:  no timestamp, version, or checksum */
+            } /* END BLOCK */
+
+            break;
+
+        default:
+
+            ptr = tmpLine;
+
+            ptr[0] = '\0';
+
+            if (TimeLimit != 0) {
+                /* allow polling */
+                /* TODO: place this logic in other areas? */
+
+                TimeLimit = MAX(TimeLimit, 1000000);
             }
-          else
-            {
-            /* FAILURE: message contains no body */
 
-            MXMLDestroyE((mxml_t **)&S->RE);
- 
-            MDB(1,fSOCK) MLog("ALERT:    invalid socket request received (cannot locate body marker)\n");
+            if (MSURecvPacket(S->sd, &ptr, 9 * sizeof(char), NULL, TimeLimit,
+                              SC) == FAILURE) {
+                MDB(1, fSOCK) MLog("ALERT:    cannot determine packet size\n");
 
-            MUFree(&S->RBuffer);
+                if (EMsg != NULL) strcpy(EMsg, "cannot load packet size");
 
-            if (EMsg != NULL)
-              strcpy(EMsg,"cannot locate message body");
+                if ((SC != NULL) && (*SC != mscNoData)) *SC = mscNoEnt;
 
-            if (SC != NULL)
-              *SC = mscBadRequest;
+                return (FAILURE);
+            }
 
-            return(FAILURE);
-            } 
-            
-          if (strcmp(SVE->Val,tmpLine))
-            { 
-            /* signatures do not match */
+            if (!strncmp(tmpLine, "GET ", strlen("GET "))) {
+                if (MSched.HTTPProcessF == NULL) {
+                    /* HTTP processing not supported */
 
-            /* NOTE:  if checksum does not match, attempt to locate error message from server */
+                    if (EMsg != NULL)
+                        strcpy(EMsg, "http processing not supported");
 
-            if (MXMLGetChild(BE,MSON[msonResponse],NULL,&RE) == SUCCESS)
-              {
-              char tmpLine[MMAX_LINE];
+                    return (FAILURE);
+                }
 
-              enum MSFC tSC;
+                (*MSched.HTTPProcessF)(S, tmpLine);
 
-              if (MS3CheckStatus(RE,&tSC,tmpLine) == FAILURE)
-                {
-                if (tmpLine[0] != '\0')
-                  MUStrDup(&S->SMsg,tmpLine);
+                if (shutdown(S->sd, SHUT_WR) == -1) {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    cannot close send connections (%d : %s)\n",
+                         errno, strerror(errno));
 
-                S->StatusCode = (long)tSC;
+                    if (errno != ENOTCONN) {
+                        /* cannot properly close connection */
+
+                        /* NOTE:  cannot be certain data was successfully
+                         * transferred */
+
+                        if (EMsg != NULL)
+                            strcpy(EMsg, "cannot close connection");
+
+                        return (FAILURE);
+                    }
+                }
+
+                MSUDisconnect(S);
+
+                /* NOTE:  return failure to prevent additional processing (temp)
+                 */
+
+                if (EMsg != NULL) strcpy(EMsg, "socket is closed");
+
+                return (FAILURE);
+            } /* END if (!strncmp(tmpLine,"GET ",strlen("GET "))) */
+
+            tmpLine[8] = '\0';
+
+            /* NOTE:  some strtol() routines fail on zero pad */
+
+            sscanf(tmpLine, "%ld", &S->RBufSize);
+
+            if ((S->RBufSize > (MMAX_BUFFER << 5)) || (S->RBufSize <= 0)) {
+                /* reject empty messages and potential denial of service attacks
+                 */
+                /* allow packets between 1 and 2MB bytes */
+
+                MDB(1, fSOCK)
+                MLog("ALERT:    invalid packet size (%ld)\n", S->RBufSize);
+
+                if (EMsg != NULL) strcpy(EMsg, "packet size is invalid");
+
+                if (SC != NULL) *SC = mscNoMemory;
+
+                return (FAILURE);
+            }
+            if ((S->RBuffer = (char *)calloc(S->RBufSize + 1, 1)) == NULL) {
+                MDB(1, fSOCK)
+                MLog(
+                    "ERROR:    cannot allocate buffer space (%ld bytes "
+                    "requested)  errno: %d (%s)\n",
+                    S->RBufSize, errno, strerror(errno));
 
                 if (EMsg != NULL)
-                  {
-                  snprintf(EMsg,MMAX_LINE,"remote server rejected request, message '%s'",
-                    tmpLine);
-                  }
-                }
-              }
-           
-            MXMLDestroyE((mxml_t **)&S->RE);
+                    strcpy(EMsg, "cannot allocate memory for message");
 
-            MDB(1,fSOCK) MLog("ALERT:    signatures do not match\n");
+                if (SC != NULL) *SC = mscNoMemory;
 
-            MUFree(&S->RBuffer);
- 
-            if ((EMsg != NULL) && (EMsg[0] == '\0'))
-              {
-              /* attempt to locate client */
-
-              if (P == NULL)
-                {
-                char *ptr;
-
-                if (!strncasecmp(AName,"peer:",strlen("peer:")))
-                  {
-                  ptr = AName + strlen("peer:");
-
-                  sprintf(EMsg,"unknown client '%.32s'",
-                    ptr);
-                  }
-                else
-                  {
-                  sprintf(EMsg,"invalid key for client '%.32s'",
-                    AName);
-                  }
-                }
-              else
-                {
-                strcpy(EMsg,"invalid key for client");
-                }
-              }    /* END if ((EMsg != NULL) && ...) */
-
-            if (SC != NULL)
-              *SC = mscNoAuth;
-
-            return(FAILURE);
-            }  /* if (strcmp(SVE->Val,tmpLine)) */
-          }    /* END if (MXMLGetChild(EE,"Signature",NULL,&SE) == SUCCESS) */
-        else
-          {
-          /* cannot locate signature element */
-
-          /* reject message? */
-
-          /* NYI */
-          }
-        }
-      else
-        {
-        /* no authentication algorithm specified */
-
-        /* NYI */
-        }
-
-      /* NOTE:  get next object of either request or response type */
-
-      if (MXMLGetChild(BE,MSON[msonRequest],NULL,&RE) == SUCCESS)
-        {
-        MXMLExtractE(
-          (mxml_t *)BE,
-          (mxml_t *)RE,
-          (mxml_t **)&S->RDE);
-
-        S->RPtr = NULL;
-
-        if (S->RID == NULL)
-          {
-          /* NOTE:  S->RID should be populated before checksum call is made */
-
-          if (MXMLGetAttr(RE,"actor",NULL,AName,sizeof(AName)) == SUCCESS)
-            {
-            MUStrDup(&S->RID,AName);
-            }
-          }
-        }
-      else if (MXMLGetChild(BE,MSON[msonResponse],NULL,&RE) == SUCCESS)
-        {
-        char tmpLine[MMAX_LINE];
-
-        enum MSFC tSC;
-
-        /* load status information if provided */
-
-        if (MS3CheckStatus(RE,&tSC,tmpLine) == FAILURE)
-          {
-          if (tmpLine[0] != '\0')
-            MUStrDup(&S->SMsg,tmpLine);
-          }
-
-        S->StatusCode = (int)tSC;
-
-        if (MXMLGetChild(RE,MSON[msonData],NULL,&DE) == FAILURE)
-          {
-          /* response message received */
- 
-          if (S->StatusCode != 0)
-            {
-            MDB(1,fSOCK) MLog("ALERT:    request failed with status code %03ld (%s)\n",
-              S->StatusCode,
-              (S->SMsg != NULL) ? S->SMsg : "");
-
-            if (SC != NULL)
-              *SC = (enum MStatusCodeEnum)S->StatusCode;
-
-            MDB(7,fSOCK) MLog("INFO:     failed request message '%.256s'\n",
-              (S->RBuffer != NULL) ? S->RBuffer : "NULL");
-
-            MXMLDestroyE((mxml_t **)&S->RE);
-
-            MUFree(&S->RBuffer);
-
-            if (EMsg != NULL)
-              {
-              if (S->SMsg == NULL)
-                {
-                sprintf(EMsg,"server rejected request with status code %ld",
-                  S->StatusCode);
-                }
-              else
-                {
-                snprintf(EMsg,MMAX_LINE,"server rejected request with status code %ld - %s",
-                  S->StatusCode,
-                  S->SMsg);
-                }
-              }    /* END if (EMsg != NULL) */
-
-            return(FAILURE);
+                return (FAILURE);
             }
 
-          S->RDE  = NULL;
-          S->RPtr = NULL;
- 
-          MDB(1,fSOCK) MLog("INFO:     successfully received socket response\n");
-          }
-        else
-          {
-          MXMLExtractE(
-            (mxml_t *)RE,
-            (mxml_t *)DE,
-            (mxml_t **)&S->RDE);
+            if (MSURecvPacket(S->sd, &S->RBuffer, S->RBufSize, NULL,
+                              MAX(TimeLimit, 1000000), NULL) == FAILURE) {
+                MDB(1, fSOCK)
+                MLog("ALERT:    cannot receive packet (%ld bytes requested)\n",
+                     S->RBufSize);
 
-          S->RPtr = DE->Val;
-          }
-        }    /* END else if (MXMLGetChild(BE) == SUCCESS) */
-      else
+                MUFree(&S->RBuffer);
+
+                if (EMsg != NULL) strcpy(EMsg, "cannot read message");
+
+                if (SC != NULL) *SC = mscNoEnt;
+
+                return (FAILURE);
+            }
+
+            S->RBuffer[S->RBufSize] = '\0';
+
+            break;
+    } /* switch (S->SocketProtocol) */
+
+    if (S->WireProtocol == mwpNONE) {
+        /* determine wire protocol */
+
+        if (strstr(S->RBuffer, "<Envelope") != NULL) {
+            S->WireProtocol = mwpS32;
+
+            /* set default algorithm */
+
+            S->CSAlgo = MSched.DefaultCSAlgo;
+        }
+    } /* END if (S->WireProtocol == mwpNONE) */
+
+    /* adjust state */
+
+    switch (S->WireProtocol) {
+        case mwpS32:
+
+            /* no socket level authentication required */
+
+            DoAuthenticate = FALSE;
+
+            break;
+
+        default:
+
+            /* NO-OP */
+
+            break;
+    } /* END switch (S->WireProtocol) */
+
+    /* authenticate message */
+
+    if (DoAuthenticate == TRUE) {
+        switch (S->SocketProtocol) {
+            case mspS3Challenge:
+            case mspHalfSocket:
+            case mspHTTP:
+            case mspHTTPClient:
+
+                /* NO-OP */
+
+                break;
+
+            default:
+
+                /* verify packet */
+
+                /* NOTE:  client marker must not be in args */
+
+                /* locate data marker */
+
+                if ((dptr = strstr(S->RBuffer, MCKeyword[mckData])) == NULL) {
+                    MDB(3, fSOCK)
+                    MLog("ALERT:    cannot locate command data (%.60s)\n",
+                         S->RBuffer);
+
+                    MUFree(&S->RBuffer);
+
+                    if (EMsg != NULL)
+                        strcpy(EMsg, "cannot locate command data");
+
+                    return (FAILURE);
+                }
+
+                if ((ptr = strstr(S->RBuffer, MCKeyword[mckArgs])) != NULL) {
+                    /* arg marker located */
+
+                    dptr = ptr;
+                }
+
+                /* set defaults */
+
+                S->Version = 0;
+
+                strcpy(S->Name, NONE);
+
+                if (S->CSKey[0] == '\0') strcpy(S->CSKey, MSched.DefaultCSKey);
+
+                S->CSAlgo = MSched.DefaultCSAlgo;
+
+                /* extract client name */
+
+                if (((ptr = strstr(S->RBuffer, MCKeyword[mckClient])) !=
+                     NULL) &&
+                    (ptr < dptr)) {
+                    ptr += strlen(MCKeyword[mckClient]);
+
+                    if ((X.XGetClientInfo !=
+                         (int (*)(void *, msocket_t *, char *))0) &&
+                        ((*X.XGetClientInfo)(X.xd, S, ptr) == SUCCESS)) {
+                        /* NOTE:  enable logging only during unit testing */
+
+                        /*
+                        MDB(1,fSOCK) MLog("INFO:     using checksum seed '%s'
+                        for client '%s'\n",
+                          S->SKey,
+                          S->Name);
+                        */
+                    } else {
+                        /* use default client detection */
+
+                        for (ptr2 = ptr; (ptr2 - ptr) < MMAX_NAME; ptr2++) {
+                            if ((*ptr2 == '\0') || (*ptr2 == ':') ||
+                                isspace(*ptr2)) {
+#ifdef __M32COMPAT
+                                extern mclient_t MClient[];
+
+                                mclient_t *C;
+
+                                int index;
+
+                                MUStrCpy(
+                                    S->Name, ptr,
+                                    MIN((long)sizeof(S->Name), ptr2 - ptr + 1));
+
+                                for (index = 0; index < MMAX_CLIENT; index++) {
+                                    C = &MClient[index];
+
+                                    if (C->Name[0] == '\0') break;
+
+                                    if (C->Name[0] == '\1') continue;
+
+                                    if (!strcmp(S->Name, C->Name)) {
+                                        strcpy(S->CSKey, C->CSKey);
+
+                                        break;
+                                    }
+                                } /* END for (index) */
+#else                             /* __M32COMPAT */
+                                mpsi_t *P;
+
+                                MUStrCpy(S->Name, ptr, MIN((int)sizeof(S->Name),
+                                                           ptr2 - ptr + 1));
+
+                                if (MPeerFind(S->Name, &P, FALSE) == SUCCESS) {
+                                    if (P->CSKey != NULL)
+                                        strcpy(S->CSKey, P->CSKey);
+                                }
+#endif                            /* __M32COMPAT */
+
+                                if (*ptr2 == ':') {
+                                    ptr2++;
+
+                                    S->Version = strtol(ptr2, NULL, 10);
+                                }
+
+                                break;
+                            }
+                        } /* END for (ptr2) */
+                    }     /* END else (X.XGetClientInfo != NULL) */
+                } /* END if (((ptr = strstr(S->RBuffer,MCKeyword[mckClient])) !=
+                     NULL)... */
+
+                /* get checksum */
+
+                if ((ptr = strstr(S->RBuffer, MCKeyword[mckCheckSum])) ==
+                    NULL) {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    cannot locate checksum '%s'\n",
+                         MUPrintBuffer(S->RBuffer, S->RBufSize));
+
+                    free(S->RBuffer);
+
+                    S->RBuffer = NULL;
+
+                    if (EMsg != NULL) strcpy(EMsg, "cannot locate checksum");
+
+                    if (SC != NULL) *SC = mscNoAuth;
+
+                    return (FAILURE);
+                }
+
+                ptr += strlen(MCKeyword[mckCheckSum]);
+
+                MUStrCpy(CKLine, ptr, sizeof(CKLine));
+
+                for (ptr2 = &CKLine[0]; *ptr2 != '\0'; ptr2++) {
+                    if (isspace(*ptr2)) {
+                        *ptr2 = '\0';
+
+                        break;
+                    }
+                } /* END for (ptr2) */
+
+                ptr += strlen(CKLine);
+
+                if ((ptr = strstr(ptr, MCKeyword[mckTimeStamp])) == NULL) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot locate timestamp\n");
+
+                    MUFree(&S->RBuffer);
+
+                    if (EMsg != NULL) strcpy(EMsg, "cannot locate timestamp");
+
+                    if (SC != NULL) *SC = mscNoAuth;
+
+                    return (FAILURE);
+                }
+
+                /* verify checksum */
+
+                if (S->CSAlgo != mcsaNONE) {
+                    MSecGetChecksum(ptr, strlen(ptr), CKSum, NULL, S->CSAlgo,
+                                    S->CSKey);
+
+                    if (strcmp(CKSum, CKLine) != 0) {
+                        MDB(1, fSOCK)
+                        MLog(
+                            "ALERT:    checksum does not match (%s:%s)  "
+                            "request '%.120s'\n",
+                            CKSum, CKLine, ptr);
+
+#ifdef __M32COMPAT
+                        if (strcmp(MSched.Admin4User[0], "ALL"))
+#else  /* __M32COMPAT */
+                        if (strcmp(MSched.Admin[4].UName[0], "ALL"))
+#endif /* __M32COMPAT */
+                        {
+                            MUFree(&S->RBuffer);
+
+                            if (EMsg != NULL)
+                                strcpy(EMsg, "invalid message authentication");
+
+                            if (SC != NULL) *SC = mscNoAuth;
+
+                            return (FAILURE);
+                        }
+                    } /* END if (strcmp(CKSum,CKLine) != 0) */
+                }     /* END if (S->CSKey != NULL) */
+
+                /* get timestamp */
+
+                ptr += strlen(MCKeyword[mckTimeStamp]);
+
+                TSVal = strtol(ptr, NULL, 10);
+
+                /* locate data */
+
+                if ((ptr = strstr(ptr, MCKeyword[mckData])) == NULL) {
+                    MDB(1, fSOCK) MLog("ALERT:    cannot locate data\n");
+
+                    MUFree(&S->RBuffer);
+
+                    if (EMsg != NULL)
+                        strcpy(EMsg, "cannot locate message data");
+
+                    return (FAILURE);
+                }
+
+                /* verify timestamp */
+
+                time(&Now);
+
+                if ((((long)Now - TSVal) > 3600) ||
+                    (((long)Now - TSVal) < -3600)) {
+                    MDB(1, fSOCK)
+                    MLog("ALERT:    timestamp does not match (%lu:%lu)\n",
+                         (unsigned long)Now, (unsigned long)TSVal);
+
+                    MUFree(&S->RBuffer);
+
+                    if (EMsg != NULL)
+                        strcpy(EMsg, "invalid timestamp detected");
+
+                    if (SC != NULL) *SC = mscNoAuth;
+
+                    return (FAILURE);
+                }
+
+                break;
+        } /* END switch(S->SocketProtocol) */
+    }     /* END if (DoAuthenticate == TRUE) */
+
+    /* validate message */
+
+    switch (S->WireProtocol) {
+        case mwpS32:
+
         {
-        MXMLDestroyE((mxml_t **)&S->RE);
+            mxml_t *EE = NULL;
+            mxml_t *SE;
+            mxml_t *BE;
+            mxml_t *RE;
+            mxml_t *DE;
 
-        MDB(1,fSOCK) MLog("ALERT:    invalid socket message received\n");
+            char AName[MMAX_LINE]; /* actor name */
+            char tmpLine[MMAX_LINE];
+            char tEMsg[MMAX_LINE];
 
-        MUFree(&S->RBuffer);
+            /* validate envelope */
 
-        if (EMsg != NULL)
-          strcpy(EMsg,"invalid message type received");
+            if (MXMLFromString(&EE, S->RBuffer, NULL, tEMsg) == FAILURE) {
+                MDB(1, fSOCK)
+                MLog(
+                    "ALERT:    invalid socket request received (cannot process "
+                    "XML - %s)\n",
+                    tEMsg);
 
-        return(FAILURE);
-        }    /* END else */
-      }      /* END BLOCK */
+                MUFree(&S->RBuffer);
 
-      break;
+                if (EMsg != NULL) strcpy(EMsg, "cannot parse XML data");
 
-    default:
+                return (FAILURE);
+            }
 
-      /* NYI */
+            S->RE = (void *)EE;
 
-      break;
-    }  /* END switch (S->WireProtocol) */
+            if (MXMLGetChild(EE, "Body", NULL, &BE) == FAILURE) {
+                MXMLDestroyE((mxml_t **)&S->RE);
 
-  S->IsLoaded = TRUE;
+                MDB(1, fSOCK)
+                MLog(
+                    "ALERT:    invalid socket request received (cannot locate "
+                    "body)\n");
 
-  return(SUCCESS);
-  }  /* END MSURecvData() */
+                MUFree(&S->RBuffer);
 
+                if (EMsg != NULL) strcpy(EMsg, "cannot locate message body");
 
+                return (FAILURE);
+            }
 
+            /* NOTE: 'should' be deprecated - actor located in Request element
+             * (S3 3.0) */
 
+            if (MXMLGetAttr(BE, "actor", NULL, AName, sizeof(AName)) ==
+                SUCCESS) {
+                MUStrDup(&S->RID, AName);
+            }
+
+            if (MXMLGetAttr(EE, "type", NULL, tmpLine, sizeof(tmpLine)) ==
+                SUCCESS) {
+                if (!strcasecmp(tmpLine, "nonblocking")) {
+                    S->IsNonBlocking = TRUE;
+                }
+            }
+
+            if (S->CSAlgo != mcsaNONE) {
+                if (MXMLGetChild(EE, "Signature", NULL, &SE) == SUCCESS) {
+                    mxml_t *DVE;
+                    mxml_t *SVE;
+
+                    char *BString;
+                    char TChar;
+                    char *tail;
+
+                    char tmpLine[MMAX_LINE];
+
+                    mpsi_t *P = NULL;
+
+                    /* process signature */
+
+                    MXMLGetChild(SE, "DigestValue", NULL, &DVE);
+                    MXMLGetChild(SE, "SignatureValue", NULL, &SVE);
+
+                    tmpLine[0] = '\0';
+
+                    /* extract body string */
+
+                    if ((BString = strstr(S->RBuffer, "<Body")) != NULL) {
+                        if ((tail = strstr(BString, "</Body>")) != NULL) {
+                            tail += strlen("</Body>");
+
+                            TChar = *tail;
+                            *tail = '\0';
+
+                            if (S->CSKey[0] == '\0') {
+/* determine key from actor */
+
+#ifdef __M32COMPAT
+                                strcpy(S->CSKey, MSched.DefaultCSKey);
+#else  /* __M32COMPAT */
+                                if ((MPeerFind(AName, &P, FALSE) == SUCCESS) &&
+                                    (P->CSKey != NULL)) {
+                                    strcpy(S->CSKey, P->CSKey);
+                                } else if ((MPeerFind(S->RemoteHost, &P,
+                                                      TRUE) == SUCCESS) &&
+                                           (P->CSKey != NULL)) {
+                                    /* try to look-up using hostname */
+
+                                    strcpy(S->CSKey, P->CSKey);
+
+                                    /* add peer to auth */
+
+                                    MSchedAddAdmin(AName, P->RIndex);
+                                } else {
+                                    /* use default */
+
+                                    strcpy(S->CSKey, MSched.DefaultCSKey);
+                                }
+#endif /* __M32COMPAT */
+                            }
+
+                            MSecGetChecksum(BString, strlen(BString), tmpLine,
+                                            NULL, mcsaHMAC64, S->CSKey);
+
+                            *tail = TChar;
+                        }
+                    } else {
+                        /* FAILURE: message contains no body */
+
+                        MXMLDestroyE((mxml_t **)&S->RE);
+
+                        MDB(1, fSOCK)
+                        MLog(
+                            "ALERT:    invalid socket request received (cannot "
+                            "locate body marker)\n");
+
+                        MUFree(&S->RBuffer);
+
+                        if (EMsg != NULL)
+                            strcpy(EMsg, "cannot locate message body");
+
+                        if (SC != NULL) *SC = mscBadRequest;
+
+                        return (FAILURE);
+                    }
+
+                    if (strcmp(SVE->Val, tmpLine)) {
+                        /* signatures do not match */
+
+                        /* NOTE:  if checksum does not match, attempt to locate
+                         * error message from server */
+
+                        if (MXMLGetChild(BE, MSON[msonResponse], NULL, &RE) ==
+                            SUCCESS) {
+                            char tmpLine[MMAX_LINE];
+
+                            enum MSFC tSC;
+
+                            if (MS3CheckStatus(RE, &tSC, tmpLine) == FAILURE) {
+                                if (tmpLine[0] != '\0')
+                                    MUStrDup(&S->SMsg, tmpLine);
+
+                                S->StatusCode = (long)tSC;
+
+                                if (EMsg != NULL) {
+                                    snprintf(EMsg, MMAX_LINE,
+                                             "remote server rejected request, "
+                                             "message '%s'",
+                                             tmpLine);
+                                }
+                            }
+                        }
+
+                        MXMLDestroyE((mxml_t **)&S->RE);
+
+                        MDB(1, fSOCK)
+                        MLog("ALERT:    signatures do not match\n");
+
+                        MUFree(&S->RBuffer);
+
+                        if ((EMsg != NULL) && (EMsg[0] == '\0')) {
+                            /* attempt to locate client */
+
+                            if (P == NULL) {
+                                char *ptr;
+
+                                if (!strncasecmp(AName, "peer:",
+                                                 strlen("peer:"))) {
+                                    ptr = AName + strlen("peer:");
+
+                                    sprintf(EMsg, "unknown client '%.32s'",
+                                            ptr);
+                                } else {
+                                    sprintf(EMsg,
+                                            "invalid key for client '%.32s'",
+                                            AName);
+                                }
+                            } else {
+                                strcpy(EMsg, "invalid key for client");
+                            }
+                        } /* END if ((EMsg != NULL) && ...) */
+
+                        if (SC != NULL) *SC = mscNoAuth;
+
+                        return (FAILURE);
+                    } /* if (strcmp(SVE->Val,tmpLine)) */
+                } /* END if (MXMLGetChild(EE,"Signature",NULL,&SE) == SUCCESS)
+                     */
+                else {
+                    /* cannot locate signature element */
+
+                    /* reject message? */
+
+                    /* NYI */
+                }
+            } else {
+                /* no authentication algorithm specified */
+
+                /* NYI */
+            }
+
+            /* NOTE:  get next object of either request or response type */
+
+            if (MXMLGetChild(BE, MSON[msonRequest], NULL, &RE) == SUCCESS) {
+                MXMLExtractE((mxml_t *)BE, (mxml_t *)RE, (mxml_t **)&S->RDE);
+
+                S->RPtr = NULL;
+
+                if (S->RID == NULL) {
+                    /* NOTE:  S->RID should be populated before checksum call is
+                     * made */
+
+                    if (MXMLGetAttr(RE, "actor", NULL, AName, sizeof(AName)) ==
+                        SUCCESS) {
+                        MUStrDup(&S->RID, AName);
+                    }
+                }
+            } else if (MXMLGetChild(BE, MSON[msonResponse], NULL, &RE) ==
+                       SUCCESS) {
+                char tmpLine[MMAX_LINE];
+
+                enum MSFC tSC;
+
+                /* load status information if provided */
+
+                if (MS3CheckStatus(RE, &tSC, tmpLine) == FAILURE) {
+                    if (tmpLine[0] != '\0') MUStrDup(&S->SMsg, tmpLine);
+                }
+
+                S->StatusCode = (int)tSC;
+
+                if (MXMLGetChild(RE, MSON[msonData], NULL, &DE) == FAILURE) {
+                    /* response message received */
+
+                    if (S->StatusCode != 0) {
+                        MDB(1, fSOCK)
+                        MLog(
+                            "ALERT:    request failed with status code %03ld "
+                            "(%s)\n",
+                            S->StatusCode, (S->SMsg != NULL) ? S->SMsg : "");
+
+                        if (SC != NULL)
+                            *SC = (enum MStatusCodeEnum)S->StatusCode;
+
+                        MDB(7, fSOCK)
+                        MLog("INFO:     failed request message '%.256s'\n",
+                             (S->RBuffer != NULL) ? S->RBuffer : "NULL");
+
+                        MXMLDestroyE((mxml_t **)&S->RE);
+
+                        MUFree(&S->RBuffer);
+
+                        if (EMsg != NULL) {
+                            if (S->SMsg == NULL) {
+                                sprintf(EMsg,
+                                        "server rejected request with status "
+                                        "code %ld",
+                                        S->StatusCode);
+                            } else {
+                                snprintf(EMsg, MMAX_LINE,
+                                         "server rejected request with status "
+                                         "code %ld - %s",
+                                         S->StatusCode, S->SMsg);
+                            }
+                        } /* END if (EMsg != NULL) */
+
+                        return (FAILURE);
+                    }
+
+                    S->RDE = NULL;
+                    S->RPtr = NULL;
+
+                    MDB(1, fSOCK)
+                    MLog("INFO:     successfully received socket response\n");
+                } else {
+                    MXMLExtractE((mxml_t *)RE, (mxml_t *)DE,
+                                 (mxml_t **)&S->RDE);
+
+                    S->RPtr = DE->Val;
+                }
+            } /* END else if (MXMLGetChild(BE) == SUCCESS) */
+            else {
+                MXMLDestroyE((mxml_t **)&S->RE);
+
+                MDB(1, fSOCK)
+                MLog("ALERT:    invalid socket message received\n");
+
+                MUFree(&S->RBuffer);
+
+                if (EMsg != NULL) strcpy(EMsg, "invalid message type received");
+
+                return (FAILURE);
+            } /* END else */
+        }     /* END BLOCK */
+
+        break;
+
+        default:
+
+            /* NYI */
+
+            break;
+    } /* END switch (S->WireProtocol) */
+
+    S->IsLoaded = TRUE;
+
+    return (SUCCESS);
+} /* END MSURecvData() */
 
 int MSURecvPacket(
 
-  int    sd,      /* I */
-  char **BufP,    /* O (alloc if NULL ptr passed) */
-  long   BufSize, /* I (optional) */
-  char  *Pattern, /* I (optional) */
-  long   TimeOut, /* I (in us) */
-  enum MStatusCodeEnum *SC)  /* O (optional) */
+    int sd,                   /* I */
+    char **BufP,              /* O (alloc if NULL ptr passed) */
+    long BufSize,             /* I (optional) */
+    char *Pattern,            /* I (optional) */
+    long TimeOut,             /* I (in us) */
+    enum MStatusCodeEnum *SC) /* O (optional) */
 
-  {
-  long count;
+{
+    long count;
 
-  int  rc;
-  int  len;
+    int rc;
+    int len;
 
-  int  MaxBuf;
+    int MaxBuf;
 
-  char *ptr;
+    char *ptr;
 
 #ifndef __MPROD
-  const char *FName = "MSURecvPacket";
+    const char *FName = "MSURecvPacket";
 
-  MDB(3,fSOCK) MLog("%s(%d,BufP,%ld,%s,%ld,SC)\n",
-    FName,
-    sd,
-    BufSize,
-    (Pattern != NULL) ? Pattern : "NULL",
-    TimeOut);
+    MDB(3, fSOCK)
+    MLog("%s(%d,BufP,%ld,%s,%ld,SC)\n", FName, sd, BufSize,
+         (Pattern != NULL) ? Pattern : "NULL", TimeOut);
 
 #endif /* !__MPROD */
 
-  if (BufP == NULL)
-    {
-    return(FAILURE);
+    if (BufP == NULL) {
+        return (FAILURE);
     }
 
-  count = 0;
+    count = 0;
 
-  MaxBuf = (BufSize > 0) ? BufSize : (MMAX_BUFFER << 4);
+    MaxBuf = (BufSize > 0) ? BufSize : (MMAX_BUFFER << 4);
 
-  if ((BufSize == 0) || (*BufP == NULL) || (Pattern != NULL))
-    {
-    char *ptr;
-    int   ReadSize;
+    if ((BufSize == 0) || (*BufP == NULL) || (Pattern != NULL)) {
+        char *ptr;
+        int ReadSize;
 
-    if (*BufP == NULL)
-      {
-      if ((*(char **)BufP = (char *)calloc(
-          1,
-          MaxBuf)) == NULL)
-        {
-        /* cannot allocate memory */
+        if (*BufP == NULL) {
+            if ((*(char **)BufP = (char *)calloc(1, MaxBuf)) == NULL) {
+                /* cannot allocate memory */
 
-        return(FAILURE);
-        }
-      }
-
-    if (Pattern != NULL)
-      {
-      ReadSize = 1;
-
-      len = strlen(Pattern);
-      }
-    else
-      {
-      ReadSize = MaxBuf;
-
-      len = 0;
-      }
-
-    ptr = *(char **)BufP;
-
-    while (TRUE)
-      {
-      if (MSUSelectRead(sd,TimeOut) == FAILURE)
-        {
-        MDB(2,fSOCK) MLog("WARNING:  cannot receive message within %1.6lf second timeout (aborting)\n",
-          (double)TimeOut / 1000000);
-
-        if (SC != NULL)
-          {
-          *SC = mscNoData; 
-          }
-
-        return(FAILURE);
+                return (FAILURE);
+            }
         }
 
-      rc = recv(sd,&ptr[count],ReadSize,SOCKETFLAGS);
+        if (Pattern != NULL) {
+            ReadSize = 1;
 
-      if (rc == 0)
-        {
-        /* select indicated data was available, but recv() returned nothing */
+            len = strlen(Pattern);
+        } else {
+            ReadSize = MaxBuf;
 
-        /* sleep and try again */
+            len = 0;
+        }
+
+        ptr = *(char **)BufP;
+
+        while (TRUE) {
+            if (MSUSelectRead(sd, TimeOut) == FAILURE) {
+                MDB(2, fSOCK)
+                MLog(
+                    "WARNING:  cannot receive message within %1.6lf second "
+                    "timeout (aborting)\n",
+                    (double)TimeOut / 1000000);
+
+                if (SC != NULL) {
+                    *SC = mscNoData;
+                }
+
+                return (FAILURE);
+            }
+
+            rc = recv(sd, &ptr[count], ReadSize, SOCKETFLAGS);
+
+            if (rc == 0) {
+/* select indicated data was available, but recv() returned nothing */
+
+/* sleep and try again */
 
 #ifdef __M32COMPAT
-        MUSleep(TimeOut);
-#else /* __M32COMPAT */
-        MUSleep(TimeOut,FALSE);
+                MUSleep(TimeOut);
+#else  /* __M32COMPAT */
+                MUSleep(TimeOut, FALSE);
 #endif /* __M32COMPAT */
 
-        rc = recv(sd,&ptr[count],ReadSize,SOCKETFLAGS);
+                rc = recv(sd, &ptr[count], ReadSize, SOCKETFLAGS);
 
-        if (rc == 0)
-          {
-          MDB(2,fSOCK) MLog("WARNING:  cannot receive message within %1.6lf second timeout (no data/aborting)\n",
-            (double)TimeOut / 1000000);
+                if (rc == 0) {
+                    MDB(2, fSOCK)
+                    MLog(
+                        "WARNING:  cannot receive message within %1.6lf second "
+                        "timeout (no data/aborting)\n",
+                        (double)TimeOut / 1000000);
 
-          return(FAILURE);
-          }
-        }
+                    return (FAILURE);
+                }
+            }
 
-      if (rc == -1)
-        {
-        if (errno == EAGAIN)
-          continue;
+            if (rc == -1) {
+                if (errno == EAGAIN) continue;
 
-        /* socket recv call failed */
+                /* socket recv call failed */
 
-        break;
-        }
+                break;
+            }
 
-      if (count >= MaxBuf)
-        {
-        /* buffer size reached */
+            if (count >= MaxBuf) {
+                /* buffer size reached */
 
-        break;
-        }
+                break;
+            }
 
-      /* NOTE:  precludes binary data */
+            /* NOTE:  precludes binary data */
 
-      if ((count > 0) && (ptr[count - 1] == '\0'))
-        {
-        /* end of string located */
+            if ((count > 0) && (ptr[count - 1] == '\0')) {
+                /* end of string located */
 
-        break;
-        }
+                break;
+            }
 
-      count += rc;
+            count += rc;
 
-      if ((Pattern != NULL) &&
-          (count >= len) &&
-          (MUStrNCmpCI(Pattern,ptr + count - len,len) == SUCCESS))
-        {
-        /* termination pattern located */
+            if ((Pattern != NULL) && (count >= len) &&
+                (MUStrNCmpCI(Pattern, ptr + count - len, len) == SUCCESS)) {
+                /* termination pattern located */
 
-        break;
-        }
-      }  /* END while (TRUE) */
+                break;
+            }
+        } /* END while (TRUE) */
 
-    ptr[count] = '\0';
-    }  /* END if ((BufSize == 0) || ... ) */
-  else
-    {
-    time_t Start;
-    time_t Now;
+        ptr[count] = '\0';
+    } /* END if ((BufSize == 0) || ... ) */
+    else {
+        time_t Start;
+        time_t Now;
 
-    ptr = *BufP;
+        ptr = *BufP;
 
-    time(&Start);
-    Now = Start;
+        time(&Start);
+        Now = Start;
 
-    while (count < BufSize)
-      {
-      if (MSUSelectRead(sd,TimeOut) == FAILURE)
-        {
-        MDB(2,fSOCK) MLog("WARNING:  cannot receive message within %1.6lf second timeout (aborting)\n",
-          (double)TimeOut / 1000000);
+        while (count < BufSize) {
+            if (MSUSelectRead(sd, TimeOut) == FAILURE) {
+                MDB(2, fSOCK)
+                MLog(
+                    "WARNING:  cannot receive message within %1.6lf second "
+                    "timeout (aborting)\n",
+                    (double)TimeOut / 1000000);
 
-        if (SC != NULL)
-          {
-          *SC = mscNoData; 
-          }
+                if (SC != NULL) {
+                    *SC = mscNoData;
+                }
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      rc = recv(sd,(ptr + count),(BufSize - count),SOCKETFLAGS);
+            rc = recv(sd, (ptr + count), (BufSize - count), SOCKETFLAGS);
 
-      if (rc > 0)
-        {
-        count += rc;
-        continue;
-        }
+            if (rc > 0) {
+                count += rc;
+                continue;
+            }
 
-      time(&Now);
+            time(&Now);
 
-      if (((long)Now - (long)Start) >= (TimeOut / 1000000))
-        {
-        MDB(2,fSOCK) MLog("WARNING:  cannot receive message within %1.6lf second timeout (aborting)\n",
-          (double)TimeOut / 1000000);
+            if (((long)Now - (long)Start) >= (TimeOut / 1000000)) {
+                MDB(2, fSOCK)
+                MLog(
+                    "WARNING:  cannot receive message within %1.6lf second "
+                    "timeout (aborting)\n",
+                    (double)TimeOut / 1000000);
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      if (rc < 0)
-        {
-        if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
-          {
-          /* continue if packet partially read */
+            if (rc < 0) {
+                if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+                    /* continue if packet partially read */
 
-          MDB(0,fSOCK) MLog("ERROR:    socket blocked (select() indicated socket was available)\n");
+                    MDB(0, fSOCK)
+                    MLog(
+                        "ERROR:    socket blocked (select() indicated socket "
+                        "was available)\n");
 
-          continue;
-          }
+                    continue;
+                }
 
-        if ((errno == ECONNRESET) || (errno == EINTR))
-          {
-          MDB(0,fSOCK) MLog("INFO:     client has disconnected, errno: %d (%s)\n",
-            errno,
-            strerror(errno));
+                if ((errno == ECONNRESET) || (errno == EINTR)) {
+                    MDB(0, fSOCK)
+                    MLog("INFO:     client has disconnected, errno: %d (%s)\n",
+                         errno, strerror(errno));
 
-          return(FAILURE);
-          }
+                    return (FAILURE);
+                }
 
-        MDB(6,fSOCK) MLog("WARNING:  cannot read client socket, errno: %d (%s)\n",
-          errno,
-          strerror(errno));
+                MDB(6, fSOCK)
+                MLog("WARNING:  cannot read client socket, errno: %d (%s)\n",
+                     errno, strerror(errno));
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      if ((rc == 0) && (count == 0))
-        {
-        /* fail if no packet detected */
+            if ((rc == 0) && (count == 0)) {
+                /* fail if no packet detected */
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      }     /* END while (count < BufSize) */
+        } /* END while (count < BufSize) */
 
-    MDB(6,fSOCK) MLog("INFO:     %ld of %ld bytes read from sd %d\n",
-      count,
-      BufSize,
-      sd);
-    }  /* END else (BufSize == 0) */
+        MDB(6, fSOCK)
+        MLog("INFO:     %ld of %ld bytes read from sd %d\n", count, BufSize,
+             sd);
+    } /* END else (BufSize == 0) */
 
-  MDB(8,fSOCK) MLog("INFO:     message '%s' read\n",
-    MUPrintBuffer(*BufP,count));
+    MDB(8, fSOCK)
+    MLog("INFO:     message '%s' read\n", MUPrintBuffer(*BufP, count));
 
-  /* NOTE:  return SUCCESS if buffer full even if entire message not loaded */
+    /* NOTE:  return SUCCESS if buffer full even if entire message not loaded */
 
-  return(SUCCESS);
-  }  /* END MSURecvPacket() */
-
-
-
-
+    return (SUCCESS);
+} /* END MSURecvPacket() */
 
 int MSUSelectWrite(
 
-  int           sd,        /* I */
-  unsigned long TimeLimit) /* I */
+    int sd,                  /* I */
+    unsigned long TimeLimit) /* I */
 
-  {
-  struct timeval TimeOut;
-  int            numfds;
+{
+    struct timeval TimeOut;
+    int numfds;
 
-  fd_set wset;
+    fd_set wset;
 
-  const char *FName = "MSUSelectWrite";
+    const char *FName = "MSUSelectWrite";
 
-  MDB(7,fSOCK) MLog("%s(%d,%lu)\n",
-    FName,
-    sd,
-    TimeLimit);
+    MDB(7, fSOCK) MLog("%s(%d,%lu)\n", FName, sd, TimeLimit);
 
-  FD_ZERO(&wset);
+    FD_ZERO(&wset);
 
-  FD_SET(sd,&wset);
+    FD_SET(sd, &wset);
 
-  TimeOut.tv_sec  = TimeLimit / 1000000;
-  TimeOut.tv_usec = TimeLimit % 1000000;
+    TimeOut.tv_sec = TimeLimit / 1000000;
+    TimeOut.tv_usec = TimeLimit % 1000000;
 
-  numfds = sd;
+    numfds = sd;
 
-  if (select(numfds + 1,NULL,&wset,NULL,&TimeOut) > 0)
-    {
+    if (select(numfds + 1, NULL, &wset, NULL, &TimeOut) > 0) {
+        if (FD_ISSET(sd, &wset)) {
+            return (SUCCESS);
+        }
 
-    if (FD_ISSET(sd,&wset))
-      {
-      return(SUCCESS);
-      }
+    } /* END if (select() > 0) */
 
-    }  /* END if (select() > 0) */
-
-  return(FAILURE);
-  }  /* END MSUSelectWrite() */
-
-
-
-
+    return (FAILURE);
+} /* END MSUSelectWrite() */
 
 int MSUSelectRead(
 
-  int           sd,        /* I */
-  unsigned long TimeLimit) /* I (in us) */
+    int sd,                  /* I */
+    unsigned long TimeLimit) /* I (in us) */
 
-  {
-  struct timeval TimeOut;
-  int            numfds;
+{
+    struct timeval TimeOut;
+    int numfds;
 
-  fd_set rset;
+    fd_set rset;
 
-  const char *FName = "MSUSelectRead";
+    const char *FName = "MSUSelectRead";
 
-  MDB(7,fSOCK) MLog("%s(%d,%lu)\n",
-    FName,
-    sd,
-    TimeLimit);
+    MDB(7, fSOCK) MLog("%s(%d,%lu)\n", FName, sd, TimeLimit);
 
-  FD_ZERO(&rset);
+    FD_ZERO(&rset);
 
-  FD_SET(sd,&rset);
+    FD_SET(sd, &rset);
 
-  TimeOut.tv_sec  = TimeLimit / 1000000;
-  TimeOut.tv_usec = TimeLimit % 1000000;
+    TimeOut.tv_sec = TimeLimit / 1000000;
+    TimeOut.tv_usec = TimeLimit % 1000000;
 
-  numfds = sd;
+    numfds = sd;
 
-  if (select(numfds + 1,&rset,NULL,NULL,&TimeOut) > 0)
-    {
-    if (FD_ISSET(sd,&rset))
-      {
-      return(SUCCESS);
-      }
+    if (select(numfds + 1, &rset, NULL, NULL, &TimeOut) > 0) {
+        if (FD_ISSET(sd, &rset)) {
+            return (SUCCESS);
+        }
 
-    MDB(2,fSOCK) MLog("MSUSelectRead-FD is not set\n");
-    }  /* END if (select() > 0) */
+        MDB(2, fSOCK) MLog("MSUSelectRead-FD is not set\n");
+    } /* END if (select() > 0) */
 
-  MDB(2,fSOCK) MLog("MSUSelectRead-select failed\n");
+    MDB(2, fSOCK) MLog("MSUSelectRead-select failed\n");
 
-  return(FAILURE);
-  }  /* END MSUSelectRead() */
-
-
-
-
+    return (FAILURE);
+} /* END MSUSelectRead() */
 
 int MAIX_ISSET(
 
-  int  FD,
-  int *List)
+    int FD, int *List)
 
-  {
-  return(MISSET(List[FD / 32],(FD % 32)));
-  }  /* MAIX_ISSET() */
-
-
-
-
-
+{
+    return (MISSET(List[FD / 32], (FD % 32)));
+} /* MAIX_ISSET() */
 
 int MAIX_SET(
 
-  int  FD,
-  int *List)
+    int FD, int *List)
 
-  {
-  MSET(List[FD / 32],(FD % 32));
+{
+    MSET(List[FD / 32], (FD % 32));
 
-  return(SUCCESS); 
-  }  /* END MAIX_SET() */
-
-
-
-
+    return (SUCCESS);
+} /* END MAIX_SET() */
 
 int MAIX_CLR(
 
-  int  FD,
-  int *List)
+    int FD, int *List)
 
-  {
-  MUNSET(List[FD / 32],(FD % 32));
+{
+    MUNSET(List[FD / 32], (FD % 32));
 
-  return(SUCCESS);
-  }  /* END MAIX_CLR() */
-
-
-
+    return (SUCCESS);
+} /* END MAIX_CLR() */
 
 int MUSystemF(
 
-  char *Command,   /* I */
-  int   TimeLimit, /* I (in usec) */
-  int  *PID)       /* O */
+    char *Command, /* I */
+    int TimeLimit, /* I (in usec) */
+    int *PID)      /* O */
 
-  {
-  int StatLoc;
-  int Flags;
-  int pid;
+{
+    int StatLoc;
+    int Flags;
+    int pid;
 
-  char Line[MMAX_LINE];
-  char *Arg[MMAX_ARG];
-  char *Cmd;
+    char Line[MMAX_LINE];
+    char *Arg[MMAX_ARG];
+    char *Cmd;
 
-  int  aindex;
-  int  TimeStep;
-  int  step;
+    int aindex;
+    int TimeStep;
+    int step;
 
-  char *TokPtr;
+    char *TokPtr;
 
 #ifndef __MPROD
-  const char *FName = "MUSystemF";
+    const char *FName = "MUSystemF";
 
-  MDB(3,fSOCK) MLog("%s(%s,%d,PID)\n",
-    FName,
-    Command,
-    TimeLimit);
+    MDB(3, fSOCK) MLog("%s(%s,%d,PID)\n", FName, Command, TimeLimit);
 #endif /* !__MPROD */
 
-  strcpy(Line,Command);
+    strcpy(Line, Command);
 
-  Cmd = MUStrTok(Line," \t\n",&TokPtr);
+    Cmd = MUStrTok(Line, " \t\n", &TokPtr);
 
-  Arg[0] = Cmd;
+    Arg[0] = Cmd;
 
-  aindex = 1;
+    aindex = 1;
 
-  while ((Arg[aindex++] = MUStrTok(NULL," \t\n",&TokPtr)) != NULL);
+    while ((Arg[aindex++] = MUStrTok(NULL, " \t\n", &TokPtr)) != NULL)
+        ;
 
-  Arg[aindex] = NULL;
+    Arg[aindex] = NULL;
 
-  if ((pid = fork()) == -1)
-    {
-    MDB(0,fSOCK) MLog("ERROR:    cannot fork, errno: %d (%s)\n",
-      errno,
-      strerror(errno));
+    if ((pid = fork()) == -1) {
+        MDB(0, fSOCK)
+        MLog("ERROR:    cannot fork, errno: %d (%s)\n", errno, strerror(errno));
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  if (pid == 0)
-    {
-    /* child process */
+    if (pid == 0) {
+        /* child process */
 
-    if (execv(Cmd,Arg) == -1)
-      {
-      /* child has failed */
+        if (execv(Cmd, Arg) == -1) {
+            /* child has failed */
 
-      exit(0);
-      }
+            exit(0);
+        }
 
-    exit(0);
+        exit(0);
     }
 
-  MDB(5,fSOCK) MLog("INFO:     child process %d forked\n",
-    pid);
+    MDB(5, fSOCK) MLog("INFO:     child process %d forked\n", pid);
 
-  if (PID != NULL)
-    *PID = pid;
+    if (PID != NULL) *PID = pid;
 
-  if (TimeLimit == -1)
-    {
-    return(SUCCESS);
+    if (TimeLimit == -1) {
+        return (SUCCESS);
     }
 
-  /* wait for child to complete */
- 
-  Flags = WNOHANG;
+    /* wait for child to complete */
 
-  step = 0;
+    Flags = WNOHANG;
 
-  TimeStep = TimeLimit / 10000 + 1;
+    step = 0;
 
-  /* wait for child to complete */
+    TimeStep = TimeLimit / 10000 + 1;
 
-  while (step++ < TimeStep)
-    {
-    if (waitpid(pid,&StatLoc,Flags) == pid)
-      {
-      MDB(3,fSOCK) MLog("INFO:     command '%s' spawned\n",
-        Command);
+    /* wait for child to complete */
 
-      return(SUCCESS);
-      }
+    while (step++ < TimeStep) {
+        if (waitpid(pid, &StatLoc, Flags) == pid) {
+            MDB(3, fSOCK) MLog("INFO:     command '%s' spawned\n", Command);
 
-    sleep(1);
+            return (SUCCESS);
+        }
 
+        sleep(1);
     }
 
-  MDB(3,fSOCK) MLog("ALERT:    spawn of command '%s' did not return within %d us\n",
-    Command,
-    TimeLimit);
+    MDB(3, fSOCK)
+    MLog("ALERT:    spawn of command '%s' did not return within %d us\n",
+         Command, TimeLimit);
 
-  if (kill(pid,9) == -1)
-    {
-    MDB(0,fSOCK) MLog("ERROR:    cannot kill process %d\n",
-      pid);
-    }
-  else
-    {
-    /* clear defunct child processes */
+    if (kill(pid, 9) == -1) {
+        MDB(0, fSOCK) MLog("ERROR:    cannot kill process %d\n", pid);
+    } else {
+        /* clear defunct child processes */
 
-    MUClearChild(NULL);
+        MUClearChild(NULL);
     }
 
-  return(FAILURE);
-  }  /* END MUSystemF() */
-
-
-
-
-
+    return (FAILURE);
+} /* END MUSystemF() */
 
 int MUClearChild(
 
-  int *PID)  /* O (optional) */
+    int *PID) /* O (optional) */
 
-  {
-  int pid;
-  int StatLoc;
-  int Flags;
+{
+    int pid;
+    int StatLoc;
+    int Flags;
 
 #ifndef __MPROD
-  const char *FName = "MUClearChild";
+    const char *FName = "MUClearChild";
 
-  MDB(3,fSOCK) MLog("%s(PID)\n",
-    FName);
+    MDB(3, fSOCK) MLog("%s(PID)\n", FName);
 #endif /* !__MPROD */
-  
-  Flags = WNOHANG;
 
-  while ((pid = waitpid(-1,&StatLoc,Flags)) != -1)
-    {  
-    /* if no waiting processes */
+    Flags = WNOHANG;
 
-    if (PID != NULL)
-      *PID = pid;
- 
-    if (pid == 0)
-      {
-      MDB(4,fSOCK) MLog("INFO:     no child processes found\n");
+    while ((pid = waitpid(-1, &StatLoc, Flags)) != -1) {
+        /* if no waiting processes */
 
-      return(SUCCESS);
-      }
-    else
-      {
-      MDB(3,fSOCK) MLog("INFO:     child PID %d cleared\n",
-        pid);
- 
-      if (PID != NULL)
-        {
-        return(SUCCESS);
-        }
+        if (PID != NULL) *PID = pid;
+
+        if (pid == 0) {
+            MDB(4, fSOCK) MLog("INFO:     no child processes found\n");
+
+            return (SUCCESS);
+        } else {
+            MDB(3, fSOCK) MLog("INFO:     child PID %d cleared\n", pid);
+
+            if (PID != NULL) {
+                return (SUCCESS);
+            }
 
 #ifndef __M32COMPAT
-      /* must keep track of harvested processes for triggers */
+            /* must keep track of harvested processes for triggers */
 
-      index = 0;
+            index = 0;
 
-      while (index < MMAX_PID)
-        {
-        if (MPID[index].PID == 0)
-          break;
+            while (index < MMAX_PID) {
+                if (MPID[index].PID == 0) break;
 
-        index++;
-        }
+                index++;
+            }
 
-      if (index == MMAX_PID)
-        index = 0;
+            if (index == MMAX_PID) index = 0;
 
-      MPID[index].PID = pid;
-      MPID[index].StatLoc = StatLoc;
+            MPID[index].PID = pid;
+            MPID[index].StatLoc = StatLoc;
 #endif /* __M32COMPAT */
-      }
-    }    /* END while ((pid = waitpid(-1,&StatLoc,Flags)) != -1) */
+        }
+    } /* END while ((pid = waitpid(-1,&StatLoc,Flags)) != -1) */
 
-  return(FAILURE);
-  }  /* END MUClearChild() */
-
-
-
+    return (FAILURE);
+} /* END MUClearChild() */
 
 #ifndef __M32COMPAT
 
 mbool_t MOSHostIsLocal(
 
-  char *HostName)  /* I */
+    char *HostName) /* I */
 
-  {
-  int aindex;
+{
+    int aindex;
 
-  mulong tmpAddr;
+    mulong tmpAddr;
 
-  if ((HostName == NULL) || (HostName[0] == '\0'))
-    {
-    return(FAILURE);
+    if ((HostName == NULL) || (HostName[0] == '\0')) {
+        return (FAILURE);
     }
 
-  if (MSched.LocalHost[0] == '\0')
-    {
-    if (MOSGetHostName(NULL,MSched.LocalHost,&MSched.LocalAddr) == FAILURE)
-      {
-      MDB(0,fCONFIG) MLog("ERROR:    cannot determine local hostname\n");
+    if (MSched.LocalHost[0] == '\0') {
+        if (MOSGetHostName(NULL, MSched.LocalHost, &MSched.LocalAddr) ==
+            FAILURE) {
+            MDB(0, fCONFIG) MLog("ERROR:    cannot determine local hostname\n");
 
-      fprintf(stderr,"ERROR:    cannot determine local hostname\n");
+            fprintf(stderr, "ERROR:    cannot determine local hostname\n");
 
-      exit(1);
-      }
-    }
-
-  if (!strcasecmp(HostName,MSched.LocalHost))
-    {
-    /* hostname match found */
-
-    return(TRUE);
-    }
-
-  /* get address of specified host */
-
-  if (MOSGetHostName(HostName,NULL,&tmpAddr) == SUCCESS)
-    {
-    if (tmpAddr == MSched.LocalAddr)
-      {
-      /* host address match found */
-
-      return(TRUE);
-      }
-    }
-
-  /* check local host and aliases */
-
-  for (aindex = 0;aindex < MMAX_HOSTALIAS;aindex++)
-    {
-    if (MSched.ServerAlias[aindex][0] == '\0')
-      break;
-
-    if (!strcasecmp(HostName,MSched.ServerAlias[aindex]))
-      {
-      /* alias hostname match found */
-
-      return(TRUE);
-      }
-
-    if (MSched.ServerAliasAddr[aindex] == 0)
-      {
-      if (MOSGetHostName(
-           NULL,
-           MSched.ServerAlias[aindex],
-           &MSched.ServerAliasAddr[aindex]) == -1)
-        {
-        MSched.ServerAliasAddr[aindex] = MBNOTSET;
+            exit(1);
         }
-      }
+    }
 
-    if (tmpAddr == MSched.ServerAliasAddr[aindex])
-      {
-      /* alias host address match found */
+    if (!strcasecmp(HostName, MSched.LocalHost)) {
+        /* hostname match found */
 
-      return(TRUE);
-      }
-    }    /* END for (aindex) */
+        return (TRUE);
+    }
 
-  /* specified host name is not local */
+    /* get address of specified host */
 
-  return(FALSE);
-  }  /* END MOSHostIsLocal() */
+    if (MOSGetHostName(HostName, NULL, &tmpAddr) == SUCCESS) {
+        if (tmpAddr == MSched.LocalAddr) {
+            /* host address match found */
+
+            return (TRUE);
+        }
+    }
+
+    /* check local host and aliases */
+
+    for (aindex = 0; aindex < MMAX_HOSTALIAS; aindex++) {
+        if (MSched.ServerAlias[aindex][0] == '\0') break;
+
+        if (!strcasecmp(HostName, MSched.ServerAlias[aindex])) {
+            /* alias hostname match found */
+
+            return (TRUE);
+        }
+
+        if (MSched.ServerAliasAddr[aindex] == 0) {
+            if (MOSGetHostName(NULL, MSched.ServerAlias[aindex],
+                               &MSched.ServerAliasAddr[aindex]) == -1) {
+                MSched.ServerAliasAddr[aindex] = MBNOTSET;
+            }
+        }
+
+        if (tmpAddr == MSched.ServerAliasAddr[aindex]) {
+            /* alias host address match found */
+
+            return (TRUE);
+        }
+    } /* END for (aindex) */
+
+    /* specified host name is not local */
+
+    return (FALSE);
+} /* END MOSHostIsLocal() */
 
 #endif /* !__M32COMPAT */
 
-
-
-
 int MOSGetHostName(
 
-  char          *HostName,      /* I */
-  char          *FullHostName,  /* O (optional) */
-  unsigned long *Address)       /* O (optional) */
- 
-  {
-  char            tmpHostName[MMAX_NAME];
-  struct hostent *hoststruct;
+    char *HostName,         /* I */
+    char *FullHostName,     /* O (optional) */
+    unsigned long *Address) /* O (optional) */
 
-  if ((HostName == NULL) || (HostName[0] == '\0'))
-    {
-    if (gethostname(tmpHostName,sizeof(tmpHostName)) == -1)
-      {
-      MDB(0,fCONFIG) MLog("ERROR:    cannot get hostname, errno: %d (%s)\n",
-        errno,
-        strerror(errno));
+{
+    char tmpHostName[MMAX_NAME];
+    struct hostent *hoststruct;
 
-      return(FAILURE);
-      }
-    }
-  else
-    {
-    strcpy(tmpHostName,HostName);
+    if ((HostName == NULL) || (HostName[0] == '\0')) {
+        if (gethostname(tmpHostName, sizeof(tmpHostName)) == -1) {
+            MDB(0, fCONFIG)
+            MLog("ERROR:    cannot get hostname, errno: %d (%s)\n", errno,
+                 strerror(errno));
+
+            return (FAILURE);
+        }
+    } else {
+        strcpy(tmpHostName, HostName);
     }
 
-  if ((hoststruct = gethostbyname(tmpHostName)) == NULL)
-    {
-    MDB(0,fCONFIG) MLog("ERROR:    cannot get full hostname for host '%s', errno: %d (%s)\n",
-      tmpHostName,
-      errno,
-      strerror(errno));
+    if ((hoststruct = gethostbyname(tmpHostName)) == NULL) {
+        MDB(0, fCONFIG)
+        MLog(
+            "ERROR:    cannot get full hostname for host '%s', errno: %d "
+            "(%s)\n",
+            tmpHostName, errno, strerror(errno));
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  if (Address != NULL)
-    memmove(Address,hoststruct->h_addr,sizeof(mulong));
+    if (Address != NULL) memmove(Address, hoststruct->h_addr, sizeof(mulong));
 
-  if (FullHostName != NULL)
-    strcpy(FullHostName,hoststruct->h_name);
+    if (FullHostName != NULL) strcpy(FullHostName, hoststruct->h_name);
 
-  return(SUCCESS);
-  }  /* END MOSGetHostName() */
-
-
-
+    return (SUCCESS);
+} /* END MOSGetHostName() */
 
 int MSUCallBack(
 
-  char *Host,        /* I */
-  int   Port,        /* I */
-  char *ClientName,  /* I */
-  char *Message)     /* I */
+    char *Host,       /* I */
+    int Port,         /* I */
+    char *ClientName, /* I */
+    char *Message)    /* I */
 
-  {
-  msocket_t tmpS;
-  msocket_t *S;
+{
+    msocket_t tmpS;
+    msocket_t *S;
 
-  char     SBuffer[MMAX_BUFFER];
+    char SBuffer[MMAX_BUFFER];
 
 #ifndef __MPROD
-  const char *FName = "MSUCallBack";
+    const char *FName = "MSUCallBack";
 
-  MDB(4,fSOCK) MLog("%s(%s,%d,%s,%s)\n",
-    FName,
-    Host,
-    Port,
-    (ClientName != NULL) ? ClientName : "NULL",
-    Message);
+    MDB(4, fSOCK)
+    MLog("%s(%s,%d,%s,%s)\n", FName, Host, Port,
+         (ClientName != NULL) ? ClientName : "NULL", Message);
 #endif /* !__MPROD */
 
-  S = &tmpS;
+    S = &tmpS;
 
-  MSUInitialize(S,Host,Port,2000000,(1 << msftTCP));
+    MSUInitialize(S, Host, Port, 2000000, (1 << msftTCP));
 
-  if (MSUConnect(S,FALSE,NULL) == FAILURE)
-    {
-    MDB(3,fSOCK) MLog("ALERT:    cannot send callback message '%s' to %s:%d (no connect)\n",
-      Message,
-      Host,
-      Port);
+    if (MSUConnect(S, FALSE, NULL) == FAILURE) {
+        MDB(3, fSOCK)
+        MLog(
+            "ALERT:    cannot send callback message '%s' to %s:%d (no "
+            "connect)\n",
+            Message, Host, Port);
 
-    return(FAILURE);
+        return (FAILURE);
     }
 
-  if ((ClientName == NULL) || (ClientName[0] == '\0'))
-    {
-    if (MSUSendPacket(S->sd,Message,strlen(Message),2000000,NULL) == FAILURE)
-      {
-      MDB(3,fSOCK) MLog("ALERT:    cannot send callback message '%s' to %s:%d\n",
-        Message,
-        Host,
-        Port);
+    if ((ClientName == NULL) || (ClientName[0] == '\0')) {
+        if (MSUSendPacket(S->sd, Message, strlen(Message), 2000000, NULL) ==
+            FAILURE) {
+            MDB(3, fSOCK)
+            MLog("ALERT:    cannot send callback message '%s' to %s:%d\n",
+                 Message, Host, Port);
 
-      MSUDisconnect(S);
+            MSUDisconnect(S);
 
-      return(FAILURE);
-      }
+            return (FAILURE);
+        }
 
-    MSUDisconnect(S);
-    }
-  else
-    {
-    /* must be secured */
+        MSUDisconnect(S);
+    } else {
+        /* must be secured */
 
-    if (S->CSKey[0] == '\0')
-      strcpy(S->CSKey,MSched.DefaultCSKey);
+        if (S->CSKey[0] == '\0') strcpy(S->CSKey, MSched.DefaultCSKey);
 
-    strcpy(S->Name,MSched.Name);
+        strcpy(S->Name, MSched.Name);
 
 #ifdef __M32COMPAT
-    {
-    extern mclient_t MClient[];
-
-    int index;
-
-    for (index = 0;index < MMAX_CLIENT;index++)
-      {
-      if (!strcmp(MClient[index].Name,ClientName))
         {
-        strcpy(S->CSKey,MClient[index].CSKey);
+            extern mclient_t MClient[];
 
-        break;
+            int index;
+
+            for (index = 0; index < MMAX_CLIENT; index++) {
+                if (!strcmp(MClient[index].Name, ClientName)) {
+                    strcpy(S->CSKey, MClient[index].CSKey);
+
+                    break;
+                }
+            } /* END for (index) */
+        }     /* END BLOCK */
+#else         /* __M32COMPAT */
+        {
+            mpsi_t *P;
+
+            if (MPeerFind(S->Name, &P, FALSE) == SUCCESS) {
+                if (P->CSKey != NULL) strcpy(S->CSKey, P->CSKey);
+            }
+        } /* END BLOCK */
+#endif        /* __M32COMPAT */
+
+        sprintf(SBuffer, "%s%s %s%s %s%s %s%s", MCKeyword[mckCommand],
+                "scallback", MCKeyword[mckAuth], MUUIDToName(MOSGetEUID()),
+                MCKeyword[mckClient], ClientName, MCKeyword[mckArgs],
+                (Message != NULL) ? Message : "");
+
+        S->SBuffer = SBuffer;
+        S->SBufSize = strlen(S->SBuffer);
+
+        if (MSUSendData(S, MMAX_SOCKETWAIT, FALSE, FALSE) == FAILURE) {
+            MDB(0, fSOCK)
+            MLog("ERROR:    cannot send callback to %s grid server '%s':%d\n",
+                 ClientName, Host, Port);
+
+            MSUFree(S);
+
+            return (FAILURE);
         }
-      }    /* END for (index) */
-    }  /* END BLOCK */
-#else /* __M32COMPAT */
-    {
-    mpsi_t *P;
 
-    if (MPeerFind(S->Name,&P,FALSE) == SUCCESS)
-      {
-      if (P->CSKey != NULL)
-        strcpy(S->CSKey,P->CSKey);
-      }
-    }  /* END BLOCK */
-#endif /* __M32COMPAT */
+        MSUFree(S);
+    } /* END ((ClientName == NULL) || (ClientName[0] == '\0')) */
 
-    sprintf(SBuffer,"%s%s %s%s %s%s %s%s",
-      MCKeyword[mckCommand],
-      "scallback",
-      MCKeyword[mckAuth],
-      MUUIDToName(MOSGetEUID()),
-      MCKeyword[mckClient],
-      ClientName,
-      MCKeyword[mckArgs],
-      (Message != NULL) ? Message : "");
-
-    S->SBuffer  = SBuffer;
-    S->SBufSize = strlen(S->SBuffer);
-
-    if (MSUSendData(S,MMAX_SOCKETWAIT,FALSE,FALSE) == FAILURE)
-      {
-      MDB(0,fSOCK) MLog("ERROR:    cannot send callback to %s grid server '%s':%d\n",
-        ClientName,
-        Host,
-        Port);
-
-      MSUFree(S);
-
-      return(FAILURE);
-      }
-
-    MSUFree(S);
-    }  /* END ((ClientName == NULL) || (ClientName[0] == '\0')) */
-
-  return(SUCCESS);
-  }  /* END MSUCallBack() */
-
-
-
+    return (SUCCESS);
+} /* END MSUCallBack() */
 
 int MSUCreate(
 
-  msocket_t **SP)  /* O (alloc) */
+    msocket_t **SP) /* O (alloc) */
 
-  {
-  if (SP == NULL)
-    {
-    return(FAILURE);
+{
+    if (SP == NULL) {
+        return (FAILURE);
     }
 
-  *SP = (msocket_t *)calloc(1,sizeof(msocket_t));
+    *SP = (msocket_t *)calloc(1, sizeof(msocket_t));
 
-  if (*SP == NULL)
-    {
-    return(FAILURE);
+    if (*SP == NULL) {
+        return (FAILURE);
     }
 
-  return(SUCCESS);
-  }  /* END MSUCreate() */
-
-
-
+    return (SUCCESS);
+} /* END MSUCreate() */
 
 int MSUDisconnect(
 
-  msocket_t *S)  /* I */
+    msocket_t *S) /* I */
 
-  {
+{
 #ifndef __MPROD
-  const char *FName = "MSUDisconnect";
+    const char *FName = "MSUDisconnect";
 
-  MDB(2,fSOCK) MLog("%s(%s)\n",
-    FName,
-    (S != NULL) ? "S" : "NULL");
+    MDB(2, fSOCK) MLog("%s(%s)\n", FName, (S != NULL) ? "S" : "NULL");
 #endif /* !__MPROD */
 
-  if (S == NULL)
-    {
-    return(SUCCESS);
+    if (S == NULL) {
+        return (SUCCESS);
     }
 
-  if (S->sd <= 0)
-    {
-    return(SUCCESS);
+    if (S->sd <= 0) {
+        return (SUCCESS);
     }
 
-  if ((S->SocketProtocol == mspHalfSocket) || 
-      (S->SocketProtocol == mspS3Challenge))
-    {
-    /* delay required for half socket connections to allow data to be transmitted */
+    if ((S->SocketProtocol == mspHalfSocket) ||
+        (S->SocketProtocol == mspS3Challenge)) {
+        /* delay required for half socket connections to allow data to be
+         * transmitted */
 
-    /* NOTE:  temporary hack approach */
+        /* NOTE:  temporary hack approach */
 
-    /* sleep(1); */
+        /* sleep(1); */
     }
 
-  close(S->sd);
+    close(S->sd);
 
-  S->sd = -1;
+    S->sd = -1;
 
-  MSUClientCount--;
+    MSUClientCount--;
 
-  return(SUCCESS);
-  }  /* END MSUDisconnect() */
-
-
-
-
+    return (SUCCESS);
+} /* END MSUDisconnect() */
 
 int MSUClose(
 
-  msocket_t *S)  /* I */
+    msocket_t *S) /* I */
 
-  {
-  MSUDisconnect(S);
-  
-  S->State = sussClosed;
- 
-  return(SUCCESS);
-  }  /* END MSUClose() */
+{
+    MSUDisconnect(S);
 
+    S->State = sussClosed;
 
-
-
+    return (SUCCESS);
+} /* END MSUClose() */
 
 int MSUFree(
 
-  msocket_t *S)  /* I (modified) */
+    msocket_t *S) /* I (modified) */
 
-  {
-  if (S == NULL)
-    {
-    return(SUCCESS);
+{
+    if (S == NULL) {
+        return (SUCCESS);
     }
 
-  MUFree(&S->RBuffer);
-  MUFree(&S->SMsg);
-  MUFree(&S->RID);
-  MUFree(&S->ClientName);
+    MUFree(&S->RBuffer);
+    MUFree(&S->SMsg);
+    MUFree(&S->RID);
+    MUFree(&S->ClientName);
 
-  if (S->SBIsDynamic == TRUE)
-    {
-    /* free allocated memory */
+    if (S->SBIsDynamic == TRUE) {
+        /* free allocated memory */
 
-    MUFree(&S->SBuffer);
+        MUFree(&S->SBuffer);
 
-    S->SBIsDynamic = FALSE;
-    }
-  else
-    {
-    /* clear pointer to stack space */
+        S->SBIsDynamic = FALSE;
+    } else {
+        /* clear pointer to stack space */
 
-    S->SBuffer = NULL;
+        S->SBuffer = NULL;
     }
 
-  if (S->sd > 0)
-    {
-    MSUDisconnect(S);
+    if (S->sd > 0) {
+        MSUDisconnect(S);
     }
 
-  S->WireProtocol   = mwpNONE;
-  S->SocketProtocol = mspNONE;
+    S->WireProtocol = mwpNONE;
+    S->SocketProtocol = mspNONE;
 
-  if (S->SE != NULL)
-    {
-    MXMLDestroyE((mxml_t **)&S->SE);
+    if (S->SE != NULL) {
+        MXMLDestroyE((mxml_t **)&S->SE);
     }
 
-  if (S->RE != NULL)
-    {
-    MXMLDestroyE((mxml_t **)&S->RE);
+    if (S->RE != NULL) {
+        MXMLDestroyE((mxml_t **)&S->RE);
     }
 
-  if (S->RDE != NULL)
-    {
-    /* RDE is 'extracted' from RE (must be independently free'd) */
+    if (S->RDE != NULL) {
+        /* RDE is 'extracted' from RE (must be independently free'd) */
 
-    MXMLDestroyE((mxml_t **)&S->RDE);
+        MXMLDestroyE((mxml_t **)&S->RDE);
     }
 
-  return(SUCCESS);
-  }  /* END MSUFree() */
-
-
-
+    return (SUCCESS);
+} /* END MSUFree() */
 
 int MSUAdjustSBuffer(
 
-  msocket_t *S,         /* I (modified) */
-  int        BufSize,   /* I */
-  mbool_t    IncrSize)  /* I */
+    msocket_t *S,     /* I (modified) */
+    int BufSize,      /* I */
+    mbool_t IncrSize) /* I */
 
-  {
-  int NewSize;
+{
+    int NewSize;
 
-  char *ptr;
+    char *ptr;
 
-  if (S == NULL)
-    {
-    return(FAILURE);
+    if (S == NULL) {
+        return (FAILURE);
     }
 
-  if (IncrSize == TRUE)
-    {
-    NewSize = S->SBufSize + BufSize;
-    }
-  else
-    {
-    /* NOTE:  do not allow buffer reduction */
+    if (IncrSize == TRUE) {
+        NewSize = S->SBufSize + BufSize;
+    } else {
+        /* NOTE:  do not allow buffer reduction */
 
-    NewSize = MAX(S->SBufSize,BufSize);
+        NewSize = MAX(S->SBufSize, BufSize);
     }
 
-  if (S->SBIsDynamic == FALSE)
-    {
-    ptr = (char *)calloc(NewSize, 1);
+    if (S->SBIsDynamic == FALSE) {
+        ptr = (char *)calloc(NewSize, 1);
 
-    memcpy(ptr,S->SBuffer,S->SBufSize);
-    }
-  else
-    {
-    ptr = (char *)realloc(S->SBuffer,NewSize);
-    } 
-
-  if (ptr == NULL)
-    {
-    /* cannot allocate memory */
-
-    /* original buffer is maintained */
-
-    return(FAILURE);
+        memcpy(ptr, S->SBuffer, S->SBufSize);
+    } else {
+        ptr = (char *)realloc(S->SBuffer, NewSize);
     }
 
-  S->SBuffer = ptr;
-  S->SBufSize = NewSize;
+    if (ptr == NULL) {
+        /* cannot allocate memory */
 
-  S->SBIsDynamic = TRUE;
+        /* original buffer is maintained */
 
-  return(SUCCESS); 
-  }  /* END MSUAdjustSBuffer() */
+        return (FAILURE);
+    }
 
+    S->SBuffer = ptr;
+    S->SBufSize = NewSize;
 
+    S->SBIsDynamic = TRUE;
 
+    return (SUCCESS);
+} /* END MSUAdjustSBuffer() */
 
 int MSUSetAttr(
 
-  msocket_t            *S,      /* I (modified) */
-  enum MSocketAttrEnum  AIndex, /* I */
-  void                 *Value)  /* I */
+    msocket_t *S,                /* I (modified) */
+    enum MSocketAttrEnum AIndex, /* I */
+    void *Value)                 /* I */
 
-  {
+{
 #ifndef __MPROD
-  const char *FName = "MSUSetAttr";
+    const char *FName = "MSUSetAttr";
 
-  MDB(3,fSOCK) MLog("%s(%s,%s,%s)\n",
-    FName,
-    (S != NULL) ? "S" : "NULL",
-    MSockAttr[AIndex],
-    (Value != NULL) ? "Value" : "NULL");
+    MDB(3, fSOCK)
+    MLog("%s(%s,%s,%s)\n", FName, (S != NULL) ? "S" : "NULL", MSockAttr[AIndex],
+         (Value != NULL) ? "Value" : "NULL");
 #endif /* !__MPROD */
 
-  switch (AIndex)
-    {
-    case msockaLocalHost:
+    switch (AIndex) {
+        case msockaLocalHost:
 
-      /* FORMAT:  <STRING> */
+            /* FORMAT:  <STRING> */
 
-      /* NYI */
+            /* NYI */
 
-      break;
+            break;
 
-    case msockaLocalPort:
+        case msockaLocalPort:
 
-      /* FORMAT:  <INT> */
+            /* FORMAT:  <INT> */
 
-      if ((S->State == sussOpen) || (S->State == sussBusy))
-        {
-        return(FAILURE);
-        }
+            if ((S->State == sussOpen) || (S->State == sussBusy)) {
+                return (FAILURE);
+            }
 
-      /* use RemotePort variable - MSU treats this as LocalPort when needed */
+            /* use RemotePort variable - MSU treats this as LocalPort when
+             * needed */
 
-      if (Value != NULL)
-        S->RemotePort = *(int *)Value;
-      else
-        S->RemotePort = -1;
+            if (Value != NULL)
+                S->RemotePort = *(int *)Value;
+            else
+                S->RemotePort = -1;
 
-      break;
+            break;
 
-    case msockaRemoteHost:
+        case msockaRemoteHost:
 
-      /* FORMAT:  <STRING> */
+            /* FORMAT:  <STRING> */
 
-      if ((S->State == sussOpen) || (S->State == sussBusy))
-        {
-        return(FAILURE);
-        }
+            if ((S->State == sussOpen) || (S->State == sussBusy)) {
+                return (FAILURE);
+            }
 
-      if (Value != NULL)
-        MUStrCpy(S->RemoteHost,(char *)Value,sizeof(S->RemoteHost));
-      else
-        S->RemoteHost[0] = '\0';
+            if (Value != NULL)
+                MUStrCpy(S->RemoteHost, (char *)Value, sizeof(S->RemoteHost));
+            else
+                S->RemoteHost[0] = '\0';
 
-      break;
+            break;
 
-    case msockaRemotePort:
+        case msockaRemotePort:
 
-      /* FORMAT:  <INT> */
+            /* FORMAT:  <INT> */
 
-      if ((S->State == sussOpen) || (S->State == sussBusy))
-        {
-        return(FAILURE);
-        }
+            if ((S->State == sussOpen) || (S->State == sussBusy)) {
+                return (FAILURE);
+            }
 
-      if (Value != NULL)
-        S->RemotePort = *(int *)Value;
-      else
-        S->RemotePort = -1;
+            if (Value != NULL)
+                S->RemotePort = *(int *)Value;
+            else
+                S->RemotePort = -1;
 
-      break;
+            break;
 
-    default:
+        default:
 
-      return(FAILURE);
+            return (FAILURE);
 
-      /*NOTREACHED*/
+            /*NOTREACHED*/
 
-      break;
-    }  /* END switch(AIndex) */
+            break;
+    } /* END switch(AIndex) */
 
-  return(SUCCESS);
-  }  /* END MSUSetAttr() */
-
-
+    return (SUCCESS);
+} /* END MSUSetAttr() */
 
 /* perform deep copy of msocket */
 int MSUDup(
-    
-  msocket_t **Dst,  /* O */
-  msocket_t  *Src)  /* I */
 
-  {
-  msocket_t *S;
+    msocket_t **Dst, /* O */
+    msocket_t *Src)  /* I */
 
-  if ((Dst == NULL) ||
-      (Src == NULL))
-    {
-    return(FAILURE);
+{
+    msocket_t *S;
+
+    if ((Dst == NULL) || (Src == NULL)) {
+        return (FAILURE);
     }
 
-  /* do shallow memcpy first */
-  S = (msocket_t *)calloc(1,sizeof(msocket_t));
+    /* do shallow memcpy first */
+    S = (msocket_t *)calloc(1, sizeof(msocket_t));
 
-  memcpy(S,Src,sizeof(msocket_t));
+    memcpy(S, Src, sizeof(msocket_t));
 
-  /* strings */
-  
-  S->URI = NULL;  
-  MUStrDup(&S->URI,Src->URI);
-  
-  S->RID = NULL;
-  MUStrDup(&S->RID,Src->RID);
-  
-  S->SMsg = NULL;
-  MUStrDup(&S->SMsg,Src->SMsg);
-  
-  S->ClientName = NULL;
-  MUStrDup(&S->ClientName,Src->ClientName);
-  
-  S->RBuffer = NULL;
-  S->RPtr = NULL;
-  MUStrDup(&S->RBuffer,Src->RBuffer);
-  
-  S->SData = NULL;
-  MUStrDup(&S->SData,Src->SData);
+    /* strings */
 
-  if (Src->SBIsDynamic == TRUE)
-    {
-    MUStrDup(&S->SBuffer,Src->SBuffer);
-    S->SPtr = NULL;
-    }
-  else
-    {
-    S->SBuffer = NULL;
-    S->SBIsDynamic = FALSE;
-    S->SBufSize = 0;
-    S->SPtr = NULL;
+    S->URI = NULL;
+    MUStrDup(&S->URI, Src->URI);
+
+    S->RID = NULL;
+    MUStrDup(&S->RID, Src->RID);
+
+    S->SMsg = NULL;
+    MUStrDup(&S->SMsg, Src->SMsg);
+
+    S->ClientName = NULL;
+    MUStrDup(&S->ClientName, Src->ClientName);
+
+    S->RBuffer = NULL;
+    S->RPtr = NULL;
+    MUStrDup(&S->RBuffer, Src->RBuffer);
+
+    S->SData = NULL;
+    MUStrDup(&S->SData, Src->SData);
+
+    if (Src->SBIsDynamic == TRUE) {
+        MUStrDup(&S->SBuffer, Src->SBuffer);
+        S->SPtr = NULL;
+    } else {
+        S->SBuffer = NULL;
+        S->SBIsDynamic = FALSE;
+        S->SBufSize = 0;
+        S->SPtr = NULL;
     }
 
-  /* XML */
-  MXMLDupE((mxml_t *)Src->RE,(mxml_t **)&S->RE);
-  MXMLDupE((mxml_t *)Src->RDE,(mxml_t **)&S->RDE);
-  MXMLDupE((mxml_t *)Src->SE,(mxml_t **)&S->SE);
-  MXMLDupE((mxml_t *)Src->SDE,(mxml_t **)&S->SDE);
+    /* XML */
+    MXMLDupE((mxml_t *)Src->RE, (mxml_t **)&S->RE);
+    MXMLDupE((mxml_t *)Src->RDE, (mxml_t **)&S->RDE);
+    MXMLDupE((mxml_t *)Src->SE, (mxml_t **)&S->SE);
+    MXMLDupE((mxml_t *)Src->SDE, (mxml_t **)&S->SDE);
 
-  /* copy Cred? */
-  /* NYI */
+    /* copy Cred? */
+    /* NYI */
 
-  *Dst = S;
+    *Dst = S;
 
-  return(SUCCESS);  
-  }  /* END MSUDup() */
-
+    return (SUCCESS);
+} /* END MSUDup() */
 
 /* END MSU.c */
-

@@ -7,4 +7,3 @@
 #endif /* !__MX */
 
 /* END __MPBSStub.c */
-

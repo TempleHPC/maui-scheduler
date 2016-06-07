@@ -1,5 +1,5 @@
 /* HEADER */
-        
+
 /* Contains:                                               *
  *                                                         *
  *  int MLocalJobInit(J)                                   *
@@ -12,250 +12,206 @@
  *  int MLocalQueueScheduleIJobs(J)                        *
  *                                                         */
 
-  
 #include "moab.h"
-#include "msched-proto.h"  
+#include "msched-proto.h"
 
-extern msched_t     MSched;
-extern mnode_t     *MNode[];
-extern mstat_t      MStat;
-extern mattrlist_t  MAList;
-extern mpar_t       MPar[];
-extern mjob_t      *MJob[];
-extern mlog_t       mlog;
-
-
-
+extern msched_t MSched;
+extern mnode_t *MNode[];
+extern mstat_t MStat;
+extern mattrlist_t MAList;
+extern mpar_t MPar[];
+extern mjob_t *MJob[];
+extern mlog_t mlog;
 
 /* #include "../../contrib/checkreq/AussieJobCheckNRes.c" */
 
 int MLocalJobCheckNRes(
 
-  mjob_t  *J,         /* I */
-  mnode_t *N,         /* I */
-  long     StartTime) /* I */
+    mjob_t *J,      /* I */
+    mnode_t *N,     /* I */
+    long StartTime) /* I */
 
-  {
-  const char *FName = "MLocalJobCheckNRes";
+{
+    const char *FName = "MLocalJobCheckNRes";
 
-  int rc = SUCCESS;
+    int rc = SUCCESS;
 
-  DBG(8,fSCHED) DPrint("%s(%s,%s,%ld)\n",
-    FName,
-    J->Name,
-    N->Name,
-    StartTime);
+    DBG(8, fSCHED)
+    DPrint("%s(%s,%s,%ld)\n", FName, J->Name, N->Name, StartTime);
 
-/*
-  rc = ContribAussieJobCheckNRes(J,N,StartTime);
-*/
+    /*
+      rc = ContribAussieJobCheckNRes(J,N,StartTime);
+    */
 
-  return(rc);
-  }  /* END MLocalJobCheckNRes */
-
-
-
+    return (rc);
+} /* END MLocalJobCheckNRes */
 
 /* #include "../../contrib/jobinit/AussieJobInit.c" */
 
 int MLocalJobInit(
 
-  mjob_t *J)  /* I */
+    mjob_t *J) /* I */
 
-  {
-/*
-  ContribAussieJobInit(J); 
-*/
+{
+    /*
+      ContribAussieJobInit(J);
+    */
 
-  return(SUCCESS);
-  }  /* END MLocalJobInitialize() */
-
-
-
+    return (SUCCESS);
+} /* END MLocalJobInitialize() */
 
 int MLocalNodeInit(
 
-  mnode_t *N)
+    mnode_t *N)
 
-  {
-  return(SUCCESS);
-  }  /* END MLocalNodeInit() */
-
-
-
+{
+    return (SUCCESS);
+} /* END MLocalNodeInit() */
 
 /* #include "../../contrib/fairness/JobLength.c" */
 /* #include "../../contrib/fairness/ASCBackgroundJobPolicy.c" */
 
 int MLocalCheckFairnessPolicy(
 
-  mjob_t *J,
-  long    StartTime,
-  char   *Message)
+    mjob_t *J, long StartTime, char *Message)
 
-  {
-  const char *FName = "MLocalCheckFairnessPolicy";
+{
+    const char *FName = "MLocalCheckFairnessPolicy";
 
-  DBG(6,fSCHED) DPrint("%s(%s,%ld,Message)\n",
-    FName,
-    (J != NULL) ? J->Name : "NULL",
-    (unsigned long)StartTime);
+    DBG(6, fSCHED)
+    DPrint("%s(%s,%ld,Message)\n", FName, (J != NULL) ? J->Name : "NULL",
+           (unsigned long)StartTime);
 
-/*
-  if (ContribJobLengthFairnessPolicy(J,StartTime,Message) == FAILURE)
-    {
-    return(FAILURE);
-    }
-*/
+    /*
+      if (ContribJobLengthFairnessPolicy(J,StartTime,Message) == FAILURE)
+        {
+        return(FAILURE);
+        }
+    */
 
-/*
-  if (ContribASCBackgroundJobPolicy(J,StartTime,Message) == FAILURE)
-    {
-    return(FAILURE);
-    }
-*/
+    /*
+      if (ContribASCBackgroundJobPolicy(J,StartTime,Message) == FAILURE)
+        {
+        return(FAILURE);
+        }
+    */
 
-  /* all local policies passed */
+    /* all local policies passed */
 
-  return(SUCCESS);
-  }  /* END MLocalFairnessPolicy() */
-
-
-
-
+    return (SUCCESS);
+} /* END MLocalFairnessPolicy() */
 
 /* #include "../../contrib/nodeallocation/PNNLGetNodePriority.c" */
 
 int MLocalGetNodePriority(
 
-  mjob_t  *J,
-  mnode_t *N)
+    mjob_t *J, mnode_t *N)
 
-  {
-  int Priority = 0;
+{
+    int Priority = 0;
 
-/*
-  Priority = ContribPNNLGetNodePriority(J,N));
-*/
+    /*
+      Priority = ContribPNNLGetNodePriority(J,N));
+    */
 
-  return(Priority);
-  }  /* END MLocalGetNodePriority() */
-
-
-
-
+    return (Priority);
+} /* END MLocalGetNodePriority() */
 
 /* #include "../../contrib/nodeallocation/OSCProximityNodeAlloc.c" */
- 
+
 int MLocalJobAllocateResources(
- 
-  mjob_t *J,                /* I:  job allocating nodes                           */
-  mreq_t *RQ,               /* I:  req allocating nodes                           */        
-  mnalloc_t NodeList[],     /* I:  eligible nodes                                 */
-  mulong  StartTime,        /* I                                                  */
-  int     RQIndex,          /* I:  index of job req to evaluate                   */
-  int     MinTPN[],         /* I:  min tasks per node allowed                     */
-  int     MaxTPN[],         /* I:  max tasks per node allowed                     */
-  char    NodeMap[],        /* I:  array of node alloc states                     */
-  int     AffinityLevel,    /* I:  current reservation affinity level to evaluate */
-  int     NodeIndex[],      /* I/OUT:  index of next node to find in BestList     */
-  mnalloc_t *BestList[MAX_MREQ_PER_JOB], /* I/OUT:    list of selected nodes      */
-  int     TaskCount[],      /* I/OUT:  total tasks allocated to job req           */
-  int     NodeCount[])      /* I/OUT:  total nodes allocated to job req           */
- 
-  {
-/*
-  if (ContribOSCProximityNodeAlloc(
-        J,
-        RQ,
-        NodeList,
-        RQIndex,
-        MinTPN,
-        MaxTPN,
-        NodeMap,
-        AffinityLevel,
-        NodeIndex,
-        BestList,
-        TaskCount,
-        NodeCount) == FAILURE)
-    {
-    return(FAILURE);
-    }
-*/
- 
-  return(FAILURE);  
-  }  /* END MLocalJobAllocateResources() */
 
+    mjob_t *J,  /* I:  job allocating nodes                           */
+    mreq_t *RQ, /* I:  req allocating nodes                           */
+    mnalloc_t NodeList[], /* I:  eligible nodes */
+    mulong StartTime,  /* I                                                  */
+    int RQIndex,       /* I:  index of job req to evaluate                   */
+    int MinTPN[],      /* I:  min tasks per node allowed                     */
+    int MaxTPN[],      /* I:  max tasks per node allowed                     */
+    char NodeMap[],    /* I:  array of node alloc states                     */
+    int AffinityLevel, /* I:  current reservation affinity level to evaluate */
+    int NodeIndex[],   /* I/OUT:  index of next node to find in BestList     */
+    mnalloc_t
+        *BestList[MAX_MREQ_PER_JOB], /* I/OUT:    list of selected nodes      */
+    int TaskCount[], /* I/OUT:  total tasks allocated to job req           */
+    int NodeCount[]) /* I/OUT:  total nodes allocated to job req           */
 
+{
+    /*
+      if (ContribOSCProximityNodeAlloc(
+            J,
+            RQ,
+            NodeList,
+            RQIndex,
+            MinTPN,
+            MaxTPN,
+            NodeMap,
+            AffinityLevel,
+            NodeIndex,
+            BestList,
+            TaskCount,
+            NodeCount) == FAILURE)
+        {
+        return(FAILURE);
+        }
+    */
 
+    return (FAILURE);
+} /* END MLocalJobAllocateResources() */
 
-/* #include "../../contrib/appsim/SCHSMSim.c" */  
+/* #include "../../contrib/appsim/SCHSMSim.c" */
 
 int MLocalInitialize()
 
-  {
-/*
-  if (ContribSCHSMSimInitialize() == FAILURE)
-    {
-    return(FAILURE);
-    }
-*/
+{
+    /*
+      if (ContribSCHSMSimInitialize() == FAILURE)
+        {
+        return(FAILURE);
+        }
+    */
 
-  return(SUCCESS);
-  }  /* END MLocalInitialize() */
-
-
-
+    return (SUCCESS);
+} /* END MLocalInitialize() */
 
 int MLocalJobDistributeTasks(
- 
-  mjob_t    *J,
-  mrm_t     *R,
-  mnalloc_t *NodeList, /* OUT: nodelist with taskcount information */
-  short     *TaskMap)  /* OUT: task distribution list              */
- 
-  {
-  /* NYI */
 
-  return(FAILURE);
-  }  /* END MLocalJobDistributeTasks() */
+    mjob_t *J, mrm_t *R,
+    mnalloc_t *NodeList, /* OUT: nodelist with taskcount information */
+    short *TaskMap)      /* OUT: task distribution list              */
 
+{
+    /* NYI */
 
-
+    return (FAILURE);
+} /* END MLocalJobDistributeTasks() */
 
 /* #include "../../contrib/sched/XXX.c" */
 
 int MLocalQueueScheduleIJobs(
 
-  int    *Q,
-  mpar_t *P)
+    int *Q, mpar_t *P)
 
-  {
-  mjob_t *J;
+{
+    mjob_t *J;
 
-  int     jindex;
+    int jindex;
 
-  if ((Q == NULL) || (P == NULL))
-    {
-    return(FAILURE);
+    if ((Q == NULL) || (P == NULL)) {
+        return (FAILURE);
     }
 
-  /* NOTE:  insert call to scheduling algorithm here */
+    /* NOTE:  insert call to scheduling algorithm here */
 
-  for (jindex = 0;Q[jindex] != -1;jindex++)
-    {
-    J = MJob[Q[jindex]];
+    for (jindex = 0; Q[jindex] != -1; jindex++) {
+        J = MJob[Q[jindex]];
 
-    /* NYI */
+        /* NYI */
 
-    DBG(7,fSCHED) DPrint("INFO:     checking job '%s'\n",
-      J->Name);
-    }  /* END for (jindex) */
-   
-  return(FAILURE);
-  }  /* END MLocalQueueScheduleIJobs() */
+        DBG(7, fSCHED) DPrint("INFO:     checking job '%s'\n", J->Name);
+    } /* END for (jindex) */
 
-
+    return (FAILURE);
+} /* END MLocalQueueScheduleIJobs() */
 
 /* END MLocal.c */
-

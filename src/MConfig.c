@@ -1,1163 +1,976 @@
 /* HEADER */
-        
+
 /* Contains:                                              *
  * int MCfgAdjustBuffer(Buf,AllowExtension)               *
  * int MCfgGetVal(Buf,Parm,Index,Value,SysTable)          *
  * int MCfgGetIVal(Buf,CurPtr,Parm,IName,Index,Value,SymTable) *
  *                                                        */
 
-
 #include "moab.h"
 #include "msched-proto.h"
 
-extern mlog_t  mlog;
+extern mlog_t mlog;
 
-extern msched_t    MSched;
-extern mpar_t      MPar[];
-extern mcfg_t      MCfg[];
-extern mrm_t       MRM[];
-extern mam_t       MAM[];
-extern msim_t      MSim;
-
-
-
+extern msched_t MSched;
+extern mpar_t MPar[];
+extern mcfg_t MCfg[];
+extern mrm_t MRM[];
+extern mam_t MAM[];
+extern msim_t MSim;
 
 int MCfgAdjustBuffer(
 
-  char     **Buf,            /* I (modified) */
-  mbool_t    AllowExtension) /* I */
+    char **Buf,             /* I (modified) */
+    mbool_t AllowExtension) /* I */
 
-  {
-  char *ptr;
+{
+    char *ptr;
 
-  int   State;
+    int State;
 
-  char  IFile[MAX_MLINE];
+    char IFile[MAX_MLINE];
 
-  /* change all parameters to upper case */
-  /* replace all comments with spaces    */
-  /* replace tabs with space             */
-  /* replace '"' with space              */
-  /* replace unprint chars with space    */
-  /* extend '\' lines                    */
+    /* change all parameters to upper case */
+    /* replace all comments with spaces    */
+    /* replace tabs with space             */
+    /* replace '"' with space              */
+    /* replace unprint chars with space    */
+    /* extend '\' lines                    */
 
-  enum { cbPreParm = 0, cbOnParm, cbPreVal, cbOnVal, cbComment };
+    enum { cbPreParm = 0, cbOnParm, cbPreVal, cbOnVal, cbComment };
 
-  const char *FName = "MCfgAdjustBuffer";
- 
-  DBG(3,fCONFIG) DPrint("%s(Buf)\n",
-    FName);
+    const char *FName = "MCfgAdjustBuffer";
 
-  if ((Buf == NULL) || (*Buf == NULL) || (strlen(*Buf) < 1))
-    {
-    return(SUCCESS);
+    DBG(3, fCONFIG) DPrint("%s(Buf)\n", FName);
+
+    if ((Buf == NULL) || (*Buf == NULL) || (strlen(*Buf) < 1)) {
+        return (SUCCESS);
     }
- 
-  ptr = *Buf;
 
-  State = cbPreParm;
+    ptr = *Buf;
 
-  IFile[0] = '\0';
+    State = cbPreParm;
 
-  while (*ptr != '\0')
-    {
-    /* remove comments */
+    IFile[0] = '\0';
 
-    if (*ptr == '#')
-      {
-      if (AllowExtension == TRUE)
-        {
-        /* look for include */
+    while (*ptr != '\0') {
+        /* remove comments */
 
-        if (!strncmp(ptr,"#INCLUDE",strlen("#INCLUDE")))
-          {
+        if (*ptr == '#') {
+            if (AllowExtension == TRUE) {
+                /* look for include */
 
-          /* FORMAT:  #INCLUDE <FILENAME> */
+                if (!strncmp(ptr, "#INCLUDE", strlen("#INCLUDE"))) {
+                    /* FORMAT:  #INCLUDE <FILENAME> */
 
-          MUSScanF(ptr + strlen("#INCLUDE"),"%x%s",
-            MMAX_LINE,
-            IFile);
-          }
-        }
-
-      State = cbComment;
-      }  /* END if (*ptr == '#') */
-    else if ((*ptr == '\\') && (State != cbComment))
-      {
-      *ptr = ' ';
-
-      while(isspace(*ptr))
-        {
-        *ptr = ' ';
-
-        ptr++;
-        }
-      }
-    else if (*ptr == '\n')
-      {
-      if ((State == cbComment) && (IFile[0] != '\0'))
-        {
-        char *IBuf;
-
-        int   blen;
-
-        int   offset;
-
-        /* include file at end */
-
-        /* load file */
-
-        if ((IBuf = MFULoad(IFile,1,macmWrite,NULL,NULL)) == NULL)
-          {
-          /* cannot load include file */
-          }
-        else
-          {
-          blen = strlen(*Buf);
-
-          offset = ptr - *Buf;
-
-          if ((*Buf = (char *)realloc(*Buf,blen + 2 + strlen(IBuf))) == NULL)
-            {
-            /* NOTE:  memory failure */
-
-            MUFree(&IBuf);
-
-            return(FAILURE);
+                    MUSScanF(ptr + strlen("#INCLUDE"), "%x%s", MMAX_LINE,
+                             IFile);
+                }
             }
 
-          /* append file */
+            State = cbComment;
+        } /* END if (*ptr == '#') */
+        else if ((*ptr == '\\') && (State != cbComment)) {
+            *ptr = ' ';
 
-	  strcat(*Buf,"\n");
-	  strcat(*Buf,IBuf); 
+            while (isspace(*ptr)) {
+                *ptr = ' ';
 
-          MUFree(&IBuf);
+                ptr++;
+            }
+        } else if (*ptr == '\n') {
+            if ((State == cbComment) && (IFile[0] != '\0')) {
+                char *IBuf;
 
-          ptr = *Buf + offset;
-          }
+                int blen;
 
-        IFile[0] = '\0';
-        }  /* END if ((State == cbComment) && (IFile[0] != '\0')) */
+                int offset;
 
-      State = cbPreParm;
-      }
-    else if ((State == cbComment) || (*ptr == '\\'))
-      {
-      *ptr = ' ';
-      }
-    else if (isspace(*ptr) || (*ptr == '='))
-      {
-      if (*ptr == '=')
-        {
-        if (State != cbOnVal)
-          *ptr = ' ';
+                /* include file at end */
+
+                /* load file */
+
+                if ((IBuf = MFULoad(IFile, 1, macmWrite, NULL, NULL)) == NULL) {
+                    /* cannot load include file */
+                } else {
+                    blen = strlen(*Buf);
+
+                    offset = ptr - *Buf;
+
+                    if ((*Buf = (char *)realloc(
+                             *Buf, blen + 2 + strlen(IBuf))) == NULL) {
+                        /* NOTE:  memory failure */
+
+                        MUFree(&IBuf);
+
+                        return (FAILURE);
+                    }
+
+                    /* append file */
+
+                    strcat(*Buf, "\n");
+                    strcat(*Buf, IBuf);
+
+                    MUFree(&IBuf);
+
+                    ptr = *Buf + offset;
+                }
+
+                IFile[0] = '\0';
+            } /* END if ((State == cbComment) && (IFile[0] != '\0')) */
+
+            State = cbPreParm;
+        } else if ((State == cbComment) || (*ptr == '\\')) {
+            *ptr = ' ';
+        } else if (isspace(*ptr) || (*ptr == '=')) {
+            if (*ptr == '=') {
+                if (State != cbOnVal) *ptr = ' ';
+            } else {
+                if (State == cbOnParm) State = cbPreVal;
+
+                *ptr = ' ';
+            }
+        } else if (isprint(*ptr)) {
+            if (State == cbPreParm) {
+                State = cbOnParm;
+
+                /*
+                if (isalpha(*ptr))
+                  *ptr = toupper(*ptr);
+                */
+            } else if (State == cbPreVal) {
+                State = cbOnVal;
+            }
+        } else {
+            *ptr = ' ';
         }
-      else
-        { 
-        if (State == cbOnParm)
-          State = cbPreVal;
 
-        *ptr = ' ';
-        }
-      }
-    else if (isprint(*ptr))
-      {
-      if (State == cbPreParm)
-        {
-        State = cbOnParm;
+        ptr++;
+    } /* END while (ptr != '\0') */
 
-        /*
-        if (isalpha(*ptr))
-          *ptr = toupper(*ptr);
-        */
-        }
-      else if (State == cbPreVal)
-        {
-        State = cbOnVal;
-        }
-      } 
-    else
-      {
-      *ptr = ' ';
-      }
+    DBG(5, fCONFIG)
+    DPrint("INFO:     adjusted config Buffer ------\n%s\n------\n", *Buf);
 
-    ptr++;
-    }  /* END while (ptr != '\0') */ 
-
-  DBG(5,fCONFIG) DPrint("INFO:     adjusted config Buffer ------\n%s\n------\n",
-    *Buf);
-
-  return(SUCCESS);
-  }  /* END MCfgAdjustBuffer() */
-
-
-
-
-
+    return (SUCCESS);
+} /* END MCfgAdjustBuffer() */
 
 int MCfgGetVal(
 
-  char  **Buf,
-  const char *Parm,
-  char   *IName,
-  int    *Index,
-  char   *Value,
-  int     ValSize,
-  char  **SymTable)
-   
-  {
-  char *ptr;
-  char *tmp;
-  char *head;
-  char *tail;
+    char **Buf, const char *Parm, char *IName, int *Index, char *Value,
+    int ValSize, char **SymTable)
 
-  char  IndexName[MAX_MNAME];
+{
+    char *ptr;
+    char *tmp;
+    char *head;
+    char *tail;
 
-  int   iindex;
+    char IndexName[MAX_MNAME];
 
-  const char *FName = "MCfgGetVal";
+    int iindex;
 
-  DBG(7,fCONFIG) DPrint("%s(Buf,%s,%s,Index,Value,%d,SymTable)\n",
-    FName,
-    Parm,
-    (IName != NULL) ? IName : "NULL",
-    ValSize);
+    const char *FName = "MCfgGetVal";
 
-  if (Parm == NULL)
-    return(FAILURE);
+    DBG(7, fCONFIG)
+    DPrint("%s(Buf,%s,%s,Index,Value,%d,SymTable)\n", FName, Parm,
+           (IName != NULL) ? IName : "NULL", ValSize);
 
-  IndexName[0] = '\0';
+    if (Parm == NULL) return (FAILURE);
 
-  /* FORMAT:  { '\0' || '\n' }[<WS>]<VAR>[<[><WS><INDEX><WS><]>]<WS><VALUE> */
+    IndexName[0] = '\0';
 
-  ptr = *Buf;
+    /* FORMAT:  { '\0' || '\n' }[<WS>]<VAR>[<[><WS><INDEX><WS><]>]<WS><VALUE> */
 
-  while (ptr != NULL)
-    {
-    if ((head = strstr(ptr,Parm)) == NULL)
-      break;
+    ptr = *Buf;
 
-    ptr = head + strlen(Parm);
+    while (ptr != NULL) {
+        if ((head = strstr(ptr, Parm)) == NULL) break;
 
-    /* look backwards for newline or start of buffer */
+        ptr = head + strlen(Parm);
 
-    if (head > *Buf)
-      tmp = head - 1;
-    else
-      tmp = *Buf;
+        /* look backwards for newline or start of buffer */
 
-    while ((tmp > *Buf) && ((*tmp == ' ') || (*tmp == '\t')))
-      tmp--;
+        if (head > *Buf)
+            tmp = head - 1;
+        else
+            tmp = *Buf;
 
-    if ((tmp != *Buf) && (*tmp != '\n'))
-      continue;
+        while ((tmp > *Buf) && ((*tmp == ' ') || (*tmp == '\t'))) tmp--;
 
-    if ((IName != NULL) && (IName[0] != '\0'))
-      {
-      /* requested index name specified */
+        if ((tmp != *Buf) && (*tmp != '\n')) continue;
 
-      if (*ptr != '[')
-        continue;
+        if ((IName != NULL) && (IName[0] != '\0')) {
+            /* requested index name specified */
 
-      ptr++;
+            if (*ptr != '[') continue;
 
-      while (isspace(*ptr))
-        ptr++;
+            ptr++;
 
-      if (strncmp(IName,ptr,strlen(IName)) != 0)
-        continue;
+            while (isspace(*ptr)) ptr++;
 
-      ptr += strlen(IName);
+            if (strncmp(IName, ptr, strlen(IName)) != 0) continue;
 
-      while (isspace(*ptr))
-        ptr++;
-       
-      if (*ptr != ']')
-        continue; 
+            ptr += strlen(IName);
 
-      ptr++;
+            while (isspace(*ptr)) ptr++;
 
-      /* requested index found */
-      }
-    else if (isspace(*ptr))
-      {
-      /* no index specified */
+            if (*ptr != ']') continue;
 
-      if (Index != NULL)
-        *Index = 0;
-      }
-    else
-      {
-      /* index specified, no specific index requested */
+            ptr++;
 
-      if (*ptr != '[')
-        continue;
+            /* requested index found */
+        } else if (isspace(*ptr)) {
+            /* no index specified */
 
-      ptr++;
+            if (Index != NULL) *Index = 0;
+        } else {
+            /* index specified, no specific index requested */
 
-      while (isspace(*ptr))
-        ptr++;
+            if (*ptr != '[') continue;
 
-      head = ptr;
+            ptr++;
 
-      while ((!isspace(*ptr)) && (*ptr != ']'))
-        ptr++;
+            while (isspace(*ptr)) ptr++;
 
-      MUStrCpy(IndexName,head,MIN(ptr - head + 1,MAX_MNAME));
+            head = ptr;
 
-      while (isspace(*ptr))
-        ptr++;
+            while ((!isspace(*ptr)) && (*ptr != ']')) ptr++;
 
-      if (*ptr != ']')
-        continue;
+            MUStrCpy(IndexName, head, MIN(ptr - head + 1, MAX_MNAME));
 
-      ptr++;
+            while (isspace(*ptr)) ptr++;
 
-      if (Index != NULL)
-        {
-        *Index = (int)strtol(IndexName,&tail,10);
+            if (*ptr != ']') continue;
 
-        if (*tail != '\0')
-          {
-          /* index is symbolic */
-  
-          if (SymTable == NULL)
-            return(FAILURE);
+            ptr++;
 
-          for (iindex = 0;SymTable[iindex] != NULL;iindex++)
-            {
-            if (!strcmp(SymTable[iindex],IndexName))
-              {
-              *Index = iindex;
-              break;
-              }
+            if (Index != NULL) {
+                *Index = (int)strtol(IndexName, &tail, 10);
+
+                if (*tail != '\0') {
+                    /* index is symbolic */
+
+                    if (SymTable == NULL) return (FAILURE);
+
+                    for (iindex = 0; SymTable[iindex] != NULL; iindex++) {
+                        if (!strcmp(SymTable[iindex], IndexName)) {
+                            *Index = iindex;
+                            break;
+                        }
+                    }
+
+                    if (SymTable[iindex] == NULL) {
+                        MUStrDup(&SymTable[iindex], IndexName);
+
+                        *Index = iindex;
+                    }
+                }
             }
+        } /* END else ... */
 
-          if (SymTable[iindex] == NULL)
-            {
-            MUStrDup(&SymTable[iindex],IndexName);
+        while ((*ptr == ' ') || (*ptr == '\t')) ptr++;
 
-            *Index = iindex;
-            }
-          }
-        }
-      }    /* END else ... */
-   
-    while ((*ptr == ' ') || (*ptr == '\t'))
-      ptr++;
+        if ((tail = strchr(ptr, '\n')) == NULL) tail = *Buf + strlen(*Buf);
 
-    if ((tail = strchr(ptr,'\n')) == NULL)
-      tail = *Buf + strlen(*Buf);
-  
-    MUStrCpy(Value,ptr,MIN(tail - ptr + 1,ValSize));
+        MUStrCpy(Value, ptr, MIN(tail - ptr + 1, ValSize));
 
-    if ((IName != NULL) && (IName[0] == '\0'))
-      MUStrCpy(IName,IndexName,MAX_MNAME);
- 
-    Value[tail - ptr] = '\0';
+        if ((IName != NULL) && (IName[0] == '\0'))
+            MUStrCpy(IName, IndexName, MAX_MNAME);
 
-    *Buf = tail;
+        Value[tail - ptr] = '\0';
 
-    return(SUCCESS);
-    }  /* END while(ptr != NULL) */
+        *Buf = tail;
 
-  Value[0] = '\0';
+        return (SUCCESS);
+    } /* END while(ptr != NULL) */
 
-  return(FAILURE);
-  }  /* END MCfgGetVal() */
+    Value[0] = '\0';
 
+    return (FAILURE);
+} /* END MCfgGetVal() */
 
-
-
- 
 int MCfgGetIVal(
 
-  char  *Buf,
-  char **CurPtr,
-  const char *Parm,
-  char  *IndexName,
-  int   *Index,
-  int   *Value,
-  char **SymTable)
+    char *Buf, char **CurPtr, const char *Parm, char *IndexName, int *Index,
+    int *Value, char **SymTable)
 
-  {
-  char  ValLine[MAX_MLINE];
-  char *ptr;
+{
+    char ValLine[MAX_MLINE];
+    char *ptr;
 
-  int   rc;
+    int rc;
 
-  const char *FName = "MCfgGetIVal";
+    const char *FName = "MCfgGetIVal";
 
-  DBG(7,fCONFIG) DPrint("%s(Buf,CurPtr,%s,%s,Index,Value,SymTable)\n",
-    FName,
-    Parm,
-    (IndexName != NULL) ? IndexName : "NULL");
+    DBG(7, fCONFIG)
+    DPrint("%s(Buf,CurPtr,%s,%s,Index,Value,SymTable)\n", FName, Parm,
+           (IndexName != NULL) ? IndexName : "NULL");
 
-  ptr = Buf;
+    ptr = Buf;
 
-  if (CurPtr != NULL)
-    ptr = MAX(ptr,*CurPtr);
+    if (CurPtr != NULL) ptr = MAX(ptr, *CurPtr);
 
-  rc = MCfgGetVal(&ptr,Parm,IndexName,Index,ValLine,sizeof(ValLine),SymTable);
+    rc = MCfgGetVal(&ptr, Parm, IndexName, Index, ValLine, sizeof(ValLine),
+                    SymTable);
 
-  if (CurPtr != NULL)
-    *CurPtr = ptr;
+    if (CurPtr != NULL) *CurPtr = ptr;
 
-  if (rc == FAILURE)
-    return(FAILURE);
+    if (rc == FAILURE) return (FAILURE);
 
-  *Value = (int)strtol(ValLine,NULL,0);
+    *Value = (int)strtol(ValLine, NULL, 0);
 
-  DBG(4,fCONFIG) DPrint("INFO:     %s[%d] set to %d\n",
-    Parm,
-    (Index != NULL) ? *Index : 0,
-    *Value);
+    DBG(4, fCONFIG)
+    DPrint("INFO:     %s[%d] set to %d\n", Parm, (Index != NULL) ? *Index : 0,
+           *Value);
 
-  return(SUCCESS);
-  }  /* END MCfgGetIVal() */
-
-
-
-
+    return (SUCCESS);
+} /* END MCfgGetIVal() */
 
 int MCfgGetDVal(
 
-  char    *Buf,
-  char   **CurPtr,
-  const char *Parm,
-  char    *IndexName,
-  int     *Index,
-  double  *Value,
-  char   **SymTable)
+    char *Buf, char **CurPtr, const char *Parm, char *IndexName, int *Index,
+    double *Value, char **SymTable)
 
-  {
-  char  ValLine[MAX_MLINE];
-  char *ptr;
+{
+    char ValLine[MAX_MLINE];
+    char *ptr;
 
-  int   rc;
+    int rc;
 
-  const char *FName = "MCfgGetDVal";
+    const char *FName = "MCfgGetDVal";
 
-  DBG(7,fCONFIG) DPrint("%s(Buf,CurPtr,%s,%s,Index,Value,SymTable)\n",
-    FName,
-    Parm,
-    (IndexName != NULL) ? IndexName : "NULL");
+    DBG(7, fCONFIG)
+    DPrint("%s(Buf,CurPtr,%s,%s,Index,Value,SymTable)\n", FName, Parm,
+           (IndexName != NULL) ? IndexName : "NULL");
 
-  if ((Buf == NULL) || (Value == NULL))
-    return(FAILURE);
+    if ((Buf == NULL) || (Value == NULL)) return (FAILURE);
 
-  ptr = Buf;
+    ptr = Buf;
 
-  if (CurPtr != NULL)
-    ptr = MAX(ptr,*CurPtr);
+    if (CurPtr != NULL) ptr = MAX(ptr, *CurPtr);
 
-  rc = MCfgGetVal(&ptr,Parm,IndexName,Index,ValLine,sizeof(ValLine),SymTable);
+    rc = MCfgGetVal(&ptr, Parm, IndexName, Index, ValLine, sizeof(ValLine),
+                    SymTable);
 
-  if (CurPtr != NULL)
-    *CurPtr = ptr;
+    if (CurPtr != NULL) *CurPtr = ptr;
 
-  if (rc == FAILURE)
-    return(FAILURE);
+    if (rc == FAILURE) return (FAILURE);
 
-  *Value = strtod(ValLine,NULL);
+    *Value = strtod(ValLine, NULL);
 
-  DBG(4,fCONFIG) DPrint("INFO:     %s[%d] set to %lf\n",
-    Parm,
-    (Index != NULL) ? *Index : 0,
-    *Value);
+    DBG(4, fCONFIG)
+    DPrint("INFO:     %s[%d] set to %lf\n", Parm, (Index != NULL) ? *Index : 0,
+           *Value);
 
-  return(SUCCESS);
-  }  /* END MCfgGetDVal() */
-
-
-
-
+    return (SUCCESS);
+} /* END MCfgGetDVal() */
 
 int MCfgGetSVal(
 
-  char   *Buf,
-  char  **CurPtr,
-  const char *Parm,
-  char   *IndexName,
-  int    *Index,
-  char   *Value,
-  int     ValSize,
-  int     Mode,
-  char  **SymTable)
+    char *Buf, char **CurPtr, const char *Parm, char *IndexName, int *Index,
+    char *Value, int ValSize, int Mode, char **SymTable)
 
-  {
-  char *ptr;
+{
+    char *ptr;
 
-  int   rc;
-  int   index;
+    int rc;
+    int index;
 
-  const char *FName = "MCfgGetSVal";
+    const char *FName = "MCfgGetSVal";
 
-  DBG(7,fCONFIG) DPrint("%s(Buf,CurPtr,%s,%s,Index,Value,SymTable)\n",
-    FName,
-    Parm,
-    (IndexName != NULL) ? IndexName : "NULL");
+    DBG(7, fCONFIG)
+    DPrint("%s(Buf,CurPtr,%s,%s,Index,Value,SymTable)\n", FName, Parm,
+           (IndexName != NULL) ? IndexName : "NULL");
 
-  if (Value != NULL)
-    Value[0] = '\0';
+    if (Value != NULL) Value[0] = '\0';
 
-  if (Parm == NULL)
-    {
-    return(FAILURE);
+    if (Parm == NULL) {
+        return (FAILURE);
     }
 
-  ptr = Buf;
+    ptr = Buf;
 
-  if (CurPtr != NULL)
-    ptr = MAX(ptr,*CurPtr);
+    if (CurPtr != NULL) ptr = MAX(ptr, *CurPtr);
 
-  rc = MCfgGetVal(&ptr,Parm,IndexName,Index,Value,ValSize,SymTable);
+    rc = MCfgGetVal(&ptr, Parm, IndexName, Index, Value, ValSize, SymTable);
 
-  if (CurPtr != NULL)
-    *CurPtr = ptr;
+    if (CurPtr != NULL) *CurPtr = ptr;
 
-  if (rc == FAILURE)
-    {
-    return(FAILURE);
+    if (rc == FAILURE) {
+        return (FAILURE);
     }
 
-  if (Mode == 1)
-    {
-    /* process only first white space delimited string */
+    if (Mode == 1) {
+        /* process only first white space delimited string */
 
-    for (index = 0;Value[index] != '\0';index++)
-      {
-      if (isspace(Value[index]))
-        {
-        Value[index] = '\0';
+        for (index = 0; Value[index] != '\0'; index++) {
+            if (isspace(Value[index])) {
+                Value[index] = '\0';
 
-        break;
+                break;
+            }
         }
-      }
-    }
-  else
-    {
-    /* remove trailing whitespace */
- 
-    for (index = strlen(Value) - 1;index > 0;index--)
-      {
-      if (isspace(Value[index]))
-        Value[index] = '\0';
-      else
-        break;
-      }  /* END for (index) */
+    } else {
+        /* remove trailing whitespace */
+
+        for (index = strlen(Value) - 1; index > 0; index--) {
+            if (isspace(Value[index]))
+                Value[index] = '\0';
+            else
+                break;
+        } /* END for (index) */
     }
 
-  DBG(4,fCONFIG) DPrint("INFO:     %s[%d] set to %s\n",
-    Parm,
-    (Index != NULL) ? *Index : 0,
-    Value);
+    DBG(4, fCONFIG)
+    DPrint("INFO:     %s[%d] set to %s\n", Parm, (Index != NULL) ? *Index : 0,
+           Value);
 
-  return(SUCCESS);
-  }  /* END MCfgGetSVal() */
-
-
-
-
-
+    return (SUCCESS);
+} /* END MCfgGetSVal() */
 
 int MCfgGetSList(
 
-  char  *Buf,
-  char **CurPtr,
-  const char *Parm,
-  char  *IndexName,
-  int   *Index,
-  int    Length,
-  char  *Value,
-  char  *SymTable[])
+    char *Buf, char **CurPtr, const char *Parm, char *IndexName, int *Index,
+    int Length, char *Value, char *SymTable[])
 
-  {
-  int   index;
-  char  ValLine[MAX_MLINE];
+{
+    int index;
+    char ValLine[MAX_MLINE];
 
-  char *ptr;
-  char *TokPtr;
+    char *ptr;
+    char *TokPtr;
 
-  int   rc;
+    int rc;
 
-  const char *FName = "MCfgGetSList";
+    const char *FName = "MCfgGetSList";
 
-  DBG(7,fCONFIG) DPrint("%s(Buf,CurPtr,%s,%s,Index,%d,Value,SymTable)\n",
-    FName,
-    Parm,
-    IndexName,
-    Length);
+    DBG(7, fCONFIG)
+    DPrint("%s(Buf,CurPtr,%s,%s,Index,%d,Value,SymTable)\n", FName, Parm,
+           IndexName, Length);
 
-  ptr = Buf;
+    ptr = Buf;
 
-  if (CurPtr != NULL)
-    ptr = MAX(ptr,*CurPtr);
+    if (CurPtr != NULL) ptr = MAX(ptr, *CurPtr);
 
-  rc = MCfgGetVal(&ptr,Parm,IndexName,Index,ValLine,sizeof(ValLine),SymTable);
+    rc = MCfgGetVal(&ptr, Parm, IndexName, Index, ValLine, sizeof(ValLine),
+                    SymTable);
 
-  if (rc == FAILURE)
-    {
-    return(FAILURE);
+    if (rc == FAILURE) {
+        return (FAILURE);
     }
 
-  index = 0;
+    index = 0;
 
-  ptr = MUStrTok(ValLine," :;",&TokPtr);
+    ptr = MUStrTok(ValLine, " :;", &TokPtr);
 
-  while (ptr != NULL)
-    {
-    strncpy(&Value[index * Length],ptr,Length);
-    Value[((index + 1) * Length) - 1] = '\0';
+    while (ptr != NULL) {
+        strncpy(&Value[index * Length], ptr, Length);
+        Value[((index + 1) * Length) - 1] = '\0';
 
-    index++;
+        index++;
 
-    ptr = MUStrTok(NULL," :;",&TokPtr);
+        ptr = MUStrTok(NULL, " :;", &TokPtr);
     }
 
-  Value[index * Length] = '\0';
+    Value[index * Length] = '\0';
 
-  for (index = 0;Value[index * Length] != '\0';index++)
-    {
-    DBG(4,fCONFIG) DPrint("INFO:     %s[%d][%d] set to '%s'\n",
-      Parm,
-      *Index,
-      index,
-      &Value[index * Length]);
+    for (index = 0; Value[index * Length] != '\0'; index++) {
+        DBG(4, fCONFIG)
+        DPrint("INFO:     %s[%d][%d] set to '%s'\n", Parm, *Index, index,
+               &Value[index * Length]);
     }
 
-  return(SUCCESS);
-  }  /* END MCfgGetSList() */
-
-
-
+    return (SUCCESS);
+} /* END MCfgGetSList() */
 
 int MCfgEnforceConstraints()
 
-  {
-  int        pindex;
+{
+    int pindex;
 
-  int        OList[] = { mxoUser, mxoGroup, mxoAcct, -1 };
+    int OList[] = {mxoUser, mxoGroup, mxoAcct, -1};
 
-  int        oindex;
+    int oindex;
 
-  mpu_t     *AP;
-  mpu_t     *IP;
-  mpu_t     *JP;
+    mpu_t *AP;
+    mpu_t *IP;
+    mpu_t *JP;
 
-  int        PtIndex = 0;
+    int PtIndex = 0;
 
-  const char *FName = "MCfgEnforceConstraints";
+    const char *FName = "MCfgEnforceConstraints";
 
-  DBG(4,fCONFIG) DPrint("%s()\n",
-    FName);
+    DBG(4, fCONFIG) DPrint("%s()\n", FName);
 
-  if (MSched.ServerHost[0] == '\0')
-    {
-    DBG(0,fCONFIG) DPrint("ERROR:    parameter '%s' must be specified\n",
-      MParam[pServerHost]);
+    if (MSched.ServerHost[0] == '\0') {
+        DBG(0, fCONFIG)
+        DPrint("ERROR:    parameter '%s' must be specified\n",
+               MParam[pServerHost]);
 
-    fprintf(stderr,"ERROR:    parameter '%s' must be specified\n",
-      MParam[pServerHost]);
+        fprintf(stderr, "ERROR:    parameter '%s' must be specified\n",
+                MParam[pServerHost]);
 
-    exit(1);
+        exit(1);
     }
 
-  for (oindex = 0;OList[oindex] != -1;oindex++)
-    {
-    AP = NULL;
-    IP = NULL;
+    for (oindex = 0; OList[oindex] != -1; oindex++) {
+        AP = NULL;
+        IP = NULL;
 
-    switch (OList[oindex])
-      {
-      case mxoUser:
+        switch (OList[oindex]) {
+            case mxoUser:
 
-        if (MSched.DefaultU != NULL)
-          {
-          AP = &MSched.DefaultU->L.AP;
-          IP = MSched.DefaultU->L.IP;
-          }
+                if (MSched.DefaultU != NULL) {
+                    AP = &MSched.DefaultU->L.AP;
+                    IP = MSched.DefaultU->L.IP;
+                }
 
-        break;
+                break;
 
-      case mxoGroup:
+            case mxoGroup:
 
-        if (MSched.DefaultG != NULL)
-          {
-          AP = &MSched.DefaultG->L.AP;
-          IP = MSched.DefaultG->L.IP;
-          }
+                if (MSched.DefaultG != NULL) {
+                    AP = &MSched.DefaultG->L.AP;
+                    IP = MSched.DefaultG->L.IP;
+                }
 
-        break;
+                break;
 
-      case mxoAcct:
+            case mxoAcct:
 
-        if (MSched.DefaultA != NULL)
-          {
-          AP = &MSched.DefaultA->L.AP;
-          IP = MSched.DefaultA->L.IP;
-          }
+                if (MSched.DefaultA != NULL) {
+                    AP = &MSched.DefaultA->L.AP;
+                    IP = MSched.DefaultA->L.IP;
+                }
 
-        break;
+                break;
 
-      default:
+            default:
 
-        /* NOT HANDLED */
+                /* NOT HANDLED */
 
-        break;
-      }  /* END switch(OList[oindex]) */
+                break;
+        } /* END switch(OList[oindex]) */
 
-    if (AP == NULL)
-      continue;
+        if (AP == NULL) continue;
 
-    for (pindex = 0;pindex < MAX_MPOLICY;pindex++)
-      {
-      if (AP != NULL)
-        {
-        if (AP->SLimit[pindex][PtIndex] == 0)
-          {
-          AP->SLimit[pindex][PtIndex] = AP->HLimit[pindex][PtIndex];
-          }
-        else if ((AP->SLimit[pindex][PtIndex] > 0)  &&
-                ((AP->HLimit[pindex][PtIndex] < AP->SLimit[pindex][PtIndex]) ||
-                 (AP->HLimit[pindex][PtIndex] <= 0)))
-          {
-          AP->HLimit[pindex][PtIndex] = AP->SLimit[pindex][PtIndex];
-          }
+        for (pindex = 0; pindex < MAX_MPOLICY; pindex++) {
+            if (AP != NULL) {
+                if (AP->SLimit[pindex][PtIndex] == 0) {
+                    AP->SLimit[pindex][PtIndex] = AP->HLimit[pindex][PtIndex];
+                } else if ((AP->SLimit[pindex][PtIndex] > 0) &&
+                           ((AP->HLimit[pindex][PtIndex] <
+                             AP->SLimit[pindex][PtIndex]) ||
+                            (AP->HLimit[pindex][PtIndex] <= 0))) {
+                    AP->HLimit[pindex][PtIndex] = AP->SLimit[pindex][PtIndex];
+                }
+            }
+
+            if (IP != NULL) {
+                if (IP->SLimit[pindex][PtIndex] == 0) {
+                    IP->SLimit[pindex][PtIndex] = IP->HLimit[pindex][PtIndex];
+                } else if ((IP->SLimit[pindex][PtIndex] > 0) &&
+                           ((IP->HLimit[pindex][PtIndex] <
+                             IP->SLimit[pindex][PtIndex]) ||
+                            (IP->HLimit[pindex][PtIndex] <= 0))) {
+                    IP->HLimit[pindex][PtIndex] = IP->SLimit[pindex][PtIndex];
+                }
+            }
+        } /* END for (pindex) */
+    }     /* END for (oindex) */
+
+    PtIndex = 0;
+
+    JP = MPar[PtIndex].L.JP;
+
+    for (pindex = 0; pindex < MAX_MPOLICY; pindex++) {
+        if (JP != NULL) {
+            if (JP->SLimit[pindex][PtIndex] == 0) {
+                JP->SLimit[pindex][PtIndex] = JP->HLimit[pindex][PtIndex];
+            } else if ((JP->SLimit[pindex][PtIndex] > 0) &&
+                       ((JP->HLimit[pindex][PtIndex] <
+                         JP->SLimit[pindex][PtIndex]) ||
+                        (JP->HLimit[pindex][PtIndex] <= 0))) {
+                JP->HLimit[pindex][PtIndex] = JP->SLimit[pindex][PtIndex];
+            }
         }
+    } /* END for (pindex) */
 
-      if (IP != NULL)
-        {
-        if (IP->SLimit[pindex][PtIndex] == 0)
-          {
-          IP->SLimit[pindex][PtIndex] = IP->HLimit[pindex][PtIndex];
-          }
-        else if ((IP->SLimit[pindex][PtIndex] > 0)  &&
-                ((IP->HLimit[pindex][PtIndex] < IP->SLimit[pindex][PtIndex]) ||
-                 (IP->HLimit[pindex][PtIndex] <= 0)))
-          {
-          IP->HLimit[pindex][PtIndex] = IP->SLimit[pindex][PtIndex];
-          }
-        }
-      }    /* END for (pindex) */
-    }      /* END for (oindex) */
-
-  PtIndex = 0;
-
-  JP      = MPar[PtIndex].L.JP;
-
-  for (pindex = 0;pindex < MAX_MPOLICY;pindex++)
-    {
-    if (JP != NULL)
-      {
-      if (JP->SLimit[pindex][PtIndex] == 0)
-        {
-        JP->SLimit[pindex][PtIndex] = JP->HLimit[pindex][PtIndex];
-        }
-      else if ((JP->SLimit[pindex][PtIndex] > 0)  &&
-              ((JP->HLimit[pindex][PtIndex] < JP->SLimit[pindex][PtIndex]) ||
-               (JP->HLimit[pindex][PtIndex] <= 0)))
-        {
-        JP->HLimit[pindex][PtIndex] = JP->SLimit[pindex][PtIndex];
-        }
-      }
-    }    /* END for (pindex) */
-
-  return(SUCCESS);
-  }  /* END MCfgEnforceConstraints() */
-
-
-
+    return (SUCCESS);
+} /* END MCfgEnforceConstraints() */
 
 int MCfgProcessLine(
 
-  int   CIndex,    /* I */
-  char *IndexName, /* I (optional) */
-  char *Line,      /* I */
-  char *Msg)       /* O (optional) */
+    int CIndex,      /* I */
+    char *IndexName, /* I (optional) */
+    char *Line,      /* I */
+    char *Msg)       /* O (optional) */
 
-  {
-  int    IVal;
-  double DVal;
-  char  *SVal;
-  char  *SArray[MAX_MINDEX];
-  char  *NullString = "";
+{
+    int IVal;
+    double DVal;
+    char *SVal;
+    char *SArray[MAX_MINDEX];
+    char *NullString = "";
 
-  char  *ptr;
+    char *ptr;
 
-  int    MIndex;
+    int MIndex;
 
-  char *TokPtr;
+    char *TokPtr;
 
-  int   PIndex;
+    int PIndex;
 
-  mpar_t      *P  = NULL;
-  mam_t       *A  = NULL;
-  mrm_t       *R  = NULL;
-  sres_t      *SR = NULL;
-  mqos_t      *Q  = NULL;
+    mpar_t *P = NULL;
+    mam_t *A = NULL;
+    mrm_t *R = NULL;
+    sres_t *SR = NULL;
+    mqos_t *Q = NULL;
 
-  const char *FName = "MCfgProcessLine";
+    const char *FName = "MCfgProcessLine";
 
-  PIndex = MCfg[CIndex].PIndex;
+    PIndex = MCfg[CIndex].PIndex;
 
-  DBG(3,fCONFIG) DPrint("%s(%s,%s,%s)\n",
-    FName,
-    MParam[PIndex],
-    (IndexName != NULL) ? IndexName : "NULL",
-    Line);
+    DBG(3, fCONFIG)
+    DPrint("%s(%s,%s,%s)\n", FName, MParam[PIndex],
+           (IndexName != NULL) ? IndexName : "NULL", Line);
 
-  switch(MCfg[CIndex].OType)
-    {
-    case mxoSRes:
+    switch (MCfg[CIndex].OType) {
+        case mxoSRes:
 
-      /* verify SR exists */
+            /* verify SR exists */
 
-      /* NOTE: no default SR */
+            /* NOTE: no default SR */
 
-      if (MSRAdd(IndexName,&SR) == FAILURE)
-        {
-        DBG(2,fCONFIG) DPrint("ALERT:    cannot configure SR[%s]\n",
-          IndexName);
+            if (MSRAdd(IndexName, &SR) == FAILURE) {
+                DBG(2, fCONFIG)
+                DPrint("ALERT:    cannot configure SR[%s]\n", IndexName);
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      break;
+            break;
 
-    case mxoPar:
+        case mxoPar:
 
-      if (IndexName[0] == '\0')
-        {
-        /* default index selects global partition */
+            if (IndexName[0] == '\0') {
+                /* default index selects global partition */
 
-        P = &MPar[0];
-        }
-      else if (MParAdd(IndexName,&P) == FAILURE)
-        {
-        DBG(2,fCONFIG) DPrint("ALERT:    cannot configure MPar[%s]\n",
-          IndexName);
+                P = &MPar[0];
+            } else if (MParAdd(IndexName, &P) == FAILURE) {
+                DBG(2, fCONFIG)
+                DPrint("ALERT:    cannot configure MPar[%s]\n", IndexName);
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      break;
+            break;
 
-    case mxoQOS:
+        case mxoQOS:
 
-      /* NOTE: no default QOS */
+            /* NOTE: no default QOS */
 
-      if (MQOSAdd(IndexName,&Q) == FAILURE)
-        {
-        DBG(2,fCONFIG) DPrint("ALERT:    cannot configure MQOS[%s]\n",
-          IndexName);
+            if (MQOSAdd(IndexName, &Q) == FAILURE) {
+                DBG(2, fCONFIG)
+                DPrint("ALERT:    cannot configure MQOS[%s]\n", IndexName);
 
-        return(FAILURE);
-        }
+                return (FAILURE);
+            }
 
-      break;
+            break;
 
-    case mxoAM:
+        case mxoAM:
 
-      if (MAM[0].Name[0] == '\0')
-        {
-        /* NOTE:  base config only enables primary AM */
+            if (MAM[0].Name[0] == '\0') {
+                /* NOTE:  base config only enables primary AM */
 
-        MAMAdd("base",&A);
-        }
+                MAMAdd("base", &A);
+            }
 
-      break;
+            break;
 
-    case mxoRM:
+        case mxoRM:
 
-      if (IndexName[0] == '\0')
-        {
-        /* default index selects base RM */
+            if (IndexName[0] == '\0') {
+                /* default index selects base RM */
 
-        R = &MRM[0];
-        }
-      else if (MRMAdd(IndexName,&R) == FAILURE)
-        {
-        DBG(2,fCONFIG) DPrint("ALERT:    cannot configure MRM[%s]\n",
-          IndexName);
+                R = &MRM[0];
+            } else if (MRMAdd(IndexName, &R) == FAILURE) {
+                DBG(2, fCONFIG)
+                DPrint("ALERT:    cannot configure MRM[%s]\n", IndexName);
 
-        return(FAILURE);
-        }
-      else
-        {
-        MRMSetDefaults(R);
+                return (FAILURE);
+            } else {
+                MRMSetDefaults(R);
 
-        MOLoadPvtConfig((void **)R,mxoRM,NULL,NULL,NULL);
-        }
+                MOLoadPvtConfig((void **)R, mxoRM, NULL, NULL, NULL);
+            }
 
-      break;
-    }  /* END switch(MCfg[CIndex].OType) */
+            break;
+    } /* END switch(MCfg[CIndex].OType) */
 
-  /* initialize values */
+    /* initialize values */
 
-  IVal   = 0;
-  DVal   = 0.0;
-  SVal   = NULL;
-  MIndex = 0;
-  SArray[0] = NULL;
+    IVal = 0;
+    DVal = 0.0;
+    SVal = NULL;
+    MIndex = 0;
+    SArray[0] = NULL;
 
-  /* read config values */
+    /* read config values */
 
-  switch(MCfg[CIndex].Format)
-    {
-    case mdfStringArray:
+    switch (MCfg[CIndex].Format) {
+        case mdfStringArray:
 
-      /* process string array */
+            /* process string array */
 
-      /* check for first string value */
+            /* check for first string value */
 
-      if ((SArray[MIndex] = MUStrTok(Line," \t\n",&TokPtr)) != NULL)
-        {
-        DBG(7,fCONFIG) DPrint("INFO:     adding value[%d] '%s' to string array\n",
-          MIndex,
-          SArray[MIndex]);
+            if ((SArray[MIndex] = MUStrTok(Line, " \t\n", &TokPtr)) != NULL) {
+                DBG(7, fCONFIG)
+                DPrint("INFO:     adding value[%d] '%s' to string array\n",
+                       MIndex, SArray[MIndex]);
 
-        MIndex++;
+                MIndex++;
 
-        /* load remaining string values */
+                /* load remaining string values */
 
-        while ((SArray[MIndex] = MUStrTok(NULL," \t\n",&TokPtr)) != NULL)
-          {
-          DBG(7,fCONFIG) DPrint("INFO:     adding value[%d] '%s' to string array\n",
-            MIndex,
-            SArray[MIndex]);
+                while ((SArray[MIndex] = MUStrTok(NULL, " \t\n", &TokPtr)) !=
+                       NULL) {
+                    DBG(7, fCONFIG)
+                    DPrint("INFO:     adding value[%d] '%s' to string array\n",
+                           MIndex, SArray[MIndex]);
 
-          MIndex++;
-          }
-        }
-      else
-        {
-        /* no values located */
+                    MIndex++;
+                }
+            } else {
+                /* no values located */
 
-        DBG(1,fCONFIG) DPrint("WARNING:  parameter '%s[%s]' is not assigned a value.  using default value\n",
-          MParam[PIndex],
-          IndexName);
-        }
+                DBG(1, fCONFIG)
+                DPrint(
+                    "WARNING:  parameter '%s[%s]' is not assigned a value.  "
+                    "using default value\n",
+                    MParam[PIndex], IndexName);
+            }
 
-      break;
+            break;
 
-    case mdfIntArray:
+        case mdfIntArray:
 
-      /* extract integer array */
+            /* extract integer array */
 
-      /* NYI */
+            /* NYI */
 
-      break;
+            break;
 
-    case mdfInt:
+        case mdfInt:
 
-      DBG(7,fCONFIG) DPrint("INFO:     parsing values for integer array parameter '%s'\n",
-        MParam[PIndex]);
+            DBG(7, fCONFIG)
+            DPrint(
+                "INFO:     parsing values for integer array parameter '%s'\n",
+                MParam[PIndex]);
 
-      if ((ptr = MUStrTok(Line," \t\n",&TokPtr)) == NULL)
-        {
-        DBG(1,fCONFIG) DPrint("WARNING:  parameter '%s' is not assigned a value (using default value)\n",
-          MParam[PIndex]);
+            if ((ptr = MUStrTok(Line, " \t\n", &TokPtr)) == NULL) {
+                DBG(1, fCONFIG)
+                DPrint(
+                    "WARNING:  parameter '%s' is not assigned a value (using "
+                    "default value)\n",
+                    MParam[PIndex]);
 
-        IVal = -1;
-        }
-      else
-        {
-        IVal = (int)strtol(ptr,NULL,0);
+                IVal = -1;
+            } else {
+                IVal = (int)strtol(ptr, NULL, 0);
 
-        if ((IVal == 0) && (ptr[0] != '0'))
-          {
-          DBG(1,fCONFIG) DPrint("WARNING:  Parameter[%02d] '%s' value (%s) cannot be read as an integer  (using default value)\n",
-            PIndex,
-            MParam[PIndex],
-            ptr);
+                if ((IVal == 0) && (ptr[0] != '0')) {
+                    DBG(1, fCONFIG)
+                    DPrint(
+                        "WARNING:  Parameter[%02d] '%s' value (%s) cannot be "
+                        "read as an integer  (using default value)\n",
+                        PIndex, MParam[PIndex], ptr);
 
-          IVal = -1;
-          }
-        }
+                    IVal = -1;
+                }
+            }
 
-      break;
+            break;
 
-    case mdfDouble:
+        case mdfDouble:
 
-      /* extract double array */
+            /* extract double array */
 
-      if ((ptr = MUStrTok(Line," \t\n",&TokPtr)) == NULL)
-        {
-        DBG(1,fCONFIG) DPrint("WARNING:  parameter '%s' is not assigned a value  (using default value)\n",
-          MParam[PIndex]);
+            if ((ptr = MUStrTok(Line, " \t\n", &TokPtr)) == NULL) {
+                DBG(1, fCONFIG)
+                DPrint(
+                    "WARNING:  parameter '%s' is not assigned a value  (using "
+                    "default value)\n",
+                    MParam[PIndex]);
 
-        DVal = -1.0;
-        }
-      else
-        {
-        DVal = strtod(ptr,NULL);
+                DVal = -1.0;
+            } else {
+                DVal = strtod(ptr, NULL);
 
-        if ((DVal == 0.0) && (ptr[0] != '0'))
-          {
-          DBG(1,fCONFIG) DPrint("WARNING:  Parameter[%02d] '%s' value (%s) cannot be read as a double  (using default value)\n",
-            PIndex,
-            MParam[PIndex],
-            ptr);
+                if ((DVal == 0.0) && (ptr[0] != '0')) {
+                    DBG(1, fCONFIG)
+                    DPrint(
+                        "WARNING:  Parameter[%02d] '%s' value (%s) cannot be "
+                        "read as a double  (using default value)\n",
+                        PIndex, MParam[PIndex], ptr);
 
-          DVal = -1.0;
-          }
-        }
+                    DVal = -1.0;
+                }
+            }
 
-      break;
+            break;
 
-    case mdfDoubleArray:
+        case mdfDoubleArray:
 
-      /* NYI */
+            /* NYI */
 
-      break;
+            break;
 
-    case mdfString:
+        case mdfString:
 
-      /* process string value */
+            /* process string value */
 
-      DBG(7,fCONFIG) DPrint("INFO:     parsing value for single string parameter '%s'\n",
-        MParam[PIndex]);
+            DBG(7, fCONFIG)
+            DPrint("INFO:     parsing value for single string parameter '%s'\n",
+                   MParam[PIndex]);
 
-      if ((SVal = MUStrTok(Line," \t\n",&TokPtr)) == NULL)
-        {
-        DBG(1,fCONFIG) DPrint("WARNING:  NULL value specified for parameter[%d] '%s'\n",
-          PIndex,
-          MParam[PIndex]);
+            if ((SVal = MUStrTok(Line, " \t\n", &TokPtr)) == NULL) {
+                DBG(1, fCONFIG)
+                DPrint(
+                    "WARNING:  NULL value specified for parameter[%d] '%s'\n",
+                    PIndex, MParam[PIndex]);
 
-        SVal = NullString;
-        }
+                SVal = NullString;
+            }
 
-      break;
+            break;
 
-    default:
+        default:
 
-      DBG(0,fCONFIG) DPrint("ERROR:    parameter[%d] '%s' not handled\n",
-        PIndex,
-        MParam[PIndex]);
+            DBG(0, fCONFIG)
+            DPrint("ERROR:    parameter[%d] '%s' not handled\n", PIndex,
+                   MParam[PIndex]);
 
-      break;
-    }  /* END switch (PIndex) */
+            break;
+    } /* END switch (PIndex) */
 
-  if (((MCfg[CIndex].Format == mdfInt)         && (IVal == -1)) ||
-      ((MCfg[CIndex].Format == mdfIntArray)    && (IVal == -1)) ||
-      ((MCfg[CIndex].Format == mdfDouble)      && (DVal == -1.0)) ||
-      ((MCfg[CIndex].Format == mdfDoubleArray) && (DVal == -1.0)) ||
-      ((MCfg[CIndex].Format == mdfString)      && (SVal == NULL)) ||
-      ((MCfg[CIndex].Format == mdfStringArray) && (SArray[0] == NULL)) ||
-      ((MCfg[CIndex].Format == mdfStringArray) && (SArray[0] == NULL)))
-    {
-    /* invalid parameter specified */
+    if (((MCfg[CIndex].Format == mdfInt) && (IVal == -1)) ||
+        ((MCfg[CIndex].Format == mdfIntArray) && (IVal == -1)) ||
+        ((MCfg[CIndex].Format == mdfDouble) && (DVal == -1.0)) ||
+        ((MCfg[CIndex].Format == mdfDoubleArray) && (DVal == -1.0)) ||
+        ((MCfg[CIndex].Format == mdfString) && (SVal == NULL)) ||
+        ((MCfg[CIndex].Format == mdfStringArray) && (SArray[0] == NULL)) ||
+        ((MCfg[CIndex].Format == mdfStringArray) && (SArray[0] == NULL))) {
+        /* invalid parameter specified */
 
-    DBG(0,fCONFIG) DPrint("ALERT:    parameter '%s' has invalid value\n",
-      MCfg[CIndex].Name);
+        DBG(0, fCONFIG)
+        DPrint("ALERT:    parameter '%s' has invalid value\n",
+               MCfg[CIndex].Name);
 
-    return(SUCCESS);
+        return (SUCCESS);
     }
 
-  /* assign values to parameters */
+    /* assign values to parameters */
 
-  switch(MCfg[CIndex].OType)
-    {
-    case mxoSRes:
+    switch (MCfg[CIndex].OType) {
+        case mxoSRes:
 
-      MSRProcessOConfig(SR,PIndex,IVal,DVal,SVal,SArray);
+            MSRProcessOConfig(SR, PIndex, IVal, DVal, SVal, SArray);
 
-      break;
+            break;
 
-    case mxoAM:
+        case mxoAM:
 
-      MAMProcessOConfig(A,PIndex,IVal,DVal,SVal,SArray);
+            MAMProcessOConfig(A, PIndex, IVal, DVal, SVal, SArray);
 
-      break;
+            break;
 
-    case mxoRM:
+        case mxoRM:
 
-      MRMProcessOConfig(R,PIndex,IVal,DVal,SVal,SArray);
+            MRMProcessOConfig(R, PIndex, IVal, DVal, SVal, SArray);
 
-      break;
+            break;
 
-    case mxoQOS:
+        case mxoQOS:
 
-      MQOSProcessOConfig(Q,PIndex,IVal,DVal,SVal,SArray);
+            MQOSProcessOConfig(Q, PIndex, IVal, DVal, SVal, SArray);
 
-      break;
+            break;
 
-    case mxoSim:
+        case mxoSim:
 
-      MSimProcessOConfig(&MSim,PIndex,IVal,DVal,SVal,SArray);
+            MSimProcessOConfig(&MSim, PIndex, IVal, DVal, SVal, SArray);
 
-      break;
+            break;
 
-    case mxoPar:
-    case mxoSched:
-    default:
-   
-      MCfgSetVal(PIndex,IVal,DVal,SVal,SArray,P,IndexName);
+        case mxoPar:
+        case mxoSched:
+        default:
 
-      break;
-    }  /* END switch(MCfg[CIndex].Type) */
+            MCfgSetVal(PIndex, IVal, DVal, SVal, SArray, P, IndexName);
 
-  /* log parameter setting */
+            break;
+    } /* END switch(MCfg[CIndex].Type) */
 
-  switch(MCfg[CIndex].Format)
-    {
-    case mdfInt:
+    /* log parameter setting */
 
-      DBG(4,fCONFIG) DPrint("INFO:     parameter '%s' assigned int value %d\n",
-        MParam[PIndex],
-        IVal);
+    switch (MCfg[CIndex].Format) {
+        case mdfInt:
 
-      break;
+            DBG(4, fCONFIG)
+            DPrint("INFO:     parameter '%s' assigned int value %d\n",
+                   MParam[PIndex], IVal);
 
-    case mdfDouble:
+            break;
 
-      DBG(4,fCONFIG) DPrint("INFO:     parameter '%s' assigned int value %lf\n",
-        MParam[PIndex],
-        DVal);
+        case mdfDouble:
 
-      break;
+            DBG(4, fCONFIG)
+            DPrint("INFO:     parameter '%s' assigned int value %lf\n",
+                   MParam[PIndex], DVal);
 
-    case mdfString:
+            break;
 
-      DBG(4,fCONFIG) DPrint("INFO:     parameter '%s' assigned string value '%s'\n",
-        MParam[PIndex],
-        SVal);
+        case mdfString:
 
-      break;
+            DBG(4, fCONFIG)
+            DPrint("INFO:     parameter '%s' assigned string value '%s'\n",
+                   MParam[PIndex], SVal);
 
-    case mdfStringArray:
+            break;
 
-      {
-      char tmpLine[MAX_MLINE];
+        case mdfStringArray:
 
-      int  index;
-
-      tmpLine[0] = '\0';
-
-      for (index = 0;index < MIndex;index++)
         {
-        MUStrCat(tmpLine,SArray[index],sizeof(tmpLine));
-        MUStrCat(tmpLine," ",sizeof(tmpLine));
-        }
+            char tmpLine[MAX_MLINE];
 
-      DBG(4,fCONFIG) DPrint("INFO:     parameter '%s' assigned string array '%s'\n",
-        MParam[PIndex],
-        tmpLine);
-      }  /* END BLOCK */
+            int index;
 
-      break;
+            tmpLine[0] = '\0';
 
-    default:
+            for (index = 0; index < MIndex; index++) {
+                MUStrCat(tmpLine, SArray[index], sizeof(tmpLine));
+                MUStrCat(tmpLine, " ", sizeof(tmpLine));
+            }
 
-      /* NO-OP */
+            DBG(4, fCONFIG)
+            DPrint("INFO:     parameter '%s' assigned string array '%s'\n",
+                   MParam[PIndex], tmpLine);
+        } /* END BLOCK */
 
-      break;
-    }  /* END switch(MCfg[CIndex].Format) */
+        break;
 
-  return(SUCCESS);
-  }  /* END MCfgProcessLine() */
+        default:
 
+            /* NO-OP */
+
+            break;
+    } /* END switch(MCfg[CIndex].Format) */
+
+    return (SUCCESS);
+} /* END MCfgProcessLine() */
 
 /* END MConfig.c */
 
@@ -1165,36 +978,33 @@ int MCfgProcessLine(
 
 /* Contains:                                          *
  *                                                    */
- 
- 
- 
- 
+
 #include "moab.h"
 #include "msched-proto.h"
- 
-extern mlog_t     mlog;
- 
-extern msched_t   MSched;
-extern msim_t     MSim;
-extern mqos_t     MQOS[];
-extern mstat_t    MStat;
+
+extern mlog_t mlog;
+
+extern msched_t MSched;
+extern msim_t MSim;
+extern mqos_t MQOS[];
+extern mstat_t MStat;
 extern mprofcfg_t Plot;
-extern mcfg_t     MCfg[];
- 
-extern mframe_t   MFrame[];
-extern mpar_t     MPar[];
-extern mrm_t      MRM[];
-extern mam_t      MAM[];
+extern mcfg_t MCfg[];
+
+extern mframe_t MFrame[];
+extern mpar_t MPar[];
+extern mrm_t MRM[];
+extern mam_t MAM[];
 extern mattrlist_t MAList;
-extern sres_t     SRes[];
-extern mckpt_t    MCP;
- 
-extern msys_t     MSys;
- 
+extern sres_t SRes[];
+extern mckpt_t MCP;
+
+extern msys_t MSys;
+
 extern const char *ResThresholdType[];
 extern const char *MLogFacilityType[];
-extern const char *MCDisplayType[]; 
- 
+extern const char *MCDisplayType[];
+
 extern const char *NodeAllocationPolicy[];
 extern const char *TaskDistributionPolicy[];
 extern const char *MPolicyMode[];
@@ -1214,605 +1024,569 @@ extern const char *MResourceType[];
 extern const char *RMAuthType[];
 extern const char *MNAllocPolicy[];
 extern const char *MResFlags[];
- 
+
 extern const char *MWeekDay[];
- 
+
 extern const char *MQOSFlags[];
 extern const char *MSimFlagType[];
 extern const char *MJobFlags[];
- 
+
 extern const char *MJobNodeMatchType[];
 extern const char *MFSPolicyType[];
 extern const char *MSRPeriodType[];
 extern const char *MSockProtocol[];
 
-
-
-
 /* NOTE:  only handles old-style parameters */
 
 int MCfgProcessBuffer(
- 
-  char *Buffer)  /* I */
- 
-  {
-  char  *ptr;
-  char  *ptr2;
- 
-  char  *tail;
-  char   tmp[MAX_MLINE + 1];
-  char   Line[MAX_MLINE + 1];
- 
-  int    cindex;
-  int    CIndex;
- 
-  int    index;
- 
-  int    IsValid;
- 
-  char   IndexName[MAX_MNAME];
 
-  const char *FName = "MCfgProcessBuffer";
- 
-  DBG(5,fCONFIG) DPrint("%s(%s)\n",
-    FName,
-    Buffer);
- 
-  if ((Buffer == NULL) || (Buffer[0] == '\0'))
-    {
-    return(FAILURE);
+    char *Buffer) /* I */
+
+{
+    char *ptr;
+    char *ptr2;
+
+    char *tail;
+    char tmp[MAX_MLINE + 1];
+    char Line[MAX_MLINE + 1];
+
+    int cindex;
+    int CIndex;
+
+    int index;
+
+    int IsValid;
+
+    char IndexName[MAX_MNAME];
+
+    const char *FName = "MCfgProcessBuffer";
+
+    DBG(5, fCONFIG) DPrint("%s(%s)\n", FName, Buffer);
+
+    if ((Buffer == NULL) || (Buffer[0] == '\0')) {
+        return (FAILURE);
     }
- 
-  /* look for all defined parameters in buffer */
- 
-  for (cindex = 0;MCfg[cindex].Name != NULL;cindex++)
-    {
-    DBG(5,fCONFIG) DPrint("INFO:     checking parameter '%s'\n",
-      MCfg[cindex].Name);
- 
-    MUStrCpy(tmp,(char *)MCfg[cindex].Name,sizeof(tmp)); 
- 
-    ptr = Buffer;
- 
-    IndexName[0] = '\0';
- 
-    while ((ptr = strstr(ptr,tmp)) != NULL)
-      {
-      IsValid = FALSE;
- 
-      DBG(7,fCONFIG) DPrint("INFO:     checking parameter '%s' (loop)\n",
-        MCfg[cindex].Name);
- 
-      /* verify ptr at start of line */
- 
-      if ((ptr == Buffer) || (*(ptr - 1) == '\n'))
-        {
-        ptr2 = &ptr[strlen(tmp)];
- 
-        switch(*ptr2)
-          {
-          case '[':
- 
-            /* determine array parameter */
- 
-            for (index = 1;index < MAX_MNAME;index++)
-              {
-              if (isspace(ptr2[index]) || (ptr2[index] == ']'))
-                break;
- 
-              IndexName[index - 1] = ptr2[index];
-              }
- 
-            IndexName[index - 1] = '\0';
- 
-            DBG(3,fCONFIG) DPrint("INFO:     detected array index '%s'\n",
-              IndexName);
- 
-            IsValid = TRUE;
- 
-            break; 
- 
-          case ' ':
-          case '\t':
-          case '\n':
-          case '\0':
- 
-            IsValid = TRUE;
- 
-            break;
- 
-          default:
 
-            /* NO-OP */
- 
-            break;
-          }    /* END switch(ptr[strlen(tmp)])              */
-        }      /* if ((ptr == Buffer) || (*(ptr - 1) == '\n')) */
- 
-      if (IsValid == TRUE)
-        {
-        DBG(4,fCONFIG) DPrint("INFO:     located parameter '%s'\n",
-          MCfg[cindex].Name);
- 
-        /* move to end of keyword */
- 
-        while(!isspace(*ptr) && (*ptr != '\0') && (*ptr != '\n'))
-          {
-          ptr++;
-          }
- 
-        /* remove white space */
- 
-        while(isspace(*ptr) && (*ptr != '\0') && (*ptr != '\n'))
-          {
-          ptr++;
-          }
- 
-        if ((tail = strchr(ptr,'\n')) == NULL)
-          {
-          DBG(3,fCONFIG) DPrint("ALERT:    missing newline termination character\n");
- 
-          tail = ptr + MAX_MLINE; 
-          }
- 
-        MUStrCpy(Line,ptr,MIN(tail - ptr + 1,(long)sizeof(Line)));
+    /* look for all defined parameters in buffer */
 
-        /* preserve cindex as loop variable */
+    for (cindex = 0; MCfg[cindex].Name != NULL; cindex++) {
+        DBG(5, fCONFIG)
+        DPrint("INFO:     checking parameter '%s'\n", MCfg[cindex].Name);
 
-        CIndex = cindex;
- 
-        MCfgTranslateBackLevel(&CIndex);
- 
-        DBG(7,fCONFIG) DPrint("INFO:     value for parameter '%s': '%s'\n",
-          MCfg[CIndex].Name,
-          Line);
- 
-        MCfgProcessLine(CIndex,IndexName,Line,NULL);
-        }  /* END if (IsValid == TRUE) */
- 
-      ptr++;
-      }  /* END while ((ptr = strstr(ptr,tmp)) != NULL) */
-    }    /* for (cindex = 0;...)                        */
- 
-  MCfgEnforceConstraints();
- 
-  return(SUCCESS);
-  }  /* END MCfgProcessBuffer() */
+        MUStrCpy(tmp, (char *)MCfg[cindex].Name, sizeof(tmp));
 
+        ptr = Buffer;
 
+        IndexName[0] = '\0';
 
+        while ((ptr = strstr(ptr, tmp)) != NULL) {
+            IsValid = FALSE;
+
+            DBG(7, fCONFIG)
+            DPrint("INFO:     checking parameter '%s' (loop)\n",
+                   MCfg[cindex].Name);
+
+            /* verify ptr at start of line */
+
+            if ((ptr == Buffer) || (*(ptr - 1) == '\n')) {
+                ptr2 = &ptr[strlen(tmp)];
+
+                switch (*ptr2) {
+                    case '[':
+
+                        /* determine array parameter */
+
+                        for (index = 1; index < MAX_MNAME; index++) {
+                            if (isspace(ptr2[index]) || (ptr2[index] == ']'))
+                                break;
+
+                            IndexName[index - 1] = ptr2[index];
+                        }
+
+                        IndexName[index - 1] = '\0';
+
+                        DBG(3, fCONFIG)
+                        DPrint("INFO:     detected array index '%s'\n",
+                               IndexName);
+
+                        IsValid = TRUE;
+
+                        break;
+
+                    case ' ':
+                    case '\t':
+                    case '\n':
+                    case '\0':
+
+                        IsValid = TRUE;
+
+                        break;
+
+                    default:
+
+                        /* NO-OP */
+
+                        break;
+                } /* END switch(ptr[strlen(tmp)])              */
+            }     /* if ((ptr == Buffer) || (*(ptr - 1) == '\n')) */
+
+            if (IsValid == TRUE) {
+                DBG(4, fCONFIG)
+                DPrint("INFO:     located parameter '%s'\n", MCfg[cindex].Name);
+
+                /* move to end of keyword */
+
+                while (!isspace(*ptr) && (*ptr != '\0') && (*ptr != '\n')) {
+                    ptr++;
+                }
+
+                /* remove white space */
+
+                while (isspace(*ptr) && (*ptr != '\0') && (*ptr != '\n')) {
+                    ptr++;
+                }
+
+                if ((tail = strchr(ptr, '\n')) == NULL) {
+                    DBG(3, fCONFIG)
+                    DPrint("ALERT:    missing newline termination character\n");
+
+                    tail = ptr + MAX_MLINE;
+                }
+
+                MUStrCpy(Line, ptr, MIN(tail - ptr + 1, (long)sizeof(Line)));
+
+                /* preserve cindex as loop variable */
+
+                CIndex = cindex;
+
+                MCfgTranslateBackLevel(&CIndex);
+
+                DBG(7, fCONFIG)
+                DPrint("INFO:     value for parameter '%s': '%s'\n",
+                       MCfg[CIndex].Name, Line);
+
+                MCfgProcessLine(CIndex, IndexName, Line, NULL);
+            } /* END if (IsValid == TRUE) */
+
+            ptr++;
+        } /* END while ((ptr = strstr(ptr,tmp)) != NULL) */
+    }     /* for (cindex = 0;...)                        */
+
+    MCfgEnforceConstraints();
+
+    return (SUCCESS);
+} /* END MCfgProcessBuffer() */
 
 int MCfgTranslateBackLevel(
- 
-  int *CIndex)  /* I */
- 
-  {
-  if (CIndex == NULL)
-    {
-    return(FAILURE);
+
+    int *CIndex) /* I */
+
+{
+    if (CIndex == NULL) {
+        return (FAILURE);
     }
- 
-  switch(MCfg[*CIndex].PIndex)
-    {
-    case pOLDUFSWeight:
-    case pOLDFSUWeight:
 
-    
-      MCfgGetIndex(pFUWeight,CIndex);
- 
-      break;
- 
-    case pOLDGFSWeight:
-    case pOLDFSGWeight:
+    switch (MCfg[*CIndex].PIndex) {
+        case pOLDUFSWeight:
+        case pOLDFSUWeight:
 
-      MCfgGetIndex(pFGWeight,CIndex);     
- 
-      break;
- 
-    case pOLDAFSWeight:
-    case pOLDFSAWeight:
+            MCfgGetIndex(pFUWeight, CIndex);
 
-      MCfgGetIndex(pFAWeight,CIndex);    
- 
-      break;
- 
-    case pOLDFSQWeight:
+            break;
 
-      MCfgGetIndex(pFQWeight,CIndex);      
- 
-      break;
- 
-    case pOLDFSCWeight: 
+        case pOLDGFSWeight:
+        case pOLDFSGWeight:
 
-      MCfgGetIndex(pFCWeight,CIndex);       
- 
-      break;
- 
-    case pOLDServWeight:
+            MCfgGetIndex(pFGWeight, CIndex);
 
-      MCfgGetIndex(pServWeight,CIndex);      
- 
-      break;
- 
-    case pOLDDirectSpecWeight:
+            break;
 
-      MCfgGetIndex(pCredWeight,CIndex);      
- 
-      break;
- 
-    case pOLDBankServer:
+        case pOLDAFSWeight:
+        case pOLDFSAWeight:
 
-      MCfgGetIndex(pAMHost,CIndex);      
- 
-      break;
- 
-    case pOLDRMServer:
+            MCfgGetIndex(pFAWeight, CIndex);
 
-      MCfgGetIndex(pRMHost,CIndex);       
- 
-      break;
+            break;
 
-    case pBFType:
+        case pOLDFSQWeight:
 
-      MCfgGetIndex(pBFPolicy,CIndex);      
+            MCfgGetIndex(pFQWeight, CIndex);
 
-      break;
- 
-    default:
+            break;
 
-      /* NO-OP */
- 
-      break;
-    }  /* END switch(*CIndex) */
- 
-  return(SUCCESS);
-  }  /* END MCfgTranslateBackLevel() */
+        case pOLDFSCWeight:
 
+            MCfgGetIndex(pFCWeight, CIndex);
 
+            break;
 
+        case pOLDServWeight:
+
+            MCfgGetIndex(pServWeight, CIndex);
+
+            break;
+
+        case pOLDDirectSpecWeight:
+
+            MCfgGetIndex(pCredWeight, CIndex);
+
+            break;
+
+        case pOLDBankServer:
+
+            MCfgGetIndex(pAMHost, CIndex);
+
+            break;
+
+        case pOLDRMServer:
+
+            MCfgGetIndex(pRMHost, CIndex);
+
+            break;
+
+        case pBFType:
+
+            MCfgGetIndex(pBFPolicy, CIndex);
+
+            break;
+
+        default:
+
+            /* NO-OP */
+
+            break;
+    } /* END switch(*CIndex) */
+
+    return (SUCCESS);
+} /* END MCfgTranslateBackLevel() */
 
 int MCfgGetIndex(
 
-  int  PIndex, /* I */
-  int *CIndex) /* O */
+    int PIndex,  /* I */
+    int *CIndex) /* O */
 
-  { 
-  int cindex;
+{
+    int cindex;
 
-  if (CIndex == NULL)
-    {
-    return(FAILURE);
+    if (CIndex == NULL) {
+        return (FAILURE);
     }
 
-  for (cindex = 0;cindex < MAX_MCFG;cindex++)
-    {
-    if (MCfg[cindex].PIndex == PIndex)
-      {
-      *CIndex = cindex;
+    for (cindex = 0; cindex < MAX_MCFG; cindex++) {
+        if (MCfg[cindex].PIndex == PIndex) {
+            *CIndex = cindex;
 
-      return(SUCCESS);
-      }
-    }    /* END for (cindex) */
- 
-  return(FAILURE);
-  }  /* END MCfgGetIndex() */
+            return (SUCCESS);
+        }
+    } /* END for (cindex) */
 
-
-
+    return (FAILURE);
+} /* END MCfgGetIndex() */
 
 int MCfgSetVal(
 
-  int      PIndex,    /* I */
-  int      IVal,
-  double   DVal,
-  char    *SVal,      /* I */
-  char   **SArray,    /* I */
-  mpar_t  *P,
-  char    *IndexName)
-  
-  {
-  int    MIndex;
+    int PIndex,                        /* I */
+    int IVal, double DVal, char *SVal, /* I */
+    char **SArray,                     /* I */
+    mpar_t *P, char *IndexName)
 
-  int      val;
-  double   valf;
-  char    *valp;
-  char   **valpa;
+{
+    int MIndex;
 
-  mfsc_t  *F  = NULL;
+    int val;
+    double valf;
+    char *valp;
+    char **valpa;
 
-  const char *FName = "MCfgSetVal";
+    mfsc_t *F = NULL;
 
-  DBG(3,fCONFIG) DPrint("%s(%s,IVal,DVal,SVal,SArray,P)\n",
-    FName,
-    MParam[PIndex]);
+    const char *FName = "MCfgSetVal";
 
-  if (P != NULL)
-    F = &P->FSC;
+    DBG(3, fCONFIG)
+    DPrint("%s(%s,IVal,DVal,SVal,SArray,P)\n", FName, MParam[PIndex]);
 
-  val    = IVal;
-  valf   = DVal;
-  valp   = SVal;
-  valpa  = SArray;
+    if (P != NULL) F = &P->FSC;
 
-  if (SArray != NULL)
-    {
-    for (MIndex = 0;SArray[MIndex] != NULL;MIndex++);
-    }
-  else
-    {
-    MIndex = 0;
+    val = IVal;
+    valf = DVal;
+    valp = SVal;
+    valpa = SArray;
+
+    if (SArray != NULL) {
+        for (MIndex = 0; SArray[MIndex] != NULL; MIndex++)
+            ;
+    } else {
+        MIndex = 0;
     }
 
-  /* assign values to parameters */        
+    /* assign values to parameters */
 
-  switch (PIndex)
-    {
-    case pResDepth:
-    case pParIgnQList:
-    case pJobAggregationTime:
-    case pLogLevel:
-    case pRMPollInterval:
-    case pMinDispatchTime:
-    case pNodePollFrequency:
-    case pMaxSleepIteration:
-    case mcoJobFBAction:
-    case mcoMailAction:
-    case pAdminEAction:
-    case pAdminEInterval:
-    case pCheckPointFile:
-    case pCheckPointInterval:
-    case pCheckPointExpirationTime:
-    case pDefaultDomain:
-    case pDefaultClassList:
-    case pServerName:
-    case pLogFacility:
-    case pLogFileMaxSize:
-    case pLogFileRollDepth:
-    case pMonitoredJob:
-    case pMonitoredNode:
-    case pMonitoredRes:
-    case pMonitoredFunction:
-    case pProcSpeedFeatureHeader:
-    case pNodeTypeFeatureHeader:
-    case pPartitionFeatureHeader:
-    case pNAMaxPS:
-    case pNAPolicy:
-    case pSchedMode:
-    case pClientTimeout:
-    case pMCSocketProtocol:
-    case pServerHost:
-    case pServerPort:
-    case pResCtlPolicy:
-    case pPreemptPolicy:
-    case pDisplayFlags:
-    case mcoUseSyslog:
-    case mcoDeferTime:
-    case pDeferCount:
-    case pDeferStartCount:
-    case pJobPurgeTime:
-    case pNodePurgeTime:
-    case pAPIFailureThreshhold:
-    case pNodeSyncDeadline:
-    case pJobSyncDeadline:
-    case pJobMaxOverrun:
-    case pMaxJobPerUserPolicy:
-    case pMaxJobPerUserCount:
-    case pHMaxJobPerUserCount:
-    case pMaxNodePerUserPolicy:
-    case pMaxNodePerUserCount:
-    case pHMaxNodePerUserCount:
-    case pMaxProcPerUserPolicy:
-    case pMaxProcPerUserCount:
-    case pHMaxProcPerUserCount:
-    case pMaxPSPerUserPolicy:
-    case pMaxPSPerUserCount:
-    case pHMaxPSPerUserCount:
-    case pMaxJobQueuedPerUserPolicy:
-    case pMaxJobQueuedPerUserCount:
-    case pHMaxJobQueuedPerUserCount:
-    case pMaxJobPerGroupPolicy:
-    case pMaxJobPerGroupCount:
-    case pHMaxJobPerGroupCount:
-    case pMaxNodePerGroupPolicy:
-    case pMaxNodePerGroupCount:
-    case pHMaxNodePerGroupCount:
-    case pMaxPSPerGroupPolicy:
-    case pMaxPSPerGroupCount:
-    case pHMaxPSPerGroupCount:
-    case pMaxJobQueuedPerGroupPolicy:
-    case pMaxJobQueuedPerGroupCount:
-    case pHMaxJobQueuedPerGroupCount:
-    case pMaxJobPerAccountPolicy:
-    case pMaxJobPerAccountCount:
-    case pHMaxJobPerAccountCount:
-    case pMaxNodePerAccountPolicy:
-    case pMaxNodePerAccountCount:
-    case pHMaxNodePerAccountCount:
-    case pMaxPSPerAccountPolicy:
-    case pMaxPSPerAccountCount:
-    case pHMaxPSPerAccountCount:
-    case pMaxJobQueuedPerAccountPolicy:
-    case pMaxJobQueuedPerAccountCount:
-    case pHMaxJobQueuedPerAccountCount:
-    case mcoAllocLocalityPolicy:
-    case pMServerHomeDir:
-    case pNodeMaxLoad:
-    case pNodeCPUOverCommitFactor:
-    case pNodeMemOverCommitFactor:
-    case pMaxJobPerIteration:
-    case mcoDirectoryServer:
-    case mcoEventServer:
-    case mcoTimePolicy:
-    case pSchedLogDir:
-    case pSchedLogFile:
-    case pSchedStepCount:
-    case mcoUseJobRegEx:
-    case mcoAdminUsers:
-    case mcoAdmin1Users:
-    case mcoAdmin2Users:
-    case mcoAdmin3Users:
-    case mcoAdmin4Users:
-    case mcoAdminHosts:
-    case mcoComputeHosts:
-    case pReservationDepth:
-    case pResQOSList:
-    case pSchedToolsDir:
-    case pSchedLockFile:
-    case pStatDir:
-    case pPlotMinTime:
-    case pPlotMaxTime:
-    case pPlotTimeScale:
-    case pPlotMinNode:
-    case pPlotMaxNode:
-    case pPlotNodeScale:
-    case pNodeUntrackedProcFactor:
+    switch (PIndex) {
+        case pResDepth:
+        case pParIgnQList:
+        case pJobAggregationTime:
+        case pLogLevel:
+        case pRMPollInterval:
+        case pMinDispatchTime:
+        case pNodePollFrequency:
+        case pMaxSleepIteration:
+        case mcoJobFBAction:
+        case mcoMailAction:
+        case pAdminEAction:
+        case pAdminEInterval:
+        case pCheckPointFile:
+        case pCheckPointInterval:
+        case pCheckPointExpirationTime:
+        case pDefaultDomain:
+        case pDefaultClassList:
+        case pServerName:
+        case pLogFacility:
+        case pLogFileMaxSize:
+        case pLogFileRollDepth:
+        case pMonitoredJob:
+        case pMonitoredNode:
+        case pMonitoredRes:
+        case pMonitoredFunction:
+        case pProcSpeedFeatureHeader:
+        case pNodeTypeFeatureHeader:
+        case pPartitionFeatureHeader:
+        case pNAMaxPS:
+        case pNAPolicy:
+        case pSchedMode:
+        case pClientTimeout:
+        case pMCSocketProtocol:
+        case pServerHost:
+        case pServerPort:
+        case pResCtlPolicy:
+        case pPreemptPolicy:
+        case pDisplayFlags:
+        case mcoUseSyslog:
+        case mcoDeferTime:
+        case pDeferCount:
+        case pDeferStartCount:
+        case pJobPurgeTime:
+        case pNodePurgeTime:
+        case pAPIFailureThreshhold:
+        case pNodeSyncDeadline:
+        case pJobSyncDeadline:
+        case pJobMaxOverrun:
+        case pMaxJobPerUserPolicy:
+        case pMaxJobPerUserCount:
+        case pHMaxJobPerUserCount:
+        case pMaxNodePerUserPolicy:
+        case pMaxNodePerUserCount:
+        case pHMaxNodePerUserCount:
+        case pMaxProcPerUserPolicy:
+        case pMaxProcPerUserCount:
+        case pHMaxProcPerUserCount:
+        case pMaxPSPerUserPolicy:
+        case pMaxPSPerUserCount:
+        case pHMaxPSPerUserCount:
+        case pMaxJobQueuedPerUserPolicy:
+        case pMaxJobQueuedPerUserCount:
+        case pHMaxJobQueuedPerUserCount:
+        case pMaxJobPerGroupPolicy:
+        case pMaxJobPerGroupCount:
+        case pHMaxJobPerGroupCount:
+        case pMaxNodePerGroupPolicy:
+        case pMaxNodePerGroupCount:
+        case pHMaxNodePerGroupCount:
+        case pMaxPSPerGroupPolicy:
+        case pMaxPSPerGroupCount:
+        case pHMaxPSPerGroupCount:
+        case pMaxJobQueuedPerGroupPolicy:
+        case pMaxJobQueuedPerGroupCount:
+        case pHMaxJobQueuedPerGroupCount:
+        case pMaxJobPerAccountPolicy:
+        case pMaxJobPerAccountCount:
+        case pHMaxJobPerAccountCount:
+        case pMaxNodePerAccountPolicy:
+        case pMaxNodePerAccountCount:
+        case pHMaxNodePerAccountCount:
+        case pMaxPSPerAccountPolicy:
+        case pMaxPSPerAccountCount:
+        case pHMaxPSPerAccountCount:
+        case pMaxJobQueuedPerAccountPolicy:
+        case pMaxJobQueuedPerAccountCount:
+        case pHMaxJobQueuedPerAccountCount:
+        case mcoAllocLocalityPolicy:
+        case pMServerHomeDir:
+        case pNodeMaxLoad:
+        case pNodeCPUOverCommitFactor:
+        case pNodeMemOverCommitFactor:
+        case pMaxJobPerIteration:
+        case mcoDirectoryServer:
+        case mcoEventServer:
+        case mcoTimePolicy:
+        case pSchedLogDir:
+        case pSchedLogFile:
+        case pSchedStepCount:
+        case mcoUseJobRegEx:
+        case mcoAdminUsers:
+        case mcoAdmin1Users:
+        case mcoAdmin2Users:
+        case mcoAdmin3Users:
+        case mcoAdmin4Users:
+        case mcoAdminHosts:
+        case mcoComputeHosts:
+        case pReservationDepth:
+        case pResQOSList:
+        case pSchedToolsDir:
+        case pSchedLockFile:
+        case pStatDir:
+        case pPlotMinTime:
+        case pPlotMaxTime:
+        case pPlotTimeScale:
+        case pPlotMinNode:
+        case pPlotMaxNode:
+        case pPlotNodeScale:
+        case pNodeUntrackedProcFactor:
 
-      MSchedProcessOConfig(&MSched,PIndex,val,valf,valp,valpa,IndexName);
-      
-      break;
+            MSchedProcessOConfig(&MSched, PIndex, val, valf, valp, valpa,
+                                 IndexName);
 
-    case pNodeAvailPolicy:
-    case mcoResourceLimitPolicy:
-    case pUseSystemQueueTime:
-    case pJobPrioAccrualPolicy:
-    case mcoBFChunkDuration:
-    case mcoBFChunkSize:
-    case pBFPriorityPolicy:
-    case pNodeLoadPolicy:
-    case pNodeSetPolicy:
-    case pNodeSetAttribute:
-    case pNodeSetDelay:
-    case pNodeSetPriorityType:
-    case pNodeSetList:
-    case pNodeSetTolerance:
-    case pBFPolicy:
-    case pBFDepth:
-    case pBFProcFactor:
-    case pBFMaxSchedules:
-    case pJobSizePolicy:
-    case pJobNodeMatch:
-    case pUseMachineSpeed:
-    case pUseMachineSpeedForFS:
-    case pNodeAllocationPolicy:
-    case pBFMetric:
-    case mcoAdminMinSTime:
-    case mcoRejectNegPrioJobs:
-    case mcoEnableMultiNodeJobs:
-    case mcoEnableMultiReqJobs:
-    case mcoEnableNegJobPriority:
-    case pMaxJobStartTime:
-    case pTaskDistributionPolicy:
-    case pResPolicy:
-    case pResRetryTime:
-    case pResThresholdType:
-    case pResThresholdValue:
-    case pMaxMetaTasks:
-    case pSystemMaxJobProc:
-    case pSystemMaxJobTime:
-    case pSystemMaxJobPS:
-    case pIgnPbsGroupList:
-    case pFSSecondaryGroups:
+            break;
 
-      MParProcessOConfig(P,PIndex,val,valf,valp,valpa);
- 
-      break;
+        case pNodeAvailPolicy:
+        case mcoResourceLimitPolicy:
+        case pUseSystemQueueTime:
+        case pJobPrioAccrualPolicy:
+        case mcoBFChunkDuration:
+        case mcoBFChunkSize:
+        case pBFPriorityPolicy:
+        case pNodeLoadPolicy:
+        case pNodeSetPolicy:
+        case pNodeSetAttribute:
+        case pNodeSetDelay:
+        case pNodeSetPriorityType:
+        case pNodeSetList:
+        case pNodeSetTolerance:
+        case pBFPolicy:
+        case pBFDepth:
+        case pBFProcFactor:
+        case pBFMaxSchedules:
+        case pJobSizePolicy:
+        case pJobNodeMatch:
+        case pUseMachineSpeed:
+        case pUseMachineSpeedForFS:
+        case pNodeAllocationPolicy:
+        case pBFMetric:
+        case mcoAdminMinSTime:
+        case mcoRejectNegPrioJobs:
+        case mcoEnableMultiNodeJobs:
+        case mcoEnableMultiReqJobs:
+        case mcoEnableNegJobPriority:
+        case pMaxJobStartTime:
+        case pTaskDistributionPolicy:
+        case pResPolicy:
+        case pResRetryTime:
+        case pResThresholdType:
+        case pResThresholdValue:
+        case pMaxMetaTasks:
+        case pSystemMaxJobProc:
+        case pSystemMaxJobTime:
+        case pSystemMaxJobPS:
+        case pIgnPbsGroupList:
+        case pFSSecondaryGroups:
 
-    case pServWeight:
-    case pTargWeight:
-    case pCredWeight:
-    case pFSWeight:
-    case pResWeight:
-    case pUsageWeight:
-    case pSQTWeight:
-    case pSXFWeight:
-    case pSSPVWeight:
-    case pSBPWeight:
-    case pTQTWeight:
-    case pTXFWeight:
-    case pCUWeight:
-    case pCGWeight:
-    case pCAWeight:
-    case pCQWeight:
-    case pCCWeight:
-    case pFUWeight:
-    case pFGWeight:
-    case pFAWeight:
-    case pFQWeight:
-    case pFCWeight:
-    case pRNodeWeight:
-    case pRProcWeight:
-    case pRMemWeight:
-    case pRSwapWeight:
-    case pRDiskWeight:
-    case pRPSWeight:
-    case pRPEWeight:
-    case pRUProcWeight:
-    case pRUJobWeight:
-    case pRWallTimeWeight:
-    case pUConsWeight:
-    case pURemWeight:
-    case pUPerCWeight:
-    case pUExeTimeWeight:
-    case pServCap:
-    case pTargCap:
-    case pCredCap:
-    case pFSCap:
-    case pResCap:
-    case pUsageCap:
-    case pSQTCap:
-    case pSXFCap:
-    case pSSPVCap:
-    case pSBPCap:
-    case pTQTCap:
-    case pTXFCap:
-    case pCUCap:
-    case pCGCap:
-    case pCACap:
-    case pCQCap:
-    case pCCCap:
-    case pFUCap:
-    case pFGCap:
-    case pFACap:
-    case pFQCap:
-    case pFCCap:
-    case pRNodeCap:
-    case pRProcCap:
-    case pRMemCap:
-    case pRSwapCap:
-    case pRDiskCap:
-    case pRPSCap:
-    case pRPECap:
-    case pRWallTimeCap:
-    case pUConsCap:
-    case pURemCap:
-    case pUPerCCap:
-    case pUExeTimeCap:
-    case pXFMinWCLimit:
-    case pFSPolicy:
-    case pFSInterval:
-    case pFSDepth:
-    case pFSDecay:
- 
-      MFSProcessOConfig(F,PIndex,val,valf,valp,valpa);
- 
-      break;
+            MParProcessOConfig(P, PIndex, val, valf, valp, valpa);
 
-    default:
+            break;
 
-      DBG(1,fCONFIG) DPrint("ERROR:    unexpected parameter[%d] '%s' detected\n",
-        PIndex,
-        MParam[PIndex]);
+        case pServWeight:
+        case pTargWeight:
+        case pCredWeight:
+        case pFSWeight:
+        case pResWeight:
+        case pUsageWeight:
+        case pSQTWeight:
+        case pSXFWeight:
+        case pSSPVWeight:
+        case pSBPWeight:
+        case pTQTWeight:
+        case pTXFWeight:
+        case pCUWeight:
+        case pCGWeight:
+        case pCAWeight:
+        case pCQWeight:
+        case pCCWeight:
+        case pFUWeight:
+        case pFGWeight:
+        case pFAWeight:
+        case pFQWeight:
+        case pFCWeight:
+        case pRNodeWeight:
+        case pRProcWeight:
+        case pRMemWeight:
+        case pRSwapWeight:
+        case pRDiskWeight:
+        case pRPSWeight:
+        case pRPEWeight:
+        case pRUProcWeight:
+        case pRUJobWeight:
+        case pRWallTimeWeight:
+        case pUConsWeight:
+        case pURemWeight:
+        case pUPerCWeight:
+        case pUExeTimeWeight:
+        case pServCap:
+        case pTargCap:
+        case pCredCap:
+        case pFSCap:
+        case pResCap:
+        case pUsageCap:
+        case pSQTCap:
+        case pSXFCap:
+        case pSSPVCap:
+        case pSBPCap:
+        case pTQTCap:
+        case pTXFCap:
+        case pCUCap:
+        case pCGCap:
+        case pCACap:
+        case pCQCap:
+        case pCCCap:
+        case pFUCap:
+        case pFGCap:
+        case pFACap:
+        case pFQCap:
+        case pFCCap:
+        case pRNodeCap:
+        case pRProcCap:
+        case pRMemCap:
+        case pRSwapCap:
+        case pRDiskCap:
+        case pRPSCap:
+        case pRPECap:
+        case pRWallTimeCap:
+        case pUConsCap:
+        case pURemCap:
+        case pUPerCCap:
+        case pUExeTimeCap:
+        case pXFMinWCLimit:
+        case pFSPolicy:
+        case pFSInterval:
+        case pFSDepth:
+        case pFSDecay:
 
-      return(FAILURE);
+            MFSProcessOConfig(F, PIndex, val, valf, valp, valpa);
 
-      /*NOTREACHED*/
+            break;
 
-      break;
-    }  /* END switch (PIndex) */
+        default:
 
-  return(SUCCESS);
-  }  /* END MCfgSetVal() */
+            DBG(1, fCONFIG)
+            DPrint("ERROR:    unexpected parameter[%d] '%s' detected\n", PIndex,
+                   MParam[PIndex]);
 
+            return (FAILURE);
+
+            /*NOTREACHED*/
+
+            break;
+    } /* END switch (PIndex) */
+
+    return (SUCCESS);
+} /* END MCfgSetVal() */
 
 /* END MConfig.c */
-
