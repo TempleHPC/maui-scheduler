@@ -1128,22 +1128,22 @@ typedef struct {
 
     long SchedRunTime; /* elapsed time scheduler has been scheduling */
     int IdleJobs;
-    int EligibleJobs; /* number of jobs eligible for scheduling */
-    int ActiveJobs; /* number of jobs active */
+    int EligibleJobs;        /* number of jobs eligible for scheduling */
+    int ActiveJobs;          /* number of jobs active */
     double TotalPHAvailable; /* total proc hours available to schedule */
-    double TotalPHBusy; /* total proc hours consumed by scheduled jobs */
-    double SuccessfulPH; /* proc hours completed successfully */
+    double TotalPHBusy;      /* total proc hours consumed by scheduled jobs */
+    double SuccessfulPH;     /* proc hours completed successfully */
     int SuccessfulJobsCompleted; /* number of jobs completed successfully */
-    long AvgQueuePH; /* average queue workload */
-    int JobsEvaluated; /* Total Jobs evaluated for scheduling */
+    long AvgQueuePH;             /* average queue workload */
+    int JobsEvaluated;           /* Total Jobs evaluated for scheduling */
     must_t Grid[MAX_MGRIDTIMES][MAX_MGRIDSIZES]; /* stat matrix */
-    must_t RTotal[MAX_MGRIDSIZES]; /* row totals */
-    must_t CTotal[MAX_MGRIDSIZES]; /* column totals */
-    char StatDir[MAX_MLINE + 1]; /* Directory For Stat Files */
-    double MinEff; /* minimum scheduling efficiency */
+    must_t RTotal[MAX_MGRIDSIZES];               /* row totals */
+    must_t CTotal[MAX_MGRIDSIZES];               /* column totals */
+    char StatDir[MAX_MLINE + 1];                 /* Directory For Stat Files */
+    double MinEff;       /* minimum scheduling efficiency */
     int MinEffIteration; /* iteration on which the minimum efficiency occurred
                             */
-    double TotalSimComCost; /* Total Simulated Communication Cost */
+    double TotalSimComCost;     /* Total Simulated Communication Cost */
     int TotalFSAdjustedFSUsage; /* Total Decayed FSUsage for FairShare */
     int TotalHeterogeneousJobs;
     int TotalPreemptJobs;
@@ -1219,10 +1219,10 @@ typedef struct {
 
     time_t XFMinWCLimit;
 
-    int FSPolicy; /* FairShare Enforceability */
+    int FSPolicy;    /* FairShare Enforceability */
     long FSInterval; /* Time Interval Covered by each FS Data File */
-    int FSDepth; /* Number of FS Time Intervals Considered by FairShare */
-    double FSDecay; /* Weighting Factor to Decay Older FS Intervals */
+    int FSDepth;     /* Number of FS Time Intervals Considered by FairShare */
+    double FSDecay;  /* Weighting Factor to Decay Older FS Intervals */
 } mfsc_t;
 
 /* par */
@@ -1257,9 +1257,8 @@ typedef struct {
     int BFChunkSize;
     long BFChunkDuration;
 
-    long
-        BFChunkBlockTime; /* time at which jobs smaller than BFChunkSize may be
-                             considered */
+    long BFChunkBlockTime; /* time at which jobs smaller than BFChunkSize may be
+                              considered */
 
     /* system policies */
 
@@ -1889,7 +1888,7 @@ typedef struct mjob_t {
     int ImageSize; /* input data size (in MB) */
     int ExecSize;  /* executable size (in MB) */
 
-    enum MJobStateEnum State; /* RM job state */
+    enum MJobStateEnum State;  /* RM job state */
     enum MJobStateEnum EState; /* expected job state due to scheduler action */
     enum MJobStateEnum IState; /* internal job state */
 
@@ -2020,10 +2019,10 @@ typedef struct {
     char *ConfigBuffer;
     char *PvtConfigBuffer;
 
-    char LogDir[MAX_MLINE]; /* directory for logging */
-    char LogFile[MAX_MLINE]; /* log file */
+    char LogDir[MAX_MLINE];   /* directory for logging */
+    char LogFile[MAX_MLINE];  /* log file */
     char ToolsDir[MAX_MLINE]; /* directory for sched tools */
-    char HomeDir[MAX_MLINE]; /* scheduler home directory */
+    char HomeDir[MAX_MLINE];  /* scheduler home directory */
     char LockFile[MAX_MLINE]; /* scheduler lock file */
     char KeyFile[MAX_MLINE];
 
@@ -2081,8 +2080,8 @@ typedef struct {
     time_t JobPurgeTime; /* time job must be missing before getting purged  */
     time_t NodePurgeTime;
     int APIFailureThreshhold; /* times API can fail before notifying admins */
-    time_t NodeSyncDeadline; /* time in which node must reach expected state */
-    time_t JobSyncDeadline; /* time in which job must reach expected state */
+    time_t NodeSyncDeadline;  /* time in which node must reach expected state */
+    time_t JobSyncDeadline;   /* time in which job must reach expected state */
     time_t JobMaxOverrun; /* time job is allowed to exceed wallclock limit   */
     int Iteration;        /* number of scheduling cycles completed           */
 
