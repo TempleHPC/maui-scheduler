@@ -22,11 +22,6 @@ export OSLDFLAGS=@LDFLAGS@
 # ============================
 # We only want PBS/Torque support...
 @pbs_definitions@
-#@ll_definitions@
-#@sdr_definitions@
-#@sge_definitions@
-#@lsf_definitions@
-#@mx_definitions@
 #@pcre_definitions@
 
 # ============================

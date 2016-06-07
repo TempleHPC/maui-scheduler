@@ -585,7 +585,7 @@ PACKAGE_STRING='Maui Cluster Scheduler 3.5-TempleHPC'
 PACKAGE_BUGREPORT='hpc@temple.edu'
 PACKAGE_URL='https://github.com/TempleHPC/maui-scheduler'
 
-ac_unique_file="src/MComConst.c"
+ac_unique_file="src/MConst.c"
 ac_default_prefix=/usr/local
 # Factoring default headers for most tests.
 ac_includes_default="\
@@ -3294,6 +3294,7 @@ fi
 
 
 # PCRE
+pcre_definitions=""
 
 # Check whether --with-pcre was given.
 if test "${with_pcre+set}" = set; then :
@@ -3307,9 +3308,9 @@ if test "$PCREDIR" != 'FALSE'; then
 		PCREDIR='/path/to/pcre';
 	fi
 
-
-	pcre_definitions=include/Makefile.inc.pcre
+        pcre_definitions=include/Makefile.inc.pcre
 fi
+
 
 
 # Make sure one RM was specified

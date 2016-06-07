@@ -37,8 +37,8 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf ${RPM_BUILD_ROOT}/usr/include/moab.h
-rm -rf ${RPM_BUILD_ROOT}/usr/lib/libmcom.a
-rm -rf ${RPM_BUILD_ROOT}/usr/lib/libmoab.a
+rm -rf ${RPM_BUILD_ROOT}%{_libdir}/libmaui.a
+rm -rf ${RPM_BUILD_ROOT}/usr/lib/libmaui.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
