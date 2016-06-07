@@ -1,4 +1,6 @@
 # Makefile for Maui
+# Copyright 1999 - 2010  Cluster Resources, Inc, All Rights Reserved
+# Copyright 2016         Temple HPC Team
 
 TOP =..
 INC =$(TOP)/include
