@@ -1,11 +1,11 @@
 /*
 */
-        
+
 #ifndef __M_H__
 #define __M_H__
 
-#define MSCHED_NAME    "Maui"
-#define MSCHED_SNAME   "maui"
+#define MSCHED_NAME "Maui"
+#define MSCHED_SNAME "maui"
 
 #ifndef __M32COMPAT
 #define __M32COMPAT
@@ -14,372 +14,359 @@
 #include "msched-version.h"
 
 #ifdef __LOCAL
-#  include "msched-local.h"
+#include "msched-local.h"
 #endif /* __LOCAL */
 
 #include "msched-common.h"
 
 #ifdef LIBGEN
-#  include <libgen.h>
+#include <libgen.h>
 #else /* LIBGEN */
 
 #ifdef PCRE
-#  include <pcreposix.h>
+#include <pcreposix.h>
 #else /* PCRE */
-#  include <regex.h>
+#include <regex.h>
 #endif /* PCRE */
 
 #endif /* LIBGEN */
 
-#define GetLimit(PL,P,PS,PH,Limit)              \
-  switch (PL)                                   \
-    {                                           \
-    case ptSOFT:                                \
-      *Limit = ((P == ptON) && (PS > 0)) ?  PS : MAX_VAL; \
-      break;                                    \
-    case ptHARD:                                \
-      *Limit = ((P == ptON) && (PH > 0)) ?  PH : MAX_VAL; \
-      break;                                    \
-    case ptOFF:                                 \
-    default:                                    \
-      *Limit = MAX_VAL;                         \
-      break;                                    \
-    } 
+#define GetLimit(PL, P, PS, PH, Limit)                         \
+    switch (PL) {                                              \
+        case ptSOFT:                                           \
+            *Limit = ((P == ptON) && (PS > 0)) ? PS : MAX_VAL; \
+            break;                                             \
+        case ptHARD:                                           \
+            *Limit = ((P == ptON) && (PH > 0)) ? PH : MAX_VAL; \
+            break;                                             \
+        case ptOFF:                                            \
+        default:                                               \
+            *Limit = MAX_VAL;                                  \
+            break;                                             \
+    }
 
-#define MTRAPJOB(TJob,TFunction)                   \
-  if (strstr(MSched.MonitoredJob,TJob->Name) &&    \
-    ((MSched.MonitoredFunction[0] == '\0') ||      \
-      strstr(MSched.MonitoredFunction,TFunction))) \
-    MJobTrap(TJob); 
+#define MTRAPJOB(TJob, TFunction)                      \
+    if (strstr(MSched.MonitoredJob, TJob->Name) &&     \
+        ((MSched.MonitoredFunction[0] == '\0') ||      \
+         strstr(MSched.MonitoredFunction, TFunction))) \
+        MJobTrap(TJob);
 
-#define MTRAPNODE(TNode,TFunction)                 \
-  if (strstr(MSched.MonitoredNode,TNode->Name) &&  \
-    ((MSched.MonitoredFunction[0] == '\0') ||      \
-      strstr(MSched.MonitoredFunction,TFunction))) \
-    MNodeTrap(TNode);
+#define MTRAPNODE(TNode, TFunction)                    \
+    if (strstr(MSched.MonitoredNode, TNode->Name) &&   \
+        ((MSched.MonitoredFunction[0] == '\0') ||      \
+         strstr(MSched.MonitoredFunction, TFunction))) \
+        MNodeTrap(TNode);
 
-#define MTRAPRES(TRes,TFunction)                   \
-  if (strstr(MSched.MonitoredRes,TRes->Name) &&    \
-    ((MSched.MonitoredFunction[0] == '\0') ||      \
-      strstr(MSched.MonitoredFunction,TFunction))) \
-    MResTrap(TRes);
- 
+#define MTRAPRES(TRes, TFunction)                      \
+    if (strstr(MSched.MonitoredRes, TRes->Name) &&     \
+        ((MSched.MonitoredFunction[0] == '\0') ||      \
+         strstr(MSched.MonitoredFunction, TFunction))) \
+        MResTrap(TRes);
+
 /* define trace markers */
 
-#define TRACE_WORKLOAD_VERSION_MARKER          "VERSION"
-#define TRACE_RESOURCE_VERSION_MARKER          "VERSION"
+#define TRACE_WORKLOAD_VERSION_MARKER "VERSION"
+#define TRACE_RESOURCE_VERSION_MARKER "VERSION"
 
-#define DEFAULT_WORKLOAD_TRACE_VERSION         230
-#define DEFAULT_RESOURCE_TRACE_VERSION         230
+#define DEFAULT_WORKLOAD_TRACE_VERSION 230
+#define DEFAULT_RESOURCE_TRACE_VERSION 230
 
-#define MCKPT_VERSION                         "350"
-#define MCKPT_SVERSIONLIST                    "350"
- 
-#define DEFAULT_PBSQSUBPATHNAME                "/usr/bin/qsub"
- 
+#define MCKPT_VERSION "350"
+#define MCKPT_SVERSIONLIST "350"
+
+#define DEFAULT_PBSQSUBPATHNAME "/usr/bin/qsub"
+
 /* default scheduler values */
 
-#define MASTER_CONFIGFILE                      "/etc/maui.cfg"
+#define MASTER_CONFIGFILE "/etc/maui.cfg"
 
-#define GLOBAL_MPARNAME                        "ALL"
-#define DEFAULT_MPARNAME                       "DEFAULT"
-#define DEFAULT_CLASSLIST                      "[DEFAULT:1]"
+#define GLOBAL_MPARNAME "ALL"
+#define DEFAULT_MPARNAME "DEFAULT"
+#define DEFAULT_CLASSLIST "[DEFAULT:1]"
 
-#define DEFAULT_RES_DEPTH                    24
-#define MAX_MRES_DEPTH                      512
-#define MMAX_RES_DEPTH                      512
+#define DEFAULT_RES_DEPTH 24
+#define MAX_MRES_DEPTH 512
+#define MMAX_RES_DEPTH 512
 
-#define DEFAULT_CRDURATION                   30
+#define DEFAULT_CRDURATION 30
 
-#define DEFAULT_MLOGLEVEL                     0
-#define DEFAULT_MLOGFACILITY                   fALL
+#define DEFAULT_MLOGLEVEL 0
+#define DEFAULT_MLOGFACILITY fALL
 
-#define MDEF_NODETYPE                       "DEFAULT"
-#define MDEF_NODEDOWNSTATEDELAYTIME         3600
-#define MDEF_NODESETDELAY                   0
-#define MDEF_NODESETATTRIBUTE               mrstNONE
-#define MDEF_NODESETSELECTIONTYPE           mrssONEOF
-#define MDEF_NODESETPRIORITYTYPE            mrspMinLoss
-#define MDEF_NODESETTOLERANCE               0.0
-#define DEFAULT_RMPOLLINTERVAL                 60
-#define DEFAULT_MAXSLEEPITERATION              1
-#define DEFAULT_SchedSTEPCOUNT                 60
-#define DEFAULT_MACHINECONFIGFILE              ""          
+#define MDEF_NODETYPE "DEFAULT"
+#define MDEF_NODEDOWNSTATEDELAYTIME 3600
+#define MDEF_NODESETDELAY 0
+#define MDEF_NODESETATTRIBUTE mrstNONE
+#define MDEF_NODESETSELECTIONTYPE mrssONEOF
+#define MDEF_NODESETPRIORITYTYPE mrspMinLoss
+#define MDEF_NODESETTOLERANCE 0.0
+#define DEFAULT_RMPOLLINTERVAL 60
+#define DEFAULT_MAXSLEEPITERATION 1
+#define DEFAULT_SchedSTEPCOUNT 60
+#define DEFAULT_MACHINECONFIGFILE ""
 
 /* server specific config variables */
 
-#define DEFAULT_SchedCONFIGFILE                  "maui.cfg"
-#define DEFAULT_SchedLOCKFILE                    "maui.pid"
-#define DEFAULT_CHECKPOINTFILE                   "maui.ck"
-#define DEFAULT_MLOGFILE                         "maui.log"   
-#define MSCHED_ENVDBGVAR                         "MAUIDEBUG"
-#define MSCHED_ENVCRASHVAR                       "MAUICRASHMODE"
-#define MSCHED_ENVHOMEVAR                        "MAUIHOMEDIR"
-#define MSCHED_ENVLOGSTDERRVAR                   "MAUILOGSTDERR"
-#define MSCHED_ENVPARVAR                         "MAUIPARTITION"
-#define MSCHED_ENVSMPVAR                         "MAUISMP"
-#define MSCHED_ENVTESTVAR                        "MAUITEST"
-#define MSCHED_ENVCKTESTVAR                      "MAUICKTEST"
-#define MSCHED_ENVAMTESTVAR                      "MAUIAMTEST"
+#define DEFAULT_SchedCONFIGFILE "maui.cfg"
+#define DEFAULT_SchedLOCKFILE "maui.pid"
+#define DEFAULT_CHECKPOINTFILE "maui.ck"
+#define DEFAULT_MLOGFILE "maui.log"
+#define MSCHED_ENVDBGVAR "MAUIDEBUG"
+#define MSCHED_ENVCRASHVAR "MAUICRASHMODE"
+#define MSCHED_ENVHOMEVAR "MAUIHOMEDIR"
+#define MSCHED_ENVLOGSTDERRVAR "MAUILOGSTDERR"
+#define MSCHED_ENVPARVAR "MAUIPARTITION"
+#define MSCHED_ENVSMPVAR "MAUISMP"
+#define MSCHED_ENVTESTVAR "MAUITEST"
+#define MSCHED_ENVCKTESTVAR "MAUICKTEST"
+#define MSCHED_ENVAMTESTVAR "MAUIAMTEST"
 
-#define MSCHED_MSGINFOHEADER                     "MAUI_INFO"
-#define MSCHED_MSGERRHEADER                      "MAUI_ERROR"
-      
-#define DEFAULT_CHECKPOINTINTERVAL          300
+#define MSCHED_MSGINFOHEADER "MAUI_INFO"
+#define MSCHED_MSGERRHEADER "MAUI_ERROR"
+
+#define DEFAULT_CHECKPOINTINTERVAL 300
 #define DEFAULT_CHECKPOINTEXPIRATIONTIME 300000
 
-#define DEFAULT_MRMNETINTERFACE                mnetEN0
+#define DEFAULT_MRMNETINTERFACE mnetEN0
 
-#define DEFAULT_MLOGDIR                        "log/"
-#define DEFAULT_SchedTOOLSDIR                  "tools/"
-#define DEFAULT_MADMINEACTIONPROGRAM           ""
-#define DEFAULT_MLOGFILEMAXSIZE         1000000  
-#define DEFAULT_MLOGFILEROLLDEPTH             1
+#define DEFAULT_MLOGDIR "log/"
+#define DEFAULT_SchedTOOLSDIR "tools/"
+#define DEFAULT_MADMINEACTIONPROGRAM ""
+#define DEFAULT_MLOGFILEMAXSIZE 1000000
+#define DEFAULT_MLOGFILEROLLDEPTH 1
 
-#define DEFAULT_CLIENTTIMEOUT          30000000
-#define MDEF_CLIENTTIMEOUT             30000000
+#define DEFAULT_CLIENTTIMEOUT 30000000
+#define MDEF_CLIENTTIMEOUT 30000000
 
-#define DEFAULT_DOMAIN                         ""
+#define DEFAULT_DOMAIN ""
 
-#define DEFAULT_PARTITIONMODE                  ptOFF
-#define GLOBAL_PARTITIONLIST                   0xffffff
-#define DEFAULT_MPARLIST                       GLOBAL_PARTITIONLIST
-#define DEFAULT_PARTITION                      0
+#define DEFAULT_PARTITIONMODE ptOFF
+#define GLOBAL_PARTITIONLIST 0xffffff
+#define DEFAULT_MPARLIST GLOBAL_PARTITIONLIST
+#define DEFAULT_PARTITION 0
 
-#define DEFAULT_RESOURCECOLLECTIONPOLICY       ptOFF
-#define DEFAULT_REMOTESTARTCOMMAND             "/usr/bin/rsh"   
+#define DEFAULT_RESOURCECOLLECTIONPOLICY ptOFF
+#define DEFAULT_REMOTESTARTCOMMAND "/usr/bin/rsh"
 
-#define DEFAULT_RESOURCECOMMAND                "resd"
-#define DEFAULT_RESOURCEPORT              40561
-#define DEFAULT_RESOURCESAMPLEINTERVAL      300
-#define DEFAULT_RESOURCEREPORTWAIT           15
-#define DEFAULT_RESOURCEDATAFILE               "/tmp/resd.data"
-#define DEFAULT_RESOURCELOCKFILE               "/tmp/resd.lock"
+#define DEFAULT_RESOURCECOMMAND "resd"
+#define DEFAULT_RESOURCEPORT 40561
+#define DEFAULT_RESOURCESAMPLEINTERVAL 300
+#define DEFAULT_RESOURCEREPORTWAIT 15
+#define DEFAULT_RESOURCEDATAFILE "/tmp/resd.data"
+#define DEFAULT_RESOURCELOCKFILE "/tmp/resd.lock"
 
-#define DEFAULT_SchedADMIN                     "loadl"
-#define DEFAULT_MJOBFBACTIONPROGRAM            ""
-#define DEFAULT_DEFERTIME                  3600
-#define MAX_RMFAILCOUNT                       3
-#define MMAX_RMFAILURE                        3
+#define DEFAULT_SchedADMIN "loadl"
+#define DEFAULT_MJOBFBACTIONPROGRAM ""
+#define DEFAULT_DEFERTIME 3600
+#define MAX_RMFAILCOUNT 3
+#define MMAX_RMFAILURE 3
 
-#define DEFAULT_DEFERCOUNT                   24
-#define DEFAULT_DEFERSTARTCOUNT               1
-#define DEFAULT_JOBPURGETIME                  0
-#define MDEF_NODEPURGETIME                     MAX_MTIME
-#define DEFAULT_APIFAILURETHRESHHOLD          6
-#define MDEF_NODESYNCDEADLINE               600
-#define DEFAULT_JOBSYNCDEADLINE             600
-#define DEFAULT_MAXJOBOVERRUN               600                 /* Allow Job to Exceed WCLimit By 10 Minutes */
+#define DEFAULT_DEFERCOUNT 24
+#define DEFAULT_DEFERSTARTCOUNT 1
+#define DEFAULT_JOBPURGETIME 0
+#define MDEF_NODEPURGETIME MAX_MTIME
+#define DEFAULT_APIFAILURETHRESHHOLD 6
+#define MDEF_NODESYNCDEADLINE 600
+#define DEFAULT_JOBSYNCDEADLINE 600
+#define DEFAULT_MAXJOBOVERRUN \
+    600 /* Allow Job to Exceed WCLimit By 10 Minutes */
 
-#define DEFAULT_SRDEPTH                        2
-#define DEFAULT_SRTIMELOGIC                    tlOR
-#define DEFAULT_SRPRIORITY                     0
-#define DEFAULT_SRFLAGS                        0
-#define DEFAULT_SRPERIOD                       mpDay
+#define DEFAULT_SRDEPTH 2
+#define DEFAULT_SRTIMELOGIC tlOR
+#define DEFAULT_SRPRIORITY 0
+#define DEFAULT_SRFLAGS 0
+#define DEFAULT_SRPERIOD mpDay
 
-#define DEFAULT_USEMACHINESPEED                FALSE
-#define DEFAULT_USEMACHINESPEEDFORFS           FALSE
-#define DEFAULT_USESYSTEMQUEUETIME             ptOFF
-#define DEFAULT_JOBPRIOACCRUALPOLICY           jpapQueuePolicy
-#define DEFAULT_RESOURCEAVAILPOLICY            mrapCombined
-#define MDEF_NODELOADPOLICY                    nlpAdjustState
-#define MDEF_NODEUNTRACKEDRESOURCEFACTOR       1.2    
-#define MDEF_NODEUNTRACKEDPROCFACTOR           1.2
-#define DEFAULT_USELOCALMACHINEPRIORITY        ptOFF
+#define DEFAULT_USEMACHINESPEED FALSE
+#define DEFAULT_USEMACHINESPEEDFORFS FALSE
+#define DEFAULT_USESYSTEMQUEUETIME ptOFF
+#define DEFAULT_JOBPRIOACCRUALPOLICY jpapQueuePolicy
+#define DEFAULT_RESOURCEAVAILPOLICY mrapCombined
+#define MDEF_NODELOADPOLICY nlpAdjustState
+#define MDEF_NODEUNTRACKEDRESOURCEFACTOR 1.2
+#define MDEF_NODEUNTRACKEDPROCFACTOR 1.2
+#define DEFAULT_USELOCALMACHINEPRIORITY ptOFF
 
 /* default policy values */
 
-#define DEFAULT_CBMASK                              (1 << cbResStart) | (1 << cbResCancel)
-#define DEFAULT_BACKFILLPOLICY                      bfFIRSTFIT
-#define DEFAULT_BACKFILLDEPTH                      0
-#define DEFAULT_BACKFILLNODEFACTOR                 0
-#define DEFAULT_MAXBACKFILLSCHEDULES           10000
+#define DEFAULT_CBMASK (1 << cbResStart) | (1 << cbResCancel)
+#define DEFAULT_BACKFILLPOLICY bfFIRSTFIT
+#define DEFAULT_BACKFILLDEPTH 0
+#define DEFAULT_BACKFILLNODEFACTOR 0
+#define DEFAULT_MAXBACKFILLSCHEDULES 10000
 
-#define DEFAULT_SRSTARTTIME                        0
-#define DEFAULT_SRENDTIME                          0
-#define DEFAULT_SRDAYS                           255
-#define DEFAULT_SRPROCS                           -1
-#define DEFAULT_SRTPN                              0
-#define MDEF_MINSWAP                               10   /* in MB */
-#define DEFAULT_MJOBNODEMATCH                      0
+#define DEFAULT_SRSTARTTIME 0
+#define DEFAULT_SRENDTIME 0
+#define DEFAULT_SRDAYS 255
+#define DEFAULT_SRPROCS -1
+#define DEFAULT_SRTPN 0
+#define MDEF_MINSWAP 10 /* in MB */
+#define DEFAULT_MJOBNODEMATCH 0
 
 /* system defaults */
 
-#define MDEF_SYSJOBWCLIMIT                   8639999
-#define DEFAULT_MAXMETATASKS                        0
-#define DEFAULT_MAXJOBSTARTTIME                     MAX_MTIME 
-#define DEFAULT_TASKDISTRIBUTIONPOLICY              mtdDefault
-#define DEFAULT_MBFMETRIC                           mbfmProcs
-#define DEFAULT_JOBSIZEPOLICY                       jsMinProc
-#define DEFAULT_RESERVATIONMODE                     resCurrentHighest
-#define DEFAULT_RESERVATIONRETRYTIME                0
-#define DEFAULT_RESERVATIONTHRESHOLDTYPE            rttNone
-#define DEFAULT_RESERVATIONTHRESHOLDVALUE           0
-#define DEFAULT_RESERVATIONDEPTH                    1
-#define DEFAULT_RESERVATIONQOSLIST                  (mqos_t *)MAX_MQOS
+#define MDEF_SYSJOBWCLIMIT 8639999
+#define DEFAULT_MAXMETATASKS 0
+#define DEFAULT_MAXJOBSTARTTIME MAX_MTIME
+#define DEFAULT_TASKDISTRIBUTIONPOLICY mtdDefault
+#define DEFAULT_MBFMETRIC mbfmProcs
+#define DEFAULT_JOBSIZEPOLICY jsMinProc
+#define DEFAULT_RESERVATIONMODE resCurrentHighest
+#define DEFAULT_RESERVATIONRETRYTIME 0
+#define DEFAULT_RESERVATIONTHRESHOLDTYPE rttNone
+#define DEFAULT_RESERVATIONTHRESHOLDVALUE 0
+#define DEFAULT_RESERVATIONDEPTH 1
+#define DEFAULT_RESERVATIONQOSLIST (mqos_t *)MAX_MQOS
 
-
-#define MDEF_SYSQAL                                 0
-#define MDEF_SYSPAL                                 0
-#define MDEF_SYSQDEF                                0
-#define MDEF_SYSPDEF                                0
+#define MDEF_SYSQAL 0
+#define MDEF_SYSPAL 0
+#define MDEF_SYSQDEF 0
+#define MDEF_SYSPDEF 0
 
 /* default Priority/FairShare values */
 
-#define MDEF_FSFLAGS                               0
+#define MDEF_FSFLAGS 0
 
-#define DEFAULT_DIRECTSPECWEIGHT                   1
-#define DEFAULT_UWEIGHT                            0
-#define DEFAULT_GWEIGHT                            0
-#define DEFAULT_AWEIGHT                            0
-#define DEFAULT_CLASSWEIGHT                        0
-#define DEFAULT_QOSWEIGHT                          0
+#define DEFAULT_DIRECTSPECWEIGHT 1
+#define DEFAULT_UWEIGHT 0
+#define DEFAULT_GWEIGHT 0
+#define DEFAULT_AWEIGHT 0
+#define DEFAULT_CLASSWEIGHT 0
+#define DEFAULT_QOSWEIGHT 0
 
-#define DEFAULT_SERVICEWEIGHT                      1
-#define DEFAULT_QUEUETIMEWEIGHT                    1
-#define DEFAULT_XFACTORWEIGHT                      0
-#define DEFAULT_XFMINWCLIMIT                     120
+#define DEFAULT_SERVICEWEIGHT 1
+#define DEFAULT_QUEUETIMEWEIGHT 1
+#define DEFAULT_XFACTORWEIGHT 0
+#define DEFAULT_XFMINWCLIMIT 120
 
-#define DEFAULT_FSWEIGHT                           1
+#define DEFAULT_FSWEIGHT 1
 
-#define DEFAULT_UFSWEIGHT                          0
-#define DEFAULT_GFSWEIGHT                          0
-#define DEFAULT_AFSWEIGHT                          0
-#define DEFAULT_QFSWEIGHT                          0
-#define DEFAULT_CFSWEIGHT                          0
+#define DEFAULT_UFSWEIGHT 0
+#define DEFAULT_GFSWEIGHT 0
+#define DEFAULT_AFSWEIGHT 0
+#define DEFAULT_QFSWEIGHT 0
+#define DEFAULT_CFSWEIGHT 0
 
-#define DEFAULT_TARGETWEIGHT                       1
-#define DEFAULT_BYPASSWEIGHT                       0
+#define DEFAULT_TARGETWEIGHT 1
+#define DEFAULT_BYPASSWEIGHT 0
 
-#define DEFAULT_RESOURCEWEIGHT                     1
-#define MDEF_NODEWEIGHT                            0
-#define DEFAULT_PROCESSORWEIGHT                    0
-#define DEFAULT_MEMORYWEIGHT                       0
-#define DEFAULT_DISKWEIGHT                         0
-#define DEFAULT_SWAPWEIGHT                         0
-#define DEFAULT_PEWEIGHT                           0
+#define DEFAULT_RESOURCEWEIGHT 1
+#define MDEF_NODEWEIGHT 0
+#define DEFAULT_PROCESSORWEIGHT 0
+#define DEFAULT_MEMORYWEIGHT 0
+#define DEFAULT_DISKWEIGHT 0
+#define DEFAULT_SWAPWEIGHT 0
+#define DEFAULT_PEWEIGHT 0
 
-#define DEFAULT_QOSXFWEIGHT                        0
-#define DEFAULT_QOSQTWEIGHT                        0
+#define DEFAULT_QOSXFWEIGHT 0
+#define DEFAULT_QOSQTWEIGHT 0
 
-#define DEFAULT_TARGETXF                         0.0
-#define DEFAULT_TARGETQT                           0
+#define DEFAULT_TARGETXF 0.0
+#define DEFAULT_TARGETQT 0
 
-#define DEFAULT_MQOSFLAGS                          0
-#define DEFAULT_MQOSPRIORITY                       0
+#define DEFAULT_MQOSFLAGS 0
+#define DEFAULT_MQOSPRIORITY 0
 
-#define DEFAULT_FSPOLICY                            fspNONE
-#define DEFAULT_FSINTERVAL                     43200
-#define DEFAULT_FSDEPTH                            8
-#define DEFAULT_FSDECAY                          1.0
+#define DEFAULT_FSPOLICY fspNONE
+#define DEFAULT_FSINTERVAL 43200
+#define DEFAULT_FSDEPTH 8
+#define DEFAULT_FSDECAY 1.0
 
 /* grid statistics defaults */
 
-#define DEFAULT_MAXTIME                       245760
-#define DEFAULT_MINTIME                          120
-#define DEFAULT_TIMESCALE                         11
+#define DEFAULT_MAXTIME 245760
+#define DEFAULT_MINTIME 120
+#define DEFAULT_TIMESCALE 11
 
-#define DEFAULT_MAXNODE                          512
-#define DEFAULT_MINNODE                            1
-#define MDEF_NODESCALE                             9
+#define DEFAULT_MAXNODE 512
+#define DEFAULT_MINNODE 1
+#define MDEF_NODESCALE 9
 
-#define DEFAULT_ACCURACYSCALE                     10
+#define DEFAULT_ACCURACYSCALE 10
 
-#define DEFAULT_TRACEFLAGS                         0
+#define DEFAULT_TRACEFLAGS 0
 
 /* default stats values */
 
-#define DEFAULT_MSTATDIR                            "stats/"
+#define DEFAULT_MSTATDIR "stats/"
 
 #ifndef EMPTY
-#define EMPTY                0 
-#endif  /* EMPTY */
+#define EMPTY 0
+#endif /* EMPTY */
 
-enum { 
-  mfsactNONE = 0,
-  mfsactCalc,
-  mfsactRotate,
-  mfsactWrite };
+enum { mfsactNONE = 0, mfsactCalc, mfsactRotate, mfsactWrite };
 
 /* list of job mode values */
 
-#define MAX_MHBUF           768
+#define MAX_MHBUF 768
 
-#define MAX_VAL      2140000000
+#define MAX_VAL 2140000000
 
-#define MMAX_JOB           4096
-#define MAX_MJOB       MMAX_JOB
+#define MMAX_JOB 4096
+#define MAX_MJOB MMAX_JOB
 
+#define MAX_MJOB_TRACE 4096
 
-#define MAX_MJOB_TRACE     4096
+#define MAX_TASK_REQUESTS 32
+#define MAX_REQ_TYPE 16
+#define MAX_MREQ_PER_JOB 4
+#define MMAX_REQ_PER_JOB 4
 
-#define MAX_TASK_REQUESTS    32
-#define MAX_REQ_TYPE         16
-#define MAX_MREQ_PER_JOB      4
-#define MMAX_REQ_PER_JOB      4
+#define MAX_WORD 32
+#define MAX_MLIST 16
+#define MAX_MPOOL 7
+#define MAX_STATISTICS 16 /* maximum number of statistics to update */
+#define MAX_ACCT_ACC 8
 
-#define MAX_WORD             32
-#define MAX_MLIST            16
-#define MAX_MPOOL             7
-#define MAX_STATISTICS       16   /* maximum number of statistics to update */
-#define MAX_ACCT_ACC          8 
-
-#define MAX_MFRAMECOUNT      64
-#define MAX_MSLOTPERFRAME    32
-#define MAX_MSRES           128
-#define MAX_SRES_DEPTH       64
-#define MAX_MRANGE          256
+#define MAX_MFRAMECOUNT 64
+#define MAX_MSLOTPERFRAME 32
+#define MAX_MSRES 128
+#define MAX_SRES_DEPTH 64
+#define MAX_MRANGE 256
 #define MAX_PRIO_VAL 1000000000
-#define MAX_ATTEMPTS        500
-#define MAX_MADMINUSERS      64
-#define MAX_MADMINHOSTS      64
-#define MAX_PARMVALS        256
-#define MAX_MGRIDTIMES       32
-#define MAX_MGRIDSIZES       32
-#define MAX_ACCURACY         10
-#define MAX_SCALE           128
-#define MAX_MWINDOW          16   /* maximum BF windows evaluated */
-#define MAX_MRCLASS          16   /* maximum resource classes */
-#define MAX_MRM               6
-#define MMAX_RM               6
-#define MAX_MAM               4
-#define MMAX_AM               4
-#define MAX_MFRAME           48
-#define MAX_SOCKETWAIT  5000000
+#define MAX_ATTEMPTS 500
+#define MAX_MADMINUSERS 64
+#define MAX_MADMINHOSTS 64
+#define MAX_PARMVALS 256
+#define MAX_MGRIDTIMES 32
+#define MAX_MGRIDSIZES 32
+#define MAX_ACCURACY 10
+#define MAX_SCALE 128
+#define MAX_MWINDOW 16 /* maximum BF windows evaluated */
+#define MAX_MRCLASS 16 /* maximum resource classes */
+#define MAX_MRM 6
+#define MMAX_RM 6
+#define MAX_MAM 4
+#define MMAX_AM 4
+#define MAX_MFRAME 48
+#define MAX_SOCKETWAIT 5000000
 
-#define MIN_SWAP             10
+#define MIN_SWAP 10
 #define MIN_OS_SWAP_OVERHEAD 25
-#define MIN_OS_CPU_OVERHEAD    0.5
-#define MAX_OS_CPU_OVERHEAD    0.0
+#define MIN_OS_CPU_OVERHEAD 0.5
+#define MAX_OS_CPU_OVERHEAD 0.0
 
 /* scheduler actions */
 
-enum MSchedActionEnum { 
-  mactNONE = 0,
-  mactAdminEvent,
-  mactJobFB,
-  mactMail };
+enum MSchedActionEnum { mactNONE = 0, mactAdminEvent, mactJobFB, mactMail };
 
 /* flags bit field */
- 
+
 enum { fAdmin1 = 0, fAdmin2, fAdmin3, fAdmin4 };
 
-enum ResCtlPolicyEnum {
-  mrcpNONE = 0,
-  mrcpAdmin,
-  mrcpAny };
+enum ResCtlPolicyEnum { mrcpNONE = 0, mrcpAdmin, mrcpAny };
 
-#define FRAMEMARKER            "FRAME"
-#define ATTRMARKER             "ATTR"
-#define PARTITIONMARKER        "PM_"
-#define QOSDEFAULTMARKER       "QDEF="
-#define QOSLISTMARKER          "QLIST="
-#define PARTDEFAULTMARKER      "PDEF="
-#define PARTLISTMARKER         "PLIST="
-#define MASTERJOBMARKER        "MASTERJOB="
-#define FSFLAGMARKER           "JOBFLAGS="
-#define FSTARGETMARKER         "FSTARGET="
-#define PRIORITYMARKER         "PRIORITY="
+#define FRAMEMARKER "FRAME"
+#define ATTRMARKER "ATTR"
+#define PARTITIONMARKER "PM_"
+#define QOSDEFAULTMARKER "QDEF="
+#define QOSLISTMARKER "QLIST="
+#define PARTDEFAULTMARKER "PDEF="
+#define PARTLISTMARKER "PLIST="
+#define MASTERJOBMARKER "MASTERJOB="
+#define FSFLAGMARKER "JOBFLAGS="
+#define FSTARGETMARKER "FSTARGET="
+#define PRIORITYMARKER "PRIORITY="
 
 enum { fspNONE, fspDPS, fspDPES, fspUPS };
 
@@ -389,11 +376,7 @@ enum { nlpNONE = 0, nlpAdjustState, nlpAdjustProcs };
 
 enum { nmNONE = 0, nmExactNodeMatch, nmExactProcMatch };
 
-enum { 
-  stNONE = 0, 
-  stNormal, 
-  stBestEffort, 
-  stForce };
+enum { stNONE = 0, stNormal, stBestEffort, stForce };
 
 /* display flag types */
 
@@ -408,17 +391,18 @@ enum { dstatWCA = 0 };
 /* credential type */
 
 enum { ctUGA = 0, ctACL };
- 
+
 enum { tlAND = 0, tlOR };
 
 /* reservation time constraints */
 
-enum { 
-  rtcNone = 0, 
-  rtcStartOnly, 
-  rtcStartLatest, 
-  rtcStartEarliest, 
-  rtcFeasible };
+enum {
+    rtcNone = 0,
+    rtcStartOnly,
+    rtcStartLatest,
+    rtcStartEarliest,
+    rtcFeasible
+};
 
 /* reservation space constraints */
 
@@ -428,128 +412,118 @@ enum MREEnum { mreNONE = 0, mreStart, mreEnd };
 
 /* client modes */
 
-enum MCModeEnum { 
-  mcmNONE = 0, 
-  mcmRelative, 
-  mcmSummary, 
-  mcmGrep, 
-  mcmVerbose, 
-  mcmForce, 
-  mcmParse, 
-  mcmForce2,
-  mcmComplete,
-  mcmBlock,
-  mcmNonBlock,
-  mcmOverlap,
-  mcmClear,
-  mcmFuture,
-  mcmXML };
+enum MCModeEnum {
+    mcmNONE = 0,
+    mcmRelative,
+    mcmSummary,
+    mcmGrep,
+    mcmVerbose,
+    mcmForce,
+    mcmParse,
+    mcmForce2,
+    mcmComplete,
+    mcmBlock,
+    mcmNonBlock,
+    mcmOverlap,
+    mcmClear,
+    mcmFuture,
+    mcmXML
+};
 
 /* statistics modes */
 
 enum MProfModeEnum {
-  mNONE = 0,
-  mUseRunTime,
-  mSystemQueue,
-  mMatrix,
-  mTrueXFactor,
-  mUseRemoved
-  };
+    mNONE = 0,
+    mUseRunTime,
+    mSystemQueue,
+    mMatrix,
+    mTrueXFactor,
+    mUseRemoved
+};
 
 enum { resmInclS = 0, resmExclS, resmExclP, resmIgn };
 
-
 /* distribution types */
 
-enum {
-  distRR = 0,
-  distBF,
-  distCustom
-  };
- 
+enum { distRR = 0, distBF, distCustom };
+
 /* log facilities */
 
 enum MLogFacilityEnum {
-  dfCORE = 0,
-  dfSCHED,
-  dfSOCK,
-  dfUI,
-  dfLL,
-  dfSDR,
-  dfCONFIG,
-  dfSTAT,
-  dfSIM,
-  dfSTRUCT,
-  dfFS,
-  dfCKPT,
-  dfBANK,
-  dfRM,
-  dfPBS,
-  dfWIKI,
-  dfSGE,
-  dfS3,
-  dfLSF,
-  dfNAT,
-  dfALL };
+    dfCORE = 0,
+    dfSCHED,
+    dfSOCK,
+    dfUI,
+    dfLL,
+    dfSDR,
+    dfCONFIG,
+    dfSTAT,
+    dfSIM,
+    dfSTRUCT,
+    dfFS,
+    dfCKPT,
+    dfBANK,
+    dfRM,
+    dfPBS,
+    dfWIKI,
+    dfSGE,
+    dfS3,
+    dfLSF,
+    dfNAT,
+    dfALL
+};
 
 /* node problems */
 
-enum { 
-  probLocalDisk = 0,
-  probMemory,
-  probEthernet,
-  probHPS_IP,
-  probHPS_User,
-  probSwap
-  };  
+enum {
+    probLocalDisk = 0,
+    probMemory,
+    probEthernet,
+    probHPS_IP,
+    probHPS_User,
+    probSwap
+};
 
 /* reservation flags */
 
 enum { rfLockTime = 0 };
- 
+
 /* status code values */
 
 enum { scFAILURE = 0, scSUCCESS };
 
 /* sched command modes */
 
-enum { 
-  msctlKill = 0, 
-  msctlResume, 
-  msctlReconfig, 
-  msctlStep, 
-  msctlStop, 
-  msctlNodeTable, 
-  msctlSubmit,
-  msctlList,
-  msctlModify,
-  msctlFailure,
-  msctlInit };
+enum {
+    msctlKill = 0,
+    msctlResume,
+    msctlReconfig,
+    msctlStep,
+    msctlStop,
+    msctlNodeTable,
+    msctlSubmit,
+    msctlList,
+    msctlModify,
+    msctlFailure,
+    msctlInit
+};
 
 /* FairShare modes */
 
-enum { 
-  mfstNONE = 0, 
-  mfstTarget, 
-  mfstFloor, 
-  mfstCeiling, 
-  mfstCapRel,
-  mfstCapAbs };
+enum {
+    mfstNONE = 0,
+    mfstTarget,
+    mfstFloor,
+    mfstCeiling,
+    mfstCapRel,
+    mfstCapAbs
+};
 
 /* scheduler modes */
 
-enum { 
-  msmNONE = 0, 
-  msmNormal, 
-  msmProfile,
-  msmSim, 
-  msmSingleStep, 
-  msmTest };
+enum { msmNONE = 0, msmNormal, msmProfile, msmSim, msmSingleStep, msmTest };
 
-enum SDType {
-  msdNONE = 0,
-  msdApplication,
-  msdResource };
+enum SDType { msdNONE = 0, msdApplication, msdResource };
 
 /* Statistics Weighting Modes */
 
@@ -561,12 +535,7 @@ enum { ptDEFAULT = 0, ptOFF, ptON, ptSOFT, ptHARD, ptEXEMPT, ptQUEUE };
 
 /* Back Fill Metric */
 
-enum {
-  mbfmNONE = 0, 
-  mbfmProcs,
-  mbfmNodes,
-  mbfmPS,
-  mbfmWalltime };
+enum { mbfmNONE = 0, mbfmProcs, mbfmNodes, mbfmPS, mbfmWalltime };
 
 /* Job Size Approaches */
 
@@ -574,74 +543,63 @@ enum { jsMinProc = 0, jsMaxProc, jsNDMaxProc };
 
 /* BackFill Types */
 
-enum { 
-  bfNONE = 0, 
-  bfFIRSTFIT, 
-  bfBESTFIT, 
-  bfGREEDY, 
-  bfBESTTIMEFIT, 
-  bfLAZY,
-  bfPREEMPT };
+enum {
+    bfNONE = 0,
+    bfFIRSTFIT,
+    bfBESTFIT,
+    bfGREEDY,
+    bfBESTTIMEFIT,
+    bfLAZY,
+    bfPREEMPT
+};
 
 /* reservation policies */
 
 enum { resDefault = 0, resHighest, resCurrentHighest, resNever };
 enum { rttNone = 0, rttBypass, rttQueueTime, rttXFactor };
 
-
 /* task distribution policies */
 
-enum {
-  mtdNONE = 0,
-  mtdDefault,
-  mtdLocal,
-  mtdArbGeo,
-  mtdPack,
-  mtdRoundRobin };
-
+enum { mtdNONE = 0, mtdDefault, mtdLocal, mtdArbGeo, mtdPack, mtdRoundRobin };
 
 /* stat types */
 
-enum { 
-  stAvgXFactor = 0,
-  stMaxXFactor,
-  stAvgQTime,
-  stAvgBypass,
-  stMaxBypass,
-  stJobCount,
-  stPSRequest,
-  stPSRun,
-  stWCAccuracy,
-  stBFCount,
-  stBFPSRun,
-  stJobEfficiency,
-  stQOSDelivered };
+enum {
+    stAvgXFactor = 0,
+    stMaxXFactor,
+    stAvgQTime,
+    stAvgBypass,
+    stMaxBypass,
+    stJobCount,
+    stPSRequest,
+    stPSRun,
+    stWCAccuracy,
+    stBFCount,
+    stBFPSRun,
+    stJobEfficiency,
+    stQOSDelivered
+};
 
 /* BNF objects */
 
 enum {
-  bobjNONE = 0,
-  bobjJob,
-  bobjNode,
-  bobjReservation,
-  bobjUser,
-  bobjGroup,
-  bobjAccount,
-  bobjPartition,
-  bobjScheduler,
-  bobjSystem,
-  bobjClass,
-  bobjQOS,
-  bobjFrame,
-  bobjQueue
-  };
+    bobjNONE = 0,
+    bobjJob,
+    bobjNode,
+    bobjReservation,
+    bobjUser,
+    bobjGroup,
+    bobjAccount,
+    bobjPartition,
+    bobjScheduler,
+    bobjSystem,
+    bobjClass,
+    bobjQOS,
+    bobjFrame,
+    bobjQueue
+};
 
-enum {
-  mcsNONE = 0,
-  mcsLimits,
-  mcsFS,
-  mcsGeneral,
-  mcsUsage };
+enum { mcsNONE = 0, mcsLimits, mcsFS, mcsGeneral, mcsUsage };
 
 /* job types */
 
@@ -651,137 +609,133 @@ enum { jobSerial = 0, jobParallel, jobPVM };
 
 /* NOTE:  sync w/MAX_MATTR, MAttrType */
 
-enum MExpAttrEnum { 
-  eFeature = 0,
-  ePartition,
-  eQOS,
-  eClass,
-  eNetwork,
-  eOpsys,
-  eArch,
-  eNodeState,
-  eJobState,
-  eSysAttr,
-  eGRes,
-  eJFeature };
+enum MExpAttrEnum {
+    eFeature = 0,
+    ePartition,
+    eQOS,
+    eClass,
+    eNetwork,
+    eOpsys,
+    eArch,
+    eNodeState,
+    eJobState,
+    eSysAttr,
+    eGRes,
+    eJFeature
+};
 
 enum MExpAttrEnum2 {
-  meNFeature = 0,
-  mePartition,
-  meQOS,
-  meClass,
-  meNetwork,
-  meOpsys,
-  meArch,
-  meNodeState,
-  meJobState,
-  meSysAttr,
-  meGRes,
-  meJFeature };
+    meNFeature = 0,
+    mePartition,
+    meQOS,
+    meClass,
+    meNetwork,
+    meOpsys,
+    meArch,
+    meNodeState,
+    meJobState,
+    meSysAttr,
+    meGRes,
+    meJFeature
+};
 
 /* requirements keywords */
 
-enum { 
-  kFeature = 0,
-  kNetwork,
-  kOpsys,
-  kArch,
-  kMemory,
-  kDisk,
-  kPool,
-  kMachine };
+enum { kFeature = 0, kNetwork, kOpsys, kArch, kMemory, kDisk, kPool, kMachine };
 
 /* net interface types */
 
-#define MAX_MNETTYPE  4
+#define MAX_MNETTYPE 4
 
 enum { mnetNONE = 0, mnetEN0, mnetEN1, mnetCSS0 };
 
 /* job states */
- 
+
 enum MJobStateEnum {
-  mjsNONE = 0,
-  mjsIdle,
-  mjsStarting,
-  mjsRunning,
-  mjsRemoved,
-  mjsCompleted,
-  mjsHold,
-  mjsDeferred,
-  mjsSubmitErr,
-  mjsVacated,
-  mjsNotRun,
-  mjsNotQueued,
-  mjsUnknown,
-  mjsBatchHold,
-  mjsUserHold,
-  mjsSystemHold,
-  mjsStaging,
-  mjsStaged,
-  mjsSuspended,
-  mjsLost };
+    mjsNONE = 0,
+    mjsIdle,
+    mjsStarting,
+    mjsRunning,
+    mjsRemoved,
+    mjsCompleted,
+    mjsHold,
+    mjsDeferred,
+    mjsSubmitErr,
+    mjsVacated,
+    mjsNotRun,
+    mjsNotQueued,
+    mjsUnknown,
+    mjsBatchHold,
+    mjsUserHold,
+    mjsSystemHold,
+    mjsStaging,
+    mjsStaged,
+    mjsSuspended,
+    mjsLost
+};
 
 /* reasons for policy rejection */
 
 enum MResourceAvailabilityTypes {
-  mrapNONE = 0,
-  mrapCombined,
-  mrapDedicated,
-  mrapUtilized };
- 
-enum {
-  prNONE = 0,
-  prMaxJobPerUserPolicy,
-  prMaxProcPerUserPolicy,
-  prMaxNodePerUserPolicy,
-  prMaxPSPerUserPolicy,
-  prMaxJobQueuedPerUserPolicy,
-  prMaxPEPerUserPolicy,
-  prMaxJobPerGroupPolicy,
-  prMaxNodePerGroupPolicy,
-  prMaxPSPerGroupPolicy,
-  prMaxJobQueuedPerGroupPolicy,
-  prMaxJobPerAccountPolicy,
-  prMaxNodePerAccountPolicy,
-  prMaxPSPerAccountPolicy,
-  prMaxJobQueuedPerAccountPolicy,
-  prSystemMaxJobProc,
-  prSystemMaxJobTime,
-  prSystemMaxJobPS,
-  prUnknownUser,
-  prUnknownGroup,
-  prUnknownAccount };
+    mrapNONE = 0,
+    mrapCombined,
+    mrapDedicated,
+    mrapUtilized
+};
 
+enum {
+    prNONE = 0,
+    prMaxJobPerUserPolicy,
+    prMaxProcPerUserPolicy,
+    prMaxNodePerUserPolicy,
+    prMaxPSPerUserPolicy,
+    prMaxJobQueuedPerUserPolicy,
+    prMaxPEPerUserPolicy,
+    prMaxJobPerGroupPolicy,
+    prMaxNodePerGroupPolicy,
+    prMaxPSPerGroupPolicy,
+    prMaxJobQueuedPerGroupPolicy,
+    prMaxJobPerAccountPolicy,
+    prMaxNodePerAccountPolicy,
+    prMaxPSPerAccountPolicy,
+    prMaxJobQueuedPerAccountPolicy,
+    prSystemMaxJobProc,
+    prSystemMaxJobTime,
+    prSystemMaxJobPS,
+    prUnknownUser,
+    prUnknownGroup,
+    prUnknownAccount
+};
 
 /* sync with MClientCmd */
 
 enum MClientCmdEnum {
-  mccNONE = 0,
-  mccBal,
-  mccDiagnose,  
-  mccGridCtl,    
-  mccJobCtl,
-  mccNodeCtl,
-  mccResCtl,
-  mccSchedCtl,
-  mccShow,
-  mccStat };
- 
+    mccNONE = 0,
+    mccBal,
+    mccDiagnose,
+    mccGridCtl,
+    mccJobCtl,
+    mccNodeCtl,
+    mccResCtl,
+    mccSchedCtl,
+    mccShow,
+    mccStat
+};
 
 /* node system attributes */
 
-enum { 
-  attrNONE = 0,
-  attrJMD, 
-  attrBatch, 
-  attrInteractive,
-  attrLogin,
-  attrHPSS,
-  attrPIOFS,
-  attrSystem,
-  attrGateway,
-  attrEPrimary
-  };
+enum {
+    attrNONE = 0,
+    attrJMD,
+    attrBatch,
+    attrInteractive,
+    attrLogin,
+    attrHPSS,
+    attrPIOFS,
+    attrSystem,
+    attrGateway,
+    attrEPrimary
+};
 
 /* frame types */
 
@@ -803,1528 +757,1537 @@ extern const char *MCKeyword[];
 /* socket structure used in ResourceDaemon-Scheduler communication */
 
 typedef struct {
-  int   PacketType;
-  char  PacketID[MAX_MNAME];
-  int   PacketSubID;
-  char  NodeID[MAX_MNAME];
-  char  Buffer[MAX_MLINE + 1];
-  int   Status;
-  } ResourceSt;
+    int PacketType;
+    char PacketID[MAX_MNAME];
+    int PacketSubID;
+    char NodeID[MAX_MNAME];
+    char Buffer[MAX_MLINE + 1];
+    int Status;
+} ResourceSt;
 
 typedef struct {
-  char  CollectionID[MAX_MNAME];
-  int   CollectionSubID;
-  char  Command[MAX_MNAME];
-  long  CollectionStart;
-  long  CollectionEnd;
-  int   SampleCount; 
-  int   TotalCSSPackets;
-  int   TotalEtherPackets;
-  int   TotalNFSReads;
-  int   TotalNFSWrites;
-  double AvgUserTime;
-  int   MaxUserTime;
-  double AvgSysTime;
-  int   MaxSysTime;
-  double AvgWaitTime;
-  int   MaxWaitTime;
-  double AvgSwapUsage;
-  int   MaxSwapUsage;
-  double AvgMemUsage;
-  int   MaxMemUsage;
-  double AvgDiskUsage;
-  int   MaxDiskUsage;
-  } ResourceDataSt;
+    char CollectionID[MAX_MNAME];
+    int CollectionSubID;
+    char Command[MAX_MNAME];
+    long CollectionStart;
+    long CollectionEnd;
+    int SampleCount;
+    int TotalCSSPackets;
+    int TotalEtherPackets;
+    int TotalNFSReads;
+    int TotalNFSWrites;
+    double AvgUserTime;
+    int MaxUserTime;
+    double AvgSysTime;
+    int MaxSysTime;
+    double AvgWaitTime;
+    int MaxWaitTime;
+    double AvgSwapUsage;
+    int MaxSwapUsage;
+    double AvgMemUsage;
+    int MaxMemUsage;
+    double AvgDiskUsage;
+    int MaxDiskUsage;
+} ResourceDataSt;
 
 typedef struct {
-  int   Count;                      /* total jobs in grid                              */
-  int   NCount;                     /* nodes allocated to jobs                         */
-  int   JobCountSubmitted;          /* jobs submitted                                  */
-  int   JobCountSuccessful;         /* jobs successfully completed                     */
-  int   QOSMet;                     /* jobs that met requested QOS                     */
-  int   RejectionCount;             /* jobs submitted that have been rejected          */
-  time_t TotalQTS;           /* job queue time                                  */
-  time_t MaxQTS;
-  double TotalQueuedPH;             /* total queued prochours                          */ 
-  double TotalRequestTime;          /* total requested job walltime                    */
-  double TotalRunTime;              /* total execution job walltime                    */
+    int Count;             /* total jobs in grid                              */
+    int NCount;            /* nodes allocated to jobs                         */
+    int JobCountSubmitted; /* jobs submitted                                  */
+    int JobCountSuccessful; /* jobs successfully completed */
+    int QOSMet;         /* jobs that met requested QOS                     */
+    int RejectionCount; /* jobs submitted that have been rejected          */
+    time_t TotalQTS;    /* job queue time                                  */
+    time_t MaxQTS;
+    double TotalQueuedPH; /* total queued prochours                          */
+    double TotalRequestTime; /* total requested job walltime */
+    double TotalRunTime; /* total execution job walltime                    */
 
-  /* job-level statistics */
+    /* job-level statistics */
 
-  double PSRequest;                 /* requested procseconds completed                 */
-  double PSRequestSubmitted;        /* requested procseconds submitted                 */
-  double PSRun;                     /* executed procsecond                             */
-  double PSRunSuccessful;           /* successfully completed procseconds              */
+    double PSRequest; /* requested procseconds completed                 */
+    double PSRequestSubmitted; /* requested procseconds submitted */
+    double PSRun; /* executed procsecond                             */
+    double PSRunSuccessful; /* successfully completed procseconds */
 
-  /* iteration-level statistics */
+    /* iteration-level statistics */
 
-  double PSDedicated;               /* ProcSeconds Dedicated                           */
-  double PSUtilized;                /* ProcSeconds Actually Used                       */
+    double PSDedicated; /* ProcSeconds Dedicated                           */
+    double PSUtilized;  /* ProcSeconds Actually Used                       */
 
-  double MSAvail;                   /* MemorySeconds Available                         */
-  double MSUtilized;
-  double MSDedicated;               /* MemorySeconds Dedicated                         */
-  
-  double PS2Dedicated;
-  double PS2Utilized;
+    double MSAvail; /* MemorySeconds Available                         */
+    double MSUtilized;
+    double MSDedicated; /* MemorySeconds Dedicated                         */
 
-  double JobAcc;                    /* Job Accuracy Sum                                */
-  double NJobAcc;                   /* Node Weighed Job Accuracy Sum                   */
-  double XFactor;                   /* XFactor Sum                                     */
-  double NXFactor;                  /* Node Weighed XFactor Sum                        */
-  double PSXFactor;                 /* PS Weighted XFactor Sum                         */
-  double MaxXFactor;                /* max XFactor detected                            */
-  int    Bypass;                    /* Number of Times Job was Bypassed                */
-  int    MaxBypass;                 /* Max Number of Times Job was not Scheduled       */
-  int    BFCount;                   /* Number of Jobs Backfilled                       */
-  double BFPSRun;                   /* ProcSeconds Backfilled                          */
+    double PS2Dedicated;
+    double PS2Utilized;
 
-  short   Accuracy[MAX_ACCURACY];
-  dstat_t DStat[8];
-  } must_t;
+    double JobAcc;     /* Job Accuracy Sum                                */
+    double NJobAcc;    /* Node Weighed Job Accuracy Sum                   */
+    double XFactor;    /* XFactor Sum                                     */
+    double NXFactor;   /* Node Weighed XFactor Sum                        */
+    double PSXFactor;  /* PS Weighted XFactor Sum                         */
+    double MaxXFactor; /* max XFactor detected                            */
+    int Bypass;        /* Number of Times Job was Bypassed                */
+    int MaxBypass;     /* Max Number of Times Job was not Scheduled       */
+    int BFCount;       /* Number of Jobs Backfilled                       */
+    double BFPSRun;    /* ProcSeconds Backfilled                          */
 
-
-typedef struct {
-  char   Name[MAX_MNAME];             /* cred name                     */
-  int    Index;
-  long   MTime;                       /* modify time                   */
-
-  unsigned long Key;                  /* array hash key                */
-
-  unsigned long OID;
-
-  int    ClassWeight;                 /* NOTE: temp */
-
-  mfs_t  F;                           /* fairness policy config        */
-  void  *P;                           /* ??? */
-
-  mcredl_t L;                         /* current resource usage        */                
-
-  must_t Stat;                        /* historical usage statistics   */
-  } mgcred_t;
-
+    short Accuracy[MAX_ACCURACY];
+    dstat_t DStat[8];
+} must_t;
 
 typedef struct {
-  char          Name[MAX_MNAME];
-  int           Index;
-  long          MTime;            /* time record was last updated               */
-  long          QTWeight;
-  long          XFWeight;
-  long          QTTarget;
-  double        XFTarget;         /* Targeted XFactor for QOS                   */
-  unsigned long Flags;            /* Flags/Exemptions Associated with QOS       */
-  char          ResName[16][MAX_MNAME];
-  mfs_t         F;
-  mcredl_t      L;
-  must_t        Stat;             /* Usage Statistics                           */
-  } mqos_t;
+    char Name[MAX_MNAME]; /* cred name                     */
+    int Index;
+    long MTime; /* modify time                   */
+
+    unsigned long Key; /* array hash key                */
+
+    unsigned long OID;
+
+    int ClassWeight; /* NOTE: temp */
+
+    mfs_t F; /* fairness policy config        */
+    void *P; /* ??? */
+
+    mcredl_t L; /* current resource usage        */
+
+    must_t Stat; /* historical usage statistics   */
+} mgcred_t;
+
+typedef struct {
+    char Name[MAX_MNAME];
+    int Index;
+    long MTime; /* time record was last updated               */
+    long QTWeight;
+    long XFWeight;
+    long QTTarget;
+    double XFTarget;     /* Targeted XFactor for QOS                   */
+    unsigned long Flags; /* Flags/Exemptions Associated with QOS       */
+    char ResName[16][MAX_MNAME];
+    mfs_t F;
+    mcredl_t L;
+    must_t Stat; /* Usage Statistics                           */
+} mqos_t;
 
 struct bres_s {
-  long           EndTime;
-  mcres_t        DRes;
-  struct bres_s *Next;
-  };
+    long EndTime;
+    mcres_t DRes;
+    struct bres_s *Next;
+};
 
 typedef struct bres_s bres_t;
 
 typedef struct {
-  char   Name[MAX_MNAME];
-  int    Type;
-  int  (*Func)(void *,int,void *,void **);             
-  void  *Data;
-  } xres_t;
-
-
-typedef struct {
-  int  VersionNumber;
-  int  ProcVersionNumber;
-  char ConfigFile[MAX_PATH_LEN];
-
-  void *JobQO;
-  void *JobList;
- 
-  void *NodeQO;
-  void *NodeList;
-  } mllmdata_t;
+    char Name[MAX_MNAME];
+    int Type;
+    int (*Func)(void *, int, void *, void **);
+    void *Data;
+} xres_t;
 
 typedef struct {
-  char    Name[MAX_MNAME];
- 
-  long    MTime;
- 
-  int     CProcs;
-  int     CMem;
-  int     CSwap;
- 
-  int     ADisk;
- 
-  int     ArchIndex;
- 
-  int     MState;
- 
-  double  Load;
- 
-  void   *xd;
-  } pbsnodedata_t;
+    int VersionNumber;
+    int ProcVersionNumber;
+    char ConfigFile[MAX_PATH_LEN];
+
+    void *JobQO;
+    void *JobList;
+
+    void *NodeQO;
+    void *NodeList;
+} mllmdata_t;
 
 typedef struct {
-  int    VersionNumber;
-  int    ServerSD;
-  long   ServerSDTimeStamp;
-  msocket_t SchedS;
-  long   SchedSDTimeStamp;
-  char   LocalDiskFS[MAX_PATH_LEN];
-  char   SubmitExe[MAX_PATH_LEN];
+    char Name[MAX_MNAME];
 
-  int    PBS5IsEnabled;  /* boolean */
-  int    SSSIsEnabled;   /* boolean */
+    long MTime;
 
-  pbsnodedata_t D[MAX_MNODE];
- 
-  long          NodeMTime;
-  long          JobMTime;
-  long          QueueMTime;
+    int CProcs;
+    int CMem;
+    int CSwap;
 
-  struct batch_status *NodeList;
-  struct batch_status *JobList;
-  struct batch_status *QueueList;
-  } mpbsmdata_t;
+    int ADisk;
+
+    int ArchIndex;
+
+    int MState;
+
+    double Load;
+
+    void *xd;
+} pbsnodedata_t;
 
 typedef struct {
-  int    VersionNumber;
-  int    ServerSD;
-  long   ServerSDTimeStamp;
-  int    SchedSD;
-  long   SchedSDTimeStamp;
-  char   LocalDiskFS[MAX_PATH_LEN];
-  char   SubmitExe[MAX_PATH_LEN];
- 
-  long   NodeMTime;
-  long   JobMTime;
-  long   QueueMTime;
- 
-  void  *NodeList;
-  void  *JobList;
-  void  *QueueList;
-  } msgemdata_t;
+    int VersionNumber;
+    int ServerSD;
+    long ServerSDTimeStamp;
+    msocket_t SchedS;
+    long SchedSDTimeStamp;
+    char LocalDiskFS[MAX_PATH_LEN];
+    char SubmitExe[MAX_PATH_LEN];
+
+    int PBS5IsEnabled; /* boolean */
+    int SSSIsEnabled;  /* boolean */
+
+    pbsnodedata_t D[MAX_MNODE];
+
+    long NodeMTime;
+    long JobMTime;
+    long QueueMTime;
+
+    struct batch_status *NodeList;
+    struct batch_status *JobList;
+    struct batch_status *QueueList;
+} mpbsmdata_t;
 
 typedef struct {
-  int    VersionNumber;
-  int    ServerSD;
-  long   ServerSDTimeStamp;
-  int    SchedSD;
-  long   SchedSDTimeStamp;
-  char   LocalDiskFS[MAX_PATH_LEN];
-  char   SubmitExe[MAX_PATH_LEN];
- 
-  long   NodeMTime;
-  long   JobMTime;
-  long   QueueMTime;
- 
-  void  *NodeList;
-  void  *JobList;
-  void  *QueueList;
-  } msssmdata_t;
+    int VersionNumber;
+    int ServerSD;
+    long ServerSDTimeStamp;
+    int SchedSD;
+    long SchedSDTimeStamp;
+    char LocalDiskFS[MAX_PATH_LEN];
+    char SubmitExe[MAX_PATH_LEN];
+
+    long NodeMTime;
+    long JobMTime;
+    long QueueMTime;
+
+    void *NodeList;
+    void *JobList;
+    void *QueueList;
+} msgemdata_t;
 
 typedef struct {
-  char  *GData;
-  } mlsfmdata_t;
+    int VersionNumber;
+    int ServerSD;
+    long ServerSDTimeStamp;
+    int SchedSD;
+    long SchedSDTimeStamp;
+    char LocalDiskFS[MAX_PATH_LEN];
+    char SubmitExe[MAX_PATH_LEN];
 
-enum MRMFlagEnum { mrmfNONE = 0, mrmfJobStageInEnabled, mrmfLocalQueue,      mrmfNoTaskOrdering, mrmfTypeIsExplicit };
+    long NodeMTime;
+    long JobMTime;
+    long QueueMTime;
 
-#define MAX_MRMSUBTYPE      2
-#define MAX_MRMFAILURE      8
-#define MAX_MRMFUNC        22
+    void *NodeList;
+    void *JobList;
+    void *QueueList;
+} msssmdata_t;
+
+typedef struct { char *GData; } mlsfmdata_t;
+
+enum MRMFlagEnum {
+    mrmfNONE = 0,
+    mrmfJobStageInEnabled,
+    mrmfLocalQueue,
+    mrmfNoTaskOrdering,
+    mrmfTypeIsExplicit
+};
+
+#define MAX_MRMSUBTYPE 2
+#define MAX_MRMFAILURE 8
+#define MAX_MRMFUNC 22
 
 typedef struct {
-  char   Name[MAX_MNAME + 1];
-  int    Index;
+    char Name[MAX_MNAME + 1];
+    int Index;
 
-  long   Flags;
+    long Flags;
 
-  char   APIVersion[MAX_MNAME];
-  int    Version;
+    char APIVersion[MAX_MNAME];
+    int Version;
 
-  enum MRMStateEnum State;
+    enum MRMStateEnum State;
 
-  long   StateMTime;
-  int    XState;
+    long StateMTime;
+    int XState;
 
-  long   LastSubmissionTime;
+    long LastSubmissionTime;
 
-  /* interface */
+    /* interface */
 
-  enum MRMTypeEnum    Type;
+    enum MRMTypeEnum Type;
 
-  mpsi_t P[MAX_MRMSUBTYPE];     /* peer interface */
+    mpsi_t P[MAX_MRMSUBTYPE]; /* peer interface */
 
-  int    AuthType;
+    int AuthType;
 
-  int    NMPort;                /* node monitor port */
+    int NMPort; /* node monitor port */
 
-  int    EPort;                 /* event port */
-  long   EMinTime;              /* min time between processing events */
+    int EPort;     /* event port */
+    long EMinTime; /* min time between processing events */
 
-  int    SpecPort[MAX_MRMSUBTYPE];
-  int    SpecNMPort;
-  char   SpecServer[MAX_MRMSUBTYPE][MAX_MNAME + 1];
+    int SpecPort[MAX_MRMSUBTYPE];
+    int SpecNMPort;
+    char SpecServer[MAX_MRMSUBTYPE][MAX_MNAME + 1];
 
-  int    UseDirectoryService;  /* boolean */
+    int UseDirectoryService; /* boolean */
 
-  char   DefaultQMDomain[MAX_MNAME];
-  char   DefaultQMHost[MAX_MNAME];
+    char DefaultQMDomain[MAX_MNAME];
+    char DefaultQMHost[MAX_MNAME];
 
-  char   SuspendSig[MAX_MNAME];
+    char SuspendSig[MAX_MNAME];
 
-  int    FailIteration;
-  int    FailCount;
+    int FailIteration;
+    int FailCount;
 
-  int    WorkloadUpdateIteration;
+    int WorkloadUpdateIteration;
 
-  time_t FailTime[MAX_MRMFAILURE];
-  int    FailType[MAX_MRMFAILURE];
-  char  *FailMsg[MAX_MRMFAILURE];
-  int    FailIndex;
+    time_t FailTime[MAX_MRMFAILURE];
+    int FailType[MAX_MRMFAILURE];
+    char *FailMsg[MAX_MRMFAILURE];
+    int FailIndex;
 
-  time_t RespTotalTime[MAX_MRMFUNC];
-  time_t RespMaxTime[MAX_MRMFUNC];
-  int    RespTotalCount[MAX_MRMFUNC];
-  time_t RespStartTime[MAX_MRMFUNC];
+    time_t RespTotalTime[MAX_MRMFUNC];
+    time_t RespMaxTime[MAX_MRMFUNC];
+    int RespTotalCount[MAX_MRMFUNC];
+    time_t RespStartTime[MAX_MRMFUNC];
 
-  int    JobCount;
-  int    NodeCount;
+    int JobCount;
+    int NodeCount;
 
-  int    JobCounter;
+    int JobCounter;
 
-  int    RMNI;    /* network interface utilized by RM */
+    int RMNI; /* network interface utilized by RM */
 
-  union {
-    mllmdata_t  LL;
-    mpbsmdata_t PBS;
-    msgemdata_t SGE;
-    msssmdata_t S3;
-    mlsfmdata_t LSF;
+    union {
+        mllmdata_t LL;
+        mpbsmdata_t PBS;
+        msgemdata_t SGE;
+        msssmdata_t S3;
+        mlsfmdata_t LSF;
     } U;
 
-  void *S;  /* resource manager specific data */
+    void *S; /* resource manager specific data */
 
-  void *xd;
+    void *xd;
 
-  mbool_t ASyncJobStart; /* asynchronous job start */
-  } mrm_t;
+    mbool_t ASyncJobStart; /* asynchronous job start */
+} mrm_t;
 
 enum MClassStateEnum {
-  mclsNONE = 0,
-  mclsActive,    /* accepting jobs, executing jobs */
-  mclsDisabled,  /* not accepting jobs, not executing jobs */
-  mclsClosed,    /* not accepting jobs, executing jobs */
-  mclsStopped }; /* accepting jobs, not executing jobs */
+    mclsNONE = 0,
+    mclsActive,   /* accepting jobs, executing jobs */
+    mclsDisabled, /* not accepting jobs, not executing jobs */
+    mclsClosed,   /* not accepting jobs, executing jobs */
+    mclsStopped
+}; /* accepting jobs, not executing jobs */
 
 typedef struct {
-  char       Name[MAX_MNAME];
-  int        Index;
-  long       MTime;            /* time record was last updated               */     
+    char Name[MAX_MNAME];
+    int Index;
+    long MTime; /* time record was last updated               */
 
-  int        NonExeType;
+    int NonExeType;
 
-  mfs_t      F;
-  mcredl_t   L;
-  must_t     Stat;
+    mfs_t F;
+    mcredl_t L;
+    must_t Stat;
 
-  int        State;            /* NOT USED */
+    int State; /* NOT USED */
 
-  int        IsDisabled;       /* queue cannot execute jobs */
+    int IsDisabled; /* queue cannot execute jobs */
 
-  int        DistPolicy;
-  int        NAPolicy;
+    int DistPolicy;
+    int NAPolicy;
 
-  char     **NodeList;
-  char      *OCNodeName;       /* overcommit node */
-  double     OCDProcFactor;    /* dedicated proc factor */
+    char **NodeList;
+    char *OCNodeName;     /* overcommit node */
+    double OCDProcFactor; /* dedicated proc factor */
 
-  int        DefFBM[MAX_MATTR >> 5]; /* default feature (BM) */
- 
-  int        MaxProcPerNode;
-  } mclass_t;
+    int DefFBM[MAX_MATTR >> 5]; /* default feature (BM) */
 
+    int MaxProcPerNode;
+} mclass_t;
 
-enum BFPriorityEnum {
-  mbfpNONE = 0,
-  mbfpRandom,
-  mbfpDuration,
-  mbfpHWDuration };
+enum BFPriorityEnum { mbfpNONE = 0, mbfpRandom, mbfpDuration, mbfpHWDuration };
 
 typedef struct {
-  time_t MinTime;
-  time_t MaxTime;
-  int    TimeStepCount;
-  int    TimeStep[MAX_SCALE];
-  int    TimeStepSize;
-  int    MinNode;
-  int    MaxNode;
-  int    NodeStepCount;
-  int    NodeStep[MAX_SCALE];
-  int    NodeStepSize;
-  int    AccuracyScale;
-  int    AccuracyStep[MAX_SCALE];
-  time_t BeginTime;
-  time_t EndTime;
-  int    TraceCount;
-  } mprofcfg_t;
+    time_t MinTime;
+    time_t MaxTime;
+    int TimeStepCount;
+    int TimeStep[MAX_SCALE];
+    int TimeStepSize;
+    int MinNode;
+    int MaxNode;
+    int NodeStepCount;
+    int NodeStep[MAX_SCALE];
+    int NodeStepSize;
+    int AccuracyScale;
+    int AccuracyStep[MAX_SCALE];
+    time_t BeginTime;
+    time_t EndTime;
+    int TraceCount;
+} mprofcfg_t;
 
 typedef struct {
-  long   InitTime;
+    long InitTime;
 
-  long   SchedRunTime;            /* elapsed time scheduler has been scheduling                    */
-  int    IdleJobs;
-  int    EligibleJobs;            /* number of jobs eligible for scheduling                        */
-  int    ActiveJobs;              /* number of jobs active                                         */
-  double TotalPHAvailable;        /* total proc hours available to schedule                        */
-  double TotalPHBusy;             /* total proc hours consumed by scheduled jobs                   */
-  double SuccessfulPH;            /* proc hours completed successfully                             */
-  int    SuccessfulJobsCompleted; /* number of jobs completed successfully                         */
-  long   AvgQueuePH;              /* average queue workload                                        */
-  int    JobsEvaluated;           /* Total Jobs evaluated for scheduling                           */
-  must_t Grid[MAX_MGRIDTIMES][MAX_MGRIDSIZES]; /* stat matrix                                      */
-  must_t RTotal[MAX_MGRIDSIZES];   /* row totals                                                   */
-  must_t CTotal[MAX_MGRIDSIZES];   /* column totals                                                */
-  char   StatDir[MAX_MLINE + 1];  /* Directory For Stat Files                                      */
-  double MinEff;                  /* minimum scheduling efficiency                                 */
-  int    MinEffIteration;         /* iteration on which the minimum efficiency occurred            */
-  double TotalSimComCost;         /* Total Simulated Communication Cost                            */
-  int    TotalFSAdjustedFSUsage;  /* Total Decayed FSUsage for FairShare                           */
-  int    TotalHeterogeneousJobs;
-  int    TotalPreemptJobs;
-  double TotalPHPreempted;
+    long SchedRunTime; /* elapsed time scheduler has been scheduling */
+    int IdleJobs;
+    int EligibleJobs;        /* number of jobs eligible for scheduling */
+    int ActiveJobs;          /* number of jobs active */
+    double TotalPHAvailable; /* total proc hours available to schedule */
+    double TotalPHBusy;      /* total proc hours consumed by scheduled jobs */
+    double SuccessfulPH;     /* proc hours completed successfully */
+    int SuccessfulJobsCompleted; /* number of jobs completed successfully */
+    long AvgQueuePH;             /* average queue workload */
+    int JobsEvaluated;           /* Total Jobs evaluated for scheduling */
+    must_t Grid[MAX_MGRIDTIMES][MAX_MGRIDSIZES]; /* stat matrix */
+    must_t RTotal[MAX_MGRIDSIZES];               /* row totals */
+    must_t CTotal[MAX_MGRIDSIZES];               /* column totals */
+    char StatDir[MAX_MLINE + 1];                 /* Directory For Stat Files */
+    double MinEff;       /* minimum scheduling efficiency */
+    int MinEffIteration; /* iteration on which the minimum efficiency occurred
+                            */
+    double TotalSimComCost;     /* Total Simulated Communication Cost */
+    int TotalFSAdjustedFSUsage; /* Total Decayed FSUsage for FairShare */
+    int TotalHeterogeneousJobs;
+    int TotalPreemptJobs;
+    double TotalPHPreempted;
 
-  mprofcfg_t P;
-  } mstat_t;
+    mprofcfg_t P;
+} mstat_t;
 
 /* priority object */
- 
-enum MPrioComponentEnum {
-  mpcNONE = 0,
-  mpcServ,      /* service */
-  mpcTarg,      /* target service */
-  mpcCred,      /* credential */
-  mpcAttr,      /* job attribute */
-  mpcFS,        /* fairshare */
-  mpcRes,       /* resource request */
-  mpcUsage      /* resource usage */
-  };
- 
-#define MAX_MPRIOCOMPONENT  8
- 
-enum MPrioSubComponentEnum {
-  mpsNONE = 0,
-  mpsSQT,
-  mpsSXF,
-  mpsSSPV,
-  mpsSBP,
-  mpsTQT,
-  mpsTXF,
-  mpsCU,
-  mpsCG,
-  mpsCA, 
-  mpsCQ,
-  mpsCC,
-  mpsFU,
-  mpsFG,
-  mpsFA,
-  mpsFQ,
-  mpsFC,
-  mpsAAttr,
-  mpsAState,
-  mpsRNode,
-  mpsRProc,
-  mpsRMem,
-  mpsRSwap,
-  mpsRDisk,
-  mpsRPS,
-  mpsRPE,
-  mpsRWallTime,
-  mpsRUProc,
-  mpsRUJob,
-  mpsUCons,
-  mpsUExeTime,
-  mpsURem,
-  mpsUPerC,
-  };
- 
-#define MAX_MPRIOSUBCOMPONENT  33
- 
-/* fairshare */
- 
-typedef struct {
-  long   PCW[MAX_MPRIOCOMPONENT];
-  long   PCP[MAX_MPRIOCOMPONENT];
- 
-  long   PSW[MAX_MPRIOSUBCOMPONENT];
-  long   PSP[MAX_MPRIOSUBCOMPONENT];
- 
-  long   PCC[MAX_MPRIOCOMPONENT];
-  long   PSC[MAX_MPRIOSUBCOMPONENT]; 
- 
-  time_t XFMinWCLimit;
- 
-  int    FSPolicy;                /* FairShare Enforceability                                      */
-  long   FSInterval;              /* Time Interval Covered by each FS Data File                    */
-  int    FSDepth;                 /* Number of FS Time Intervals Considered by FairShare           */
-  double FSDecay;                 /* Weighting Factor to Decay Older FS Intervals                  */
-  } mfsc_t;
 
+enum MPrioComponentEnum {
+    mpcNONE = 0,
+    mpcServ, /* service */
+    mpcTarg, /* target service */
+    mpcCred, /* credential */
+    mpcAttr, /* job attribute */
+    mpcFS,   /* fairshare */
+    mpcRes,  /* resource request */
+    mpcUsage /* resource usage */
+};
+
+#define MAX_MPRIOCOMPONENT 8
+
+enum MPrioSubComponentEnum {
+    mpsNONE = 0,
+    mpsSQT,
+    mpsSXF,
+    mpsSSPV,
+    mpsSBP,
+    mpsTQT,
+    mpsTXF,
+    mpsCU,
+    mpsCG,
+    mpsCA,
+    mpsCQ,
+    mpsCC,
+    mpsFU,
+    mpsFG,
+    mpsFA,
+    mpsFQ,
+    mpsFC,
+    mpsAAttr,
+    mpsAState,
+    mpsRNode,
+    mpsRProc,
+    mpsRMem,
+    mpsRSwap,
+    mpsRDisk,
+    mpsRPS,
+    mpsRPE,
+    mpsRWallTime,
+    mpsRUProc,
+    mpsRUJob,
+    mpsUCons,
+    mpsUExeTime,
+    mpsURem,
+    mpsUPerC,
+};
+
+#define MAX_MPRIOSUBCOMPONENT 33
+
+/* fairshare */
+
+typedef struct {
+    long PCW[MAX_MPRIOCOMPONENT];
+    long PCP[MAX_MPRIOCOMPONENT];
+
+    long PSW[MAX_MPRIOSUBCOMPONENT];
+    long PSP[MAX_MPRIOSUBCOMPONENT];
+
+    long PCC[MAX_MPRIOCOMPONENT];
+    long PSC[MAX_MPRIOSUBCOMPONENT];
+
+    time_t XFMinWCLimit;
+
+    int FSPolicy;    /* FairShare Enforceability */
+    long FSInterval; /* Time Interval Covered by each FS Data File */
+    int FSDepth;     /* Number of FS Time Intervals Considered by FairShare */
+    double FSDecay;  /* Weighting Factor to Decay Older FS Intervals */
+} mfsc_t;
 
 /* par */
 
 typedef struct {
-  char   Name[MAX_MNAME + 1];
- 
-  int    Index;
- 
-  int    ConfigNodes;
-  int    IdleNodes;                 /* any proc is idle                        */
-  int    ActiveNodes;               /* any proc is busy                        */
-  int    UpNodes;
+    char Name[MAX_MNAME + 1];
 
-  mcres_t    CRes;                  /* configured resources                    */
-  mcres_t    URes;                  /* up resources                            */
-  mcres_t    ARes;                  /* available resources                     */
-  mcres_t    DRes;                  /* dedicated resources                     */
-  must_t     S;                     /* partition stats                         */
- 
-  mfsc_t     FSC;
- 
-  mcredl_t   L;
-  mfs_t      F;
- 
-  int BFPolicy;                     /* backfill policy                         */
-  int BFDepth;                      /* depth queue will be searched            */
-  int BFMetric;                     /* backfill utilization metric             */
-  int BFProcFactor;                 /* factor to encourage use of large jobs   */
-  int BFMaxSchedules;               /* maximum schedules to consider           */
-  int BFPriorityPolicy;
-  int BFChunkSize;
-  long BFChunkDuration;
+    int Index;
 
-  long BFChunkBlockTime;          /* time at which jobs smaller than BFChunkSize may be considered */
- 
-  /* system policies */
- 
-  int MaxMetaTasks;
- 
-  int MaxJobStartTime;            /* time allowed for nodes to become busy   */
-  int NAllocPolicy;               /* algo for allocating nodes               */
-  int DistPolicy;
-  int JobSizePolicy;              /* policy for determining job size         */
-  int JobNodeMatch;
- 
-  int ResPolicy;                  /* policy for creating/managing reservations */
-  int ResRetryTime;               /* time reservations are retried if blocked by system problems */
-  int ResTType;                   /* reservation threshold type              */
-  int ResTValue;                  /* reservation threshold value             */
-  int ResDepth[MAX_MQOS];         /* terminated by '0'                       */
-  int ResCount[MAX_MQOS];
-  mqos_t *ResQOSList[MAX_MQOS][MAX_MQOS];  /* NULL terminated, MAX_MQOS global */
+    int ConfigNodes;
+    int IdleNodes;   /* any proc is idle                        */
+    int ActiveNodes; /* any proc is busy                        */
+    int UpNodes;
 
-  /* booleans */
-  
-  int UseMachineSpeed;
-  int UseMachineSpeedForFS;
-  int UseSystemQueueTime;
-  int UseCPUTime;
-  int RejectNegPrioJobs;
-  int EnableNegJobPriority;        
-  int EnableMultiNodeJobs;
-  int EnableMultiReqJobs;
+    mcres_t CRes; /* configured resources                    */
+    mcres_t URes; /* up resources                            */
+    mcres_t ARes; /* available resources                     */
+    mcres_t DRes; /* dedicated resources                     */
+    must_t S;     /* partition stats                         */
 
-  int    JobPrioAccrualPolicy;
+    mfsc_t FSC;
 
-  char   NAvailPolicy[MAX_MRESOURCETYPE];
+    mcredl_t L;
+    mfs_t F;
 
-  /* resource limit handling */
+    int BFPolicy;       /* backfill policy                         */
+    int BFDepth;        /* depth queue will be searched            */
+    int BFMetric;       /* backfill utilization metric             */
+    int BFProcFactor;   /* factor to encourage use of large jobs   */
+    int BFMaxSchedules; /* maximum schedules to consider           */
+    int BFPriorityPolicy;
+    int BFChunkSize;
+    long BFChunkDuration;
 
-  enum MResLimitPolicyEnum  ResourceLimitPolicy[MAX_MRESOURCETYPE];
-  enum MResLimitVActionEnum ResourceLimitViolationAction[MAX_MRESOURCETYPE];
-  long                      ResourceLimitMaxViolationTime[MAX_MRESOURCETYPE];
+    long BFChunkBlockTime; /* time at which jobs smaller than BFChunkSize may be
+                              considered */
 
-  time_t AdminMinSTime;
+    /* system policies */
 
-  int    UseLocalMachinePriority;   /* boolean */
-  int    NodeLoadPolicy;
-  int    NodeSetPolicy;
-  int    NodeSetAttribute;
-  char  *NodeSetList[MAX_MATTR];    /* list of set delineating job attributes     */
-  long   NodeSetDelay;
-  double NodeSetTolerance;
-  int    NodeSetPriorityType;
-  double UntrackedProcFactor;
-  int    NodeDownStateDelayTime;
- 
-  xres_t XRes[MAX_MNODE];
+    int MaxMetaTasks;
 
-  char  *Message;    /* event messages */
+    int MaxJobStartTime; /* time allowed for nodes to become busy   */
+    int NAllocPolicy;    /* algo for allocating nodes               */
+    int DistPolicy;
+    int JobSizePolicy; /* policy for determining job size         */
+    int JobNodeMatch;
 
-  int    IgnPbsGroupList;         /* Ignore -W group_list parameter for Torque/PBS HvB */
-  int    FSSecondaryGroups;       /* To enable secondary fairshare group lookups for PBS, HvB */
+    int ResPolicy;    /* policy for creating/managing reservations */
+    int ResRetryTime; /* time reservations are retried if blocked by system
+                         problems */
+    int ResTType;     /* reservation threshold type              */
+    int ResTValue;    /* reservation threshold value             */
+    int ResDepth[MAX_MQOS]; /* terminated by '0'                       */
+    int ResCount[MAX_MQOS];
+    mqos_t *ResQOSList[MAX_MQOS]
+                      [MAX_MQOS]; /* NULL terminated, MAX_MQOS global */
 
-  } mpar_t;
+    /* booleans */
+
+    int UseMachineSpeed;
+    int UseMachineSpeedForFS;
+    int UseSystemQueueTime;
+    int UseCPUTime;
+    int RejectNegPrioJobs;
+    int EnableNegJobPriority;
+    int EnableMultiNodeJobs;
+    int EnableMultiReqJobs;
+
+    int JobPrioAccrualPolicy;
+
+    char NAvailPolicy[MAX_MRESOURCETYPE];
+
+    /* resource limit handling */
+
+    enum MResLimitPolicyEnum ResourceLimitPolicy[MAX_MRESOURCETYPE];
+    enum MResLimitVActionEnum ResourceLimitViolationAction[MAX_MRESOURCETYPE];
+    long ResourceLimitMaxViolationTime[MAX_MRESOURCETYPE];
+
+    time_t AdminMinSTime;
+
+    int UseLocalMachinePriority; /* boolean */
+    int NodeLoadPolicy;
+    int NodeSetPolicy;
+    int NodeSetAttribute;
+    char *NodeSetList[MAX_MATTR]; /* list of set delineating job attributes */
+    long NodeSetDelay;
+    double NodeSetTolerance;
+    int NodeSetPriorityType;
+    double UntrackedProcFactor;
+    int NodeDownStateDelayTime;
+
+    xres_t XRes[MAX_MNODE];
+
+    char *Message; /* event messages */
+
+    int IgnPbsGroupList; /* Ignore -W group_list parameter for Torque/PBS HvB */
+    int FSSecondaryGroups; /* To enable secondary fairshare group lookups for
+                              PBS, HvB */
+
+} mpar_t;
 
 /* cred */
- 
-typedef struct {
-  mgcred_t *U;
-  mgcred_t *G;
-  mgcred_t *A;
-  mclass_t *C;
-  mqos_t   *Q;
- 
-  int       CredType;
- 
-  macl_t   *ACL;
-  macl_t   *CL;
- 
-  long      MTime;
-  } mcred_t;
 
 typedef struct {
-  char  Name[MAX_MLINE + 1];       /* job ID                 */
-  int   Index;                     /* index in mjob_t table  */ 
-  } mjobl_t;
+    mgcred_t *U;
+    mgcred_t *G;
+    mgcred_t *A;
+    mclass_t *C;
+    mqos_t *Q;
+
+    int CredType;
+
+    macl_t *ACL;
+    macl_t *CL;
+
+    long MTime;
+} mcred_t;
+
+typedef struct {
+    char Name[MAX_MLINE + 1]; /* job ID                 */
+    int Index;                /* index in mjob_t table  */
+} mjobl_t;
 
 typedef struct nodealloc_t {
-  short          nodeindex;
-  unsigned short taskcount;
-  } nodealloc_t;
+    short nodeindex;
+    unsigned short taskcount;
+} nodealloc_t;
 
 typedef struct {
-  char    Name[MAX_MNAME + 1];   /* name of object reserving nodes             */
-  int     Index;
+    char Name[MAX_MNAME + 1]; /* name of object reserving nodes             */
+    int Index;
 
-  long    MTime;
-  long    CTime;
+    long MTime;
+    long CTime;
 
-  char   *RegEx;                 /* host regular expression                    */
-  int     PtIndex;                
-  int     Type;                  /* reservation type                           */
-  int     Mode;                  /* persistant, slide-forward, slide-back, 
-                                    slide-any                                  */
-  void   *J;
-  void   *NL;
+    char *RegEx; /* host regular expression                    */
+    int PtIndex;
+    int Type; /* reservation type                           */
+    int Mode; /* persistant, slide-forward, slide-back,
+                 slide-any                                  */
+    void *J;
+    void *NL;
 
-  time_t  StartTime;             /* reservation starttime                      */
-  time_t  EndTime;               /* reservation endtime                        */
+    time_t StartTime; /* reservation starttime                      */
+    time_t EndTime;   /* reservation endtime                        */
 
-  int     MaxTasks;
+    int MaxTasks;
 
-  int     NodeCount;             /* nodes involved in reservation              */
-  int     TaskCount;
-  int     ETaskCount;
-  int     AllocPC;            
-  macl_t  ACL[MAX_MACL];
-  macl_t  CL[MAX_MACL];
- 
-  unsigned long Flags;           /* reservation flags                          */
+    int NodeCount; /* nodes involved in reservation              */
+    int TaskCount;
+    int ETaskCount;
+    int AllocPC;
+    macl_t ACL[MAX_MACL];
+    macl_t CL[MAX_MACL];
 
-  double  CIPS;                  /* allocation/utilization stats */
-  double  CAPS;
-  double  TIPS; 
-  double  TAPS;
+    unsigned long Flags; /* reservation flags                          */
 
-  char    AccessList[16][MAX_MNAME]; 
-  int     AllocResPending;
-  long    ExpireTime;
-  long    Priority;  
-  mcres_t DRes;
-  char    CBHost[MAX_MNAME];
-  int     CBPort;
-  long    CBType;
+    double CIPS; /* allocation/utilization stats */
+    double CAPS;
+    double TIPS;
+    double TAPS;
 
-  char   *SystemID;               /* user or daemon which created reservation */
-  char   *Comment;
+    char AccessList[16][MAX_MNAME];
+    int AllocResPending;
+    long ExpireTime;
+    long Priority;
+    mcres_t DRes;
+    char CBHost[MAX_MNAME];
+    int CBPort;
+    long CBType;
 
-  mgcred_t *U;                    /* accountable user, group, account */
-  mgcred_t *G;                    /* NOTE:  accountable cred same as creation cred */
-  mgcred_t *A;        
+    char *SystemID; /* user or daemon which created reservation */
+    char *Comment;
 
-  char   *XCP;
+    mgcred_t *U; /* accountable user, group, account */
+    mgcred_t *G; /* NOTE:  accountable cred same as creation cred */
+    mgcred_t *A;
 
-  int     IsActive;
+    char *XCP;
 
-  void   *O;          /* rsv owner */
-  int     OType;
+    int IsActive;
 
-  void   *xd;
-  } mres_t;
+    void *O; /* rsv owner */
+    int OType;
+
+    void *xd;
+} mres_t;
 
 #define mrsv_t mres_t
 
-
 typedef struct {
-  char          Name[MAX_MNAME];
-  int           Period;           /* Day || Week || Infinite */
-  int           Type;
-  int           Days;
-  int           Depth;
-  time_t        StartTime;
-  time_t        EndTime;
-  time_t        WStartTime;
-  time_t        WEndTime;
-  macl_t        ACL[MAX_MACL];
-  int           TaskCount;
-  int           TPN;
-  int           MaxIdleTime;      /* idle WC time allowed before reservation is automatically released */
-  double        MinLoad;
-  char          PName[MAX_MNAME];
-  mcres_t       DRes;
-  mres_t       *R[MAX_SRES_DEPTH];
-  void         *HostList;
-  char          HostExpression[MAX_MLINE << 4];
-  int           Index;
-  mgcred_t     *A;
-  int           Flags;    
-  double        TotalTime;
-  double        IdleTime;
-  long          Priority;
-  int           FeatureMode;
-  int           FeatureMap[MAX_MATTR >> 5];
+    char Name[MAX_MNAME];
+    int Period; /* Day || Week || Infinite */
+    int Type;
+    int Days;
+    int Depth;
+    time_t StartTime;
+    time_t EndTime;
+    time_t WStartTime;
+    time_t WEndTime;
+    macl_t ACL[MAX_MACL];
+    int TaskCount;
+    int TPN;
+    int MaxIdleTime; /* idle WC time allowed before reservation is automatically
+                        released */
+    double MinLoad;
+    char PName[MAX_MNAME];
+    mcres_t DRes;
+    mres_t *R[MAX_SRES_DEPTH];
+    void *HostList;
+    char HostExpression[MAX_MLINE << 4];
+    int Index;
+    mgcred_t *A;
+    int Flags;
+    double TotalTime;
+    double IdleTime;
+    long Priority;
+    int FeatureMode;
+    int FeatureMap[MAX_MATTR >> 5];
 
-  void         *O;  /* owner */
-  int           OType;
-  } sres_t;
+    void *O; /* owner */
+    int OType;
+} sres_t;
 
 #define srsv_t sres_t
 
 typedef struct {
-  time_t     Time;
-  short      Type;
-  short      Index;
-  mcres_t    DRes;  /* total resources dedicated to reservation across all tasks on node */
-  } mre_t;
+    time_t Time;
+    short Type;
+    short Index;
+    mcres_t DRes; /* total resources dedicated to reservation across all tasks
+                     on node */
+} mre_t;
 
 typedef struct {
-  time_t   Time;
-  int      Type;
-  int      Index;
-  mcred_t *C;
-  int      NodeCount;
-  int      TaskCount;
-  long     PS;
-  } pe_t;
+    time_t Time;
+    int Type;
+    int Index;
+    mcred_t *C;
+    int NodeCount;
+    int TaskCount;
+    long PS;
+} pe_t;
 
 typedef struct {
-  time_t        MTime;
+    time_t MTime;
 
-  char          RMName[MAX_MNAME + 1];
-  char          NetName[MAX_MNETTYPE][MAX_MNAME + 1];
-  unsigned long NetAddr[MAX_MNETTYPE];
+    char RMName[MAX_MNAME + 1];
+    char NetName[MAX_MNETTYPE][MAX_MNAME + 1];
+    unsigned long NetAddr[MAX_MNETTYPE];
 
-  unsigned long Attributes;
-  int           SlotsUsed;
-  int           State;
-  int           Arch;
-  int           Disk;
-  int           Classes;
-  int           Failures;
-  } mhost_t;
+    unsigned long Attributes;
+    int SlotsUsed;
+    int State;
+    int Arch;
+    int Disk;
+    int Classes;
+    int Failures;
+} mhost_t;
 
 typedef mhost_t msys_t[MAX_MFRAME][MAX_MSLOTPERFRAME + 1];
 
-enum ResourceSetTypeEnum { mrstNONE = 0, mrstFeature, mrstMemory, mrstProcSpeed };
-enum ResourceSetSelectionEnum { mrssNONE = 0, mrssOneOf, mrssAnyOf, mrssFirstOf };
-enum ResourceSetPrioEnum { mrspNONE = 0, mrspBestFit, mrspWorstFit, mrspBestResource, mrspMinLoss };
+enum ResourceSetTypeEnum {
+    mrstNONE = 0,
+    mrstFeature,
+    mrstMemory,
+    mrstProcSpeed
+};
+enum ResourceSetSelectionEnum {
+    mrssNONE = 0,
+    mrssOneOf,
+    mrssAnyOf,
+    mrssFirstOf
+};
+enum ResourceSetPrioEnum {
+    mrspNONE = 0,
+    mrspBestFit,
+    mrspWorstFit,
+    mrspBestResource,
+    mrspMinLoss
+};
 
 typedef struct {
-  int    NAllocPolicy;
-  int    ResOrder[4];
-  } mnallocp_t;
+    int NAllocPolicy;
+    int ResOrder[4];
+} mnallocp_t;
 
 typedef struct {
-  /* resource:  walltime, procs, nodes, memory, network, etc */
-  /* stat:      psutilized, etc */
-  /* attr:      credentials, QOS, etc */
+    /* resource:  walltime, procs, nodes, memory, network, etc */
+    /* stat:      psutilized, etc */
+    /* attr:      credentials, QOS, etc */
 
-  int  TotalProcCount;
-  } mjobcache_t;
+    int TotalProcCount;
+} mjobcache_t;
 
 typedef struct msdata_t {
-  char  *Location;
+    char *Location;
 
-  int    IsGlobal;
+    int IsGlobal;
 
-  char  *SrcFileName;
-  char  *DstFileName;
+    char *SrcFileName;
+    char *DstFileName;
 
-  char  *SrcHostName;
-  char  *DstHostName;
+    char *SrcHostName;
+    char *DstHostName;
 
-  long   SrcFileSize;     /* available file size */
-  long   DstFileSize;     /* total file size */
-  
-  time_t TStartTime;
-  int    TransferRate;  /* KB/s */
+    long SrcFileSize; /* available file size */
+    long DstFileSize; /* total file size */
 
-  time_t ESTime;        /* estimated stage time */
-  struct msdata_t *Next;
-  } msdata_t;
+    time_t TStartTime;
+    int TransferRate; /* KB/s */
+
+    time_t ESTime; /* estimated stage time */
+    struct msdata_t *Next;
+} msdata_t;
 
 typedef struct {
-  time_t CPInterval;
+    time_t CPInterval;
 
-  time_t StoredCPDuration; /* duration of walltime checkpointed in previous runs */
-  time_t ActiveCPDuration; /* duration of walltime checkpointed in current run */
+    time_t StoredCPDuration; /* duration of walltime checkpointed in previous
+                                runs */
+    time_t
+        ActiveCPDuration; /* duration of walltime checkpointed in current run */
 
-  time_t InitialStartTime;
-  time_t LastCPTime;
+    time_t InitialStartTime;
+    time_t LastCPTime;
 
-  char   UserICPEnabled;
-  char   SystemICPEnabled;
-  } mjckpt_t;
+    char UserICPEnabled;
+    char SystemICPEnabled;
+} mjckpt_t;
 
-enum {
-  mhlmNONE = 0,
-  mhlmSuperset,
-  mhlmSubset,
-  mhlmExactSet 
-  };
+enum { mhlmNONE = 0, mhlmSuperset, mhlmSubset, mhlmExactSet };
 
 #define MAX_MNPCOMP 16
 
 enum MNPrioEnum {
-  mnpcNONE = 0,
-  mnpcADisk,       /* avl local disk */
-  mnpcAMem,        /* avl real memory */
-  mnpcAProcs,      /* avl procs */
-  mnpcASwap,       /* avl swap */
-  mnpcCDisk,       /* cfg local disk */
-  mnpcCMem,
-  mnpcCProcs,
-  mnpcCSwap,
-  mnpcJobCount,    /* active jobs on node */
-  mnpcLoad,        /* processor load */
-  mnpcPref,        /* node is preferred */     
-  mnpcPriority,    /* node admin priority */
-  mnpcResAffinity, /* reservation affinity */
-  mnpcSpeed,       /* processor/machine speed (???) */
-  mnpcUsage,       /* percent utilization over time */
-  mnpcPLoad };     /* percentage load */
+    mnpcNONE = 0,
+    mnpcADisk,  /* avl local disk */
+    mnpcAMem,   /* avl real memory */
+    mnpcAProcs, /* avl procs */
+    mnpcASwap,  /* avl swap */
+    mnpcCDisk,  /* cfg local disk */
+    mnpcCMem,
+    mnpcCProcs,
+    mnpcCSwap,
+    mnpcJobCount,    /* active jobs on node */
+    mnpcLoad,        /* processor load */
+    mnpcPref,        /* node is preferred */
+    mnpcPriority,    /* node admin priority */
+    mnpcResAffinity, /* reservation affinity */
+    mnpcSpeed,       /* processor/machine speed (???) */
+    mnpcUsage,       /* percent utilization over time */
+    mnpcPLoad
+}; /* percentage load */
 
 typedef struct {
-  double  CW[MAX_MNPCOMP];   /* component weight */
-  int     CWIsSet;
+    double CW[MAX_MNPCOMP]; /* component weight */
+    int CWIsSet;
 
-  double  SP;                /* static priority  */
-  int     SPIsSet;
+    double SP; /* static priority  */
+    int SPIsSet;
 
-  double  DP;                /* dynamic priority */
-  int     DPIsSet;
-  int     DPIteration;
-  } mnprio_t;
-
+    double DP; /* dynamic priority */
+    int DPIsSet;
+    int DPIteration;
+} mnprio_t;
 
 /* extended load indices */
 
 typedef struct {
-  double        PageIn;
-  double        PageOut;
-  int           LoginCount;
-  } mxload_t;
+    double PageIn;
+    double PageOut;
+    int LoginCount;
+} mxload_t;
 
-
-#define MAX_MJOB_PER_NODE  64
-
-typedef struct {
-  char   Name[MAX_MNAME + 1]; /* name of node                                */
-  int    Index;               /* index in node array                         */
-
-  char  *FullName;            /* fully qualified host name                   */
-
-  time_t CTime;               /* time node record was created                */
-  time_t ATime;               /* time of most recent node information        */
-  time_t MTime;               /* time node structure was modified            */
-
-  time_t ResMTime;
-  time_t StateMTime;          /* time node changed state                     */
-
-  enum MNodeStateEnum State;  /* node state                                  */
-  enum MNodeStateEnum EState; /* expected node state resulting from sched action */
-  enum MNodeStateEnum NewState;
-
-  time_t   SyncDeadLine;      /* time by which state and estate must agree   */
-
-  mcres_t  DRes;              /* dedicated resources (dedicated to consumer) */
-  mcres_t  CRes;              /* configured resources                        */
-  mcres_t  ARes;              /* available resources                         */
-  mcres_t  URes;              /* utilized resources                          */
-  mcres_t  SURes;             /* system utilized resources                   */
-
-  int      PtIndex;           /* partition assigned to node                  */
-
-  int      Network;           /* available network interfaces (BM)           */
-  int      FBM[MAX_MATTR >> 5]; /* available features (BM)                   */
-  int      Attributes;        /* system attributes (BM)                      */
-
-  char     Pool[MAX_MPOOL + 1];
-  int      Arch;              /* node hardware architecture                  */
-  int      ActiveOS;          /* node operating system                       */
-
-  mres_t **R;                 /* node reservation table                      */
-  mre_t   *RE;                /* reservation event table                     */
-  short   *RC;                /* reservation count table                     */
-
-  double   Speed;             /* relative processing speed of node           */
-  int      ProcSpeed;         /* proc speed in MHz                           */
-
-  double   Load;              /* total node 1 minute load average            */
- 
-  double   JobLoad;           /* load associated with batch workload         */
-  double   ExtLoad;           /* load not associated with batch workload     */
-  mxload_t *XLoad;
-
-  double   MaxLoad;           /* max total load allowed                      */
-
-  double   BackLog;           /* avg work required by node                   */
-
-  time_t   STTime;            /* time node was monitored (in 1/100's)        */
-  time_t   SUTime;            /* time node was available (in 1/100's)        */
-  time_t   SATime;            /* time node was active    (in 1/100's)        */
-
-  int      TaskCount;
-  int      EProcCount;
-
-  short    FrameIndex;        /* frame index                                 */
-  short    SlotIndex;         /* slot index                                  */
-  short    SlotsUsed;
-
-  mrm_t   *RM;
-
-  char     NodeType[MAX_MNAME];
-
-  int      IterationCount;    /* iterations since last RM update        */
-  int      Priority;
-
-  int      MaxJCount;
-  void   **JList;             /* list of active jobs                    */
-  int     *JTC;
-
-  void    *RMData;
-
-  mpu_t    AP;                /* active policy tracking                 */
-
-  char    *NAvailPolicy;      /* node availability policy               */
-
-  int      MaxJobPerUser;     /* TEMP                                   */
-  int     *MaxProcPerClass;   /* TEMP                                   */
-  int      MaxProcPerUser;
-  double   MaxPEPerJob;       /* TEMP                                   */
-
-  char     PrivateQueue;      /* TEMP (boolean)                         */
-  char     IsPref;            /* TEMP (boolean)                         */
-
-  mnprio_t *P;                /* node priority parameters */
-
-  char    *Message;           /* event message */
-
-  void    *xd;
-  } mnode_t;
+#define MAX_MJOB_PER_NODE 64
 
 typedef struct {
-  mnode_t        *N;
-  unsigned short  TC;
-  } mnalloc_t;
+    char Name[MAX_MNAME + 1]; /* name of node                                */
+    int Index;                /* index in node array                         */
+
+    char *FullName; /* fully qualified host name                   */
+
+    time_t CTime; /* time node record was created                */
+    time_t ATime; /* time of most recent node information        */
+    time_t MTime; /* time node structure was modified            */
+
+    time_t ResMTime;
+    time_t StateMTime; /* time node changed state                     */
+
+    enum MNodeStateEnum State; /* node state                                  */
+    enum MNodeStateEnum
+        EState; /* expected node state resulting from sched action */
+    enum MNodeStateEnum NewState;
+
+    time_t SyncDeadLine; /* time by which state and estate must agree   */
+
+    mcres_t DRes;  /* dedicated resources (dedicated to consumer) */
+    mcres_t CRes;  /* configured resources                        */
+    mcres_t ARes;  /* available resources                         */
+    mcres_t URes;  /* utilized resources                          */
+    mcres_t SURes; /* system utilized resources                   */
+
+    int PtIndex; /* partition assigned to node                  */
+
+    int Network;             /* available network interfaces (BM)           */
+    int FBM[MAX_MATTR >> 5]; /* available features (BM)                   */
+    int Attributes;          /* system attributes (BM)                      */
+
+    char Pool[MAX_MPOOL + 1];
+    int Arch;     /* node hardware architecture                  */
+    int ActiveOS; /* node operating system                       */
+
+    mres_t **R; /* node reservation table                      */
+    mre_t *RE;  /* reservation event table                     */
+    short *RC;  /* reservation count table                     */
+
+    double Speed;  /* relative processing speed of node           */
+    int ProcSpeed; /* proc speed in MHz                           */
+
+    double Load; /* total node 1 minute load average            */
+
+    double JobLoad; /* load associated with batch workload         */
+    double ExtLoad; /* load not associated with batch workload     */
+    mxload_t *XLoad;
+
+    double MaxLoad; /* max total load allowed                      */
+
+    double BackLog; /* avg work required by node                   */
+
+    time_t STTime; /* time node was monitored (in 1/100's)        */
+    time_t SUTime; /* time node was available (in 1/100's)        */
+    time_t SATime; /* time node was active    (in 1/100's)        */
+
+    int TaskCount;
+    int EProcCount;
+
+    short FrameIndex; /* frame index                                 */
+    short SlotIndex;  /* slot index                                  */
+    short SlotsUsed;
+
+    mrm_t *RM;
+
+    char NodeType[MAX_MNAME];
+
+    int IterationCount; /* iterations since last RM update        */
+    int Priority;
+
+    int MaxJCount;
+    void **JList; /* list of active jobs                    */
+    int *JTC;
+
+    void *RMData;
+
+    mpu_t AP; /* active policy tracking                 */
+
+    char *NAvailPolicy; /* node availability policy               */
+
+    int MaxJobPerUser;    /* TEMP                                   */
+    int *MaxProcPerClass; /* TEMP                                   */
+    int MaxProcPerUser;
+    double MaxPEPerJob; /* TEMP                                   */
+
+    char PrivateQueue; /* TEMP (boolean)                         */
+    char IsPref;       /* TEMP (boolean)                         */
+
+    mnprio_t *P; /* node priority parameters */
+
+    char *Message; /* event message */
+
+    void *xd;
+} mnode_t;
 
 typedef struct {
-  mnode_t       *N;
-  unsigned short TC;
-  double         Prio;
-  } mnpri_t;
+    mnode_t *N;
+    unsigned short TC;
+} mnalloc_t;
+
+typedef struct {
+    mnode_t *N;
+    unsigned short TC;
+    double Prio;
+} mnpri_t;
 
 typedef mnalloc_t mnodelist_t[MAX_MREQ_PER_JOB][MAX_MNODE + 1];
 typedef mnalloc_t nodelist_t[MAX_MNODE + 1];
 
+typedef struct {
+    int Index;
+
+    int RequiredProcs;  /* procs                                       */
+    int ProcCmp;        /* procs comparison                            */
+    int RequiredMemory; /* real memory (RAM)                           */
+    int MemCmp;         /* memory comparison                           */
+    int RequiredSwap;   /* virtual memory (in MB)                      */
+    int SwapCmp;        /* virtual memory comparison                   */
+    int RequiredDisk;   /* disk space requirement (in MB)              */
+    int DiskCmp;        /* disk comparison                             */
+    int ReqFBM[MAX_MATTR >> 5];  /* required feature (BM)                   */
+    int PrefFBM[MAX_MATTR >> 5]; /* preferred feature (BM)                 */
+    int ReqFMode; /* required feature mode                       */
+
+    int SetSelection;         /* one of NONE, ONEOF, ANYOF                   */
+    int SetType;              /* one of NONE, Feature, Memory, ProcSpeed     */
+    char *SetList[MAX_MATTR]; /* list of set delineating job attributes      */
+    int Pool;                 /* RM pool index                               */
+    int Network;              /* required network (BM)                       */
+    int Opsys;                /* required OS (BM)                            */
+    int Arch;                 /* HW arch (BM)                                */
+
+    int PtIndex; /* assigned partition index                    */
+
+    mcres_t DRes;   /* dedicated resources per task (active)       */
+    mcres_t *SDRes; /* dedicated resources per task (suspended)    */
+    mcres_t URes;   /* utilized resources per task                 */
+    mcres_t LURes;  /* req lifetime utilized resources per task    */
+    mcres_t MURes;  /* maximum utilized resources per task         */
+
+    time_t RMWTime; /* req walltime as reported by RM              */
+    time_t StatWTime;
+
+    /* index '0' is active, index '1-N' contain requests */
+
+    int TaskRequestList[MAX_TASK_REQUESTS + 1];
+
+    int NodeCount; /* nodes requested */
+    int TaskCount; /* tasks allocated */
+
+    int TasksPerNode;
+    int BlockingFactor;
+    int NAccessPolicy; /* node access policy */
+    mnallocp_t *NAllocPolicy;
+
+    int AdapterAccessMode;
+    int RMIndex;
+
+    enum MJobStateEnum State;
+    enum MJobStateEnum EState;
+
+    char SubJobName[MAX_MNAME];
+
+    mnalloc_t *NodeList;
+} mreq_t;
+
+#define MMAX_JOBRA 16
 
 typedef struct {
-  int    Index;
+    char *IWD;     /* initial working directory of job             */
+    char *Cmd;     /* job executable                               */
+    char *Input;   /* input                                        */
+    char *Output;  /* output                                       */
+    char *Error;   /* error                                        */
+    char *Args;    /* command line args                            */
+    char *Env;     /* shell environment                            */
+    char *Shell;   /* execution shell                              */
+    char *JobType; /* job type { ie, parallel, serial, etc }       */
 
-  int    RequiredProcs;      /* procs                                       */
-  int    ProcCmp;            /* procs comparison                            */
-  int    RequiredMemory;     /* real memory (RAM)                           */
-  int    MemCmp;             /* memory comparison                           */
-  int    RequiredSwap;       /* virtual memory (in MB)                      */
-  int    SwapCmp;            /* virtual memory comparison                   */
-  int    RequiredDisk;       /* disk space requirement (in MB)              */
-  int    DiskCmp;            /* disk comparison                             */
-  int    ReqFBM[MAX_MATTR >> 5]; /* required feature (BM)                   */
-  int    PrefFBM[MAX_MATTR >> 5]; /* preferred feature (BM)                 */
-  int    ReqFMode;           /* required feature mode                       */
-
-  int    SetSelection;       /* one of NONE, ONEOF, ANYOF                   */
-  int    SetType;            /* one of NONE, Feature, Memory, ProcSpeed     */
-  char  *SetList[MAX_MATTR]; /* list of set delineating job attributes      */
-  int    Pool;               /* RM pool index                               */
-  int    Network;            /* required network (BM)                       */
-  int    Opsys;              /* required OS (BM)                            */
-  int    Arch;               /* HW arch (BM)                                */
-
-  int    PtIndex;            /* assigned partition index                    */
-
-  mcres_t  DRes;             /* dedicated resources per task (active)       */
-  mcres_t *SDRes;            /* dedicated resources per task (suspended)    */
-  mcres_t  URes;             /* utilized resources per task                 */
-  mcres_t  LURes;            /* req lifetime utilized resources per task    */
-  mcres_t  MURes;            /* maximum utilized resources per task         */
-
-  time_t RMWTime;     /* req walltime as reported by RM              */
-  time_t StatWTime;
-
-  /* index '0' is active, index '1-N' contain requests */
-
-  int    TaskRequestList[MAX_TASK_REQUESTS + 1];
-
-  int    NodeCount;          /* nodes requested */
-  int    TaskCount;          /* tasks allocated */
-
-  int    TasksPerNode;
-  int    BlockingFactor;
-  int    NAccessPolicy;      /* node access policy */
-  mnallocp_t *NAllocPolicy;
-
-  int    AdapterAccessMode;
-  int    RMIndex;
-
-  enum MJobStateEnum State;
-  enum MJobStateEnum EState;
-
-  char   SubJobName[MAX_MNAME];
-
-  mnalloc_t *NodeList;
-  } mreq_t;
-
-#define MMAX_JOBRA  16
+    long PID;
+    long SID;
+} mjobe_t;
 
 typedef struct {
-  char  *IWD;                /* initial working directory of job             */
-  char  *Cmd;                /* job executable                               */
-  char  *Input;              /* input                                        */
-  char  *Output;             /* output                                       */
-  char  *Error;              /* error                                        */
-  char  *Args;               /* command line args                            */
-  char  *Env;                /* shell environment                            */
-  char  *Shell;              /* execution shell                              */
-  char  *JobType;            /* job type { ie, parallel, serial, etc }       */
+    int TC;
+    int NC;
+} mrsrc_t;
 
-  long   PID;
-  long   SID;
-  } mjobe_t;
- 
-typedef struct {
-  int TC;
-  int NC;
-  } mrsrc_t;
- 
 typedef struct mjob_t {
-  char   Name[MAX_MNAME + 1]; /* job ID                                  */
-  char  *AName;               /* alternate name (user specified)         */
-  char  *RMJID;               /* resource manager job ID                 */
+    char Name[MAX_MNAME + 1]; /* job ID                                  */
+    char *AName;              /* alternate name (user specified)         */
+    char *RMJID;              /* resource manager job ID                 */
 
-  int    Index;               /* job table index                         */  
+    int Index; /* job table index                         */
 
-  time_t CTime;               /* creation time (first RM report)         */
-  time_t MTime;               /* modification time (any source)          */
-  time_t ATime;               /* access time (most recent RM report)     */
+    time_t CTime; /* creation time (first RM report)         */
+    time_t MTime; /* modification time (any source)          */
+    time_t ATime; /* access time (most recent RM report)     */
 
-  time_t StateMTime;              
+    time_t StateMTime;
 
-  time_t SWallTime;           /* duration job was suspended              */
-  time_t AWallTime;           /* duration job was executing              */
- 
-  mjckpt_t *Ckpt;             /* checkpoint structure                    */
+    time_t SWallTime; /* duration job was suspended              */
+    time_t AWallTime; /* duration job was executing              */
 
-  struct mjob_t *Next;      
-  struct mjob_t *Prev;   
+    mjckpt_t *Ckpt; /* checkpoint structure                    */
 
-  mjobcache_t C;
-  macl_t      RCL[MAX_MACL]; /* required CL                              */
-  mcred_t     Cred;            
+    struct mjob_t *Next;
+    struct mjob_t *Prev;
 
-  mqos_t     *QReq;
+    mjobcache_t C;
+    macl_t RCL[MAX_MACL]; /* required CL                              */
+    mcred_t Cred;
 
-  mres_t     *R;             /* reservation                              */     
-  char        ResName[MAX_MNAME];
-  char        RAList[MMAX_JOBRA][MAX_MNAME]; /* reservation access list          */
+    mqos_t *QReq;
 
-  mrm_t      *RM;
+    mres_t *R; /* reservation                              */
+    char ResName[MAX_MNAME];
+    char RAList[MMAX_JOBRA][MAX_MNAME]; /* reservation access list          */
 
-  int         SessionID;
+    mrm_t *RM;
 
-  char     *NeedNodes;
+    int SessionID;
 
-  msdata_t *SIData;         /* stage in data  */
-  msdata_t *SOData;         /* stage out data */
+    char *NeedNodes;
 
-  mreq_t *Req[MAX_MREQ_PER_JOB + 1];
-  mreq_t *GReq;
+    msdata_t *SIData; /* stage in data  */
+    msdata_t *SOData; /* stage out data */
 
-  mreq_t *MReq;             /* primary req */
+    mreq_t *Req[MAX_MREQ_PER_JOB + 1];
+    mreq_t *GReq;
 
-  mjobe_t E;                /* job execution environment               */
+    mreq_t *MReq; /* primary req */
 
-  int    NodeCount;         /* nodes assigned                          */
-  int    TaskCount;         /* tasks assigned                          */
-  int    TasksRequested;    /* tasks requested                         */
-  int    NodesRequested;    /* number of nodes requested               */
+    mjobe_t E; /* job execution environment               */
 
-  mrsrc_t Alloc;
-  mrsrc_t Request;
+    int NodeCount;      /* nodes assigned                          */
+    int TaskCount;      /* tasks assigned                          */
+    int TasksRequested; /* tasks requested                         */
+    int NodesRequested; /* number of nodes requested               */
 
-  char  *Geometry;
-  char   SpecDistPolicy;
-  char   DistPolicy;   
+    mrsrc_t Alloc;
+    mrsrc_t Request;
 
-  time_t SystemQueueTime;   /* time job was initially eligible to start */
-  time_t EffQueueDuration;  /* duration of time job was eligible to run */
+    char *Geometry;
+    char SpecDistPolicy;
+    char DistPolicy;
 
-  time_t SMinTime;          /* effective earliest start time           */
-  time_t SpecSMinTime;      /* user specified earliest start time      */
-  time_t SysSMinTime;       /* system mandated earliest start time     */
-  time_t CMaxTime;          /* user specified latest completion time   */
-  time_t TermTime;          /* time by which job must be terminated    */
-  time_t RMinTime;          /* earliest 'resume' time for suspend job  */
-  time_t SubmitTime;        /* time job was submitted to RM            */
-  time_t StartTime;         /* time job began most recent execution    */
-  time_t DispatchTime;      /* time job was dispatched by RM           */
-  time_t CompletionTime;    /* time job execution completed            */
-  time_t LastNotifyTime;
-  int    CompletionCode;    /* execution completion code               */
-  int    StartCount;        /* number of times job was started         */
-  int    DeferCount;        /* number of times job was deferred        */
-  int    PreemptCount;      /* number of times job was preempted       */
-  int    Bypass;            /* number of times lower prio job was backfilled */       
+    time_t SystemQueueTime;  /* time job was initially eligible to start */
+    time_t EffQueueDuration; /* duration of time job was eligible to run */
 
-  int    HoldReason;        /* reason job was deferred/held by scheduler */            
-  int    BlockReason;       /* reason job not considered for scheduling */
+    time_t SMinTime;       /* effective earliest start time           */
+    time_t SpecSMinTime;   /* user specified earliest start time      */
+    time_t SysSMinTime;    /* system mandated earliest start time     */
+    time_t CMaxTime;       /* user specified latest completion time   */
+    time_t TermTime;       /* time by which job must be terminated    */
+    time_t RMinTime;       /* earliest 'resume' time for suspend job  */
+    time_t SubmitTime;     /* time job was submitted to RM            */
+    time_t StartTime;      /* time job began most recent execution    */
+    time_t DispatchTime;   /* time job was dispatched by RM           */
+    time_t CompletionTime; /* time job execution completed            */
+    time_t LastNotifyTime;
+    int CompletionCode; /* execution completion code               */
+    int StartCount;     /* number of times job was started         */
+    int DeferCount;     /* number of times job was deferred        */
+    int PreemptCount;   /* number of times job was preempted       */
+    int Bypass;         /* number of times lower prio job was backfilled */
 
-  time_t SyncDeadLine;      /* time by which state and estate must agree */     
-  char  *Message;           /* job event message                        */     
+    int HoldReason;  /* reason job was deferred/held by scheduler */
+    int BlockReason; /* reason job not considered for scheduling */
 
-  time_t WCLimit;           /* effective walltime limit                 */
-  time_t CPULimit;          /* specified CPU limit (per job)            */
-  time_t SpecWCLimit[MAX_TASK_REQUESTS + 1];     
-  time_t RemainingTime;     /* execution time job has remaining         */
-  time_t SimWCTime;         /* total time sim job will consume          */
+    time_t SyncDeadLine; /* time by which state and estate must agree */
+    char *Message;       /* job event message                        */
 
-  int     MinMachineSpeed;  /* (in MHz) */
+    time_t WCLimit;  /* effective walltime limit                 */
+    time_t CPULimit; /* specified CPU limit (per job)            */
+    time_t SpecWCLimit[MAX_TASK_REQUESTS + 1];
+    time_t RemainingTime; /* execution time job has remaining         */
+    time_t SimWCTime;     /* total time sim job will consume          */
 
-  int     SpecPAL[MAX_MPALSIZE];              
-  int     PAL[MAX_MPALSIZE];              
+    int MinMachineSpeed; /* (in MHz) */
 
-  int     ImageSize;        /* input data size (in MB) */
-  int     ExecSize;         /* executable size (in MB) */
+    int SpecPAL[MAX_MPALSIZE];
+    int PAL[MAX_MPALSIZE];
 
-  enum MJobStateEnum State;  /* RM job state                                    */
-  enum MJobStateEnum EState; /* expected job state due to scheduler action      */    
-  enum MJobStateEnum IState; /* internal job state                              */
+    int ImageSize; /* input data size (in MB) */
+    int ExecSize;  /* executable size (in MB) */
 
-  int     Hold;             /* BM { USER  SYS  BATCH }                          */
-  int     SuspendType;          
+    enum MJobStateEnum State;  /* RM job state */
+    enum MJobStateEnum EState; /* expected job state due to scheduler action */
+    enum MJobStateEnum IState; /* internal job state */
 
-  long    SystemPrio;       /* system admin assigned priority                   */    
-  long    UPriority;        /* job priority given by user                       */         
-  long    StartPriority;    /* priority of job to start                         */
-  long    RunPriority;      /* priority of job to continue running              */
+    int Hold; /* BM { USER  SYS  BATCH }                          */
+    int SuspendType;
 
-  short   TaskMap[MAX_MTASK_PER_JOB + 1];
+    long SystemPrio;    /* system admin assigned priority                   */
+    long UPriority;     /* job priority given by user                       */
+    long StartPriority; /* priority of job to start                         */
+    long RunPriority;   /* priority of job to continue running              */
 
-  mnalloc_t *NodeList;    /* list of allocated hosts */
+    short TaskMap[MAX_MTASK_PER_JOB + 1];
 
-  mnalloc_t *ReqHList;    /* required hosts - {sub,super}set */
-  mnalloc_t *ExcHList;    /* excluded hosts                  */
+    mnalloc_t *NodeList; /* list of allocated hosts */
 
-  int        ReqHLMode;   /* req hostlist mode               */
+    mnalloc_t *ReqHList; /* required hosts - {sub,super}set */
+    mnalloc_t *ExcHList; /* excluded hosts                  */
 
-  int    RType;
-  int    Cluster;           /* step cluster                                     */
-  int    Proc;              /* step proc                                        */
-  char   SubmitHost[MAX_MNAME]; /* job submission host                          */
+    int ReqHLMode; /* req hostlist mode               */
 
-  unsigned long IFlags;
-  unsigned long Flags;     
-  unsigned long SpecFlags; 
-  unsigned long SysFlags;  
+    int RType;
+    int Cluster; /* step cluster                                     */
+    int Proc;    /* step proc                                        */
+    char SubmitHost[MAX_MNAME]; /* job submission host */
 
-  unsigned long AttrBM;
+    unsigned long IFlags;
+    unsigned long Flags;
+    unsigned long SpecFlags;
+    unsigned long SysFlags;
 
-  char  *MasterJobName;
-  char  *MasterHostName;
+    unsigned long AttrBM;
 
-  double PSUtilized;        /* procseconds utilized by job                      */
-  double PSDedicated;       /* procseconds dedicated to job                     */
-  double MSUtilized;
-  double MSDedicated;
+    char *MasterJobName;
+    char *MasterHostName;
 
-  char  *RMXString;         /* RM extension string (opaque) */
-  char  *RMSubmitString;    /* raw command file */
-  int    RMSubmitType;
+    double PSUtilized;  /* procseconds utilized by job                      */
+    double PSDedicated; /* procseconds dedicated to job                     */
+    double MSUtilized;
+    double MSDedicated;
 
-  char  *SystemID;          /* identifier of the system owner */
-  char  *SystemJID;         /* external system identifier */
+    char *RMXString;      /* RM extension string (opaque) */
+    char *RMSubmitString; /* raw command file */
+    int RMSubmitType;
 
-  mjdepend_t *Depend;
+    char *SystemID;  /* identifier of the system owner */
+    char *SystemJID; /* external system identifier */
 
-  int    RULVTime;
-  int    FeatureMap[1];     
+    mjdepend_t *Depend;
+
+    int RULVTime;
+    int FeatureMap[1];
 
 #ifdef __MCPLUS
-  int    (*ASFunc)(mjob_t *,int,void *,void *); 
+    int (*ASFunc)(mjob_t *, int, void *, void *);
 #else
-  int    (*ASFunc)();
+    int (*ASFunc)();
 #endif /* __MCPLUS */
 
-  void  *ASData;
+    void *ASData;
 
-  void  *xd;
-  } mjob_t;
+    void *xd;
+} mjob_t;
 
-
-typedef struct {
-  char Name[MAX_MNAME + 1];
-  } node_t;
+typedef struct { char Name[MAX_MNAME + 1]; } node_t;
 
 typedef struct {
-  int          RMType;
-  mres_t      *R;
-  nodealloc_t  NodeList[MAX_MNODE_PER_FRAG + 1];
-  short        TaskList[MAX_MTASK_PER_FRAG + 1];   
-  } ll_frag_t;
+    int RMType;
+    mres_t *R;
+    nodealloc_t NodeList[MAX_MNODE_PER_FRAG + 1];
+    short TaskList[MAX_MTASK_PER_FRAG + 1];
+} ll_frag_t;
 
 typedef struct {
-  int      RMType;
-  mres_t  *R;
-  } sgi_frag_t;
+    int RMType;
+    mres_t *R;
+} sgi_frag_t;
 
 typedef struct {
-  int      RMType;
-  mres_t  *R;
-  } sge_frag_t;
+    int RMType;
+    mres_t *R;
+} sge_frag_t;
 
 typedef struct frag_t {
-  int      FragType;
-  struct frag_t *Next;
-  struct frag_t *Prev;
-  int      MinTask;
-  int      MaxTask;
+    int FragType;
+    struct frag_t *Next;
+    struct frag_t *Prev;
+    int MinTask;
+    int MaxTask;
 
-  union {
-    ll_frag_t   LL;
-    sgi_frag_t  SGI;
-    sge_frag_t  SGE;
+    union {
+        ll_frag_t LL;
+        sgi_frag_t SGI;
+        sge_frag_t SGE;
     } RM;
-  } frag_t;
-
-
+} frag_t;
 
 /* NOTE:  must be sync'd with object table */
 
-#define MDEF_FBPOLLINTERVAL  30
-#define MDEF_FBFAILURECOUNT   2
+#define MDEF_FBPOLLINTERVAL 30
+#define MDEF_FBFAILURECOUNT 2
 
 #define MDEF_ADMINACTIONINTERVAL 600
 
 typedef struct {
-  char   Name[MAX_MNAME];
-  time_t StartTime;
+    char Name[MAX_MNAME];
+    time_t StartTime;
 
-  time_t Time;                      /* current epoch time                              */
+    time_t Time; /* current epoch time                              */
 
-  char  Version[MAX_MNAME];         /* scheduler version                               */
+    char Version[MAX_MNAME]; /* scheduler version */
 
-  struct timeval SchedTime;         /* accurate system time at start of scheduling     */
-  time_t GreenwichOffset;
-  int    Interval;                   /* time transpired (hundredths of a seocnd)        */
+    struct timeval SchedTime; /* accurate system time at start of scheduling */
+    time_t GreenwichOffset;
+    int Interval; /* time transpired (hundredths of a seocnd)        */
 
-  char   Day[MAX_WORD + 1];          /* current local day of the week                   */
-  int    DayTime;                    /* current local hour of the day                   */
-  time_t RMPollInterval;             /* interval between scheduling attempts (seconds)  */
-  time_t RMJobAggregationTime;
+    char Day[MAX_WORD + 1]; /* current local day of the week */
+    int DayTime;           /* current local hour of the day                   */
+    time_t RMPollInterval; /* interval between scheduling attempts (seconds)  */
+    time_t RMJobAggregationTime;
 
-  int    Mode;                       /* mode of scheduler operation                     */
-  int    SpecMode;                   /* configured scheduler operation mode             */
+    int Mode;     /* mode of scheduler operation                     */
+    int SpecMode; /* configured scheduler operation mode             */
 
-  int    StepCount;                  /* number of scheduling steps before shutdown      */
+    int StepCount; /* number of scheduling steps before shutdown      */
 
-  char   ConfigFile[MAX_MLINE];      /* sched configuration file name                   */
+    char ConfigFile[MAX_MLINE]; /* sched configuration file name */
 
-  char  *ConfigBuffer;
-  char  *PvtConfigBuffer;
+    char *ConfigBuffer;
+    char *PvtConfigBuffer;
 
-  char   LogDir[MAX_MLINE];          /* directory for logging                           */
-  char   LogFile[MAX_MLINE];         /* log file                                        */
-  char   ToolsDir[MAX_MLINE];        /* directory for sched tools                       */
-  char   HomeDir[MAX_MLINE];         /* scheduler home directory                        */
-  char   LockFile[MAX_MLINE];        /* scheduler lock file                             */
-  char   KeyFile[MAX_MLINE];
- 
-  char   Action[4][MAX_MLINE];       /* response for specified events                   */
-  time_t ActionInterval;
+    char LogDir[MAX_MLINE];   /* directory for logging */
+    char LogFile[MAX_MLINE];  /* log file */
+    char ToolsDir[MAX_MLINE]; /* directory for sched tools */
+    char HomeDir[MAX_MLINE];  /* scheduler home directory */
+    char LockFile[MAX_MLINE]; /* scheduler lock file */
+    char KeyFile[MAX_MLINE];
 
-  int    LogFileMaxSize;             /* maximum size of log file                        */
-  int    LogFileRollDepth;
+    char Action[4][MAX_MLINE]; /* response for specified events */
+    time_t ActionInterval;
 
-  char   ServerHost[MAX_MNAME];      /* name of scheduler server host                   */
-  int    ServerPort;                 /* socket used to communicate with sched client    */
+    int LogFileMaxSize; /* maximum size of log file                        */
+    int LogFileRollDepth;
 
-  char   FBServerHost[MAX_MNAME];
-  int    FBServerPort;
+    char ServerHost[MAX_MNAME]; /* name of scheduler server host */
+    int ServerPort; /* socket used to communicate with sched client    */
 
-  time_t FBPollInterval;
-  int    FBFailureCount;
+    char FBServerHost[MAX_MNAME];
+    int FBServerPort;
 
-  int    FBActive;                   /* boolean */
+    time_t FBPollInterval;
+    int FBFailureCount;
 
-  msocket_t ServerS;
-  msocket_t ServerSH;               /* web interface                                   */
-  int    DefaultMCSocketProtocol;      
-  time_t ClientTimeout;     
+    int FBActive; /* boolean */
 
-  char   DefaultCSKey[MAX_MNAME];
-  int    DefaultCSAlgo;
+    msocket_t ServerS;
+    msocket_t ServerSH; /* web interface                                   */
+    int DefaultMCSocketProtocol;
+    time_t ClientTimeout;
 
-  /* SSL interface */
+    char DefaultCSKey[MAX_MNAME];
+    int DefaultCSAlgo;
 
-  msocket_t SServerS;
+    /* SSL interface */
 
-  /* directory server */
+    msocket_t SServerS;
 
-  mpsi_t DS;  /* directory service interface */
-  mpsi_t EM;  /* event manager interface */
+    /* directory server */
 
-  FILE  *statfp;
+    mpsi_t DS; /* directory service interface */
+    mpsi_t EM; /* event manager interface */
 
-  char   DefaultDomain[MAX_MNAME];   /* domain appended to unqualified hostnames        */
-  char   DefaultQMHost[MAX_MNAME];
+    FILE *statfp;
 
-  char   Admin1User[MAX_MADMINUSERS + 1][MAX_MNAME]; /* admin usernames                 */
-  char   Admin2User[MAX_MADMINUSERS + 1][MAX_MNAME];
-  char   Admin3User[MAX_MADMINUSERS + 1][MAX_MNAME];
-  char   Admin4User[MAX_MADMINUSERS + 1][MAX_MNAME];
-  char   AdminHost[MAX_MADMINHOSTS + 1][MAX_MNAME];  /* hosts allowed admin access      */
+    char
+        DefaultDomain[MAX_MNAME]; /* domain appended to unqualified hostnames */
+    char DefaultQMHost[MAX_MNAME];
 
-  time_t DeferTime;                  /* time job will stay deferred                     */
-  int    DeferCount;                 /* times job will get deferred before being held   */
-  int    DeferStartCount;            /* times job will fail starting before getting deferred */
-  time_t JobPurgeTime;               /* time job must be missing before getting purged  */
-  time_t NodePurgeTime;
-  int    APIFailureThreshhold;       /* times API can fail before notifying admins      */
-  time_t NodeSyncDeadline;           /* time in which node must reach expected state    */
-  time_t JobSyncDeadline;            /* time in which job must reach expected state     */
-  time_t JobMaxOverrun;              /* time job is allowed to exceed wallclock limit   */
-  int    Iteration;                  /* number of scheduling cycles completed           */
+    char Admin1User[MAX_MADMINUSERS + 1][MAX_MNAME]; /* admin usernames */
+    char Admin2User[MAX_MADMINUSERS + 1][MAX_MNAME];
+    char Admin3User[MAX_MADMINUSERS + 1][MAX_MNAME];
+    char Admin4User[MAX_MADMINUSERS + 1][MAX_MNAME];
+    char AdminHost[MAX_MADMINHOSTS + 1]
+                  [MAX_MNAME]; /* hosts allowed admin access      */
 
-  int    Reload;                     /* reload config file at next interval (boolean)   */
-  int    Schedule;                   /* scheduling should continue (boolean)            */
-  int    Shutdown;
-  int    EnvChanged;                 /* scheduling env has changed (boolean)            */
+    time_t DeferTime;    /* time job will stay deferred                     */
+    int DeferCount;      /* times job will get deferred before being held   */
+    int DeferStartCount; /* times job will fail starting before getting deferred
+                            */
+    time_t JobPurgeTime; /* time job must be missing before getting purged  */
+    time_t NodePurgeTime;
+    int APIFailureThreshhold; /* times API can fail before notifying admins */
+    time_t NodeSyncDeadline;  /* time in which node must reach expected state */
+    time_t JobSyncDeadline;   /* time in which job must reach expected state */
+    time_t JobMaxOverrun; /* time job is allowed to exceed wallclock limit   */
+    int Iteration;        /* number of scheduling cycles completed           */
 
-  int    MaxSleepIteration;          /* max iterations scheduler can go without scheduling */
-  char   LLConfigFile[MAX_PATH_LEN];
+    int Reload;   /* reload config file at next interval (boolean)   */
+    int Schedule; /* scheduling should continue (boolean)            */
+    int Shutdown;
+    int EnvChanged; /* scheduling env has changed (boolean)            */
 
-  /* policies */
+    int MaxSleepIteration; /* max iterations scheduler can go without scheduling
+                              */
+    char LLConfigFile[MAX_PATH_LEN];
 
-  enum   MNodeAccessPolicyEnum       DefaultNAccessPolicy;
+    /* policies */
 
-  int    AllocLocalityPolicy;
-  int    AllocLocalityGroup;
+    enum MNodeAccessPolicyEnum DefaultNAccessPolicy;
 
-  int    WCViolAction;
+    int AllocLocalityPolicy;
+    int AllocLocalityGroup;
 
-  int    UseJobRegEx;                /* (config boolean) */
-  int    SPVJobIsPreemptible;        /* (config boolean) */
+    int WCViolAction;
 
-  mbool_t EnableEncryption;
-  mbool_t PercentBasedFS;
+    int UseJobRegEx;         /* (config boolean) */
+    int SPVJobIsPreemptible; /* (config boolean) */
 
-  char  *Argv[MAX_MARG];
+    mbool_t EnableEncryption;
+    mbool_t PercentBasedFS;
 
-  time_t PresentTime;
+    char *Argv[MAX_MARG];
 
-  char   MonitoredJob[MAX_MLINE];
-  char   MonitoredNode[MAX_MLINE];
-  char   MonitoredRes[MAX_MLINE];
-  char   MonitoredFunction[MAX_MLINE];
+    time_t PresentTime;
 
-  int    ResDepth;
-  char   DefaultClassList[MAX_MLINE];
+    char MonitoredJob[MAX_MLINE];
+    char MonitoredNode[MAX_MLINE];
+    char MonitoredRes[MAX_MLINE];
+    char MonitoredFunction[MAX_MLINE];
 
-  int    SecureMode;        /* (state boolean) */
-  int    DebugMode;         /* (state boolean) */
+    int ResDepth;
+    char DefaultClassList[MAX_MLINE];
 
-  time_t CurrentFSInterval;
-  long   DisplayFlags;      /* (BM) */
-  long   TraceFlags;        /* (BM) */
-  time_t RMLoadStart;
-  int    NodePollFrequency;
-  int    NodePollOffset;
-  char   ProcSpeedFeatureHeader[MAX_MNAME];
-  int    ProcSpeedFeatureIsVisible;    /* (boolean) */
-  char   NodeTypeFeatureHeader[MAX_MNAME];
-  int    NodeTypeFeatureIsVisible;     /* (boolean) */
-  char   PartitionFeatureHeader[MAX_MNAME];
-  int    PartitionFeatureIsVisible;    /* (boolean) */
-  int    InitialLoad;
-  int    NodeAllocMaxPS;
+    int SecureMode; /* (state boolean) */
+    int DebugMode;  /* (state boolean) */
 
-  mgcred_t *DefaultU;
-  mgcred_t *DefaultG;
-  mgcred_t *DefaultA;
-  mqos_t   *DefaultQ;
-  mclass_t *DefaultC;
-  mnode_t   DefaultN; 
-  mjob_t    DefaultJ;
+    time_t CurrentFSInterval;
+    long DisplayFlags; /* (BM) */
+    long TraceFlags;   /* (BM) */
+    time_t RMLoadStart;
+    int NodePollFrequency;
+    int NodePollOffset;
+    char ProcSpeedFeatureHeader[MAX_MNAME];
+    int ProcSpeedFeatureIsVisible; /* (boolean) */
+    char NodeTypeFeatureHeader[MAX_MNAME];
+    int NodeTypeFeatureIsVisible; /* (boolean) */
+    char PartitionFeatureHeader[MAX_MNAME];
+    int PartitionFeatureIsVisible; /* (boolean) */
+    int InitialLoad;
+    int NodeAllocMaxPS;
 
-  mnode_t  *GN;
+    mgcred_t *DefaultU;
+    mgcred_t *DefaultG;
+    mgcred_t *DefaultA;
+    mqos_t *DefaultQ;
+    mclass_t *DefaultC;
+    mnode_t DefaultN;
+    mjob_t DefaultJ;
 
-  char   DefaultAccountName[MAX_MNAME];
-  int    ReferenceProcSpeed;
-  long   PreemptPrioMargin;
-  double NodeCPUOverCommitFactor;
-  double NodeMemOverCommitFactor;
-  int    MaxJobPerIteration;
-  time_t MinDispatchTime;
-  double MaxOSCPULoad;
+    mnode_t *GN;
 
-  int    UseSyslog;      /* config boolean */
-  int    SyslogActive;   /* state boolean */
-  int    SyslogFacility;
- 
-  int    ResCtlPolicy;
-  int    ResLimitPolicy;
-  int    PreemptPolicy;
+    char DefaultAccountName[MAX_MNAME];
+    int ReferenceProcSpeed;
+    long PreemptPrioMargin;
+    double NodeCPUOverCommitFactor;
+    double NodeMemOverCommitFactor;
+    int MaxJobPerIteration;
+    time_t MinDispatchTime;
+    double MaxOSCPULoad;
 
-  int    TimePolicy;
-  time_t TimeOffset;  /* offset between actual and trace time */
- 
-  int    ResourcePrefIsActive;  /* state boolean */
-  pid_t  PID;
-  uid_t  UID;
-  gid_t  GID;
+    int UseSyslog;    /* config boolean */
+    int SyslogActive; /* state boolean */
+    int SyslogFacility;
 
-  mpar_t *GP;
+    int ResCtlPolicy;
+    int ResLimitPolicy;
+    int PreemptPolicy;
 
-  char **IgnQList;
+    int TimePolicy;
+    time_t TimeOffset; /* offset between actual and trace time */
 
-  void *T[mxoLAST];   /* object table   */
-  int   S[mxoLAST];   /* size of object */
-  int   M[mxoLAST];   /* number of objects in table */
-  void *E[mxoLAST];   /* final object */
+    int ResourcePrefIsActive; /* state boolean */
+    pid_t PID;
+    uid_t UID;
+    gid_t GID;
 
-  void *X;
+    mpar_t *GP;
 
-  msync_t Sync;
+    char **IgnQList;
 
-  char *Message;      /* general system messages */
+    void *T[mxoLAST]; /* object table   */
+    int S[mxoLAST];   /* size of object */
+    int M[mxoLAST];   /* number of objects in table */
+    void *E[mxoLAST]; /* final object */
 
-  mgrid_t G;
+    void *X;
 
-  char *ComputeHost[MAX_MNODE];  /* list of hosts eligible to schedule jobs */
-  mnode_t *ComputeN[MAX_MNODE];
+    msync_t Sync;
 
-  int (*HTTPProcessF)(msocket_t *,char *);
-  } msched_t;
+    char *Message; /* general system messages */
 
+    mgrid_t G;
+
+    char *ComputeHost[MAX_MNODE]; /* list of hosts eligible to schedule jobs */
+    mnode_t *ComputeN[MAX_MNODE];
+
+    int (*HTTPProcessF)(msocket_t *, char *);
+} msched_t;
 
 typedef struct {
-  char   Name[MAX_MNAME + 1];   /* name */
+    char Name[MAX_MNAME + 1]; /* name */
 
-  int    Index;
+    int Index;
 
-  time_t MTime;
-  int    Type;
+    time_t MTime;
+    int Type;
 
-  int    Memory;
-  int    Disk;    
-  int    PtIndex;   
-  int    NodeCount;
-  int    TempSize;
-  char   NodeType[MAX_MNAME];
-  } mframe_t;
+    int Memory;
+    int Disk;
+    int PtIndex;
+    int NodeCount;
+    int TempSize;
+    char NodeType[MAX_MNAME];
+} mframe_t;
 
 typedef char mattrlist_t[MAX_MLIST][MAX_MATTR][MAX_WORD];
-
-
 
 /* structure for passing statistics data to client */
 
 typedef struct {
-  char   Name[MAX_MNAME];
-  int    ID;
-  int    ActiveJobs;
-  int    ActiveNodes;
-  int    ActivePS;
-  int    CompletedJobs;
-  int    QueueTimeSum;
-  double PSRequest;
-  double PSRun;
-  double PSDedicated;
-  double PSUtilized;
-  double MSAvail;
-  double MSDedicated;
-  double Target;
-  double JobAccuracySum;
-  double NJobAccuracySum;
-  double XFactorSum;
-  double PSXFactorSum;
-  double MaxXFactor;
-  int    BypassSum;
-  int    MaxBypass;
-  } cstats;
+    char Name[MAX_MNAME];
+    int ID;
+    int ActiveJobs;
+    int ActiveNodes;
+    int ActivePS;
+    int CompletedJobs;
+    int QueueTimeSum;
+    double PSRequest;
+    double PSRun;
+    double PSDedicated;
+    double PSUtilized;
+    double MSAvail;
+    double MSDedicated;
+    double Target;
+    double JobAccuracySum;
+    double NJobAccuracySum;
+    double XFactorSum;
+    double PSXFactorSum;
+    double MaxXFactor;
+    int BypassSum;
+    int MaxBypass;
+} cstats;
 
 typedef struct {
-  time_t  StartTime;
-  time_t  EndTime;
-  int     PIndex;
-  int     PIndexCmp;
-  int     FIndex;
-  int     FIndexCmp;
-  int     NIndex;
-  int     NIndexCmp;
-  uid_t   UID;
-  uid_t   UIDCmp;
-  gid_t   GID;
-  gid_t   GIDCmp;
-  char    User[MAX_MNAME];
-  int     UserCmp;
-  char    Group[MAX_MNAME];
-  int     GroupCmp;
-  char    EtherName[MAX_MNAME];
-  int     EtherNameCmp;
-  char    SwitchName[MAX_MNAME];
-  int     SwitchNameCmp;
-  char    JName[MAX_MNAME];
-  int     JNameCmp;
-  char    NState[MAX_MNAME];
-  int     NStateCmp;
-  int     SlotsUsed;
-  int     SlotsUsedCmp;
-  char    JState[MAX_MNAME];
-  int     JStateCmp;
-  char    Adapter[MAX_MNAME];
-  int     AdapterCmp;
-  char    Feature[MAX_MLINE];
-  int     FeatureCmp;
-  char    Arch[MAX_MNAME];
-  int     ArchCmp;
-  char    Opsys[MAX_MNAME];
-  int     OpsysCmp;
-  int     Memory;
-  int     MemoryCmp;
-  int     Disk;
-  int     DiskCmp;
-  int     Swap;
-  int     SwapCmp;
-  } ConstraintSt;
+    time_t StartTime;
+    time_t EndTime;
+    int PIndex;
+    int PIndexCmp;
+    int FIndex;
+    int FIndexCmp;
+    int NIndex;
+    int NIndexCmp;
+    uid_t UID;
+    uid_t UIDCmp;
+    gid_t GID;
+    gid_t GIDCmp;
+    char User[MAX_MNAME];
+    int UserCmp;
+    char Group[MAX_MNAME];
+    int GroupCmp;
+    char EtherName[MAX_MNAME];
+    int EtherNameCmp;
+    char SwitchName[MAX_MNAME];
+    int SwitchNameCmp;
+    char JName[MAX_MNAME];
+    int JNameCmp;
+    char NState[MAX_MNAME];
+    int NStateCmp;
+    int SlotsUsed;
+    int SlotsUsedCmp;
+    char JState[MAX_MNAME];
+    int JStateCmp;
+    char Adapter[MAX_MNAME];
+    int AdapterCmp;
+    char Feature[MAX_MLINE];
+    int FeatureCmp;
+    char Arch[MAX_MNAME];
+    int ArchCmp;
+    char Opsys[MAX_MNAME];
+    int OpsysCmp;
+    int Memory;
+    int MemoryCmp;
+    int Disk;
+    int DiskCmp;
+    int Swap;
+    int SwapCmp;
+} ConstraintSt;
 
 /* requires moab scheduling system */
 
 #include "moab.h"
 
 #endif /* __M_H__ */
-
