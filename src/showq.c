@@ -12,13 +12,13 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-
+/** Struct for showq options */
 typedef struct _showq_info {
-    char  *pName;
-    char  *username;
-    int   idle_flag;
-    int   active_flag;
-    int   block_flag;
+    char  *pName;               /**< Partition name */
+    char  *username;            /**< User name */
+    int   idle;            /**< Show idle jobs */
+    int   running;          /**< Show running jobs */
+    int   blocked;           /**< Show blocked jobs */
 } showq_info_t;
 
 // local convenience functions
@@ -43,57 +43,27 @@ int main (int argc, char **argv)
             printf("only printing %s's jobs\n", showq_info.username);
         }
 
-        if (showq_info.block_flag) {
+        if (showq_info.blocked) {
             puts("printing information about all jobs in blocked state");
         }
 
-        if (showq_info.idle_flag) {
+        if (showq_info.idle) {
             puts("printing information about all jobs in idle state");
         }
 
-        if (showq_info.active_flag) {
+        if (showq_info.running) {
             puts("printing information about all jobs in active state");
         }
 
         /* if no flag has been set, print jobs in all states */
-        if (showq_info.active_flag + showq_info.idle_flag + showq_info.block_flag < 1) {
+        if (showq_info.running + showq_info.idle + showq_info.blocked < 1) {
             puts( "printing information about all jobs in active, idle and blocked states");
         }
     }
 
     free_all(&showq_info,&client_info);
-
     return 0;
 }
-
-/*
- converts a string to integer
- returns -1 if there exists non-digit
-*/
-int str_to_integer(const char *str)
-{
-  int n;
-
-  if (str == NULL){
-    puts("Error: input is null\n");
-    return -1;
-  }
-
-  n = strlen(str);
-  if (n == 0){
-    puts("Error: input is empty\n");
-    return -1;
-  }
-
-  for (int i = 0; i < n; i++) {
-    if (isdigit(str[i])) continue;
-    puts("Error: found non-digit in input\n");
-    return -1;
-  }
-
-  return atoi(str);
-}
-
 
 /*
  processes all the arguments
@@ -137,24 +107,22 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
-
-              exit(1);
+              exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
-
-              exit(1);
+              exit(EXIT_SUCCESS);
               break;
 
           case 'b':
-              puts ("Show blocked queue: block_flag sets to 1\n");
-              showq_info->block_flag = 1;
+              puts ("Show blocked queue: blocked sets to 1\n");
+              showq_info->blocked = 1;
               break;
 
           case 'i':
-              puts ("Show idle queue: idle_flag sets to 1\n");
-              showq_info->idle_flag = 1;
+              puts ("Show idle queue: idle sets to 1\n");
+              showq_info->idle = 1;
               break;
 
           case 'p':
@@ -163,8 +131,8 @@ int process_args(int argc, char **argv,
               break;
 
           case 'r':
-              puts ("Show running queue: active_flag sets to 1\n");
-              showq_info->active_flag = 1;
+              puts ("Show running queue: running sets to 1\n");
+              showq_info->running = 1;
               break;
 
           case 'u':
@@ -175,8 +143,6 @@ int process_args(int argc, char **argv,
           case 'C':
               printf ("set configfile to %s\n", optarg);
               client_info->configfile = string_dup(optarg);
-
-              exit(1);
               break;
 
           case 'D':
@@ -184,8 +150,6 @@ int process_args(int argc, char **argv,
 
               if (client_info->loglevel != INVALID_STRING)
                   printf ("set loglevel to %s\n", optarg);
-
-              exit(1);
               break;
 
           case 'F':
@@ -196,23 +160,17 @@ int process_args(int argc, char **argv,
           case 'H':
               printf ("set host to %s\n", optarg);
               client_info->host = string_dup(optarg);
-
-              exit(1);
               break;
 
           case 'k':
               printf ("set keyfile to %s\n", optarg);
               client_info->keyfile = string_dup(optarg);
-
-              exit(1);
               break;
 
           case 'P':
               client_info->port = string2int(optarg);
               if (client_info->port != INVALID_STRING)
                   printf ("set port to %s\n", optarg);
-
-              exit(1);
               break;
 
           case '?':
@@ -221,7 +179,7 @@ int process_args(int argc, char **argv,
               return 0;
 
           default:
-              abort ();
+              abort();
         }
     }
 
