@@ -12,9 +12,6 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-#define SUCCESS 1
-#define FAIL 0
-
 /** Enum for mjobctl actions */
 enum mJobCtlCmdEnum {
     mjcmNONE = 0,
@@ -42,7 +39,6 @@ static void print_usage();
 
 int main(int argc, char **argv) {
 
-    int result;
     mjobctl_info_t mjobctl_info;
     client_info_t client_info;
 
