@@ -16,16 +16,16 @@
 typedef struct _showq_info {
     char  *pName;               /**< Partition name */
     char  *username;            /**< User name */
-    int   idle;            /**< Show idle jobs */
-    int   running;          /**< Show running jobs */
-    int   blocked;           /**< Show blocked jobs */
+    int   idle;                 /**< Show idle jobs */
+    int   running;              /**< Show running jobs */
+    int   blocked;              /**< Show blocked jobs */
 } showq_info_t;
 
 // local convenience functions
 
-static void free_all(showq_info_t *, client_info_t *);
 static int process_args(int, char **, showq_info_t *, client_info_t *);
 static void print_usage();
+static void free_structs(showq_info_t *, client_info_t *);
 
 int main (int argc, char **argv)
 {
@@ -37,31 +37,41 @@ int main (int argc, char **argv)
 
     /* process all the options and arguments */
     if (process_args(argc, argv, &showq_info, &client_info)) {
-          
+
         /* if username has been set, then only print that user's jobs*/
-        if (showq_info.username != NULL && strlen(showq_info.username) != 0) {
-            printf("only printing %s's jobs\n", showq_info.username);
-        }
+        if ((showq_info.username != NULL) && (strlen(showq_info.username) != 0))
+            printf("only printing jobs for user %s\n", showq_info.username);
 
-        if (showq_info.blocked) {
+        if (showq_info.blocked)
             puts("printing information about all jobs in blocked state");
-        }
 
-        if (showq_info.idle) {
+        if (showq_info.idle)
             puts("printing information about all jobs in idle state");
-        }
 
-        if (showq_info.running) {
+        if (showq_info.running)
             puts("printing information about all jobs in active state");
-        }
 
         /* if no flag has been set, print jobs in all states */
         if (showq_info.running + showq_info.idle + showq_info.blocked < 1) {
             puts( "printing information about all jobs in active, idle and blocked states");
         }
+
+        if (client_info.configfile != NULL)
+            printf("will use %s as configfile instead of default\n",client_info.configfile);
+        if (client_info.loglevel > 0)
+            printf("will use %d as loglevel instead of default\n",client_info.loglevel);
+        if (client_info.logfacility != NULL)
+            printf("will use %s as log facility instead of default\n",client_info.logfacility);
+        if (client_info.host != NULL)
+            printf("will contact %s as maui server instead of default\n",client_info.host);
+        if (client_info.port > 0)
+            printf("will use %d as server port instead of default\n",client_info.port);
+        if (client_info.keyfile != NULL)
+            printf("will use %s as key file instead of default\n",client_info.keyfile);
+
     }
 
-    free_all(&showq_info,&client_info);
+    free_structs(&showq_info,&client_info);
     return 0;
 }
 
@@ -187,7 +197,7 @@ int process_args(int argc, char **argv,
 }
 
 /* frees memory*/
-void free_all(showq_info_t *showq_info, client_info_t *client_info){
+void free_structs(showq_info_t *showq_info, client_info_t *client_info){
     free(showq_info->username);
     free(showq_info->pName);
     free(client_info->configfile);
