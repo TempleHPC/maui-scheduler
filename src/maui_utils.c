@@ -1,6 +1,7 @@
 
 #include "maui_utils.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -60,3 +61,15 @@ int string2int(const char *input){
     return atoi(input);
 }
 
+/** Print common help message for flags related to client/server
+ * communication between the command line tools and the maui server. */
+
+void print_client_usage()
+{
+    puts("  -C, --configfile=FILENAME      set configfile\n"
+         "  -D, --loglevel=LOGLEVEL        set loglevel\n"
+         "  -F, --logfacility=LOGFACILITY  set logfacility\n"
+         "  -H, --host=SERVERHOSTNAME      set serverhost\n"
+         "  -k, --keyfile=FILENAME         set server keyfile\n"
+         "  -P, --port=SERVERPORT          set serverport\n");
+}

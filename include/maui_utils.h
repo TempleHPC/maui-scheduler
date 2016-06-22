@@ -23,5 +23,8 @@ extern char *string_dup(const char *);
 extern int string2int(const char *);
 #define INVALID_STRING ~0+1
 
+/** Print client communication flag usage message */
+extern void print_client_usage();
+
 
 #endif

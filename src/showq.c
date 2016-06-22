@@ -1,7 +1,12 @@
+/*
+ * showq standalong client program code
+ *
+ * (c) 2016 Temple HPC Team
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <getopt.h>
 
 #include "msched-version.h"
@@ -24,41 +29,41 @@ static void print_usage();
 
 int main (int argc, char **argv)
 {
-  showq_info_t showq_info;
-  client_info_t client_info;
+    showq_info_t showq_info;
+    client_info_t client_info;
 
-  memset(&showq_info, 0, sizeof(showq_info));
-  memset(&client_info, 0, sizeof(client_info));
+    memset(&showq_info, 0, sizeof(showq_info));
+    memset(&client_info, 0, sizeof(client_info));
 
-  /* process all the options and arguments */
-  if (process_args(argc, argv, &showq_info, &client_info)) {
+    /* process all the options and arguments */
+    if (process_args(argc, argv, &showq_info, &client_info)) {
           
-          /* if username has been set, then only print that user's jobs*/
-    if (showq_info.username != NULL && strlen(showq_info.username) != 0){
-      printf("only printing %s's jobs\n", showq_info.username);
+        /* if username has been set, then only print that user's jobs*/
+        if (showq_info.username != NULL && strlen(showq_info.username) != 0) {
+            printf("only printing %s's jobs\n", showq_info.username);
+        }
+
+        if (showq_info.block_flag) {
+            puts("printing information about all jobs in blocked state");
+        }
+
+        if (showq_info.idle_flag) {
+            puts("printing information about all jobs in idle state");
+        }
+
+        if (showq_info.active_flag) {
+            puts("printing information about all jobs in active state");
+        }
+
+        /* if no flag has been set, print jobs in all states */
+        if (showq_info.active_flag + showq_info.idle_flag + showq_info.block_flag < 1) {
+            puts( "printing information about all jobs in active, idle and blocked states");
+        }
     }
 
-    if (showq_info.block_flag) {
-      puts("printing information about all jobs in blocked state");
-    }
+    free_all(&showq_info,&client_info);
 
-    if (showq_info.idle_flag) {
-      puts("printing information about all jobs in idle state");
-    }
-
-    if (showq_info.active_flag) {
-      puts("printing information about all jobs in active state");
-    }
-
-    /* if no flag has been set, print jobs in all states */
-    if (showq_info.active_flag + showq_info.idle_flag + showq_info.block_flag < 1) {
-      puts( "printing information about all jobs in active, idle and blocked states");
-    }
-  }
-
-  free_all(&showq_info,&client_info);
-
-  return 0;
+    return 0;
 }
 
 /*
@@ -246,12 +251,6 @@ void print_usage()
           "  -i, --idle                     display idle jobs only\n"
           "  -r, --running                  display active jobs only\n"
           "  -p, --partition=PARTITIONID    display jobs assigned to the specified partition\n"
-          "  -u, --username=USERNAMEID      display information about jobs for the specified user\n"
-          "\n"
-          "  -C, --configfile=FILENAME      set configfile\n"
-          "  -D, --loglevel=LOGLEVEL        set loglevel\n"
-          "  -F, --logfacility=LOGFACILITY  set logfacility\n"
-          "  -H, --host=SERVERHOSTNAME      set serverhost\n"
-          "  -k, --keyfile=FILENAME         set server keyfile\n"
-          "  -P, --port=SERVERPORT          set serverport\n");
+          "  -u, --username=USERNAMEID      display information about jobs for the specified user\n");
+    print_client_usage();
 }
