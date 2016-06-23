@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="checknode">checknode</p>
+<p><strong>(Check Node)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">checknode</span> <span class="n">nodeID</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>This command shows detailed state information and statistics for nodes
+that run jobs.</p>
+<p>The following information is returned by this command:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Disk</td>
+<td>Disk space available</td>
+</tr>
+<tr class="row-even"><td>Memory</td>
+<td>Memory available</td>
+</tr>
+<tr class="row-odd"><td>Swap</td>
+<td>Swap space available</td>
+</tr>
+<tr class="row-even"><td>State</td>
+<td>Node state</td>
+</tr>
+<tr class="row-odd"><td>Opsys</td>
+<td>Operating system</td>
+</tr>
+<tr class="row-even"><td>Arch</td>
+<td>Architecture</td>
+</tr>
+<tr class="row-odd"><td>Adapters</td>
+<td>Network adapters available</td>
+</tr>
+<tr class="row-even"><td>Features</td>
+<td>Features available</td>
+</tr>
+<tr class="row-odd"><td>Classes</td>
+<td>Classes available</td>
+</tr>
+<tr class="row-even"><td>StateTime</td>
+<td>Time node has been in current state in HH:MM:SS notation</td>
+</tr>
+<tr class="row-odd"><td>Downtime</td>
+<td>Displayed only if downtime is scheduled</td>
+</tr>
+<tr class="row-even"><td>Load</td>
+<td>CPU Load (Berkley one-minute load average)</td>
+</tr>
+<tr class="row-odd"><td>TotalTime</td>
+<td>Total time node has been detected since statistics initialization expressed in HH:MM:SS notation</td>
+</tr>
+<tr class="row-even"><td>UpTime</td>
+<td>Total time node has been in an available (Non-Down) state since statistics initialization expressed in HH:MM:SS notation (percent of time up: UpTime/TotalTime)</td>
+</tr>
+<tr class="row-odd"><td>BusyTime</td>
+<td>Total time node has been busy (allocated to active jobs) since statistics initialization expressed in HH:MM:SS notation (percent of time busy: BusyTime/TotalTime)</td>
+</tr>
+</tbody>
+</table>
+<p>After displaying this information, some analysis is performed and any
+unusual conditions are reported.
+<strong>Access</strong></p>
+<p>By default, this command can be run by any Moab Administrator (see
+<a class="reference external" href="../a.fparameters.html#admincfg">ADMINCFG</a>).
+<strong>Parameters</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><em>NODE</em></td>
+<td>Node name you want to check.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Flags</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>-h</td>
+<td>Help for this command.</td>
+</tr>
+<tr class="row-even"><td>-v</td>
+<td>Returns verbose output.</td>
+</tr>
+<tr class="row-odd"><td>&#8211;xml</td>
+<td>Output in XML format. Same as <a class="reference external" href="mdiag-node.html#xml">mdiag -n &#8211;xml</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">checknode</span> <span class="n">P690</span><span class="o">-</span><span class="mi">032</span>
+<span class="n">node</span> <span class="n">P690</span><span class="o">-</span><span class="mi">032</span>
+
+<span class="n">State</span><span class="p">:</span>      <span class="n">Busy</span>  <span class="p">(</span><span class="ow">in</span> <span class="n">current</span> <span class="n">state</span> <span class="k">for</span> <span class="mi">11</span><span class="p">:</span><span class="mi">31</span><span class="p">:</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">Configured</span> <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="mi">1</span>  <span class="n">MEM</span><span class="p">:</span> <span class="mi">16</span><span class="n">G</span>  <span class="n">SWAP</span><span class="p">:</span> <span class="mi">2000</span><span class="n">M</span>  <span class="n">DISK</span><span class="p">:</span> <span class="mi">500</span><span class="n">G</span>
+<span class="n">Utilized</span>   <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Dedicated</span>  <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Opsys</span><span class="p">:</span>      <span class="n">AIX</span>       <span class="n">Arch</span><span class="p">:</span>      <span class="n">P690</span>
+<span class="n">Speed</span><span class="p">:</span>      <span class="mf">1.00</span>      <span class="n">CPULoad</span><span class="p">:</span>   <span class="mf">1.000</span>
+<span class="n">Network</span><span class="p">:</span>    <span class="n">InfiniBand</span><span class="p">,</span><span class="n">Myrinet</span>
+<span class="n">Features</span><span class="p">:</span>   <span class="n">Myrinet</span>
+<span class="n">Attributes</span><span class="p">:</span> <span class="p">[</span><span class="n">Batch</span><span class="p">]</span>
+<span class="n">Classes</span><span class="p">:</span>    <span class="p">[</span><span class="n">batch</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">Total</span> <span class="n">Time</span><span class="p">:</span> <span class="mi">5</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">36</span>  <span class="n">Up</span><span class="p">:</span> <span class="mi">5</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">36</span> <span class="p">(</span><span class="mf">100.00</span><span class="o">%</span><span class="p">)</span>  <span class="n">Active</span><span class="p">:</span> <span class="mi">5</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">22</span> <span class="p">(</span><span class="mf">97.40</span><span class="o">%</span><span class="p">)</span>
+
+<span class="n">Reservations</span><span class="p">:</span>
+  <span class="n">Job</span> <span class="s1">&#39;13678&#39;</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>  <span class="mi">10</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">22</span> <span class="o">-&gt;</span> <span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">22</span> <span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">)</span>
+  <span class="n">Job</span> <span class="s1">&#39;13186&#39;</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>  <span class="o">-</span><span class="mi">11</span><span class="p">:</span><span class="mi">31</span><span class="p">:</span><span class="mi">10</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">50</span> <span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">)</span>
+<span class="n">JobList</span><span class="p">:</span>  <span class="mi">13186</span>
+</pre></div>
+</div>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="mdiag-node.html">mdiag -n</a></li>
+<li><a class="reference external" href="showstate.html">showstate</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/checknode.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

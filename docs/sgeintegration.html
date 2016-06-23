@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="maui-sge-integration-guide">Maui-SGE Integration Guide</p>
+<p><strong>Overview:</strong></p>
+<div class="line-block">
+<div class="line">Maui can be used as an external scheduler for the Sun Grid Engine
+(SGE) resource management system (requires SGE v5.3 source
+distribution). In this configuration, SGE manages the job queue and
+the compute resources while Maui queries the SGE Server to obtain up
+to date job, node, and configuration information. Using this
+information, Maui directs SGE to manage jobs in accordance with
+specified Maui policies, priorities, and reservations.</div>
+</div>
+<p><strong>Steps:</strong></p>
+<p>Maui drives SGE via the SGE scheduling API. To enable Maui scheduling,
+the following steps must be taken:</p>
+<p><strong>1)</strong> <strong>Install SGE</strong></p>
+<p><a class="reference external" href="http://gridengine.sunsource.net/unbranded-source/browse/~checkout~/gridengine/doc/INSTALL">SGE Installation
+HowTo</a></p>
+<p><a class="reference external" href="http://gridengine.sunsource.net/unbranded-source/browse/~checkout~/gridengine/source/README.BUILD">SGE Build
+README</a></p>
+<hr class="docutils" />
+<p><strong>2)</strong> <strong>Install Maui</strong>
+| - <strong>untar</strong> Maui distribution file.
+| - <strong>cd</strong> into the maui-&lt;X&gt; directory
+| - run <strong>./configure</strong>
+| <a href="#id1"><span class="problematic" id="id2">|image0|</span></a> The <strong>configure</strong> script will automatically setup Maui so</p>
+<blockquote>
+<div>that the user running configure will become the default <em>Primary Maui
+Administrator</em>, $MAUIADMIN. This can be changed by modifying the
+&#8216;<strong>ADMIN &lt;USERNAME&gt;</strong>&#8216; line in the <strong>maui.cfg</strong> file. The primary
+administrator is the first user listed after the
+<strong>`ADMIN1 &lt;a.fparameters.html#admin1&gt;`__</strong> parameter and is the ID
+under which the Maui daemon will run.</div></blockquote>
+<hr class="docutils" />
+<p><strong>3) Configure SGE</strong></p>
+<ul class="simple">
+<li>Set default PE (i.e.,**qconf -ap default** and add line &#8216;<strong>-pe
+default 1</strong>&#8216; to file <code class="docutils literal"><span class="pre">$SGE_ROOT/default/common/sge_request</span></code>, See
+SGE man page <strong>sge_pe.5</strong> for more information)</li>
+<li>Optional - Set default walltime for jobs (add line &#8216;<strong>-l
+h_rt=&lt;limit&gt;</strong>&#8216; to file <code class="docutils literal"><span class="pre">$SGE_ROOT/default/common/sge_request</span></code>)</li>
+<li>disable default SGE scheduler (edit
+<code class="docutils literal"><span class="pre">$SGE_ROOT/default/common/rcsge</span> <span class="pre">and</span> <span class="pre">comment</span> <span class="pre">out</span> <span class="pre">the</span> <span class="pre">line</span> <span class="pre">starting</span> <span class="pre">sge_schedd.</span></code>)</li>
+<li>If not the same user, add Maui&#8217;s <em>Primary Admin User</em> as SGE
+<em>operator</em> (use &#8216;<strong>qconf -am &lt;user&gt;</strong>&#8216;)</li>
+</ul>
+<p><a href="#id3"><span class="problematic" id="id4">|image1|</span></a> All jobs submitted to Maui must be assigned a PE. Jobs without
+an assigned PE will have a batch hold placed upon them.</p>
+<hr class="docutils" />
+<p><strong>4) Configure Maui</strong>
+- specify SGE as the resource manager:</p>
+<p>This should be taken care of by &#8216;<strong>configure</strong>&#8216;, but if not, the
+following parameter must be specified in the <strong>maui.cfg</strong> file:</p>
+<p><strong>``RMCFG[base] TYPE=SGE``</strong></p>
+<p>If you have a non-standard SGE configuration, you may need to specify
+additional Maui parameters to point Maui to the right location:</p>
+<div class="line-block">
+<div class="line"><strong>``RMCFG[base] HOST=$SGESERVERHOST``</strong></div>
+<div class="line"><strong>``RMCFG[base] PORT=$SGESERVERPORT``</strong></div>
+</div>
+<p>(See the <a class="reference external" href="13.1rmoverview.html">Resource Manager Overview</a> for more
+information)</p>
+<hr class="docutils" />
+<p><strong>5) Start Daemons</strong></p>
+<ol class="arabic simple">
+<li>start SGE<ul>
+<li>issue command &#8216;<strong>$SGE_ROOT/default/common/rcsge</strong>&#8216; as user root</li>
+</ul>
+</li>
+<li>start Maui<ul>
+<li>source <code class="docutils literal"><span class="pre">$SGE_ROOT/default/common/settings.sh</span></code></li>
+<li>issue command &#8216;<strong>maui</strong>&#8216; as <em>Primary Maui Admin</em> user</li>
+</ul>
+</li>
+</ol>
+<hr class="docutils" />
+<p><strong>Current Issues:</strong></p>
+<p><strong>&lt;N/A&gt;</strong></p>
+<hr class="docutils" />
+<p><strong>Trouble-shooting:</strong>
+<strong>&lt;N/A&gt;</strong></p>
+<p><strong>See also:</strong></p>
+<p><a class="reference external" href="mauiadmin.html">Maui Administrators Guide</a>
+<a class="reference external" href="mauiusers.html">Maui Users Guide</a></p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/sgeintegration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

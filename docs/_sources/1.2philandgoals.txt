@@ -1,0 +1,28 @@
+Philosophy and Goals of the Maui Scheduler
+##########################################
+
+Managers desire maximum return on investment often meaning high system
+utilization and the ability to deliver various qualities of service to
+various users and groups. They need to understand how the available
+resources are being delivered to the various users over time and need
+the ability to have the administrators tune 'cycle delivery' to satisfy
+the current site mission objectives.
+
+How well a scheduler succeeds can only be determined if various metrics
+are established and a means to measure these metrics are available.
+While statistics are important, their value is limited unless optimal
+statistical values are also known for the current environment including
+workload, resources, and policies. If one could determine that a site's
+typical workload obtained an average queue time of 3 hours on a
+particular system, this would be a good *statistic*. However, if one
+knew that through proper tuning, the system could deliver an average
+queue time of 1.2 hours with minimal negative side effects, this would
+be valuable *knowledge*.
+
+The Maui Scheduler was developed with extensive feedback from users,
+administrators, and managers. At its core, it is a tool designed to
+truly *manage* resources and provide meaningful information about what
+is actually happening on the system. It was created to satisfy
+real-world needs of a batch system administrator as he tries to balance
+the needs of users, staff, and managers while trying to maintain his
+sanity.

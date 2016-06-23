@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12. General Node Administration &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="12.1. Node Location" href="12.1nodelocation.html" />
+    <link rel="prev" title="11.5. Job Dependencies" href="11.5jobdependencies.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="12.1nodelocation.html" title="12.1. Node Location"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="11.5jobdependencies.html" title="11.5. Job Dependencies"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="general-node-administration">
+<h1>12. General Node Administration<a class="headerlink" href="#general-node-administration" title="Permalink to this headline">¶</a></h1>
+<p>Since Maui interoperates with a number of resource managers of varying
+capabilities, it must possess a somewhat redundant set of mechanisms for
+specifying node attribute, location, and policy information. Maui
+determines a node&#8217;s configuration through one or more of the following
+approaches:</p>
+<ul class="simple">
+<li>Direct resource manager specification</li>
+</ul>
+<p>Some node attribute may be directly specified through the resource
+manager. For example, Loadleveler allows a site to assign a
+&#8216;MachineSpeed&#8217; value to each node. If the site chooses to specify this
+value within the Loadleveler configuration, Maui will obtain this info
+via the Loadleveler scheduling API and use it in scheduling decisions.
+The list of node attributes supported in this manner varies from
+resource manager to resource manager and should be determined by
+consulting resource manager documentation.</p>
+<ul class="simple">
+<li>Translation of resource manager specified &#8216;opaque&#8217; attributes</li>
+</ul>
+<p>Many resource managers support the concept of opaque node attributes,
+allowing a site to assign arbitrary strings to a node. These strings are
+opaque in the sense that the resource manager passes them along to the
+scheduler without assigning any meaning to them. Nodes possessing these
+opaque attributes can then be requested by various jobs. Using certain
+Maui parameters, sites can assign a meaning within Maui to these opaque
+node attributes and extract specific node information. For example,
+setting the parameter
+&#8216;<a class="reference external" href="a.fparameters.html#featureprocspeedheader">FEATUREPROCSPEEDHEADER</a>
+xps&#8217; will cause a node with the opaque string &#8216;xps950&#8217; to be a assigned
+a processor speed of 950 MHz within Maui.</p>
+<ul class="simple">
+<li>Default node attributes</li>
+</ul>
+<p>Some default node attributes can be assigned on a frame or partition
+basis. Unless explicitly specified otherwise, nodes within the
+particular node or partition will be assigned these default attribute
+values. See the <a class="reference external" href="7.2partitions.html">Partition Overview</a> for more
+information.</p>
+<ul class="simple">
+<li>Direct Maui parameter specification</li>
+</ul>
+<p>Maui also provides a parameter named
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> which allows direct
+specification of virtually all node attributes supported via other
+mechanisms and also provides a number of additional attributes not found
+elsewhere. For example, a site may wish to specify something like the
+following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODECFG</span><span class="p">[</span><span class="n">node031</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">2</span> <span class="n">PROCSPEED</span><span class="o">=</span><span class="mi">600</span> <span class="n">PARTITION</span><span class="o">=</span><span class="n">small</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These approaches may be mixed and matched according to the
+site&#8217;s local needs. Precedence for the approaches generally follows the
+order listed above in cases where conflicting node configuration
+information is specified through one or more mechanisms.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="12.1nodelocation.html">12.1. Node Location</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="12.1nodelocation.html#partitions">12.1.1. Partitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12.1nodelocation.html#frames">12.1.2. Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12.1nodelocation.html#queues">12.1.3. Queues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="12.1nodelocation.html#openpbs-queue-to-node-mapping">12.1.3.1. OpenPBS Queue to Node Mapping</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="12.2nodeattributes.html">12.2. Node Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12.3nodepolicies.html">12.3. Node Specific Policies</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="11.5jobdependencies.html"
+                        title="previous chapter">11.5. Job Dependencies</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="12.1nodelocation.html"
+                        title="next chapter">12.1. Node Location</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/12.0generalnodeadmin.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="12.1nodelocation.html" title="12.1. Node Location"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="11.5jobdependencies.html" title="11.5. Job Dependencies"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

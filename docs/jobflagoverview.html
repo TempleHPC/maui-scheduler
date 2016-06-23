@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Job Attributes/Flags Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="job-attributes-flags-overview">
+<h1><strong>Job Attributes/Flags Overview</strong><a class="headerlink" href="#job-attributes-flags-overview" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Job Attributes</strong></div>
+<div class="line"><a href="#id5"><span class="problematic" id="id6">**</span></a><a href="#id7"><span class="problematic" id="id8">**</span></a></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Attribute</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Default</strong></td>
+<td><a href="#id9"><span class="problematic" id="id10">**</span></a>Description*
+*</td>
+<td><strong>Example</strong></td>
+</tr>
+<tr class="row-even"><td><strong>FLAGS</strong></td>
+<td>&lt;FLAG&gt;[;&lt;FLAG&gt;
+]...</td>
+<td>[NONE]</td>
+<td>specifies job
+specific flags</td>
+<td><code class="docutils literal"><span class="pre">FLAGS=ADVRES</span>
+<span class="pre">;DEDICATED</span></code>
+(The job
+should only
+utilize
+reserved
+resources and
+should only
+use resources
+on hosts which
+can be
+exclusively
+dedicated)</td>
+</tr>
+<tr class="row-odd"><td><strong>PDEF</strong></td>
+<td>&lt;PARTITION_NA
+ME&gt;</td>
+<td><strong>[DEFAULT]</strong></td>
+<td>specifies the
+default
+partition
+associated
+with the
+object.</td>
+<td><code class="docutils literal"><span class="pre">PDEF=P1</span></code>
+(The object is
+assigned the
+default
+partition
+<code class="docutils literal"><span class="pre">P1</span></code>)</td>
+</tr>
+<tr class="row-even"><td><strong>PLIST*</strong></td>
+<td>&lt;PARTITION_NA
+ME&gt;[^|&amp;]
+[:&lt;PARTITION_
+NAME&gt;[^|&amp;]]..
+.</td>
+<td><strong>[ALL]</strong></td>
+<td>specifies the
+list of
+partitions the
+object can
+access. If no
+partition list
+is specified,
+the object is
+granted
+default access
+to all
+partitions.</td>
+<td><code class="docutils literal"><span class="pre">PLIST=OldSP:</span>
+<span class="pre">Cluster1:O3K</span></code>
+(The object
+can access
+resources
+located in the
+<code class="docutils literal"><span class="pre">OldSP</span></code>,
+<code class="docutils literal"><span class="pre">Cluster1</span></code>,
+and/or <code class="docutils literal"><span class="pre">O3K</span></code>
+partitions)</td>
+</tr>
+<tr class="row-odd"><td><strong>QDEF</strong></td>
+<td>&lt;QOS_NAME&gt;</td>
+<td>[DEFAULT]</td>
+<td>specifies the
+default QOS
+associated
+with the
+object.</td>
+<td><code class="docutils literal"><span class="pre">QDEF=premium</span>
+<span class="pre">``</span>
+<span class="pre">(The</span> <span class="pre">object</span> <span class="pre">is</span>
+<span class="pre">assigned</span> <span class="pre">the</span>
+<span class="pre">default</span> <span class="pre">QOS</span>
+<span class="pre">``premium</span></code>)</td>
+</tr>
+<tr class="row-even"><td><strong>QLIST*</strong></td>
+<td>&lt;QOS_NAME&gt;[^<a href="#id11"><span class="problematic" id="id12">|</span></a>&amp;]
+[:&lt;QOS_NAME&gt;[
+^|&amp;]]...</td>
+<td>&lt;QDEF&gt;</td>
+<td>specifies the
+list of QoS&#8217;s
+the object can
+access. If no
+QOS list is
+specified, the
+object is
+granted access
+only to its
+default
+partition/</td>
+<td><code class="docutils literal"><span class="pre">QLIST=premiu</span>
+<span class="pre">m:express:bott</span>
+<span class="pre">omfeeder</span></code>
+(The object
+can access any
+of the 3 QOS&#8217;s
+listed)</td>
+</tr>
+</tbody>
+</table>
+<p>job associated with user <em>John</em>, group <em>staff</em>, and class <em>batch</em> may
+utilize QOS&#8217;s accessible by any of the individual credentials. Thus the
+job&#8217;s QOS access list, or QLIST, equals the &#8216;or&#8217; of the user, group, and
+class QLIST&#8217;s. (i.e., JOBQLIST = USERQLIST | GROUPQLIST | CLASSQLIST).
+If the ampersand symbol, &#8216;&amp;&#8217;, is associated with any list, this list is
+logically and&#8217;d with the other lists. If the carat symbol, &#8216;^&#8217;, is
+associated with any object QLIST, this list is exclusively set,
+regardless of other object access lists using the following order of
+precedence user, group, account, QOS, and class. These special symbols
+affect the behavior of both QOS and partition access lists.</p>
+<hr class="docutils" />
+<p><strong>Job Flags</strong>
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>Flag</strong>       | <strong>Format</strong>     | <strong>Default</strong>    | <strong>Description* | **Example</strong>    |
+|                |                |                | *              |                |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>ADVRES</strong>     | ADVRES[:&lt;RESID | Use available  | specifies the  | <code class="docutils literal"><span class="pre">FLAGS=ADVRES</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">&gt;]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">resources</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">job</span> <span class="pre">may</span> <span class="pre">only</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">:META.1</span></code>      |
+|                |                | where ever     | utilize        | (The job may   |
+|                |                | found, whether | accessible,    | only utilize   |
+|                |                | inside a       | reserved       | resources      |
+|                |                | reservation or | resources. If  | located in the |
+|                |                | not.           | &lt;RESID&gt; is     | <code class="docutils literal"><span class="pre">META.1</span></code>     |
+|                |                |                | specified,     | reservation)   |
+|                |                |                | only resources |                |
+|                |                |                | in the         |                |
+|                |                |                | specified      |                |
+|                |                |                | reservation    |                |
+|                |                |                | may be         |                |
+|                |                |                | utilized.      |                |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>BENCHMARK</strong>  | BENCHMARK      | N/A            | N/A            | <code class="docutils literal"><span class="pre">FLAGS=BENCHM</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">ARK</span></code>          |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>BESTEFFORT</strong> | BESTEFFORT     | N/A            | N/A            | <code class="docutils literal"><span class="pre">FLAGS=BESTEF</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">FORT</span></code>         |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>BYNAME</strong>     | BYNAME         | N/A            | N/A            | <code class="docutils literal"><span class="pre">FLAGS=BYNAME</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">``</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">+----------------+----------------+----------------+----------------+----------------+</span>
+<span class="pre">|</span> <span class="pre">**DEDICATED**</span>&nbsp; <span class="pre">|</span> <span class="pre">DEDICATED</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">Use</span> <span class="pre">resources</span>&nbsp; <span class="pre">|</span> <span class="pre">specifies</span> <span class="pre">that</span> <span class="pre">|</span> <span class="pre">FLAGS=DEDICATE</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">according</span> <span class="pre">to</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">the</span> <span class="pre">job</span> <span class="pre">should</span> <span class="pre">|</span> <span class="pre">D</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">the</span> <span class="pre">global</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">not</span> <span class="pre">share</span> <span class="pre">node</span> <span class="pre">|</span> <span class="pre">(The</span> <span class="pre">job</span> <span class="pre">will</span>&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">`NODEACCESSPOL</span> <span class="pre">|</span> <span class="pre">resources</span> <span class="pre">with</span> <span class="pre">|</span> <span class="pre">only</span> <span class="pre">allocate</span>&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">ICY</span> <span class="pre">&lt;a.fparame</span> <span class="pre">|</span> <span class="pre">tasks</span> <span class="pre">from</span> <span class="pre">any</span> <span class="pre">|</span> <span class="pre">resources</span> <span class="pre">from</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">ters.html#node</span> <span class="pre">|</span> <span class="pre">other</span> <span class="pre">job</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">nodes</span> <span class="pre">which</span>&nbsp;&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">accesspolicy&gt;`</span> <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">can</span> <span class="pre">be</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">__</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">exclusively</span>&nbsp;&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">dedicated</span> <span class="pre">to</span>&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">this</span> <span class="pre">job)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>
+<span class="pre">+----------------+----------------+----------------+----------------+----------------+</span>
+<span class="pre">|</span> <span class="pre">**HOSTLIST**</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">HOSTLIST=&lt;HOST</span> <span class="pre">|</span> <span class="pre">The</span> <span class="pre">job</span> <span class="pre">may</span>&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">specifies</span> <span class="pre">the</span>&nbsp; <span class="pre">|</span> <span class="pre">``HOSTLIST=nod</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">NAME&gt;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">utilize</span> <span class="pre">any</span>&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">list</span> <span class="pre">of</span> <span class="pre">hosts</span>&nbsp; <span class="pre">|</span> <span class="pre">e003:node006:n</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">[:&lt;HOSTNAME&gt;].</span> <span class="pre">|</span> <span class="pre">available</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">which</span> <span class="pre">should</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">ode009</span></code>       |
+|                | ..             | resource       | be used by the | (Maui will     |
+|                |                | regardless of  | job. If more   | allocate       |
+|                |                | hostname       | hosts are      | resources      |
+|                |                |                | specified than | using the      |
+|                |                |                | are needed to  | specified      |
+|                |                |                | meet the jobs  | hosts)         |
+|                |                |                | total task     |                |
+|                |                |                | requirements,  |                |
+|                |                |                | Maui will      |                |
+|                |                |                | select needed  |                |
+|                |                |                | hosts from the |                |
+|                |                |                | list. If fewer |                |
+|                |                |                | hosts are      |                |
+|                |                |                | specified than |                |
+|                |                |                | are needed to  |                |
+|                |                |                | meet the job&#8217;s |                |
+|                |                |                | total task     |                |
+|                |                |                | requirements,  |                |
+|                |                |                | Maui will      |                |
+|                |                |                | select all     |                |
+|                |                |                | listed hosts   |                |
+|                |                |                | and attempt to |                |
+|                |                |                | locate         |                |
+|                |                |                | additional     |                |
+|                |                |                | resources      |                |
+|                |                |                | elsewhere.     |                |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>NOQUEUE</strong>    | NOQUEUE        | Jobs remain    | specifies that | <code class="docutils literal"><span class="pre">FLAGS=NOQUEU</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">queued</span> <span class="pre">until</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">the</span> <span class="pre">job</span> <span class="pre">should</span> <span class="pre">|</span> <span class="pre">E</span></code>            |
+|                |                | the are able   | be removed it  | (The job       |
+|                |                | to run         | is is unable   | should be      |
+|                |                |                | to allocate    | removed unless |
+|                |                |                | resources and  | it can start   |
+|                |                |                | start          | running at     |
+|                |                |                | execution      | submit time.)  |
+|                |                |                | immediately.   |                |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>PREEMPTEE</strong>  | PREEMPTEE      | Jobs may not   | Specifies that | <code class="docutils literal"><span class="pre">FLAGS=PREEMP</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">be</span> <span class="pre">preempted</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">the</span> <span class="pre">job</span> <span class="pre">may</span> <span class="pre">be</span> <span class="pre">|</span> <span class="pre">TEE</span></code>          |
+|                |                | by other jobs  | preempted by   | (The job may   |
+|                |                |                | other jobs     | be preempted   |
+|                |                |                | which have the | by other jobs  |
+|                |                |                | <strong>PREEMPTOR</strong>  | which have the |
+|                |                |                | flag set.      | &#8216;<strong>PREEMPTOR</strong> |
+|                |                |                |                | &#8216;              |
+|                |                |                |                | flag set)      |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>PREEMPTOR</strong>  | PREEMPTOR      | Jobs may not   | Specifies that | <code class="docutils literal"><span class="pre">FLAGS=PREEMP</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">preempt</span> <span class="pre">other</span>&nbsp; <span class="pre">|</span> <span class="pre">the</span> <span class="pre">job</span> <span class="pre">may</span>&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">TOR</span></code>          |
+|                |                | jobs           | preempt other  | (The job may   |
+|                |                |                | jobs which     | preempt other  |
+|                |                |                | have the       | jobs which     |
+|                |                |                | <strong>PREEMPTEE</strong>  | have the       |
+|                |                |                | flag set       | &#8216;<strong>PREEMPTEE</strong> |
+|                |                |                |                | &#8216;              |
+|                |                |                |                | flag set)      |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>PRESTART</strong>   | PRESTART       | Jobs are       | <strong>NOTE</strong>: used | <code class="docutils literal"><span class="pre">FLAGS=PRESTA</span> <span class="pre">|</span>
+<span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">started</span> <span class="pre">only</span>&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">only</span> <span class="pre">in</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="pre">|</span> <span class="pre">RT</span></code>           |
+|                |                | after the      | simulation     |                |
+|                |                | first          | mode to        |                |
+|                |                | scheduling     | pre-populate a |                |
+|                |                | iteration      | system.        |                |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>RESTARTABLE* | RESTARTABLE    | Jobs may not   | Specifies jobs | FLAGS=RESTARTA |
+| *              |                | be restarted   | can be         | BLE            |
+|                |                | if preempted.  | &#8216;requeued&#8217; and | (The           |
+|                |                |                | later          | associated job |
+|                |                |                | restarted if   | can be         |
+|                |                |                | preempted      | preempted and  |
+|                |                |                |                | restarted at a |
+|                |                |                |                | later date)    |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| **SHAREDNODE</strong> | SHAREDNODE     | N/A            | N/A            | N/A            |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+
+| <strong>SPAN</strong>       | SPAN           | Jobs may only  | Allows jobs to | FLAGS=SPAN     |
+|                |                | access         | utilize        | (The job can   |
+|                |                | resources      | resources from | be allocated   |
+|                |                | within a       | multiple       | and utilize    |
+|                |                | single         | partitions     | resources from |
+|                |                | partition      | simultaneously | more than one  |
+|                |                |                |                | accessible     |
+|                |                |                |                | partition      |
+|                |                |                |                | simultaneously |
+|                |                |                |                | .)             |
++&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;-+</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/jobflagoverview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

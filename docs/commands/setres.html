@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="setres">setres</p>
+<p><strong>(Set Reservation)</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><img alt="Note" src="resources/docs/images/caution.png" /></td>
+<td>This command is deprecated. Use <a class="reference external" href="mrsvctl.html#CREATE">mrsvctl -c</a> instead.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="synopsis">Synopsis</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">setres</span> <span class="p">[</span><span class="n">arguments</span><span class="p">]</span> <span class="n">resourceexpression</span>
+</pre></div>
+</div>
+<p class="rubric" id="overview">Overview</p>
+<p>Reserve resources for use by jobs with particular credentials or
+attributes.
+<strong>ARGUMENTS:</strong></p>
+<div class="line-block">
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -a &lt;ACCOUNT_LIST ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -b &lt;SUBTYPE ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -c &lt;CHARGE_SPEC&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -d &lt;DURATION&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -e &lt;ENDTIME&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -E ] &nbsp; // EXCLUSIVE</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -f &lt;FEATURE_LIST&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -g &lt;GROUP_LIST&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -n &lt;NAME&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -o &lt;OWNER&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -p &lt;PARTITION&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -q &lt;QUEUE_LIST&gt; ] &nbsp; // (ie CLASS_LIST)</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -Q &lt;QOSLIST&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -r &lt;RESOURCE_DESCRIPTION&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -R &lt;RESERVATION_PROFILE&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -s &lt;STARTTIME&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -T &lt;TRIGGER&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -u &lt;USER_LIST&gt; ]</strong></div>
+<div class="line"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ -x &lt;FLAGS&gt; ]</strong></div>
+</div>
+<p class="rubric" id="access">Access</p>
+<p>&nbsp;&nbsp; This command can be run by level 1 and level 2 Moab administrators.
+.. rubric:: Parameters</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">parameters</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><strong>Name</strong>
+<strong>Format</strong>
+<strong>Default</strong>
+<strong>Description</strong>
+<strong>ACCOUNT_LIST</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of accounts that will be allowed access to the reserved resources
+<strong>SUBTYPE</strong>
+&lt;STRING&gt;
+&#8212;
+specify the subtype for a reservation
+<strong>CHARGE_SPEC</strong>
+&lt;ACCOUNT&gt;[,&lt;GROUP&gt;[,&lt;USER&gt;]]
+&#8212;
+specifies which credentials will be accountable for unused resources
+dedicated to the reservation
+<strong>CLASS_LIST</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of classes that will be allowed access to the reserved resource
+<strong>DURATION</strong>
+[[[DD:]HH:]MM:]SS
+INFINITY
+duration of the reservation (not needed if ENDTIME is specified)
+<strong>ENDTIME</strong>
+[HH[:MM[:SS]]][_MO[/DD[/YY]]]
+or
++[[[DD:]HH:]MM:]SS
+INFINITY
+absolute or relative time reservation will end (not required if Duration
+specified)
+<strong>EXCLUSIVE</strong>
+N/A
+N/A
+requests exclusive access to resources
+<strong>FEATURE_LIST</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of node features which must be possessed by the reserved resources
+<strong>FLAGS</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of reservation flags (See <a class="reference external" href="../7.1.5managingreservations.html">Managing
+Reservations</a> for details)
+<strong>GROUP_LIST</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of groups that will be allowed access to the reserved resources
+<strong>NAME</strong>
+&lt;STRING&gt;
+name set to first name listed in ACL or <code class="docutils literal"><span class="pre">SYSTEM</span></code> if no ACL specified
+name for new reservation
+<strong>OWNER</strong>
+&lt;CREDTYPE&gt;:&lt;CREDID&gt; where CREDTYPE is one of user, group, acct, class,
+or qos
+N/A
+specifies which credential is granted reservation ownership privileges
+<strong>PARTITION</strong>
+&lt;STRING&gt;
+[ANY]
+partition in which resources must be located
+<strong>QOS_LIST</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of QOS&#8217;s that will be allowed access to the reserved resource
+<strong>RESERVATION_</strong>
+<strong>PROFILE</strong>
+existing reservation profile ID
+N/A
+requests that default reservation attributes be loaded from the
+specified reservation profile (see
+<a class="reference external" href="../a.fparameters.html#rsvprofile">RSVPROFILE</a>)
+<strong>RESOURCE_</strong>
+<strong>DESCRIPTION</strong>
+colon delimited list of zero or more of the following &lt;ATTR&gt;=&lt;VALUE&gt;
+pairs
+<strong>PROCS</strong>=&lt;INTEGER&gt;
+<strong>MEM</strong>=&lt;INTEGER&gt;
+<strong>DISK</strong>=&lt;INTEGER&gt;
+<strong>SWAP</strong>=&lt;INTEGER&gt; <strong>GRES</strong>=&lt;STRING&gt;
+PROCS=-1
+specifies the resources to be reserved per task.&nbsp; (-1 indicates all
+resources on node)
+<strong>RESOURCE_</strong>
+<strong>EXPRESSION</strong>
+<strong>ALL&nbsp;</strong>
+or
+<strong>TASKS</strong>{<strong>==</strong>|&gt;=}&lt;TASKCOUNT&gt;
+or
+&lt;HOST_REGEX&gt;
+Required Field.&nbsp; No Default
+specifies the tasks to reserve.&nbsp; <strong>ALL</strong> indicates all resources
+available should be reserved.
+<strong>Note</strong>:&nbsp;&nbsp; If <strong>ALL</strong> or a host expression is specified, Moab will
+apply the reservation regardless of existing reservations and exclusive
+issues. If <strong>TASKS</strong> is used, Moab will only allocate accessible
+resources.
+<strong>STARTTIME</strong>
+[HH[:MM[:SS]]][_MO[/DD[/YY]]]
+or
++[[[DD:]HH:]MM:]SS
+NOW
+absolute or relative time reservation will start
+<strong>TRIGGER</strong>
+&lt;STRING&gt;
+N/A
+comma delimited reservation trigger list following format described in
+the <a class="reference external" href="../7.1.5managingreservations.html#TRIGGER">trigger format</a>
+section of the reservation configuration overview.
+<strong>USER_LIST</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+&#8212;
+list of users that will be allowed access to the reserved resources
+.. rubric:: Description</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">description</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>&nbsp;&nbsp; The <strong>setres</strong> command allows an arbitrary block of resources to be
+reserved for use by jobs which meet the specified access constraints.
+The timeframe covered by the reservation can be specified on either an
+absolute or relative basis.&nbsp; Only jobs with credentials listed in the
+reservation ACL (i.e., <strong>USERLIST</strong>, <strong>GROUPLIST</strong>,...) can utilize the
+reserved resources.&nbsp; However, these jobs still have the freedom to
+utilize resources outside of the reservation.&nbsp; The reservation will be
+assigned a name derived from the ACL specified.&nbsp; If no reservation ACL
+is specified, the reservation is created as a <em>system</em> reservation and
+no jobs will be allowed access to the resources during the specified
+timeframe (valuable for system maintenance, etc).&nbsp; See the <a class="reference external" href="../7.1.1resoverview.html">Reservation
+Overview</a> for more information.
+&nbsp;&nbsp; Reservations can be viewed using the <a class="reference external" href="showres.html">showres</a>
+command and can be released using the <a class="reference external" href="releaseres.html">releaseres</a>
+command.</p>
+<p class="rubric" id="example-1">Example 1</p>
+<p>&nbsp;&nbsp; Reserve two nodes for use by users john and mary for a period of 8
+hours starting in 24 hours</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">setres</span> <span class="o">-</span><span class="n">u</span> <span class="n">john</span><span class="p">:</span><span class="n">mary</span> <span class="o">-</span><span class="n">s</span> <span class="o">+</span><span class="mi">24</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">-</span><span class="n">d</span> <span class="mi">8</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="n">TASKS</span><span class="o">==</span><span class="mi">2</span>
+
+<span class="n">reservation</span> <span class="s1">&#39;john.1&#39;</span> <span class="n">created</span> <span class="n">on</span> <span class="mi">2</span> <span class="n">nodes</span> <span class="p">(</span><span class="mi">2</span> <span class="n">tasks</span><span class="p">)</span>
+
+<span class="n">node001</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node005</span><span class="p">:</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p class="rubric" id="example-2">Example 2</p>
+<p>&nbsp;&nbsp; Schedule a system wide reservation to allow a system maintenance on
+Jun 20, 8:00 AM until Jun 22, 5:00 PM.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">setres</span> <span class="o">-</span><span class="n">s</span> <span class="mi">8</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="n">_06</span><span class="o">/</span><span class="mi">20</span> <span class="o">-</span><span class="n">e</span> <span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="n">_06</span><span class="o">/</span><span class="mi">22</span> <span class="n">ALL</span>
+
+<span class="n">reservation</span> <span class="s1">&#39;system.1&#39;</span> <span class="n">created</span> <span class="n">on</span> <span class="mi">8</span> <span class="n">nodes</span> <span class="p">(</span><span class="mi">8</span> <span class="n">tasks</span><span class="p">)</span>
+
+<span class="n">node001</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node002</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node003</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node004</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node005</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node006</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node007</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node008</span><span class="p">:</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p class="rubric" id="example-3">Example 3</p>
+<p>&nbsp;&nbsp; Reserve one processor and 512 MB of memory on nodes node003 through
+node 006 for members of the group staff and jobs in the interactive
+class.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">setres</span> <span class="o">-</span><span class="n">r</span> <span class="n">PROCS</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="n">MEM</span><span class="o">=</span><span class="mi">512</span> <span class="o">-</span><span class="n">g</span> <span class="n">staff</span> <span class="o">-</span><span class="n">l</span> <span class="n">interactive</span> <span class="s1">&#39;node00[3-6]&#39;</span>
+
+<span class="n">reservation</span> <span class="s1">&#39;staff.1&#39;</span> <span class="n">created</span> <span class="n">on</span> <span class="mi">4</span> <span class="n">nodes</span> <span class="p">(</span><span class="mi">4</span> <span class="n">tasks</span><span class="p">)</span>
+
+<span class="n">node003</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node004</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node005</span><span class="p">:</span><span class="mi">1</span>
+<span class="n">node006</span><span class="p">:</span><span class="mi">1</span>
+</pre></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/setres.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

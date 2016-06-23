@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.1. Fairness Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management" href="6.0managingfairness.html" />
+    <link rel="next" title="6.2. Throttling Policies" href="6.2throttlingpolicies.html" />
+    <link rel="prev" title="6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management" href="6.0managingfairness.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="6.2throttlingpolicies.html" title="6.2. Throttling Policies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="6.0managingfairness.html" title="6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="6.0managingfairness.html" accesskey="U">6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fairness-overview">
+<h1>6.1. Fairness Overview<a class="headerlink" href="#fairness-overview" title="Permalink to this headline">¶</a></h1>
+<p>The concept of <em>fairness</em> varies widely from person to person and site
+to site. To some it implies giving all users equal access to compute
+resources. However, more complicated concepts incorporating historical
+resource usage, political issues, and job <em>value</em> are equally valid.
+While no scheduler can handle all possible definitions of what <em>fair</em>
+means, Maui provides some flexible tools that help with most common
+fairness management definitions and needs. Particularly, fairness
+under Maui may be addressed by any combination of the facilities
+described in the table below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Facility</strong></td>
+<td><strong>Description</strong></td>
+<td><strong>Example</strong></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="6.2throttlingpolicies.html">Throttling
+Policies</a></td>
+<td>Specify limits on
+exactly what resources
+can be used at any given
+instant.</td>
+<td><code class="docutils literal"><span class="pre">USERCFG[john]</span> <span class="pre">MAXJOB=3</span>
+<span class="pre">``</span>
+<span class="pre">``GROUPCFG[DEFAULT]</span> <span class="pre">MAXP</span>
+<span class="pre">ROC=64</span></code>
+<code class="docutils literal"><span class="pre">GROUPCFG[staff]</span> <span class="pre">MAXPRO</span>
+<span class="pre">C=128</span></code><a href="#id1"><span class="problematic" id="id2">``</span></a>``
+(allow <code class="docutils literal"><span class="pre">john</span></code> to only
+run 3 jobs at a time.
+Allow the group
+<code class="docutils literal"><span class="pre">staff</span></code> to utilize up
+to 128 total processors
+and all other groups to
+utilize up to 64
+processors.)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="5.0prioritization.html">Job
+Prioritization</a></td>
+<td>Specify what is most
+important to the
+scheduler. Using
+<em>Service</em> based priority
+factors can allow a site
+to balance job
+turnaround time,
+expansion factor, or
+other scheduling
+performance metrics.</td>
+<td><code class="docutils literal"><span class="pre">SERVWEIGHT</span> <span class="pre">1</span></code>
+<code class="docutils literal"><span class="pre">QUEUETIMEWEIGHT</span> <span class="pre">10</span></code>
+(cause jobs to increase
+in priority by 10 points
+for every minute they
+remain in the queue.)</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="6.3fairshare.html">Fairshare</a></td>
+<td>Specify usage targets to
+limits resource access
+or adjust priority based
+on historical resource
+usage.</td>
+<td><code class="docutils literal"><span class="pre">USERCFG[steve]</span> <span class="pre">FSTARGE</span>
+<span class="pre">T=25.0+</span></code>
+<code class="docutils literal"><span class="pre">FSWEIGHT</span> <span class="pre">1</span></code>
+<code class="docutils literal"><span class="pre">FSUSERWEIGHT</span> <span class="pre">10</span></code>
+(enable <em>priority based</em>
+fairshare and specify a
+fairshare target for
+user <code class="docutils literal"><span class="pre">steve</span></code> such that
+his job&#8217;s will be
+favored in an attempt to
+keep his job&#8217;s utilizing
+<em>at least</em> 25.0% of
+delivered compute
+cycles.)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="6.4allocationmanagement.html">Allocation
+Management</a></td>
+<td>Specify long term,
+credential-based
+resource usage limits.</td>
+<td><code class="docutils literal"><span class="pre">BANKTYPE</span> <span class="pre">QBANK</span></code>
+<code class="docutils literal"><span class="pre">BANKSERVER</span> <span class="pre">server.sys.</span>
+<span class="pre">net</span></code><a href="#id3"><span class="problematic" id="id4">``</span></a>``
+(enable the <strong>QBank</strong>
+allocation management
+system. Within the
+allocation manager,
+project or account based
+allocations may be
+configured. These
+allocations may, for
+example, allow project
+<strong>X</strong> to utilize up to
+100,000 processor-hours
+per quarter, provide
+various QoS sensitive
+charge rates, share
+allocation access, etc.)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="6.0managingfairness.html"
+                        title="previous chapter">6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="6.2throttlingpolicies.html"
+                        title="next chapter">6.2. Throttling Policies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/6.1fairnessoverview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="6.2throttlingpolicies.html" title="6.2. Throttling Policies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="6.0managingfairness.html" title="6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="6.0managingfairness.html" >6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption
+####################################################################
+
+.. toctree::
+
+   8.1optimizationoverview
+   8.2backfill
+   8.3nodesetoverview
+   8.4preemption

@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12.3. Node Specific Policies &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="12. General Node Administration" href="12.0generalnodeadmin.html" />
+    <link rel="next" title="13. Resource Managers and Interfaces" href="13.0rmandinterfaces.html" />
+    <link rel="prev" title="12.2. Node Attributes" href="12.2nodeattributes.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="13.0rmandinterfaces.html" title="13. Resource Managers and Interfaces"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="12.2nodeattributes.html" title="12.2. Node Attributes"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="12.0generalnodeadmin.html" accesskey="U">12. General Node Administration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="node-specific-policies">
+<h1>12.3. Node Specific Policies<a class="headerlink" href="#node-specific-policies" title="Permalink to this headline">¶</a></h1>
+<p>Specification of node policies is fairly limited within Maui mainly
+because the demand for such policies is limited. These policies allow a
+site to specify on a node by node basis what the node will and will not
+support. Node policies may be applied to specific nodes or applied
+system wide using the specification &#8216;<code class="docutils literal"><span class="pre">NODECFG[DEFAULT]</span> <span class="pre">...</span></code>&#8216; Note that
+these policies were introduced over time so not all policies are
+supported in all versions.
+<strong>MAXJOB</strong></p>
+<p>This policy constrains the number of total independent jobs a given node
+may run simultaneously. It can only be specified via the <strong>NODECFG</strong>
+parameter.</p>
+<p><strong>MAXJOBPERUSER</strong></p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>** This policy constrains the number of total independent jobs a given
+node may run simultaneously associated with any single user. Like
+<strong>MAXJOB</strong>, it can only be specified via the
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> parameter.</p>
+<p><strong>MAXLOAD</strong></p>
+<p><strong>MAXLOAD</strong> constrains the CPU load the node will support as opposed to
+the number of jobs. If the node&#8217;s load exceeds the <strong>MAXLOAD</strong> limit and
+the <a class="reference external" href="a.fparameters.html#nodeloadpolicy">NODELOADPOLICY</a> parameter is
+set to <strong>ADJUSTSTATE</strong> , the node will be marked busy. Under Maui 3.0,
+the max load policy could be applied system wide using the parameter
+<a class="reference external" href="a.fparameters.html#nodemaxload">NODEMAXLOAD</a>.</p>
+<p><a href="#id7"><span class="problematic" id="id8">|image4|</span></a> Node policies are used strictly as constraints. If a node is
+defined as having a single processor or the
+<a class="reference external" href="a.fparameters.html#nodeaccesspolicy">NODEACCESSPOLICY</a> is set to
+<strong>DEDICATED</strong>, and a <strong>MAXJOB</strong> policy of 3 is specified, Maui will
+probably not run more than one job per node. A node&#8217;s configured
+processors must be specified so that multiple jobs may run and then the
+<strong>MAXJOB</strong> policy will be effective. The number of configured processors
+per node is specified on a resource manager specific basis. PBS, for
+example, allows this to be adjusted by setting the number of virtual
+processors, &#8216;np&#8217; per node in the PBS &#8216;nodes&#8217; file.</p>
+<p><strong>Example:</strong></p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">#</span> <span class="pre">maui.cfg</span></code><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">``</span></a></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node024]</span> <span class="pre">MAXJOB=4</span> <span class="pre">MAXJOBPERUSER=2</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node025]</span> <span class="pre">MAXJOB=2</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node026]</span> <span class="pre">MAXJOBPERUSER=1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[DEFAULT]</span> <span class="pre">MAXLOAD=2.5</span></code></div>
+<div class="line">...</div>
+<div class="line">&#8212;</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="12.2nodeattributes.html"
+                        title="previous chapter">12.2. Node Attributes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="13.0rmandinterfaces.html"
+                        title="next chapter">13. Resource Managers and Interfaces</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/12.3nodepolicies.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="13.0rmandinterfaces.html" title="13. Resource Managers and Interfaces"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="12.2nodeattributes.html" title="12.2. Node Attributes"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="12.0generalnodeadmin.html" >12. General Node Administration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="maui-pbs-integration-guide">Maui - PBS Integration Guide</p>
+<hr class="docutils" />
+<p class="rubric" id="overview">Overview</p>
+<p>Maui can be used as an external scheduler for the PBS resource
+management system. In this configuration, PBS manages the job queue and
+the compute resources while Maui queries the PBS Server and the PBS
+MOM&#8217;s to obtain up to date job and node information. Using this
+information, Maui directs PBS to manage jobs in accordance with
+specified Maui policies, priorities, and reservations.</p>
+<p class="rubric" id="steps">Steps</p>
+<p>Maui drives PBS via the PBS scheduling API. To enable Maui scheduling,
+the following steps must be taken:</p>
+<p class="rubric" id="install-pbs">1. Install PBS</p>
+<p><a href="#id1"><span class="problematic" id="id2">|image0|</span></a> Keep track of the PBS target directory, <strong>$PBSTARGDIR</strong>.</p>
+<hr class="docutils" />
+<p class="rubric" id="install-maui">2. Install Maui</p>
+<ul class="simple">
+<li><strong>untar</strong> Maui distribution file.</li>
+<li><strong>cd</strong> into the maui-&lt;VERSION&gt; directory</li>
+<li>run <strong>./configure</strong></li>
+<li>specify the PBS target directory when queried by configure (Maui
+requires a few PBS libraries and include files to enable the PBS
+scheduling interface)</li>
+</ul>
+<p><a href="#id3"><span class="problematic" id="id4">|image1|</span></a> If you have a non-standard PBS installation, You may need to
+modify <strong>src/Makefile</strong> and change <strong>PBSIP</strong> and <strong>PBSLP</strong> values and
+references as necessary for your local site configuration.</p>
+<p><a href="#id5"><span class="problematic" id="id6">|image2|</span></a> The <strong>configure</strong> script will automatically setup Maui so that
+the user running configure will become the default <em>Primary Maui
+Administrator</em>, $MAUIADMIN. This can be changed by modifying the
+&#8216;<strong>ADMIN &lt;USERNAME&gt;</strong>&#8216; line in the <strong>maui.cfg</strong> file. The primary
+administrator is the first user listed after the
+<strong>`ADMIN1 &lt;a.fparameters.html#admin1&gt;`__</strong> parameter and is the ID under
+which the Maui daemon will run.</p>
+<p><a href="#id7"><span class="problematic" id="id8">|image3|</span></a> Some Tru64 and IRIX systems have a local libnet library which
+conflicts with PBS&#8217;s libnet library. To resolve this, try setting PBSLIB
+to &#8216;${PBSLIBDIR}/libnet.a -lpbs&#8217; in the Maui Makefile.</p>
+<p><a href="#id9"><span class="problematic" id="id10">|image4|</span></a> Maui is 64 bit compatible. If PBS is compiled in 64 bit mode,
+Maui will likewise need to be compiled in this manner in order to
+utilize the PBS scheduling API. (i.e., for IRIX compilers, add &#8216;-64&#8217; to
+<strong>OSCCFLAGS</strong> and <strong>OSLDFLAGS</strong> variables in the Makefile).</p>
+<hr class="docutils" />
+<p class="rubric" id="configure-pbs">3. Configure PBS</p>
+<p><a href="#id11"><span class="problematic" id="id12">|image5|</span></a> Make sure $MAUIADMIN a PBS admin.
+Maui communicates with both pbs_server and pbs_mom daemons. The
+$MAUIADMIN should be authorized to talk to both PBS daemons.
+(<a class="reference external" href="pbsaccess.html">suggestions</a>)</p>
+<p><a href="#id13"><span class="problematic" id="id14">|image6|</span></a> For security purposes, sites may want to run Maui under a
+non-root user id, the mom_priv/config files must be world-readable and
+contain the line &#8216;$restricted *.&lt;YOURDOMAIN&gt; (i.e.,
+&#8216;<code class="docutils literal"><span class="pre">$restricted</span> <span class="pre">*.uconn.edu</span></code>&#8216;).</p>
+<ul class="simple">
+<li>Set default PBS queue nodecount and walltime attributes.
+(<a class="reference external" href="pbsdefault.html">suggestions</a>)</li>
+<li>(OPTIONAL) Set PBS default queue (ie, in <strong>qmgr</strong> &#8216;set system
+default_queue = &lt;QUEUENAME&gt;)</li>
+</ul>
+<p><a href="#id15"><span class="problematic" id="id16">|image7|</span></a> PBS nodes can be configured as <strong>time shared</strong> <strong>or</strong> <strong>space
+shared</strong> according to local needs.</p>
+<p><a href="#id17"><span class="problematic" id="id18">|image8|</span></a> Maui utilizes PBS&#8217;s scheduling port to obtain real-time event
+information from PBS regarding job and node transitions. Leaving the
+default qmgr setting of &#8216;<strong>``set server scheduling=True``</strong>&#8216; will allow
+Maui to receive and process this real-time information.</p>
+<p><a href="#id19"><span class="problematic" id="id20">|image9|</span></a> Do not start the TORQUE&#8217;s <code class="docutils literal"><span class="pre">pbs_sched</span></code> daemon. This is the
+default scheduler for TORQUE and Maui/Moabwill provide this service.</p>
+<p><a href="#id21"><span class="problematic" id="id22">|image10|</span></a> Maui&#8217;s user interface port set using the parameter
+<strong>SCHEDCFG</strong> or <strong>SERVERPORT</strong> is used for user-scheduler communication.
+This port must be different from the PBS scheduler port used for
+resource manager-scheduler communication.</p>
+<p><a href="#id23"><span class="problematic" id="id24">|image11|</span></a> PBS supports the concept of <strong>virtual nodes</strong>. Using this
+feature, Maui can individually schedule processors on SMP nodes. The PBS
+Administrator&#8217;s Guide explains how to set up the
+&#8216;$PBS_HOME/server_priv/nodes&#8217; file to enable this capability. (i.e.,
+&lt;NODENAME&gt; np=&lt;VIRTUAL NODE COUNT&gt;).</p>
+<hr class="docutils" />
+<p class="rubric" id="configure-maui">4. Configure Maui</p>
+<p>Next, specify PBS as the resource manager. This should be taken care of
+by &#8216;<strong>configure</strong>&#8216;, but if not, the following parameter must be
+specified in the <strong>maui.cfg</strong> file:</p>
+<p><code class="docutils literal"><span class="pre">RMCFG[base]TYPE=PBS</span></code>
+If a non-standard PBS configuration is being used, additional Maui
+parameters may be required to point Maui to the right location:</p>
+<p><code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">HOST=$PBSSERVERHOST</span> <span class="pre">PORT=$PBSSERVERPORT</span></code>
+(See the <a class="reference external" href="13.1rmoverview.html">Resource Manager Overview</a> for more
+information.)</p>
+<p class="rubric" id="known-issues">Known Issues</p>
+<p><strong>PBS features not supported by Maui:</strong></p>
+<ul>
+<li><p class="first">Maui 3.0 and earlier only supports the following node specifications:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nodes</span><span class="o">=+&lt;</span><span class="n">HostList</span><span class="o">&gt;</span><span class="p">[:</span><span class="n">ppn</span><span class="o">=&lt;</span><span class="n">X</span><span class="o">&gt;</span><span class="p">][</span><span class="o">+&lt;</span><span class="n">HostList</span><span class="o">&gt;</span><span class="p">[:</span><span class="n">PPN</span><span class="o">=&lt;</span><span class="n">X</span><span class="o">&gt;</span><span class="p">]]</span><span class="o">...</span>
+<span class="n">nodes</span><span class="o">=&lt;</span><span class="n">NodeCount</span><span class="o">&gt;</span><span class="p">[:</span><span class="n">PPN</span><span class="o">=&lt;</span><span class="n">X</span><span class="o">&gt;</span><span class="p">][:</span><span class="o">&lt;</span><span class="n">FEATURE</span><span class="o">&gt;</span><span class="p">][:</span><span class="o">&lt;</span><span class="n">FEATURE</span><span class="o">&gt;</span><span class="p">]</span><span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Maui 3.2 supports basic scheduling of all PBS node specifications but
+will provide only limited optimization services for these jobs.
+<a href="#id25"><span class="problematic" id="id26">|image12|</span></a> Maui is by default very liberal in its interpretation of
+&lt;NODECOUNT&gt;:PPN=&lt;X&gt;. In its standard configuration, Maui interprets
+this as &#8216;give the job &lt;NODECOUNT&gt;*&lt;X&gt; tasks with AT LEAST &lt;X&gt; tasks
+per node&#8217;. Set the
+<a class="reference external" href="a.fparameters.html#jobnodematchpolicy">JOBNODEMATCHPOLICY</a>
+parameter to <strong>EXACTNODE</strong> to have Maui support PBS&#8217;s default
+allocation behavior of &lt;NODECOUNT&gt; nodes with exactly &lt;X&gt; tasks per
+node.</p>
+</li>
+</ul>
+<p><strong>Maui features not supported by PBS:</strong></p>
+<ul class="simple">
+<li>PBS does not support the concept of a job QOS or other extended
+scheduling features by default. This can be fixed using the
+techniques described <a class="reference external" href="13.3.1pbsrmextensions.html">here</a>. See the
+<a class="reference external" href="13.3rmextensions.html">RM Extensions Overview</a> for more
+information.</li>
+<li>Earlier versions of PBS do not maintain job completion information.
+Thus, an external scheduler cannot determine if the job completed
+successfully or if internal PBS problems occurred preventing the job
+from being properly updated. This problem will not in any way affect
+proper scheduling of jobs but may, potentially, affect scheduler
+statistics. If your site is prone to frequent PBS <em>hangs</em>, you may
+want to set the Maui <a class="reference external" href="a.fparameters.html#purgetime">PURGETIME</a>
+parameter to allow Maui to hold job information in memory for a
+period of time until PBS recovers.</li>
+</ul>
+<hr class="docutils" />
+<p class="rubric" id="trouble-shooting">Trouble-shooting</p>
+<p>Common Problems:</p>
+<ul class="simple">
+<li>PBS versions prior to 2.4 hang when MOM&#8217;s have troubles.</li>
+<li>On TRU64 systems, the PBS &#8216;libpbs&#8217; library does not properly export a
+number of symbols required by Maui. This can be worked around by
+modifying the Maui Makefile to link the PBS &#8216;rm.o&#8217; object file
+directly into Maui.</li>
+</ul>
+<p><strong>See also:</strong></p>
+<p><a class="reference external" href="mauiadmin.html">Maui Administrators Guide</a>
+<a class="reference external" href="mauiusers.html">Maui Users Guide</a></p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pbsintegration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

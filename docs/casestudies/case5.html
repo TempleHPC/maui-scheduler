@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case Study: Multi-Queue Cluster with QOS and Charge Rates &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" />
+    <link rel="up" title="Appendix A: Case Studies" href="../a.acasestudy.html" />
+    <link rel="next" title="Appendix B: Extension Interface" href="../a.bxinterface.html" />
+    <link rel="prev" title="Case Study: Data Staging" href="case4.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../a.bxinterface.html" title="Appendix B: Extension Interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="case4.html" title="Case Study: Data Staging"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" accesskey="U">Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-multi-queue-cluster-with-qos-and-charge-rates">
+<h1>Case Study: Multi-Queue Cluster with QOS and Charge Rates<a class="headerlink" href="#case-study-multi-queue-cluster-with-qos-and-charge-rates" title="Permalink to this headline">¶</a></h1>
+<p><strong>Overview</strong></p>
+<p>A 160 node, single processor Linux® cluster is to be used to support
+various organizations within an enterprise.&nbsp; The system should allow a
+user to request improved job turnaround time in exchange for a higher
+charge rate.&nbsp; A portion of the system must be reserved for small
+development jobs at all times.</p>
+<p><strong>Resources</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Compute Nodes:</td>
+<td>128 800MHz single processor Linux® nodes with 512 MB RAM
+32 1.2GHz single processor Linux® nodes with 512 MB RAM</td>
+</tr>
+<tr class="row-even"><td>Resource Manager:</td>
+<td>OpenPBS 2.3</td>
+</tr>
+<tr class="row-odd"><td>Network:</td>
+<td>100 MB switched Ethernet</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workload</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Job Size:</td>
+<td>Range in size from 1 to 80 processors</td>
+</tr>
+<tr class="row-even"><td>Job Length:</td>
+<td>Jobs range in length from 15 minutes to 24 hours</td>
+</tr>
+<tr class="row-odd"><td>Job Owners:</td>
+<td>Various</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Goals</strong></p>
+<p>Management desires the following queue structure:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QueueName</span>      <span class="n">Nodes</span>        <span class="n">MaxWallTime</span>   <span class="n">Priority</span>     <span class="n">ChargeRate</span>
+<span class="o">-----------------------------------------------------------------</span>
+<span class="n">Test</span>            <span class="o">&lt;=</span><span class="mi">16</span>            <span class="mi">0</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span>        <span class="mi">100</span>             <span class="mi">1</span><span class="n">x</span>
+<span class="n">Serial</span>             <span class="mi">1</span>            <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">10</span>             <span class="mi">1</span><span class="n">x</span>
+<span class="n">Serial</span><span class="o">-</span><span class="n">Long</span>        <span class="mi">1</span>           <span class="mi">24</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">10</span>             <span class="mi">2</span><span class="n">x</span>
+<span class="n">Short</span>           <span class="mi">2</span><span class="o">-</span><span class="mi">16</span>            <span class="mi">4</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">10</span>             <span class="mi">1</span><span class="n">x</span>
+<span class="n">Short</span><span class="o">-</span><span class="n">Long</span>      <span class="mi">2</span><span class="o">-</span><span class="mi">16</span>           <span class="mi">24</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">10</span>             <span class="mi">2</span><span class="n">x</span>
+<span class="n">Med</span>            <span class="mi">17</span><span class="o">-</span><span class="mi">64</span>            <span class="mi">8</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">20</span>             <span class="mi">1</span><span class="n">x</span>
+<span class="n">Med</span><span class="o">-</span><span class="n">Long</span>       <span class="mi">17</span><span class="o">-</span><span class="mi">64</span>           <span class="mi">24</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">20</span>             <span class="mi">2</span><span class="n">x</span>
+<span class="n">Large</span>          <span class="mi">65</span><span class="o">-</span><span class="mi">80</span>           <span class="mi">24</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">50</span>             <span class="mi">2</span><span class="n">x</span>
+<span class="n">LargeMem</span>           <span class="mi">1</span>            <span class="mi">8</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>         <span class="mi">10</span>             <span class="mi">4</span><span class="n">x</span>
+</pre></div>
+</div>
+<p>For charging, management has decided to charge by job walltime since the
+nodes will not be shared.&nbsp; Management has also dictated that 16 of the
+single processor nodes should be dedicated to running small jobs
+requiring 16 or fewer nodes.&nbsp; Management has also decided that it would
+like to allow only serial jobs to run on the large memory nodes and
+would like to charge these jobs at a rate of 4x.&nbsp; There are no
+constraints on the remaining nodes.</p>
+<p>This site has goals which are focused more on a supplying a
+straightforward queue environment to the end users than on maximizing
+the scheduling performance of the system.&nbsp; The Moab configuration has
+the primary purpose of faithfully reproducing the queue constraints
+above while maintaining reasonable scheduling performance in the
+process.</p>
+<p><strong>Analysis</strong></p>
+<p>Since we are using PBS as the resource manager, this should be a pretty
+straightforward process.&nbsp; It will involve setting up an allocations
+manager to handle charging, configuring queue priorities, and creating a
+system reservation to manage the 16 processors dedicated to small jobs,
+and another for managing the large memory nodes.</p>
+<p><strong>Configuration</strong></p>
+<p>First, the queue structure must be configured.&nbsp; The best place to handle
+this is via the PBS configuration.&nbsp; The <code class="docutils literal"><span class="pre">qmgr</span></code> command can be used to
+set up the nine queues described above.&nbsp; PBS supports the node and
+walltime constraints as well as the queue priorities.&nbsp; Moab will honor
+queue priorities configured within PBS.&nbsp; Alternatively, these priorities
+can be specified directly within the Moab <code class="docutils literal"><span class="pre">fs.cfg</span></code> file for resource
+managers which do not support this capability.</p>
+<p>We will be using QBank to handle all allocations and so, will want to
+configure the the &#8220;per class charge rates&#8221; there.&nbsp; Note that QBank 2.9
+or higher is required for per class charge rate support.</p>
+<p>Now, two reservations are needed.&nbsp; The first reservation will be for the
+16 small memory nodes.&nbsp; It should only allow node access to jobs
+requesting up to 16 processors.&nbsp; In this environment, this is probably
+most easily accomplished with a reservation class ACL containing the
+queues which allow 1 - 16 node jobs.</p>
+<p><strong>Monitoring</strong></p>
+<p>The commands <a class="reference external" href="../commands/mdiag.html">mdiag -s</a> and <a class="reference external" href="../commands/mdiag-reservations.html">mdiag
+-r</a> can be used to examine the
+standing reservations and all reservations in more detail.&nbsp; The <a class="reference external" href="../commands/mdiag-class.html">mdiag
+-c</a> command can be used to examine and
+verify class/queue information.&nbsp; The <a class="reference external" href="../commands/mshow.html">mshow</a>
+command may also be used to display information about a class/queue,
+job, and reservation.</p>
+<p><strong>Conclusions:</strong></p>
+<p>Moab supports intelligent scheduling across a wide variety of existing
+queue types.&nbsp; This intelligence allows administrators to charge for
+access to priority resources in a very flexible manner.&nbsp; Moab will work
+seamlessly with other software products to implement the desired
+behavior.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="case4.html"
+                        title="previous chapter">Case Study: Data Staging</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../a.bxinterface.html"
+                        title="next chapter">Appendix B: Extension Interface</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/casestudies/case5.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../a.bxinterface.html" title="Appendix B: Extension Interface"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="case4.html" title="Case Study: Data Staging"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" >Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

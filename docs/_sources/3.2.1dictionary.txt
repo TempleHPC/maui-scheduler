@@ -1,0 +1,318 @@
+Scheduling Dictionary
+#####################
+
+**Term**
+**Definition**
+**Example**
+**SSS v0.1 Token**
+` <>`__\ **Account**
+A credential also known as 'project ID'. Multiple users may be
+associated a single account ID and each user may have access to multiple
+accounts. (See `Credential <#Credential>`__ )
+``ACCOUNT=projectX``
+account
+` <>`__\ **ACL (Access Control List)**
+Within the scheduling world, an access control list is used and applied
+much as it is elsewhere. An ACL defines what credentials are required to
+access or utilizes particular objects. The principle objects to which
+ACL's are applied are `reservations <#Reservation>`__ and
+`QOS <#QOS>`__'s. ACL's may contain both allow and deny statements, may
+include wildcards, and may contain rules based on multiple object types.
+Reservation META1 contains 4 access statements.
+Allow jobs owned by user ``john`` or ``bob``
+Allow jobs with QOS ``premium``
+Deny jobs in class ``debug``
+Allow jobs with a duration of less than 1 hour
+**AS** (Access Statement)
+Attributes:
+
+| **``TYPE``** one of ``ALLOW``, ``DENY``
+| **``OBJECT``** one of ``USER``, ``GROUP``, ``ACCOUNT``, ``QOS``,
+  ``CLASS``, ``DURATION``
+| **``NAME <STRING>``**
+
+Members:
+
+[NONE]
+
+Example:
+
+| <AS TYPE="ALLOW" OBJECT="USER" NAME="john"/>
+| <AS TYPE="ALLOW" OBJECT="USER" NAME="bob"/>
+| <AS TYPE="ALLOW" OBJECT="QOS" NAME="premium"/>
+| <AS TYPE="DENY" OBJECT="CLASS" NAME="debug"/>
+| <AS TYPE="ALLOW" OBJECT="DURATION" NAME="1:00:00"/>
+
+(used in reservation and job creation and queries)
+` <>`__\ **Allocation**
+A logical, scalar unit assigned to users on a credential basis,
+providing access to a particular quantity of compute resources.
+Allocations are consumed by jobs associated with those credentials.
+``ALLOCATION=30000``
+ALLOCATION
+Attributes:
+
+Members:
+
+(used in ???)
+` <>`__\ **Class**
+(see `Queue <#Queue>`__ ) A class is a logical container object which
+holds jobs allowing a site to associate various constraints and defaults
+to these jobs. Class access can also be tied to individual nodes
+defining whether or not a particular node will accept a job associated
+with a given class. Class based access to a node is denied unless
+explicitly allowed via resource manager configuration. Within Maui,
+classes are tied to jobs as a `credential <#Credential>`__.
+job cw.073 is submitted to class batch
+node cl02 accepts jobs in class batch
+
+reservation weekend allows access to jobs in class batch
+**class**
+Attributes:
+
+Name: <STRING>
+
+Members:
+
+[NONE]
+
+(used in ???)
+` <>`__\ **CPU**
+A single processing unit. A CPU is a consumable resource. Nodes
+typically consist of one or more CPU's. (same as
+`processor <#Processor>`__ )
+N/A
+proc
+` <>`__\ **Credential**
+An attribute associated with `jobs <#Job>`__ and other objects which
+determines object identity. In the case of schedulers and resource
+managers,
+credential based policies and limits are often established. At submit
+time, jobs are associated with a number of credentials such as
+`user <#User>`__ , `group <#Group>`__ , `account <#Account>`__ ,
+`QOS <#QOS>`__ , and `class <#Class>`__ . These job credentials subject
+the job to various polices and grant it various types of access.
+In most cases, credentials set both the privileges of the job and the ID
+of the actual job `executable <#Execution-Environment>`__ .
+Job cw.24001 possesses the following credentials:
+``USER=john;GROUP=staff;ACCOUNT=[NONE];``
+``QOS=[DEFAULT];CLASS=batch``
+cred
+` <>`__\ **Disk**
+A quantity of local disk available for use by batch jobs. Disk is a
+`consumable resource <#Resource-Consumable>`__ .
+N/A
+disk
+` <>`__\ **Execution Environment**
+A description of the environment in which the executable is launched.
+This environment may include attributes such as the following:
+an executable
+command line args
+input file
+output file
+local user id
+local group id
+process resource limits
+Job cw.24001 possesses the following execution environment:
+``EXEC=/bin/sleep;ARGS="60";``
+``INPUT=[NONE];OUTPUT=[NONE];``
+``USER=loadl;GROUP=staff;``
+` <>`__\ **Fairshare**
+N/A
+N/A
+N/A
+` <>`__\ **Fairness**
+N/A
+N/A
+N/A
+` <>`__\ **Group**
+A `credential <#Credential>`__ typically directly mapping to a user's
+Unix® group ID.
+N/A
+N/A
+` <>`__\ **Job**
+The fundamental object of resource consumption. A job contains the
+following components:
+A list of required `consumable resources <#Resource-Consumable>`__
+A list of `resource constraints <#Resource-Constraints>`__ controlling
+which resources may be allocated to the job
+A list of `job constraints <#Job-Constraints>`__ controlling where,
+when, and how the job should be run
+A list of `credentials <#Credential>`__
+An `execution environment <#Execution-Environment>`__
+N/A
+N/A
+` <>`__\ **Job Constraints**
+A set of conditions which must be fulfilled in order for the job to
+start. These conditions are far reaching and may include one or more of
+the following:
+When the job may run (i.e., after time X, within Y minutes, etc.)
+Which resources may be allocated (i.e., Node must possess at least 512MB
+of RAM, run only in partition or Partition C, or run an HostA and HostB)
+Starting job relative to an particular event (i.e., start after job X
+successfully completes)
+``RELEASETIME>='Fri Jun 06, 10:00AM'``
+``DEPENDENCY=AFTERCOMPLETION:cw.2004``
+``NODEMEMORY==256MB``
+` <>`__\ **Memory**
+A quantity of physical memory (RAM). Memory is provided by compute
+nodes. It is required as a constraint or consumed as a consumable
+resource by jobs. Within Maui, memory is tracked and reported in
+megabytes (MB).
+Node node001 provides the following resources
+``PROCS=1,MEMORY=512,SWAP=1024``
+Job cw.24004 consumes the following resources per task
+``PROCS=1,MEMORY=256``
+N/A
+` <>`__\ **Node**
+A node is the fundamental object associated with compute resources. Each
+node contains the following components
+A list of `consumable resources <#Resource-Consumable>`__
+A list of `node attributes <#Node-Attribute>`__
+N/A
+N/A
+` <>`__\ **Node Attribute**
+A node attribute is a non-quantitative aspect of a node. Attributes
+typically describe the node itself or possibly aspects of various node
+resources such as processors or memory. While it is probably not optimal
+to aggregate node and resource attributes together in this manner, it is
+common practice. Common node attributes include processor architecture,
+operating system, or processor speed. Jobs often specify that resources
+be allocated from nodes possessing certain node attributes.
+``ARCH=AMD,OS=LINUX24,PROCSPEED=950``
+N/A
+` <>`__\ **Node Feature**
+A node feature is a `node attribute <#Node-Attribute>`__ which is
+typically specified locally via some form of configuration file. Node
+features are opaque strings associated with the node by the resource
+manager which generally only have meaning to the end user or possibly to
+the scheduler. Commonly, a node feature will be associated with a subset
+of nodes allowing end users to request use of this subset by requiring
+that resources be allocated from nodes with this feature present. In
+many cases, node features are used to extend the information provided by
+the resource manager.
+``FEATURE=s950,pIII,geology``
+(This may be used to indicate that the node possesses a 950 MHz Pentium
+III processor and that the node is owned by the Geology dept)
+N/A
+` <>`__\ **Processor**
+A processing unit. A processor is a consumable resource. Nodes typically
+consist of one or more processors. (same as CPU)
+N/A
+N/A
+` <>`__\ **Quality of Service (QOS)**
+An object which provides special services, resources, etc.
+N/A
+N/A
+` <>`__\ **Queue**
+(see `Class <#Class>`__ )
+N/A
+N/A
+` <>`__\ **Reservation**
+An object which reserves a specific collection or resources for a
+specific timeframe for use by jobs which meet specific conditions
+Reserve 24 processors and 8 GB of memory from time T1 to time T2 for use
+by user X or jobs in the class batch
+**RESERVATION**
+| Attributes:
+| STARTTIME (optional)
+| DURATION (mandatory)
+| FLAGS (optional)
+| OWNER (optional)
+| NAME (optional)
+
+| Contains
+| AS (1+:required)
+| RESOURCES (1+:required)
+
+Example:
+
+<RESERVATION STARTTIME="98066503"><AS TYPE="ALLOW" OBJECT="QOS"
+NAME="premium"/><RES TYPE=PROC COUNT="4" <CONSTRAINT ATTR="PROCSPEED"
+CMP=">=900"/></RESERVATION>
+
+(use: reservation creation, modification, destruction, and reporting)
+**Resource**
+N/A
+N/A
+N/A
+` <>`__\ **Resource, Available**
+All `consumable resources <#Resource-Consumable>`__ are tracked and
+managed in a number of ways. A compute node's available resources is
+calculated as its `configured resources <#Resource-Configured>`__ minus
+the sum of the resources actually utilized by all job tasks running on
+the node.
+Node cl003 is configured with 4 processors and 512 MB of memory. This
+node is executing 2 tasks of job clserver.0041 which is utilizing 1
+processor and 60 MB of memory each. Additionally, it is also running 1
+task of job clserver.0047 which is using 1 processor and 250 MB of
+memory.
+Node cl003's available resources are thus
+
+processors = 4 - (2 \* 1 + 1 \* 1) = 1
+memory = 512 - (2 \* 60 + 1 \* 250) = 142 MB
+N/A
+` <>`__\ **Resource, Configured**
+N/A
+N/A
+N/A
+` <>`__\ **Resource, Consumable**
+Any object which can be utilized (i.e., consumed and thus made
+unavailable to another job) by, or dedicated to a job is considered to
+be a resource. Common examples of resources are a node's physical memory
+or local disk. As these resources may given to one job and thus
+unavailable to another, they are considered to be consumable. Other
+aspects of a node, such as its operating system, are not considered to
+be consumable since its use by one job does not preclude its use by
+another.
+Note that some node objects, such as a network adapter, may be dedicated
+under some operating systems and resource managers and not under others.
+On systems where the network adapter cannot be dedicated and the network
+usage per job cannot be specified or tracked, network adapters are not
+considered to be resources, but rather attributes.
+
+Nodes possess a specific quantity of consumable resources such as real
+memory, local disk, or processors. In a resource management system, the
+node manager may choose to report only those configured resources
+available to batch jobs. For example, a node may possess a 80 GB hard
+drive but may have only 20 GB dedicated to batch jobs. Consequently, the
+resource manager may report that the node has 20 GB of local disk
+available when idle. Jobs may explicitly request a certain quantity of
+consumable resources
+N/A
+N/A
+` <>`__\ Resource, Constraint
+A resource constraint imposes a rule on which resources can be be used
+to *match* a resource request. Resource constraints either specify a
+required quantity and type of resource or a required node attribute. All
+resource constraints must be met by any given node in order for a
+*match* to be established.
+**Resource, Dedicated**
+A job may request that a block of resources be dedicated while the job
+is executing. In this case, the scheduler is responsible to guaranteeing
+that these resources, whether utilized by the job or not, are set aside,
+unavailable to other jobs.
+N/A
+N/A
+` <>`__\ **Swap**
+A quantity of virtual memory available for use by batch jobs. Swap is a
+consumable resource provided by nodes and consumed by jobs
+N/A
+N/A
+` <>`__\ **Task**
+An atomic collection of consumable resources.
+N/A
+N/A
+**User, Global**
+The user credential used to provide access to functions and resources.
+In local scheduling, global user IDs map directly to local user IDs.
+N/A
+N/A
+**User, Local**
+The user credential under which the job executable will be launched.
+N/A
+N/A
+Workload
+generalized term
+N/A
+N/A

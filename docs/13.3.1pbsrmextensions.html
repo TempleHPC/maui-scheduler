@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PBS RM Extensions &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pbs-rm-extensions">
+<h1>PBS RM Extensions<a class="headerlink" href="#pbs-rm-extensions" title="Permalink to this headline">¶</a></h1>
+<p>RM extensions within PBS are utilized by using the &#8216;<strong>-W</strong>&#8216; flag. To
+enable this flag, some versions of PBS must be rebuilt.(NOTE:
+<a class="reference external" href="../../torque">TORQUE</a> and recent OSCAR distributions come with the
+flag enabled by default. Most other versions do not.)
+The required steps are documented below.
+<strong>&gt; qterm -t quick #shutdown PBS server</strong> (cd to the directory from
+which you executed the PBS &#8216;configure&#8217; at install time) <strong>make
+distclean</strong> <strong>./configure &lt;WITH OPTIONS&gt;</strong></p>
+<div class="line-block">
+<div class="line"><strong>create `addparam &lt;#addparam&gt;`__ script</strong></div>
+<div class="line">(chmod +x addparam)</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>addparam x S</strong></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In Maui 3.2.x, only the &#8216;<strong>x</strong>&#8216; parameter needs to be added.</p>
+</div>
+<p><strong>make</strong></p>
+<p>(backup current $PBS_HOMEDIR directory contents, NOTE: $PBS_HOMEDIR
+defaults to /usr/spool/PBS)</p>
+<p><strong>&gt; make install</strong></p>
+<p>(restore old $PBS_HOMEDIR directory contents)</p>
+<p><strong>&gt; pbs_server # restart PBS server</strong></p>
+<div class="line-block">
+<div class="line">A job&#8217;s QOS level can then be specified using qsub&#8217;s &#8216;-W&#8217; flag, i.e.,
+qsub -W x=iQOS:hi -l nodes=4 ...</div>
+</div>
+<div class="line-block">
+<div class="line">(` &lt;&gt;`__addparam script follows)</div>
+<div class="line">&#8212;&#8212;</div>
+<div class="line">#!/bin/sh</div>
+<div class="line">#script: addparam</div>
+<div class="line">#usage: addparam $Parameter [S|L]</div>
+</div>
+<div class="line-block">
+<div class="line">NewParameter=$1</div>
+<div class="line">ParameterType=x$2</div>
+</div>
+<div class="line-block">
+<div class="line">if [ ! -d src/include ]; then</div>
+<div class="line">echo &#8220;error: `basename $0` src/include doesn&#8217;t exist, run configure&#8221;
+1&gt;&amp;2</div>
+<div class="line">exit 1</div>
+<div class="line">fi</div>
+</div>
+<div class="line-block">
+<div class="line"># run make in this directory to pull over the template files</div>
+<div class="line">cd src/include</div>
+<div class="line">if make</div>
+<div class="line">then</div>
+</div>
+<div class="line-block">
+<div class="line">if grep -q &#8220;\&#8221;$NewParameter\&#8221;&#8221; site_*.h 2&gt;/dev/null; then</div>
+<div class="line">echo &#8220;parameter $NewParameter previously added&#8221;</div>
+<div class="line">exit 0</div>
+<div class="line">fi</div>
+<div class="line">fi</div>
+</div>
+<div class="line-block">
+<div class="line">chmod +w site_job_attr_enum.h</div>
+<div class="line">echo &#8220;</div>
+<div class="line">JOB_SITE_ATR_$1,</div>
+<div class="line">&#8221; &gt;&gt; site_job_attr_enum.h</div>
+</div>
+<p>chmod +w site_job_attr_def.h</p>
+<p>if [ $ParameterType = &#8220;xS&#8221; ]
+then
+echo &#8221;
+{ \&#8221;$NewParameter\&#8221;,
+decode_str,
+encode_str,
+set_str,
+comp_str,
+free_str,
+NULL_FUNC,
+READ_WRITE,
+ATR_TYPE_STR,
+PARENT_TYPE_JOB
+},
+&#8221; &gt;&gt; site_job_attr_def.h
+else
+echo &#8221;
+{ \&#8221;$NewParameter\&#8221;,
+decode_l,
+encode_l,
+set_l,
+comp_l,
+free_null,
+NULL_FUNC,
+READ_WRITE,
+ATR_TYPE_LONG,
+PARENT_TYPE_JOB
+},
+&#8221; &gt;&gt; site_job_attr_def.h
+fi
+exit 0</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/13.3.1pbsrmextensions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

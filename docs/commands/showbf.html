@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showbf">showbf</p>
+<p><strong>(Show Available Resources)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showbf</span> <span class="p">[</span><span class="o">-</span><span class="n">A</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span> <span class="n">account</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span> <span class="n">class</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span> <span class="n">duration</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">D</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span> <span class="n">features</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="n">group</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">L</span><span class="p">]</span>
+       <span class="p">[</span><span class="o">-</span><span class="n">m</span> <span class="p">[</span><span class="o">==|&gt;|&gt;=|&lt;|&lt;=</span><span class="p">]</span> <span class="n">memory</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">n</span> <span class="n">nodecount</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">partition</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">q</span> <span class="n">qos</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">u</span> <span class="n">user</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>Shows what resources are available for immediate use.
+This command can be used by any user to find out how many processors are
+available for immediate use on the system. It is anticipated that users
+will use this information to submit jobs that meet these criteria and
+thus obtain quick job turnaround times. This command incorporates down
+time, reservations, and node state information in determining the
+available backfill window.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="98%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>If specific information is not specified, showbf will return information for the user and group running but with global access for other credentials. For example, if &#8216;-q qos&#8217; is not specified, Moab will return resource availability information for a job as if it were entitled to access <em>all</em> QOS based resources (i.e., resources covered by reservations with a QOS based ACL), if &#8216;-c class&#8217; is not specified, the command will return information for resources accessible by any class.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>The <strong>showbf</strong> command incorporates node configuration, node utilization, node state, and node reservation information into the results it reports. This command does <strong>not</strong> incorporate constraints imposed by credential based fairness policies on the results it reports.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Access</strong></p>
+<p>By default, this command can be used by any user or administrator.
+<strong>Parameters</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ACCOUNT</td>
+<td>Account name.</td>
+</tr>
+<tr class="row-odd"><td>CLASS</td>
+<td>Class/queue required.</td>
+</tr>
+<tr class="row-even"><td>DURATION</td>
+<td>Time duration specified as the number of seconds or in [DD:]HH:MM:SS notation.</td>
+</tr>
+<tr class="row-odd"><td>FEATURELIST</td>
+<td>Colon separated list of node features required.</td>
+</tr>
+<tr class="row-even"><td>GROUP</td>
+<td>Specify particular group.</td>
+</tr>
+<tr class="row-odd"><td>MEMCMP</td>
+<td>Memory comparison used with the -m flag. Valid signs are &gt;, &gt;=, ==, &lt;=, and &lt;.</td>
+</tr>
+<tr class="row-even"><td>MEMORY</td>
+<td>Specifies the amount of required real memory configured on the node, (in MB), used with the -m flag.</td>
+</tr>
+<tr class="row-odd"><td>NODECOUNT</td>
+<td>Specify number of nodes for inquiry with -n flag.</td>
+</tr>
+<tr class="row-even"><td>PARTITION</td>
+<td>Specify partition to check with -p flag.</td>
+</tr>
+<tr class="row-odd"><td>QOS</td>
+<td>Specify QOS to check with -q flag.</td>
+</tr>
+<tr class="row-even"><td>USER</td>
+<td>Specify particular user to check with -u flag.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Flags</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="98%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>-A</td>
+<td>Show resource availability information for all users, groups, and accounts. By default, <strong>showbf</strong> uses the default user, group, and account ID of the user issuing the command.</td>
+</tr>
+<tr class="row-odd"><td>-a</td>
+<td>Show resource availability information only for specified account.</td>
+</tr>
+<tr class="row-even"><td>-d</td>
+<td>Show resource availability information for specified duration.</td>
+</tr>
+<tr class="row-odd"><td>-D</td>
+<td>Display current and future resource availability notation.</td>
+</tr>
+<tr class="row-even"><td>-g</td>
+<td>Show resource availability information only for specified group.</td>
+</tr>
+<tr class="row-odd"><td>-h</td>
+<td>Help for this command.</td>
+</tr>
+<tr class="row-even"><td>-L</td>
+<td>Enforce Hard limits when showing available resources.</td>
+</tr>
+<tr class="row-odd"><td>-m</td>
+<td>Allows user to specify the memory requirements for the backfill nodes of interest. It is important to note that if the optional <em>MEMCMP</em> and <em>MEMORY</em> parameters are used, they <strong>MUST</strong> be enclosed in single ticks (&#8216;) to avoid interpretation by the shell. For example, enter <code class="docutils literal"><span class="pre">showbf</span> <span class="pre">-m</span> <span class="pre">'==256'</span></code> to request nodes with 256 MB memory.</td>
+</tr>
+<tr class="row-even"><td>-n</td>
+<td>Show resource availability information for a specified number of nodes. That is, this flag can be used to force <code class="docutils literal"><span class="pre">showbf</span></code> to display only blocks of resources with at least this many nodes available.</td>
+</tr>
+<tr class="row-odd"><td>-p</td>
+<td>Show resource availability information for the specified partition.</td>
+</tr>
+<tr class="row-even"><td>-q</td>
+<td>Show information for the specified QOS.</td>
+</tr>
+<tr class="row-odd"><td>-u</td>
+<td>Show resource availability information only for specified user.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 1</strong></p>
+<p>In this example, a job requiring up to 2 processors could be submitted
+for immediate execution in partition <strong>ClusterA</strong> for any duration.
+Additionally, a job requiring 1 processor could be submitted for
+immediate execution in partition <strong>ClusterB</strong>. Note that by default,
+each task is tracked and reported as a request for a single processor.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showbf</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>   <span class="n">StartOffset</span>      <span class="n">Duration</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">3</span>      <span class="mi">3</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="n">INFINITY</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">38</span><span class="n">_08</span><span class="o">/</span><span class="mi">19</span>
+<span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ClusterA</span>          <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="n">INFINITY</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">38</span><span class="n">_08</span><span class="o">/</span><span class="mi">19</span>
+<span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ClusterB</span>          <span class="mi">2</span>      <span class="mi">2</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="n">INFINITY</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">38</span><span class="n">_08</span><span class="o">/</span><span class="mi">19</span>
+<span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p><strong>Example 2</strong></p>
+<p>In this example, the output verifies that a backfill window exists for
+jobs requiring a 3 hour runtime and at least 16 processors. Specifying
+job duration is of value when time based access is assigned to
+reservations (i.e., using the <strong>SRCFG</strong> <strong>TIMELIMIT</strong> ACL)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showbf</span> <span class="o">-</span><span class="n">r</span> <span class="mi">16</span> <span class="o">-</span><span class="n">d</span> <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+
+<span class="n">backFill</span> <span class="n">window</span> <span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="s1">&#39;john&#39;</span> <span class="n">group</span><span class="p">:</span> <span class="s1">&#39;staff&#39;</span> <span class="n">partition</span><span class="p">:</span> <span class="n">ALL</span><span class="p">)</span> <span class="n">Mon</span> <span class="n">Feb</span> <span class="mi">16</span> <span class="mi">08</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">54</span>
+
+<span class="n">partition</span> <span class="n">ALL</span><span class="p">:</span>
+  <span class="mi">33</span> <span class="n">procs</span> <span class="n">available</span> <span class="k">with</span> <span class="n">no</span> <span class="n">time</span> <span class="n">limit</span>
+</pre></div>
+</div>
+<p><strong>Example 3</strong></p>
+<p>In this example, a resource availability window is requested for
+processors located only on nodes with at least 512 MB of memory. In the
+example above, the command output reports that no processors are
+available for immediate use which meet this constraint.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showbf</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39; =512&#39;</span>
+
+<span class="n">backfill</span> <span class="n">window</span> <span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="s1">&#39;john&#39;</span> <span class="n">group</span><span class="p">:</span> <span class="s1">&#39;staff&#39;</span> <span class="n">partition</span><span class="p">:</span> <span class="n">ALL</span><span class="p">)</span> <span class="n">Thu</span> <span class="n">Jun</span> <span class="mi">18</span> <span class="mi">16</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">04</span>
+
+<span class="n">no</span> <span class="n">procs</span> <span class="n">available</span>
+</pre></div>
+</div>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="showq.html">showq</a></li>
+<li><a class="reference external" href="mdiag.html">mdiag -t</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showbf.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

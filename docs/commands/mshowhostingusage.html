@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mshow-a">mshow -a</p>
+<p><strong>(Moab Show Available Resources)</strong>
+.. rubric:: Basic Current and Future Requests</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">basic-current-and-future-requests</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The <strong>mshow</strong> command can report information on many aspects of the
+scheduling environment. To request information on available resources,
+the &#8216;<strong>-a</strong>&#8216; flag should be used. By default, the <strong>mshow</strong> command
+resource availability query only reports resources that are immediately
+available. To request information on specific resources, the type of
+resources required can be specified using the &#8216;<strong>-w</strong>&#8216; flag as in the
+following example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">taskmem</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">600</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>To view current and future resource availability, the &#8216;<strong>future</strong> flag
+should be set as in the following example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">taskmem</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">600</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">future</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p class="rubric" id="co-allocation-resources-queries">Co-allocation Resources Queries</p>
+<p>In many cases, a particular request will need simultaneous access to
+resources of different types. The <strong>mshow</strong> command supports a
+<em>co-allocation</em> request specified by using multiple &#8216;<strong>-w</strong>&#8216; arguments.
+For example, to request 16 nodes with feature <code class="docutils literal"><span class="pre">fastcpu</span></code> and 2 nodes
+with feature <code class="docutils literal"><span class="pre">fastio</span></code>, the following request might be used:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">nodefeature</span><span class="o">=</span><span class="n">fastcpu</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">nodefeature</span><span class="o">=</span><span class="n">fastio</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">future</span>
+
+<span class="n">Partition</span>     <span class="n">Procs</span>  <span class="n">Nodes</span>   <span class="n">StartOffset</span>      <span class="n">Duration</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>              <span class="mi">16</span>      <span class="mi">8</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">18</span><span class="n">_08</span><span class="o">/</span><span class="mi">25</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">2</span>      <span class="mi">1</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">18</span><span class="n">_08</span><span class="o">/</span><span class="mi">25</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="../commands/mshow.html">mshow -a</a> documentation contains a list
+of the different resources that may be queried as well as examples on
+using <strong>mshow</strong>.</p>
+<p class="rubric" id="using-transaction-ids">Using Transaction IDs</p>
+<p>By default, the <strong>mshow</strong> command reports simply when and where the
+requested resources are available. However, when the &#8216;<strong>tid</strong>&#8216; flag is
+specified, the <strong>mshow</strong> command returns both resource availability
+information and a <em>handle</em> to these resources called a <em>Transaction ID</em>
+as in the following example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">nodefeature</span><span class="o">=</span><span class="n">fastcpu</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">future</span><span class="p">,</span><span class="n">tid</span>
+
+<span class="n">Partition</span>     <span class="n">Procs</span>  <span class="n">Nodes</span>   <span class="n">StartOffset</span>      <span class="n">Duration</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>              <span class="mi">16</span>     <span class="mi">16</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">18</span><span class="n">_08</span><span class="o">/</span><span class="mi">25</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">26</span> <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>In the preceding example, the returned transaction id (<strong>TID</strong>) may then
+be used to reserve the available resources using the <a class="reference external" href="../commands/mrsvctl.html">mrsvctl -c
+-R</a> command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">26</span>
+
+<span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">1</span> <span class="n">successfully</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p>Any TID can be printed out using the <a class="reference external" href="../commands/mschedctl.html">mschedctl -l
+trans</a> command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">trans</span> <span class="mi">26</span>
+
+<span class="n">TID</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span>  <span class="n">A1</span><span class="o">=</span><span class="s1">&#39;node01&#39;</span>  <span class="n">A2</span><span class="o">=</span><span class="s1">&#39;600&#39;</span>  <span class="n">A3</span><span class="o">=</span><span class="s1">&#39;1093465728&#39;</span>  <span class="n">A4</span><span class="o">=</span><span class="s1">&#39;ADVRES&#39;</span>  <span class="n">A5</span><span class="o">=</span><span class="s1">&#39;fastio&#39;</span>
+</pre></div>
+</div>
+<p>Where <strong>A1</strong> is the hostlist, <strong>A2</strong> is the duration, <strong>A3</strong> is the
+starttime, <strong>A4</strong> are any flags, and <strong>A5</strong> are any features.</p>
+<p class="rubric" id="using-reservation-profiles">Using Reservation Profiles</p>
+<p>Reservation profiles (<a class="reference external" href="../a.fparameters.html#rsvprofile">RSVPROFILE</a>)
+stand as templates against which reservations can be created. They can
+contain a hostlist, startime, endtime, duration, access-control list,
+flags, triggers, variables, and most other attributes of an
+Administrative Reservation. The following example illustrates how to
+create a reservation with the exact same trigger-set.</p>
+<div class="hscroll"><div class="highlight-default"><div class="highlight"><pre><span></span>-----
+# moab.cfg
+-----
+
+RSVPROFILE[test1] TRIGGER=Sets=$Var1.$Var2.$Var3.!Net,EType=start,AType=exec,Action=/tmp/host/triggers/Net.sh,Timeout=1:00:00
+RSVPROFILE[test1] TRIGGER=Requires=$Var1.$Var2.$Var3,Sets=$Var4.$Var5,EType=start,AType=exec,Action=/tmp/host/triggers/FS.sh+$Var1:$Var2:$Var3,Timeout=20:00
+RSVPROFILE[test1] TRIGGER=Requires=$Var1.$Var2.$Var3.$Var4.$Var5,Sets=!NOOSinit.OSinit,Etype=start,AType=exec,Action=/tmp/host/triggers/OS.sh+$Var1:$Var2:$Var3:$Var4:$Var5
+RSVPROFILE[test1] TRIGGER=Requires=NOOSini,AType=cancel,EType=start
+RSVPROFILE[test1] TRIGGER=EType=start,Requires=OSinit,AType=exec,Action=/tmp/host/triggers/success.sh
+...
+-----
+</pre></div>
+</div>
+<p>To create a reservation with this profile the <a class="reference external" href="../commands/mrsvctl.html">mrsvctl -c
+-P</a> command is used:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">P</span> <span class="n">test1</span>
+
+
+<span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">1</span> <span class="n">successfully</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p class="rubric" id="using-reservation-groups">Using Reservation Groups</p>
+<p>Reservation groups are a way for Moab to tie reservations together. When
+a reservation is created using multiple Transaction IDs, these
+transactions and their resulting reservations are tied together into one
+group.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">34</span><span class="p">,</span><span class="mi">35</span><span class="p">,</span><span class="mi">36</span>
+
+<span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">99</span> <span class="n">successfully</span> <span class="n">created</span>
+<span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">100</span> <span class="n">successfully</span> <span class="n">created</span>
+<span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">101</span> <span class="n">successfully</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p>In the preceding example, these three reservations would be tied
+together into a single group. The <a class="reference external" href="../commands/mdiag-reservations.html">mdiag
+-r</a> command can be used to see
+which group a reservation belongs to. The <a class="reference external" href="../commands/mrsvctl.html">mrsvctl -q diag
+-g</a> command can also be used to print out a
+specific group of reservations. The <a class="reference external" href="../commands/mrsvctl.html">mrsvctl -c
+-g</a> command can also be used to release a
+group of reservations.</p>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="mshow.html">mshow</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mshowhostingusage.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

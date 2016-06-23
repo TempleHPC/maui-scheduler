@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3. Scheduler Basics &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="3.1. File Layout" href="3.1layout.html" />
+    <link rel="prev" title="2.3. Initial Maui Testing" href="2.3initialtesting.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="3.1layout.html" title="3.1. File Layout"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.3initialtesting.html" title="2.3. Initial Maui Testing"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scheduler-basics">
+<h1>3. Scheduler Basics<a class="headerlink" href="#scheduler-basics" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="3.1layout.html">3.1. File Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3.2environment.html">3.2. Scheduling Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.2environment.html#scheduling-objects">3.2.1. Scheduling Objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#jobs">3.2.1.1. Jobs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="3.2environment.html#requirement-or-req">3.2.1.1.1. Requirement (or Req)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#nodes">3.2.1.2. Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#advance-reservations">3.2.1.3. Advance Reservations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#policies">3.2.1.4. Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#resources">3.2.1.5. Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#task">3.2.1.6. Task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#pe">3.2.1.7. PE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.2environment.html#class-or-queue">3.2.1.8. Class (or Queue)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.3jobflow.html">3.3. Scheduling Iterations and Job Flow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.3jobflow.html#scheduling-iterations">3.3.1. Scheduling Iterations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#update-state-information">3.3.1.1. Update State Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#refresh-reservations">3.3.1.2. Refresh Reservations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#schedule-reserved-jobs">3.3.1.3. Schedule Reserved Jobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#schedule-priority-jobs">3.3.1.4. Schedule Priority Jobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#backfill-jobs">3.3.1.5. Backfill Jobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#update-statistics">3.3.1.6. Update Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#handle-user-requests">3.3.1.7. Handle User Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#perform-next-scheduling-cycle">3.3.1.8. Perform Next Scheduling Cycle</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3.3jobflow.html#detailed-job-flow">3.3.2. Detailed Job Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#determine-basic-job-feasibility">3.3.2.1. Determine Basic Job Feasibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#prioritize-jobs">3.3.2.2. Prioritize Jobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#enforce-configured-throttling-policies">3.3.2.3. Enforce Configured Throttling Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#determine-resource-availability">3.3.2.4. Determine Resource Availability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#allocate-resources-to-job">3.3.2.5. Allocate Resources to Job</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#distribute-jobs-tasks-across-allocated-resources">3.3.2.6. Distribute Jobs Tasks Across Allocated Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.3jobflow.html#launch-job">3.3.2.7. Launch Job</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.4configure.html">3.4. Configuring the Scheduler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.4configure.html#adjusting-server-behavior">3.4.1. Adjusting Server Behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3.4configure.html#logging">3.4.1.1. Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.4configure.html#checkpointing">3.4.1.2. Checkpointing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3.4configure.html#service-port">3.4.1.3. Service Port</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="2.3initialtesting.html"
+                        title="previous chapter">2.3. Initial Maui Testing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="3.1layout.html"
+                        title="next chapter">3.1. File Layout</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/3.0basics.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="3.1layout.html" title="3.1. File Layout"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.3initialtesting.html" title="2.3. Initial Maui Testing"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

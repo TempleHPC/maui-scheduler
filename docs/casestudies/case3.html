@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" />
+    <link rel="up" title="Appendix A: Case Studies" href="../a.acasestudy.html" />
+    <link rel="next" title="Case Study: Data Staging" href="case4.html" />
+    <link rel="prev" title="Case Study: Partitioned Heterogeneous Cluster" href="case2.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="case4.html" title="Case Study: Data Staging"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="case2.html" title="Case Study: Partitioned Heterogeneous Cluster"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" accesskey="U">Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p>Case Study: Background Load</p>
+<p><strong>Overview</strong></p>
+<p>A 64 proc Altix system needs to be scheduled with a significant
+&#8216;background&#8217; load.</p>
+<p><strong>Resources</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Compute Nodes:</td>
+<td>64 processor Altix system with 32 GB RAM</td>
+</tr>
+<tr class="row-even"><td>Resource Manager:</td>
+<td>OpenPBS 2.3</td>
+</tr>
+<tr class="row-odd"><td>Network:</td>
+<td>InternalSGI</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workload</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Job Size:</td>
+<td>Range in size from 1 to 32 processors</td>
+</tr>
+<tr class="row-even"><td>Job Length:</td>
+<td>Jobs range in length from 15 minutes to 48 hours</td>
+</tr>
+<tr class="row-odd"><td>Job Owners:</td>
+<td>Various</td>
+</tr>
+<tr class="row-even"><td>Notes:</td>
+<td>This is a login/development machine.&nbsp; At any given time, there may be a significant load from jobs and processes outside of the resource manager&#8217;s view or control.&nbsp; The major impact of this load related to scheduling is in the area of cpu load and real memory consumption.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Goals</strong></p>
+<p>The scheduler must run the machine at maximum capacity without
+overcommitting either memory or processors.&nbsp; A significant, variable
+background load exists from jobs submitted outside of the resource
+manager&#8217;s view or control.&nbsp; The scheduler must track and account for
+this load and allow space for some variability and growth of this load
+over time.&nbsp; The scheduler should also kill any job which violates its
+requested resource allocation and notify the associated user of this
+violation.</p>
+<p>The scheduler should maximize the throughput associated with the queued
+jobs while avoiding starvation as a secondary concern.</p>
+<p><strong>Analysis</strong></p>
+<p>The background load causes many problems in any mixed batch/interactive
+environment.&nbsp; One problem is that a situation may arise in which the
+highest priority batch job cannot run.&nbsp; Moab can make a reservation for
+this highest priority job.&nbsp; But because there are no constraints on the
+background load, Moab cannot determine when it will drop enough to allow
+this job to run.&nbsp; By default, it optimistically attempts a reservation
+for the next scheduling iteration, perhaps 1 minute out.</p>
+<p>The problem is that this reservation now exists one minute out and when
+Moab attempts to backfill, it can only consider jobs which request less
+than one minute or which can fit &#8220;beside&#8221; this high priority job.
+During the next iteration, Moab still cannot run the job because the
+background load has not dropped and again creates a new reservation for
+one minute into the future.</p>
+<p>The background load has basically turned batch scheduling into an
+exercise in &#8220;resource scavenging.&#8221;&nbsp; If the priority job reservation was
+not there, other smaller queued jobs might be able to run.&nbsp; Therefore,
+to maximize the &#8220;scavenging&#8221; effect, the scheduler should be configured
+to allow this high priority job the first opportunity to use available
+resources but prevent it from reserving these resources if it cannot run
+immediately.</p>
+<p><strong>Configuration</strong></p>
+<p>The configuration needs to accomplish several main objectives including:</p>
+<ul class="simple">
+<li>track the background load to prevent oversubscription</li>
+<li>favor small, short jobs to maximize job turnaround</li>
+<li>prevent blocked high priority jobs from creating reservations</li>
+<li>work with an allocation manager to charge for utilized CPU time</li>
+<li>cancel jobs which exceed specified resource limits</li>
+<li>notify users when a job is canceled due to resource usage limit
+violations</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># allow jobs to share node</span>
+<span class="n">NODEACCESSPOLICY</span>           <span class="n">SHARED</span>
+
+<span class="c1"># track background load</span>
+<span class="n">NODELOADPOLICY</span>             <span class="n">ADJUSTPROCS</span>
+<span class="n">NODEUNTRACKEDLOADFACTOR</span>    <span class="mf">1.2</span>
+
+<span class="c1"># favor short jobs, disfavor large jobs</span>
+<span class="n">QUEUETIMEWEIGHT</span>            <span class="mi">0</span>
+<span class="n">RESOURCEWEIGHT</span>             <span class="o">-</span><span class="mi">10</span>
+<span class="n">PROCWEIGHT</span>                 <span class="mi">128</span>
+<span class="n">MEMWEIGHT</span>                  <span class="mi">1</span>
+<span class="n">XFACTOR</span>                    <span class="mi">1000</span>
+
+<span class="c1"># disable priority reservations for the default QOS</span>
+<span class="n">QOSFLAGS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                <span class="n">NORESERVATION</span>
+
+<span class="c1"># debit by CPU</span>
+<span class="n">BANKTYPE</span>                   <span class="n">QBANK</span>
+<span class="n">BANKSERVER</span>                 <span class="n">develop1</span>
+<span class="n">BANKPORT</span>                   <span class="mi">2334</span>
+<span class="n">BANKCHARGEMODE</span>             <span class="n">DEBITSUCCESSFULLCPU</span>
+
+<span class="c1"># kill resource hogs</span>
+<span class="n">RESOURCELIMITPOLICY</span>        <span class="n">WALLTIME</span><span class="p">:</span><span class="n">ALWAYS</span><span class="p">:</span><span class="n">CANCEL</span>
+
+<span class="c1"># notify user of job events</span>
+<span class="n">NOTIFYSCRIPT</span>               <span class="n">tools</span><span class="o">/</span><span class="n">notify</span><span class="o">.</span><span class="n">pl</span>
+</pre></div>
+</div>
+<p><strong>Monitoring</strong></p>
+<p>The most difficult aspects of this environment are properly reserving
+space for the untracked background load.&nbsp; Since this load is outside the
+control of the scheduler and resource manager, it has no constraints.
+It could grow suddenly and overwhelm the machine, or just as easily
+disappear.&nbsp; The NODEUNTRACKEDLOADFACTOR parameter provides slack for
+this background load to grow and shrink.&nbsp; However, since there is no
+control over the load, the effectiveness of this parameter will depend
+on the statistical behavior of the load.&nbsp; The greater the value, the
+more slack provided, and the less likely the system is to be
+overcommitted.&nbsp; However, a larger value also means more resources are in
+this reserve which are not available for scheduling.</p>
+<p>The second aspect of this environment which must be monitored is the
+trade-off between high job throughput and job starvation.&nbsp; The &#8216;locally
+greedy&#8217; approach of favoring the smallest, shortest jobs will have a
+negative effect on larger and longer jobs.&nbsp; The large, long jobs which
+have been queued for some time can be pushed to the front of the queue
+by increasing the
+<a class="reference external" href="../a.fparameters.html#queuetimeweight">QUEUETIMEWEIGHT</a> factor until
+a satisfactory balance is achieved.</p>
+<p><strong>Conclusions</strong></p>
+<p>The right solution is to migrate the users over to the batch system or
+provide them with a constrained resource &#8216;box&#8217; to play in, either
+through a processor partition, standing reservation, or a logical
+software system.&nbsp; The value in this is that it prevents this
+unpredictable background load from wreaking havoc with a dedicated
+resource reservation system.</p>
+<p>Moab can reserve resources for jobs according to all currently available
+information.&nbsp; However, the unpredictable nature of the background load
+means that those resources may not be available when they should be,
+which result in canceled reservations and hinder enforcement of site
+policies and priorities.</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="case2.html"
+                        title="previous chapter">Case Study: Partitioned Heterogeneous Cluster</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="case4.html"
+                        title="next chapter">Case Study: Data Staging</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/casestudies/case3.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="case4.html" title="Case Study: Data Staging"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="case2.html" title="Case Study: Partitioned Heterogeneous Cluster"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" >Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

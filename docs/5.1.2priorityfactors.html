@@ -1,0 +1,593 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.1.2. Job Priority Factors &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="5.1. Job Prioritization" href="5.1jobprioritization.html" />
+    <link rel="next" title="5.1.3. Common Priority Usage" href="5.1.3priorityusage.html" />
+    <link rel="prev" title="5.1.1. Priority Overview" href="5.1.1priorityoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="5.1.3priorityusage.html" title="5.1.3. Common Priority Usage"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="5.1.1priorityoverview.html" title="5.1.1. Priority Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="5.1jobprioritization.html" accesskey="U">5.1. Job Prioritization</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="job-priority-factors">
+<h1>5.1.2. Job Priority Factors<a class="headerlink" href="#job-priority-factors" title="Permalink to this headline">¶</a></h1>
+<p>Maui allows jobs to be prioritized based on a range of job related
+factors. These factors are broken down into a two-level hierarchy of
+priority factors and subfactors each of which can be independently
+assigned a weight. This approach provides the administrator with
+detailed yet straightforward control of the job selection process. The
+table below highlights the components and subcomponents which make up
+the total job priority.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="13%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Component</strong></td>
+<td><strong>SubComponent</strong></td>
+<td><strong>Metric</strong></td>
+</tr>
+<tr class="row-even"><td><strong>CRED</strong>
+(job credentials)</td>
+<td>USER</td>
+<td>user specific priority (See <a class="reference external" href="a.fparameters.html#usercfg">USERCFG</a>)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>GROUP</td>
+<td>group specific priority (See <a class="reference external" href="a.fparameters.html#groupcfg">GROUPCFG</a>)</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>ACCOUNT</td>
+<td>account specific priority (SEE <a class="reference external" href="a.fparameters.html#accountcfg">ACCOUNTCFG</a>)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>QOS</td>
+<td>QOS specific priority (See <a class="reference external" href="a.fparameters.html#qoscfg">QOSCFG</a>)</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>CLASS</td>
+<td>class/queue specific priority (See <a class="reference external" href="a.fparameters.html#classcfg">CLASSCFG</a>)</td>
+</tr>
+<tr class="row-odd"><td><strong>FS</strong>
+(fairshare usage)</td>
+<td>FSUSER</td>
+<td>user based historical usage (See <a class="reference external" href="6.3fairshare.html#overview">Fairshare Overview</a>)</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>FSGROUP</td>
+<td>group based historical usage (See <a class="reference external" href="6.3fairshare.html#overview">Fairshare Overview</a>)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>FSACCOUNT</td>
+<td>account based historical usage (See <a class="reference external" href="6.3fairshare.html#overview">Fairshare Overview</a>)</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>FSQOS</td>
+<td>QOS base historical usage (See <a class="reference external" href="6.3fairshare.html#overview">Fairshare Overview</a>)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>FSCLASS</td>
+<td>class/queue based historical usage (See <a class="reference external" href="6.3fairshare.html#overview">Fairshare Overview</a>)</td>
+</tr>
+<tr class="row-even"><td><strong>RES</strong>
+(requested job resources)</td>
+<td>NODE</td>
+<td>number of nodes requested</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>PROC</td>
+<td>number of processors requested</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>MEM</td>
+<td>total real memory requested (in MB)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>SWAP</td>
+<td>total virtual memory requested (in MB)</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>DISK</td>
+<td>total local disk requested (in MB)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>PS</td>
+<td>total proc-seconds requested</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>PE</td>
+<td>total processor-equivalent requested</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>WALLTIME</td>
+<td>total walltime requested (in seconds)</td>
+</tr>
+<tr class="row-even"><td><strong>SERV</strong>
+(current service levels)</td>
+<td>QUEUETIME</td>
+<td>time job has been queued (in minutes)</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>XFACTOR</td>
+<td>minimum job expansion factor</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>BYPASS</td>
+<td>number of times job has been bypassed by backfill</td>
+</tr>
+<tr class="row-odd"><td><strong>TARGET</strong>
+(target service levels)</td>
+<td>TARGETQUEUETIME</td>
+<td>time until queuetime target is reached (exponential)</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>TARGETXFACTOR</td>
+<td>distance to target expansion factor (exponential)</td>
+</tr>
+<tr class="row-odd"><td><strong>USAGE</strong>
+(consumed resources &#8211; active jobs only)</td>
+<td>CONSUMED</td>
+<td>proc-seconds dedicated to date</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>REMAINING</td>
+<td>proc-seconds outstanding</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>PERCENT</td>
+<td>percent of required walltime consumed</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>EXECUTIONTIME</td>
+<td>seconds since job started</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="credential-cred-component">` &lt;&gt;`__5.1.2.1 Credential (CRED) Component</p>
+<p>The credential component allows a site to prioritize jobs based on
+political issues such as the relative importance of certain groups or
+accounts. This allows direct political priorities to be applied to jobs.</p>
+<p>The priority calculation for the credential component is:</p>
+<div class="line-block">
+<div class="line">`` Priority += CREDWEIGHT * (``</div>
+<div class="line">`` USERWEIGHT * J-&gt;U-&gt;Priority +``</div>
+<div class="line">`` GROUPWEIGHT * J-&gt;G-&gt;Priority +``</div>
+<div class="line">`` ACCOUNTWEIGHT * J-&gt;A-&gt;Priority +``</div>
+<div class="line">`` QOSWEIGHT * J-&gt;Q-&gt;Priority +``</div>
+<div class="line">`` CLASSWEIGHT * J-&gt;C-&gt;Priority)``</div>
+</div>
+<p>All user, group, account, QoS, and class weights are specified by
+setting the <strong>PRIORITY</strong> attribute of using the respective &#8216;<strong>*CFG</strong>&#8216;
+parameter, namely, <strong>USERCFG</strong>, <strong>GROUPCFG</strong>, <strong>ACCOUNTCFG</strong>,
+<strong>QOSCFG</strong>, and <strong>CLASSCFG</strong>.</p>
+<p>For example, to set user and group priorities, the following might be
+used.</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">CREDWEIGHT</span> <span class="pre">1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">USERWEIGHT</span> <span class="pre">1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">GROUPWEIGHT</span> <span class="pre">1</span></code></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[john]</span> <span class="pre">PRIORITY=2000</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[paul]</span> <span class="pre">PRIORITY=-1000</span></code></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">GROUPCFG[staff]</span> <span class="pre">PRIORITY=10000</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<p><a href="#id1"><span class="problematic" id="id2">|image5|</span></a>Class (or queue) priority may also be specified via the
+resource manager where supported (i.e., PBS queue priorities). However,
+if Maui class priority values are also specified, the resource manager
+priority values will be overwritten.</p>
+<p>All priorities may be positive or negative.</p>
+<p class="rubric" id="fairshare-fs-component">` &lt;&gt;`__5.1.2.2 Fairshare (FS) Component</p>
+<p>Fairshare components allow a site to favor jobs based on short term
+historical usage. The Fairshare Overview describes the configuration and
+use of Fairshare in detail.</p>
+<p>After the brief reprieve from complexity found in the QOS factor, we
+come to the Fairshare factor. This factor is used to adjust a job&#8217;s
+priority based on the historical percentage system utilization of the
+jobs user, group, account, or QOS. This allows you to &#8216;steer&#8217; the
+workload toward a particular usage mix across user, group, account, and
+QOS dimensions. The fairshare priority factor calculation is</p>
+<div class="line-block">
+<div class="line">`` Priority += FSWEIGHT * MIN(FSCAP, (``</div>
+<div class="line">`` FSUSERWEIGHT * DeltaUserFSUsage +``</div>
+<div class="line">`` FSGROUPWEIGHT * DeltaGroupFSUsage +``</div>
+<div class="line">`` FSACCOUNTWEIGHT * DeltaAccountFSUsage +``</div>
+<div class="line">`` FSQOSWEIGHT * DeltaQOSFSUsage +``</div>
+<div class="line">`` FSCLASSWEIGHT * DeltaClassFSUsage))``</div>
+</div>
+<p>All &#8216;<strong>*WEIGHT</strong>&#8216; parameters above are specified on a per partition
+basis in the maui.cfg file. The &#8216;Delta*Usage&#8217; components represents the
+difference in actual fairshare usage from a fairshare usage target.
+Actual fairshare usage is determined based on historical usage over the
+timeframe specified in the fairshare configuration. The target usage can
+be either a target, floor, or ceiling value as specified in the
+fairshare config file. The fairshare documentation covers this in detail
+but an example should help obfuscate things completely. Consider the
+following information associated with calculating the fairshare factor
+for job X.</p>
+<div class="line-block">
+<div class="line">Job X</div>
+<div class="line">User A</div>
+<div class="line">Group B</div>
+<div class="line">Account C</div>
+<div class="line">QOS D</div>
+<div class="line">Class E</div>
+</div>
+<div class="line-block">
+<div class="line">User A</div>
+<div class="line">Fairshare Target: 50.0</div>
+<div class="line">Current Fairshare Usage: 45.0</div>
+</div>
+<div class="line-block">
+<div class="line">Group B</div>
+<div class="line">Fairshare Target: [NONE]</div>
+<div class="line">Current Fairshare Usage: 65.0</div>
+</div>
+<div class="line-block">
+<div class="line">Account C</div>
+<div class="line">Fairshare Target: 25.0</div>
+<div class="line">Current Fairshare Usage: 35.0</div>
+</div>
+<div class="line-block">
+<div class="line">QOS 3</div>
+<div class="line">Fairshare Target: 10.0+</div>
+<div class="line">Current Fairshare Usage: 25.0</div>
+</div>
+<div class="line-block">
+<div class="line">Class E</div>
+<div class="line">Fairshare Target: [NONE]</div>
+<div class="line">Current Fairshare Usage: 20.0</div>
+</div>
+<div class="line-block">
+<div class="line">PriorityWeights:</div>
+<div class="line">FSWEIGHT 100</div>
+<div class="line">FSUSERWEIGHT 10</div>
+<div class="line">FSGROUPWEIGHT 20</div>
+<div class="line">FSACCOUNTWEIGHT 30</div>
+<div class="line">FSQOSWEIGHT 40</div>
+<div class="line">FSCLASSWEIGHT 0</div>
+</div>
+<p>In this example, the Fairshare component calculation would be as
+follows:</p>
+<div class="line-block">
+<div class="line">Priority += 100 * (</div>
+<div class="line">10 * 5 +</div>
+<div class="line">20 * 0 +</div>
+<div class="line">30 * (-10) +</div>
+<div class="line">40 * 0 +</div>
+<div class="line">0 * 0)</div>
+</div>
+<p>User A is 5% below his target so fairshare increases the total fairshare
+factor accordingly. Group B has no target so group fairshare usage is
+ignored. Account C is above its 10% above its fairshare usage target so
+this component decreases the job&#8217;s total fairshare factor. QOS 3 is 15%
+over its target but the &#8216;+&#8217; in the target specification indicates that
+this is a &#8216;floor&#8217; target, only influencing priority when fairshare usage
+drops below the target value. Thus, the QOS 3 fairshare usage delta does
+not influence the fairshare factor.</p>
+<p>Fairshare is a great mechanism for influencing job turnaround time via
+priority to favor a particular distribution of jobs. However, it is
+important to realize that fairshare can only favor a particular
+distribution of jobs, it cannot force it. If user X has a fairshare
+target of 50% of the machine but does not submit enough jobs, no amount
+of priority favoring will get user X&#8217;s usage up to 50%. See the
+<a class="reference external" href="6.3fairshare.html">Fairshare Overview</a> for more information.</p>
+<p class="rubric" id="resource-res-component">` &lt;&gt;`__5.1.2.3 Resource (RES) Component</p>
+<p>Weighting jobs by the amount of resources requested allows a site to
+favor particular types of jobs. Such prioritization may allow a site to
+better meet site mission objectives, improve fairness, or even improve
+overall system utilization.</p>
+<p>Resource based prioritization is valuable when you want to favor jobs
+based on the resources requested. This is good in three main scenarios;
+first, when you need to favor large resource jobs because its part of
+your site&#8217;s mission statement; second, when you want to level the
+response time distribution across large and small jobs (small jobs are
+more easily backfilled and thus generally have better turnaround time);
+and finally, when you want to improve system utilization. What? Yes,
+system utilization actually increases as large resource jobs are pushed
+to the front of the queue. This keeps the smaller jobs in the back where
+they can be selected for backfill and thus increase overall system
+utilization. Its a lot like the story about filling a cup with golf
+balls and sand. If you put the sand in first, it gets in the way when
+you try to put in the golf balls. However, if you put in the golf balls
+first, the sand can easily be poured in around them completely filling
+the cup.</p>
+<p>The calculation for determining the total resource priority factor is:</p>
+<div class="line-block">
+<div class="line">`` Priority += RESWEIGHT * MIN(RESCAP, (``</div>
+<div class="line">`` NODEWEIGHT * TotalNodesRequested +``</div>
+<div class="line">`` PROCWEIGHT * TotalProcessorsRequested +``</div>
+<div class="line">`` MEMWEIGHT * TotalMemoryRequested +``</div>
+<div class="line">`` SWAPWEIGHT * TotalSwapRequested +``</div>
+<div class="line">`` DISKWEIGHT * TotalDiskRequested +``</div>
+<div class="line">`` PEWEIGHT * TotalPERequested))``</div>
+</div>
+<p>The sum of all weighted resources components is then multiplied by the
+<strong>RESWEIGHT</strong> parameter and capped by the <strong>RESCAP</strong> parameter. Memory,
+Swap, and Disk are all measured in megabytes (MB). The final resource
+component, PE, represents &#8216;<a class="reference external" href="3.2environment.html#PEoverview">Processor
+Equivalents</a>&#8216;. This component can be
+viewed as a processor-weighted maximum &#8216;percentage of total resources&#8217;
+factor. For example, if a job requested 25% of the processors and 50% of
+the total memory on a 128 processor O2K system, it would have a PE value
+of MAX(25,50) * 128, or 64. The concept of PE&#8217;s may be a little awkward
+to grasp initially but it is a highly effective metric in shared
+resource systems.</p>
+<p class="rubric" id="service-serv-component">5.1.2.4 Service (SERV) Component</p>
+<p>The Service component essentially specifies which service metrics are of
+greatest value to the site. Favoring one service subcomponent over
+another will generally cause that service metric to improve.</p>
+<p class="rubric" id="queuetime-queuetime-subcomponent">` &lt;&gt;`__5.1.2.4.1 QueueTime (QUEUETIME) Subcomponent</p>
+<p>In the priority calculation, a job&#8217;s queue time is a duration measured
+in minutes. Use of this subcomponent tends to prioritize jobs in a FIFO
+order. Favoring queue time improves queue time based fairness metrics
+and is probably the most widely used single job priority metric. In
+fact, under the initial default configuration, this is the only priority
+subcomponent enabled within Maui. It is important to note that within
+Maui, a job&#8217;s queue time is not necessarily the amount of time since the
+job was submitted. The parameter
+<a class="reference external" href="a.fparameters.html#jobprioaccrualpolicy">JOBPRIOACCRUALPOLICY</a>
+allows a site to select how a job will accrue queue time based on
+meeting various <a class="reference external" href="6.2throttlingpolicies.html">throttling policies</a>.
+Regardless of the policy used to determine a job&#8217;s queue time, this
+&#8216;effective&#8217; queue time is used in the calculation of the
+<a class="reference external" href="#queuetimesubcomponent">QUEUETIME</a>, <a class="reference external" href="#xfactorsub">XFACTOR</a>,
+<a class="reference external" href="#target">TARGETQUEUETIME</a>, and <a class="reference external" href="#target">TARGETXFACTOR</a> priority
+subcomponent values.</p>
+<p>The need for a distinct <em>effective</em> queue time is necessitated by the
+fact that most sites have pretty smart users and pretty smart users like
+to work the system, whatever system it happens to be. A common practice
+at some long existent sites is for some users to submit a large number
+of jobs and then place them on hold. These jobs remain with a hold in
+place for an extended period of time and when the user is ready to run a
+job, the needed executable and data files are linked into place and the
+hold released on one of these &#8216;pre submitted&#8217; jobs. The extended hold
+time guarantees that this job is now the highest priority job and will
+be the next to run. The use of the <strong>JOBPRIOACCRUALPOLICY</strong> parameter
+can prevent this practice as well as preventing &#8216;queue stuffers&#8217; from
+doing similar things on a shorter time scale. These &#8216;queue stuffer&#8217;
+users submit hundreds of jobs at once so as to swamp the machine and hog
+use of the available compute resources. This parameter prevents the user
+from gaining any advantage from stuffing the queue by not allowing these
+jobs to accumulate any queue time based priority until they meet certain
+idle and/or active Maui fairness policies. (i.e., max job per user, max
+idle job per user, etc.)</p>
+<p>As a final note, the parameter
+<a class="reference external" href="a.fparameters.html#queuetimeweight">QUEUETIMEWEIGHT</a> can be adjusted
+on a per QOS basis using the <a class="reference external" href="a.fparameters.html#qoscfg">QOSCFG</a>
+parameter and the <strong>QTWEIGHT</strong> attribute. For example, the line
+&#8216;<code class="docutils literal"><span class="pre">QOSCFG[special]</span> <span class="pre">QTWEIGHT=5000</span></code>&#8216; will cause jobs utilizing the QOS
+<code class="docutils literal"><span class="pre">special</span></code> to have their queue time subcomponent weight <em>increased</em> by
+5000.</p>
+<p class="rubric" id="expansion-factor-xfactor-subcomponent">` &lt;&gt;`__5.1.2.4.2 Expansion Factor (XFACTOR) Subcomponent</p>
+<div class="line-block">
+<div class="line">The expansion factor subcomponent has an effect similar to the queue
+time factor but favors shorter jobs based on their</div>
+<div class="line">requested wallclock run time. In its canonical form, the expansion
+factor (XFactor) metric is calculated as</div>
+</div>
+<p>`` XFACTOR = 1 + &lt;QUEUETIME&gt; / &lt;EXECUTIONTIME&gt;``</p>
+<p>However, a couple of aspects of this calculation make its use more
+difficult. First, the length of time the job will actually run,
+&#8216;Execution Time&#8217;, is not actually known until the job completes. All
+that is known is how much time the job requests. Secondly, as described
+in the <a class="reference external" href="#queuetimesubcomponent">Queue Time Subcomponent</a> section,
+Maui does not necessarily use the <em>raw</em> time since job submission to
+determine &#8216;QueueTime&#8217; so as to prevent various scheduler abuses.
+Consequently, Maui uses the following modified equation:</p>
+<p><code class="docutils literal"><span class="pre">XFACTOR</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">+</span> <span class="pre">&lt;EFFQUEUETIME&gt;</span> <span class="pre">/</span> <span class="pre">&lt;WALLCLOCKLIMIT&gt;</span></code></p>
+<p>In the equation above, <code class="docutils literal"><span class="pre">EFFQUEUETIME</span></code> is the <em>effective</em> queue time
+subject to the
+<a class="reference external" href="a.fparameters.html#jobprioaccrualpolicy">JOBPRIOACCRUALPOLICY</a>
+parameter and <code class="docutils literal"><span class="pre">WALLCLOCKLIMIT</span></code> is the user or system specified job
+wallclock limit.</p>
+<div class="line-block">
+<div class="line">Using this equation, it can be seen that short running jobs will have
+an xfactor that will grow much faster over time</div>
+<div class="line">than the xfactor associated with long running jobs. The table below
+demonstrates this <em>favoring</em> of short running jobs.</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="17%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Job Queue Time</strong></td>
+<td>1 hour</td>
+<td>2 hours</td>
+<td>4 hours</td>
+<td>8 hours</td>
+<td>16 hours</td>
+</tr>
+<tr class="row-even"><td>XFactor for 1 hour job</td>
+<td>1 + (1 / 1) = 2.00</td>
+<td>1 + (2 / 1) = 3.00</td>
+<td>1 + (4 / 1) = 5.00</td>
+<td>1 + (8 / 1) = 9.00</td>
+<td>1 + (16 / 1) = 17.0</td>
+</tr>
+<tr class="row-odd"><td>XFactor for 4 hour job</td>
+<td>1 + (1 / 4) = 1.25</td>
+<td>1 + (2 / 4) = 1.50</td>
+<td>1 + (4 / 4) = 2.00</td>
+<td>1 + (8 / 4) = 3.00</td>
+<td>1 + (16 / 4) = 5.0</td>
+</tr>
+</tbody>
+</table>
+<p>Since XFactor is calculated as a ratio of two values, it is possible for
+this subcomponent to be almost arbitrarily large potentially swamping
+the value of other priority subcomponents. This can be addressed either
+by using the subcomponent cap
+<a class="reference external" href="a.fparameters.html#xfactorcap">XFACTORCAP</a>, or by using the
+<a class="reference external" href="a.fparameters.html#xfminwclimit">XFMINWCLIMIT</a> parameter. If the
+later is used, the calculation for the xfactor subcomponent value
+becomes:</p>
+<p>`` XFACTOR = 1 + &lt;EFFQUEUETIME&gt; / MAX(&lt;XFMINWCLIMIT&gt;,&lt;WALLCLOCKLIMIT&gt;)``</p>
+<p>The use of the <strong>XFMINWCLIMIT</strong> parameter allows a site to prevent very
+short jobs from causing the Xfactor subcomponent to grow inordinately.</p>
+<p>Some sites consider XFactor to be a more <em>fair</em> scheduling performance
+metric than queue time. At these sites, job XFactor is given far more
+weight than job queue time when calculating job priority and
+consequently, job XFactor distribution tends to be fairly level across a
+wide range of job durations. (i.e., A flat XFactor distribution of 1.0
+would result in a one minute job being queued on average one minute,
+while a 24 hour job would be queued an average of 24 hours).</p>
+<p>Like queue time, the effective XFactor subcomponent weight is the sum of
+two weights, the <strong>XFACTORWEIGHT</strong> parameter and the QOS specific
+XFWEIGHT setting. For example, the line
+&#8216;<code class="docutils literal"><span class="pre">QOSCFG[special]</span> <span class="pre">XFWEIGHT=5000</span></code>&#8216; will cause jobs utilizing the QOS
+<code class="docutils literal"><span class="pre">special</span></code> to have their expansion factor subcomponent weight
+<em>increased</em> by 5000.</p>
+<p class="rubric" id="bypass-bypass-subcomponent">` &lt;&gt;`__5.1.2.4.3 Bypass (BYPASS) Subcomponent</p>
+<p>The bypass factor is the forgotten stepchild of the priority
+subcomponent family. It was originally introduced to prevent backfill
+based starvation. It is based on the &#8216;bypass&#8217; count of a job where the
+bypass count is increased by one every time the job is &#8216;bypassed&#8217; by a
+lower priority job via backfill. The calculation for this factor is
+simply. Over the years, the anticipated backfill starvation has never
+been reported. The good news is that if it ever shows up, Maui is ready!</p>
+<p class="rubric" id="target-service-targ-component">` &lt;&gt;`__5.1.2.5 Target Service (TARG) Component</p>
+<p>The target factor component of priority takes into account job
+scheduling performance targets. Currently, this is limited to target
+expansion factor and target queue time. Unlike the expansion factor and
+queue time factors described earlier which increase gradually over time,
+the target factor component is designed to grow exponentially as the
+target metric is approached. This behavior causes the scheduler to do
+essentially &#8216;all in its power&#8217; to make certain the scheduling targets
+are met.</p>
+<p>The priority calculation for the target factor is:</p>
+<div class="line-block">
+<div class="line">`` Priority += TARGWEIGHT * (``</div>
+<div class="line">`` QueueTimeComponent +``</div>
+<div class="line">`` XFactorComponent)``</div>
+</div>
+<p>The queue time and expansion factor target are specified on a per QOS
+basis using the &#8216;QOSXFTARGET&#8217; and &#8216;QOSQTTARGET&#8217; parameters. The
+QueueTime and XFactor component calculations are designed produce small
+values until the target value begins to approach at which point these
+components grow very rapidly. If the target is missed, these component
+will remain high and continue to grow but will not grow exponentially.</p>
+<p class="rubric" id="usage-usage-component">5.1.2.6 Usage (USAGE) Component</p>
+<p>The Usage component applies to active jobs only.</p>
+<p>The priority calculation for the usage priority factor is:</p>
+<div class="line-block">
+<div class="line">`` Priority += USAGEWEIGHT * (``</div>
+<div class="line">`` USAGECONSUMEDWEIGHT* ProcSecondsConsumed +``</div>
+<div class="line">`` USAGEREMAININGWEIGHT* ProcSecRemaining +``</div>
+<div class="line">`` USAGEEXECUTIONTIMEWEIGHT* SecondsSinceStart +``</div>
+<div class="line">`` USAGEPERCENTWEIGHT* WalltimePercent )``</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="5.1.1priorityoverview.html"
+                        title="previous chapter">5.1.1. Priority Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="5.1.3priorityusage.html"
+                        title="next chapter">5.1.3. Common Priority Usage</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/5.1.2priorityfactors.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="5.1.3priorityusage.html" title="5.1.3. Common Priority Usage"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="5.1.1priorityoverview.html" title="5.1.1. Priority Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="5.1jobprioritization.html" >5.1. Job Prioritization</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

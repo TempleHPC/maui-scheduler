@@ -1,0 +1,527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p><strong>Throttling Policies (Maui 2.3.0 - 3.0.6)</strong>
+Maui&#8217;s early style throttling policies are controlled via a large number
+of independent parameters. Throttling policies control and constrain
+<em>instantaneous</em> resource usage. They would, for example, allow a site to
+limit a user to running only 6 jobs at any given time or prevent a group
+from utilizing more than 40 total processors at any given time. They
+DONOT control historical usage. This is handled using Maui&#8217;s
+<a class="reference external" href="6.3fairshare.html">Fairshare</a> facility. Also, unlike Maui 3.0.7 and
+higher, early style throttling did not allow credential specific limits.</p>
+<div class="line-block">
+<div class="line">Subject to the above constraints, Maui&#8217;s early throttling policy
+facility is still a very useful tool in establishing <em>fair</em></div>
+<div class="line">resource usage and may be used in conjunction with Fairshare,
+<a class="reference external" href="7.3qos.html">QOS</a>, and <a class="reference external" href="5.1jobprioritization.html">Priority</a>
+features to establish significant control over cluster behavior. The
+table below lists the parameters associated with Maui&#8217;s early style
+throttling.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>NOTE</strong>: In all cases, three parameters are grouped together. The
+first, &#8216;<strong>MAX*POLICY</strong>&#8216; must be set to <strong>ON</strong> in order for the policy
+to be enforced. The second, &#8216;<strong>MAX*COUNT</strong>&#8216;, constrains the &#8216;<em>hard
+limit</em>&#8216; which the scheduler must never violate under any conditions.
+The third, &#8216;<strong>SMAX*COUNT</strong>&#8216;, is called a &#8216;<em>soft limit</em>&#8216; and if
+specified, will set a lower, more constraining limit which the
+scheduler should never violate unless no other jobs are available.</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Parameter</strong></td>
+<td><strong>Details</strong></td>
+<td><strong>Example</strong></td>
+</tr>
+<tr class="row-even"><td><strong>MAXJOBPERUSERPOLICY</strong>
+<strong>MAXJOBPERUSERCOUNT</strong>
+<strong>SMAXJOBPERUSERCOUNT</strong></td>
+<td>limits the maximum total
+number of jobs any given
+user may have active
+(running) simultaneously</td>
+<td><a href="#id1"><span class="problematic" id="id2">``</span></a>MAXJOBPERUSERPOLICY ON
+``
+<a href="#id3"><span class="problematic" id="id4">``</span></a>MAXJOBPERUSERCOUNT  4`
+`
+(allow each user to run
+up to 4 jobs
+simultaneously)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROCPERUSERPOLICY</strong>
+<strong>MAXPROCPERUSERCOUNT</strong>
+<strong>SMAXPROCPERUSERCOUNT</strong></td>
+<td>limits the maximum total
+number of processors any
+given user may have
+active (allocated to
+running jobs)
+simultaneously</td>
+<td><code class="docutils literal"><span class="pre">MAXPROCPERUSERPOLICY</span> <span class="pre">O</span>
+<span class="pre">N</span></code>
+<code class="docutils literal"><span class="pre">MAXPROCPERUSERCOUNT</span>&nbsp; <span class="pre">3</span>
+<span class="pre">2</span></code>
+(allow each user to
+utilize up to 32
+processors
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><strong>MAXNODEPERUSERPOLICY</strong>
+<strong>MAXNODEPERUSERCOUNT</strong>
+<strong>SMAXNODEPERUSERCOUNT</strong></td>
+<td>limits the maximum total
+number of nodes any
+given user may have
+active (allocated to
+running jobs)
+simultaneously</td>
+<td><code class="docutils literal"><span class="pre">MAXNODEPERUSERPOLICY</span> <span class="pre">O</span>
+<span class="pre">N</span></code>
+<code class="docutils literal"><span class="pre">MAXNODEPERUSERCOUNT</span>&nbsp; <span class="pre">1</span>
+<span class="pre">6</span></code>
+<a href="#id5"><span class="problematic" id="id6">``</span></a>SMAXNODEPERUSERCOUNT 8
+``
+(allow each user to
+utilize up to 8 nodes
+simultaneously by
+default. If no other
+jobs can run and idle
+nodes are available,
+allow each user to
+utilize up to 16 nodes
+simultaneously.)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROCSECONDPERUSERPO
+LICY</strong>
+<strong>MAXPROCSECONDPERUSERCO
+UNT</strong>
+<strong>SMAXPROCSECONDPERUSERC
+OUNT</strong></td>
+<td>limits the maximum total
+number of
+processor-seconds any
+given user may have
+active (allocated to
+running jobs)
+simultaneously. NOTE:
+processor-seconds
+associated with any
+given job is calculated
+as PROCESSORS *
+REMAININGWALLTIME</td>
+<td><code class="docutils literal"><span class="pre">MAXPROCSECONDPERUSERPO</span>
+<span class="pre">LICY</span> <span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXPROCSECONDPERUSERCO</span>
+<span class="pre">UNT</span>&nbsp; <span class="pre">20000</span></code>
+(allow each user to
+utilize up to 20000
+processor-seconds
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><strong>MAXJOBQUEUEDPERUSERPOL
+ICY</strong>
+<strong>MAXJOBQUEUEDPERUSERCOU
+NT</strong>
+<strong>SMAXJOBQUEUEDPERUSERCO
+UNT</strong></td>
+<td>limits the maximum total
+number of idle jobs
+associated with each
+user which Maui will
+consider eligible for
+scheduling</td>
+<td><code class="docutils literal"><span class="pre">MAXJOBQUEUEDPERUSERPOL</span>
+<span class="pre">ICY</span> <span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXJOBQUEUEDPERUSERCOU</span>
+<span class="pre">NT</span>&nbsp; <span class="pre">3</span></code>
+(Maui will only consider
+3 idle jobs per user in
+each scheduling
+iteration)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPEPERUSERPOLICY</strong>
+<strong>MAXPEPERUSERCOUNT</strong>
+<strong>SMAXPEPERUSERCOUNT</strong></td>
+<td>limits the maximum total
+number of
+<a href="#id37"><span class="problematic" id="id38">`processor-equivalents &lt;
+3.2environment.html#PEov
+erview&gt;`__</span></a>
+any given user may have
+active (running)
+simultaneously</td>
+<td><a href="#id7"><span class="problematic" id="id8">``</span></a>MAXPEPERUSERPOLICY ON`
+`
+<a href="#id9"><span class="problematic" id="id10">``</span></a>MAXPEPERUSERCOUNT  48`
+`
+(allow each user have up
+to 48 PE&#8217;s allocated to
+active jobs
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><strong>MAXJOBPERGROUPPOLICY</strong>
+<strong>MAXJOBPERGROUPCOUNT</strong>
+<strong>SMAXJOBPERGROUPCOUNT</strong></td>
+<td>limits the maximum total
+number of jobs any given
+group may have active
+(running) simultaneously</td>
+<td><code class="docutils literal"><span class="pre">MAXJOBPERGROUPPOLICY</span> <span class="pre">O</span>
+<span class="pre">N</span></code>
+<a href="#id11"><span class="problematic" id="id12">``</span></a>MAXJOBPERGROUPCOUNT  4
+``
+(allow each group to run
+up to 4 jobs
+simultaneously)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROCPERGROUPPOLICY*
+*
+**MAXPROCPERGROUPCOUNT</strong>
+<a href="#id13"><span class="problematic" id="id14">**</span></a>SMAXPROCPERGROUPCOUNT*
+*</td>
+<td>limits the maximum total
+number of processors any
+given group may have
+active (allocated to
+running jobs)
+simultaneously</td>
+<td><code class="docutils literal"><span class="pre">MAXPROCPERGROUPPOLICY</span>
+<span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXPROCPERGROUPCOUNT</span>
+<span class="pre">32</span></code>
+(allow each group to
+utilize up to 32
+processors
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><strong>MAXNODEPERGROUPPOLICY*
+*
+**MAXNODEPERGROUPCOUNT</strong>
+<a href="#id15"><span class="problematic" id="id16">**</span></a>SMAXNODEPERGROUPCOUNT*
+*</td>
+<td>limits the maximum total
+number of nodes any
+given group may have
+active (allocated to
+running jobs)
+simultaneously</td>
+<td><code class="docutils literal"><span class="pre">MAXNODEPERGROUPPOLICY</span>
+<span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXNODEPERGROUPCOUNT</span>
+<span class="pre">16</span></code>
+<code class="docutils literal"><span class="pre">SMAXNODEPERGROUPCOUNT</span>
+<span class="pre">8</span></code>
+(allow each group to
+utilize up to 8 nodes
+simultaneously by
+default. If no other
+jobs can run and idle
+nodes are available,
+allow each group to
+utilize up to 16 nodes
+simultaneously.)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROCSECONDPERGROUPP
+OLICY</strong>
+<strong>MAXPROCSECONDPERGROUPC
+OUNT</strong>
+<strong>SMAXPROCSECONDPERGROUP
+COUNT</strong></td>
+<td>limits the maximum total
+number of
+processor-seconds any
+given group may have
+active (allocated to
+running jobs)
+simultaneously. NOTE:
+processor-seconds
+associated with any
+given job is calculated
+as PROCESSORS *
+REMAININGWALLTIME</td>
+<td><code class="docutils literal"><span class="pre">MAXPROCSECONDPERGROUPP</span>
+<span class="pre">OLICY</span> <span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXPROCSECONDPERGROUPC</span>
+<span class="pre">OUNT</span>&nbsp; <span class="pre">20000</span></code>
+(allow each group to
+utilize up to 20000
+processor-seconds
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><strong>MAXJOBQUEUEDPERGROUPPO
+LICY</strong>
+<strong>MAXJOBQUEUEDPERGROUPCO
+UNT</strong>
+<strong>SMAXJOBQUEUEDPERGROUPC
+OUNT</strong></td>
+<td>limits the maximum total
+number of idle jobs
+associated with each
+group which Maui will
+consider eligible for
+scheduling</td>
+<td><code class="docutils literal"><span class="pre">MAXJOBQUEUEDPERGROUPPO</span>
+<span class="pre">LICY</span> <span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXJOBQUEUEDPERGROUPCO</span>
+<span class="pre">UNT</span>&nbsp; <span class="pre">3</span></code>
+(Maui will only consider
+3 idle jobs per group in
+each scheduling
+iteration)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPEPERGROUPPOLICY</strong>
+<strong>MAXPEPERGROUPCOUNT</strong>
+<strong>SMAXPEPERGROUPCOUNT</strong></td>
+<td>limits the maximum total
+number of
+<a href="#id37"><span class="problematic" id="id39">`processor-equivalents &lt;
+3.2environment.html#PEov
+erview&gt;`__</span></a>
+any given group may have
+active (running)
+simultaneously</td>
+<td><a href="#id17"><span class="problematic" id="id18">``</span></a>MAXPEPERGROUPPOLICY ON
+``
+<a href="#id19"><span class="problematic" id="id20">``</span></a>MAXPEPERGROUPCOUNT  48
+``
+(allow each group have
+up to 48 PE&#8217;s allocated
+to active jobs
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><a href="#id21"><span class="problematic" id="id22">**</span></a>MAXJOBPERACCOUNTPOLICY
+**
+<a href="#id23"><span class="problematic" id="id24">**</span></a>MAXJOBPERACCOUNTCOUNT*
+*
+<a href="#id25"><span class="problematic" id="id26">**</span></a>SMAXJOBPERACCOUNTCOUNT
+**</td>
+<td>limits the maximum total
+number of jobs any given
+account may have active
+(running) simultaneously</td>
+<td><dl class="first docutils">
+<dt><a href="#id27"><span class="problematic" id="id28">``</span></a>MAXJOBPERACCOUNTPOLICY</dt>
+<dd>ON``</dd>
+<dt><a href="#id29"><span class="problematic" id="id30">``</span></a>MAXJOBPERACCOUNTCOUNT</dt>
+<dd>4``</dd>
+</dl>
+<p class="last">(allow each account to
+run up to 4 jobs
+simultaneously)</p>
+</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROCPERACCOUNTPOLIC
+Y</strong>
+<strong>MAXPROCPERACCOUNTCOUNT
+**
+**SMAXPROCPERACCOUNTCOUN
+T</strong></td>
+<td>limits the maximum total
+number of processors any
+given account may have
+active (allocated to
+running jobs)
+simultaneously</td>
+<td><p class="first"><code class="docutils literal"><span class="pre">MAXPROCPERACCOUNTPOLIC</span>
+<span class="pre">Y</span> <span class="pre">ON</span></code>
+<a href="#id31"><span class="problematic" id="id32">``</span></a>MAXPROCPERACCOUNTCOUNT</p>
+<blockquote>
+<div>32``</div></blockquote>
+<p class="last">(allow each account to
+utilize up to 32
+processors
+simultaneously)</p>
+</td>
+</tr>
+<tr class="row-even"><td><strong>MAXNODEPERACCOUNTPOLIC
+Y</strong>
+<strong>MAXNODEPERACCOUNTCOUNT
+**
+**SMAXNODEPERACCOUNTCOUN
+T</strong></td>
+<td>limits the maximum total
+number of nodes any
+given account may have
+active (allocated to
+running jobs)
+simultaneously</td>
+<td><p class="first"><code class="docutils literal"><span class="pre">MAXNODEPERACCOUNTPOLIC</span>
+<span class="pre">Y</span> <span class="pre">ON</span></code>
+<a href="#id33"><span class="problematic" id="id34">``</span></a>MAXNODEPERACCOUNTCOUNT</p>
+<blockquote>
+<div>16``</div></blockquote>
+<p class="last"><code class="docutils literal"><span class="pre">SMAXNODEPERACCOUNTCOUN</span>
+<span class="pre">T</span> <span class="pre">8</span></code>
+(allow each account to
+utilize up to 8 nodes
+simultaneously by
+default. If no other
+jobs can run and idle
+nodes are available,
+allow each account to
+utilize up to 16 nodes
+simultaneously.)</p>
+</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROCSECONDPERACCOUN
+TPOLICY</strong>
+<strong>MAXPROCSECONDPERACCOUN
+TCOUNT</strong>
+<strong>SMAXPROCSECONDPERACCOU
+NTCOUNT</strong></td>
+<td>limits the maximum total
+number of
+processor-seconds any
+given account may have
+active (allocated to
+running jobs)
+simultaneously. NOTE:
+processor-seconds
+associated with any
+given job is calculated
+as PROCESSORS *
+REMAININGWALLTIME</td>
+<td><code class="docutils literal"><span class="pre">MAXPROCSECONDPERACCOUN</span>
+<span class="pre">TPOLICY</span> <span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXPROCSECONDPERACCOUN</span>
+<span class="pre">TCOUNT</span>&nbsp; <span class="pre">20000</span></code>
+(allow each account to
+utilize up to 20000
+processor-seconds
+simultaneously)</td>
+</tr>
+<tr class="row-even"><td><strong>MAXJOBQUEUEDPERACCOUNT
+POLICY</strong>
+<strong>MAXJOBQUEUEDPERACCOUNT
+COUNT</strong>
+<strong>SMAXJOBQUEUEDPERACCOUN
+TCOUNT</strong></td>
+<td>limits the maximum total
+number of idle jobs
+associated with each
+account which Maui will
+consider eligible for
+scheduling</td>
+<td><code class="docutils literal"><span class="pre">MAXJOBQUEUEDPERACCOUNT</span>
+<span class="pre">POLICY</span> <span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXJOBQUEUEDPERACCOUNT</span>
+<span class="pre">COUNT</span>&nbsp; <span class="pre">3</span></code>
+(Maui will only consider
+3 idle jobs per account
+in each scheduling
+iteration)</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPEPERACCOUNTPOLICY*
+*
+**MAXPEPERACCOUNTCOUNT</strong>
+<a href="#id35"><span class="problematic" id="id36">**</span></a>SMAXPEPERACCOUNTCOUNT*
+*</td>
+<td>limits the maximum total
+number of
+<a href="#id37"><span class="problematic" id="id40">`processor-equivalents &lt;
+3.2environment.html#PEov
+erview&gt;`__</span></a>
+any given account may
+have active (running)
+simultaneously</td>
+<td><code class="docutils literal"><span class="pre">MAXPEPERACCOUNTPOLICY</span>
+<span class="pre">ON</span></code>
+<code class="docutils literal"><span class="pre">MAXPEPERACCOUNTCOUNT</span>
+<span class="pre">48</span></code>
+(allow each account have
+up to 48 PE&#8217;s allocated
+to active jobs
+simultaneously)</td>
+</tr>
+</tbody>
+</table>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/throttling306.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

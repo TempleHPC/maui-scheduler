@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.1.1. Priority Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="5.1. Job Prioritization" href="5.1jobprioritization.html" />
+    <link rel="next" title="5.1.2. Job Priority Factors" href="5.1.2priorityfactors.html" />
+    <link rel="prev" title="5.1. Job Prioritization" href="5.1jobprioritization.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="5.1.2priorityfactors.html" title="5.1.2. Job Priority Factors"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="5.1jobprioritization.html" title="5.1. Job Prioritization"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="5.1jobprioritization.html" accesskey="U">5.1. Job Prioritization</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="priority-overview">
+<h1>5.1.1. Priority Overview<a class="headerlink" href="#priority-overview" title="Permalink to this headline">¶</a></h1>
+<p>Maui&#8217;s prioritization mechanism allows component and subcomponent
+weights to be associated with many aspects of a job so as to enable
+fine-grained control over this aspect of scheduling. To allow this level
+of control, Maui uses a simple priority-weighting hierarchy where the
+contribution of each priority subcomponent is calculated as</p>
+<p><strong>&lt;COMPONENT WEIGHT&gt; * &lt;SUBCOMPONENT WEIGHT&gt; * &lt;PRIORITY SUBCOMPONENT
+VALUE&gt;</strong></p>
+<p>Each priority component contains one or more subcomponents as described
+in the <a class="reference external" href="5.1.2priorityfactors.html">Priority Component Overview</a>. For
+example, the Resource component consists of Node, Processor, Memory,
+Swap, Disk, and PE subcomponents. While there are numerous priority
+components and many more subcomponents, a site need only focus on and
+configure the subset of components related to their particular priority
+needs. In actual usage, few sites use more than a small fraction
+(usually 5 or less) of the available priority subcomponents. This
+results in fairly straightforward priority configurations and tuning. By
+mixing and matching priority weights, sites may generally obtain the
+desired job-start behavior. At any time, the <a class="reference external" href="commands/diagnosepriority.html">diagnose
+-p</a> command can be issued to
+determine the impact of the current priority-weight settings on idle
+jobs. Likewise, the command <a class="reference external" href="commands/showgrid.html">showgrid</a> can
+assist the admin in evaluating priority effectiveness on historical
+system usage metrics such as queue time or expansion factor.</p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>** As mentioned above, a job&#8217;s priority is the weighted sum of its
+activated subcomponents. By default, the value of all component and
+subcomponent weights is set to 1 and 0 respectively. The one exception
+is the <strong>QUEUETIME</strong> subcomponent weight which is set to 1. This results
+in a total job priority equal to the period of time the job has been
+queued, causing Maui to act as a simple FIFO. Once the summed component
+weight is determined, this value is then bounded resulting in a priority
+ranging between 0 and MAX_PRIO_VAL which is currently defined as
+1000000000 (one billion). In no case will a job obtain a priority in
+excess of MAX_PRIO_VAL through its priority subcomponent values.</p>
+<p>Using the <a class="reference external" href="commands/setspri.html">setspri</a> command, site admins may
+adjust the base calculated job priority by either assigning a relative
+priority adjust or an absolute system priority. A relative priority
+adjustment will cause the base priority to be increased or decreased by
+a specified value. Setting an absolute system priority, SPRIO, will
+cause the job to receive a priority equal to MAX_PRIO_VAL + SPRIO, and
+thus guaranteed to be of higher value than any naturally occurring job
+priority.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="5.1jobprioritization.html"
+                        title="previous chapter">5.1. Job Prioritization</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="5.1.2priorityfactors.html"
+                        title="next chapter">5.1.2. Job Priority Factors</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/5.1.1priorityoverview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="5.1.2priorityfactors.html" title="5.1.2. Job Priority Factors"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="5.1jobprioritization.html" title="5.1. Job Prioritization"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="5.1jobprioritization.html" >5.1. Job Prioritization</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

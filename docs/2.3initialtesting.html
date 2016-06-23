@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.3. Initial Maui Testing &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="2. Installation and Initial Configuration" href="2.0installation.html" />
+    <link rel="next" title="3. Scheduler Basics" href="3.0basics.html" />
+    <link rel="prev" title="2.2. Initial Maui Configuration" href="2.2initialconfig.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="3.0basics.html" title="3. Scheduler Basics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.2initialconfig.html" title="2.2. Initial Maui Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="2.0installation.html" accesskey="U">2. Installation and Initial Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="initial-maui-testing">
+<h1>2.3. Initial Maui Testing<a class="headerlink" href="#initial-maui-testing" title="Permalink to this headline">¶</a></h1>
+<p>Maui has been designed with a number of key features that allow testing
+to occur in a <em>no risk</em> environment. These features allow you to safely
+run Maui in test mode even with your old scheduler running be it an
+earlier version of Maui or even another scheduler. In test mode, Maui
+will collect real time job and node information from your resource
+managers and will act as if it were scheduling live. However, its
+ability to actually affect jobs (i.e., start, modify, cancel, etc) will
+be disabled.
+Central to Maui testing is the parameter
+<a class="reference external" href="a.fparameters.html">SERVERMODE</a>. This parameter allows
+administrators to determine how Maui will run. The possible values for
+this parameter are <strong>NORMAL</strong>, <strong>TEST</strong>, and <strong>SIMULATION</strong>. As would be
+expected, to request test mode operation, the <strong>SERVERMODE</strong> parameter
+must be set to <strong>TEST</strong>.</p>
+<p>The ultimate goal of testing is to verify proper configuration and
+operation. Particularly, the following can be checked:</p>
+<ul class="simple">
+<li>Maui possesses the minimal configuration required to start up.</li>
+<li>Maui can communicate with the resource manager(s).</li>
+<li>Maui is able to obtain full resource and job information from the
+resource manager(s).</li>
+<li>Maui is able to properly start a new job</li>
+</ul>
+<p>Each of these areas are covered in greater detail below.</p>
+<div class="section" id="minimal-configuration-required-to-start-up">
+<h2>2.3.1. Minimal Configuration Required To Start Up<a class="headerlink" href="#minimal-configuration-required-to-start-up" title="Permalink to this headline">¶</a></h2>
+<p>Maui must have a number of parameters specified in order to properly
+start up. There are three main approaches to setting up Maui on a new
+system. These include the following:</p>
+<div class="section" id="simulation-mode">
+<h3>2.3.1.1. Simulation Mode<a class="headerlink" href="#simulation-mode" title="Permalink to this headline">¶</a></h3>
+<p>Simulation mode is of value if you would simply like to <em>test drive</em> the
+scheduler or when you have a stable production system and you wish to
+evaluate how or even if the scheduler can improve your current
+scheduling environment.</p>
+<p>An initial <em>test drive</em> simulation can be obtained via the following
+step:</p>
+<div class="line-block">
+<div class="line">`` vi maui.cfg``</div>
+<div class="line">(change &#8216;SERVERMODE NORMAL&#8217; to &#8216;SERVERMODE SIMULATION&#8217;)</div>
+<div class="line">(add &#8216;SIMRESOURCETRACEFILE traces/Resource.Trace1&#8217;)</div>
+<div class="line">(add &#8216;SIMWORKLOADTRACEFILE traces/Workload.Trace1&#8217;)</div>
+<div class="line"><code class="docutils literal"><span class="pre">&gt;</span> <span class="pre">maui</span> <span class="pre">&amp;</span></code></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In simulation mode, the scheduler does not background itself like it does in both <strong>TEST</strong> and <strong>NORMAL</strong> mode.</p>
+</div>
+<p>The sample workload and resource traces files allow the simulation to
+emulate a 192 node IBM SP. In this mode, all Maui commands can be run as
+if on a normal system. The <a class="reference external" href="commands/schedctl.html">schedctl</a> command
+can be used to advance the simulation through time. The
+<a class="reference external" href="16.0simulations.html">Simulation</a> chapter describes the use of the
+simulator in detail.</p>
+<div class="line-block">
+<div class="line">If you are familiar with Maui, you may wish to use the simulator to
+tune scheduling policies for your own workload and system. The
+<a class="reference external" href="commands/profiler.html">profiler</a> tool can be used to obtain both
+resource and workload traces and is described further in the section
+&#8216;Collecting Traces&#8217;. Generally, at least a week&#8217;s worth of workload
+should be collected to make the results of the simulation
+statistically meaningful. Once the traces are collected, the
+simulation can be started with some initial policy settings.
+Typically, the scheduler is able to simulate between 10 and 100
+minutes of <em>wallclock</em> time per second for medium to large systems. As
+the simulation proceeds, various statistics can be monitored if
+desired. At any point, the simulation can be ended and the statistics
+of interest recorded. One or more policies can be modified, the
+simulation re-run, and the results compared. Once you are satisfied</div>
+<div class="line">with the scheduling results, the scheduler can be run <em>live</em> with the
+tuned policies.<a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a></div>
+</div>
+</div>
+<div class="section" id="test-mode">
+<h3>2.3.1.2. Test Mode<a class="headerlink" href="#test-mode" title="Permalink to this headline">¶</a></h3>
+<p>Test mode allows you to evaluate new versions of the scheduler &#8216;on the
+side&#8217;. In test mode, the scheduler connects to the resource manager(s)
+and obtains live resource and workload information. Using the policies
+specified in the maui.cfg file, the test-mode Maui behaves identical to
+a live &#8216;normal&#8217; mode Maui except the code to start, cancel, and pre-empt
+jobs is disabled. This allows you to exercise all scheduler <em>code paths</em>
+and diagnose the scheduling state using the various diagnostic client
+commands. The log output can also be evaluated to see if any unexpected
+states were entered. Test mode can also be used to locate system
+problems which need to be corrected. Like simulation mode, this mode can
+also be used to safely <em>test drive</em> the scheduler as well as obtain
+confidence over time of the reliability of the software. Once satisfied,
+the scheduling mode can be changed from <strong>TEST</strong> to <strong>NORMAL</strong> to begin
+<em>live</em> scheduling.</p>
+<p>To set up Maui in test mode, use the following step:</p>
+<div class="line-block">
+<div class="line">`` &gt; vi maui.cfg``</div>
+<div class="line">(change &#8216;<code class="docutils literal"><span class="pre">SERVERMODE</span> <span class="pre">NORMAL</span></code>&#8216; to &#8216;<code class="docutils literal"><span class="pre">SERVERMODE</span> <span class="pre">TEST</span></code>&#8216;)</div>
+<div class="line">`` maui``</div>
+</div>
+<div class="line-block">
+<div class="line">Remember that Maui running in test mode will not interfere with your
+production scheduler, be it Loadleveler, PBS, or even another version
+of</div>
+<div class="line">Maui.</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are running multiple versions of Maui, be they in simulation, normal, or test mode, make certain that they
+each reside in different home directories to prevent conflicts with config and log files, statistics, checkpointing,
+and <em>lock</em> files. Also, each instance of Maui should run using a different <a class="reference external" href="a.fparameters.html#serverport">SERVERPORT</a>
+parameter to avoid socket conflicts. Maui client commands can be pointed to the proper Maui server by using the
+appropriate command line arguments or by setting the environment variable <strong>MAUIHOMEDIR</strong>.</p>
+</div>
+</div>
+<div class="section" id="normal-mode">
+<h3>2.3.1.3. Normal Mode<a class="headerlink" href="#normal-mode" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">For the adventurous at heart (or if you simply have not yet been
+properly <em>burned</em> by directly installing a large, totally new, mission
+critical piece</div>
+<div class="line">of software) or if you are bringing up a new or development system,
+you may wish to dive in and start the scheduler in <strong>NORMAL</strong> mode.
+This</div>
+<div class="line">admin manual and the accompanying man pages should introduce you to
+the relevant issues and commands. To start the scheduler in <strong>NORMAL</strong>
+mode, take the following step:</div>
+</div>
+<p>`` maui``</p>
+<p>That should be all that is needed to get you started.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2.3. Initial Maui Testing</a><ul>
+<li><a class="reference internal" href="#minimal-configuration-required-to-start-up">2.3.1. Minimal Configuration Required To Start Up</a><ul>
+<li><a class="reference internal" href="#simulation-mode">2.3.1.1. Simulation Mode</a></li>
+<li><a class="reference internal" href="#test-mode">2.3.1.2. Test Mode</a></li>
+<li><a class="reference internal" href="#normal-mode">2.3.1.3. Normal Mode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="2.2initialconfig.html"
+                        title="previous chapter">2.2. Initial Maui Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="3.0basics.html"
+                        title="next chapter">3. Scheduler Basics</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/2.3initialtesting.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="3.0basics.html" title="3. Scheduler Basics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.2initialconfig.html" title="2.2. Initial Maui Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="2.0installation.html" >2. Installation and Initial Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case Study: Data Staging &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" />
+    <link rel="up" title="Appendix A: Case Studies" href="../a.acasestudy.html" />
+    <link rel="next" title="Case Study: Multi-Queue Cluster with QOS and Charge Rates" href="case5.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="case3.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="case5.html" title="Case Study: Multi-Queue Cluster with QOS and Charge Rates"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="case3.html" title="&lt;no title&gt;"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" accesskey="U">Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-data-staging">
+<h1>Case Study: Data Staging<a class="headerlink" href="#case-study-data-staging" title="Permalink to this headline">¶</a></h1>
+<p><strong>Overview</strong></p>
+<p>NCSA has an existing cluster where a significant portion of submitted
+jobs require input data to be staged from an hierarchical storage
+manager (HSM).&nbsp; Currently, each user must stage the input data for each
+job manually before submitting the job.&nbsp; Also, each job must be
+intelligent enough to determine if its input data is present before
+beginning execution.&nbsp; Not only is this inconvenient for users, it can
+lead to scheduling inefficiencies as &#8220;running&#8221; jobs sit idle waiting for
+input data to arrive.</p>
+<p>NCSA&#8217;s cluster consists of 100 single processor nodes connected by a
+switched gigabit network.&nbsp; The storage manager is a 200 terabyte tape
+storage system with 4 terabyte disk cache.</p>
+<p><strong>Goals</strong></p>
+<p>The goals of allowing Moab to manage the data staging requirements of a
+cluster include:</p>
+<p><em>Efficiency</em>
+The scheduler must not start a job until its input data has been staged
+to the appropriate location.
+<em>Adaptation</em>
+The scheduler must make intelligent decisions based on the estimated
+completion time of data staging operations.
+<em>Space Allocation</em>
+The scheduler must maintain enough free disk space to accommodate the
+stage-out data of currently running jobs.
+<strong>Analysis</strong></p>
+<p>Moab supports a <a class="reference external" href="../13.3rmextensions.html#STAGEIN">STAGEIN</a> resource
+manager extension that allows the user to specify stage-in requirements
+for a job.&nbsp; If this extension is present, Moab will not attempt to start
+the job until the specified file is present.&nbsp; Additionally, if a size is
+given, Moab will wait until the file exists and is at least as big as
+the specified size.</p>
+<p>Moab will estimate the time required for a staging operation to complete
+if the <a class="reference external" href="../13.2rmconfiguration.html#bandwidth">BANDWIDTH</a> parameter
+in <code class="docutils literal"><span class="pre">moab.cfg</span></code> is set.&nbsp; This allows Moab to make properly timed,
+pre-execution data stage requests from the storage manager.</p>
+<p>The <a class="reference external" href="../13.2rmconfiguration.html#targetusage">TARGETUSAGE</a> parameter
+can be used to set the desired storage manager disk cache utilization
+level.&nbsp; It should be set below 100% to allow for unexpected external
+usage and job stage-out files with sizes that are not known in advance.</p>
+<p><strong>Configuration</strong></p>
+<p>A resource manager named <code class="docutils literal"><span class="pre">hsm</span></code> will be created to monitor and manage
+the storage manager load and resources.</p>
+<p><em>FIX: Where does transfer rate info go???</em></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span># configure the storage manager
+RMCFG[hsm] TYPE=NATIVE
+RMCFG[hsm] RESOURCETYPE=STORAGE TARGETUSAGE=80%
+
+# gives Moab information about the storage manager
+RMCFG[hsm] CLUSTERQUERYURL=exec:///$TOOLSDIR/dstage.clusterquery.pl
+
+# allow Moab to check for the existence of a file and its size
+RMCFG[hsm] SYSTEMQUERYURL=exec:///$TOOLSDIR/dstage.systemquery.pl
+
+# allow Moab to request a staging operation
+RMCFG[hsm] SYSTEMMODIFYURL=exec:///$TOOLSDIR/dstage.systemmodify.pl
+</pre></div>
+</div>
+<p>The following script files are provided with Moab.&nbsp; They can be
+customized to work with any type of data staging solution.&nbsp; In addition,
+there are many scripts provided with Moab that work with 3rd party
+storage solutions without the need for any customization.</p>
+<ul class="simple">
+<li><a class="reference external" href="../dstage.clusterquery.pl">dstage.clusterquery.pl</a></li>
+<li><a class="reference external" href="../dstage.systemquery.pl">dstage.systemquery.pl</a></li>
+<li><a class="reference external" href="../dstage.systemmodify.pl">dstage.systemmodify.pl</a></li>
+</ul>
+<p>More information about these resource manager interfaces can be found in
+the <a class="reference external" href="../18.1datastaging.html">data staging</a> documentation.</p>
+<p><strong>Monitoring</strong></p>
+<p>The <a class="reference external" href="../commands/checkjob.html">checkjob</a> command will print the data
+staging requirements of a job, if any, and the status of the data
+staging operation.
+<strong>Conclusions</strong></p>
+<p>Moab will make the best use of computing resources when it understands
+the data staging needs of its jobs and the speed at which staging
+requests can be met by the storage manager.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="case3.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="case5.html"
+                        title="next chapter">Case Study: Multi-Queue Cluster with QOS and Charge Rates</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/casestudies/case4.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="case5.html" title="Case Study: Multi-Queue Cluster with QOS and Charge Rates"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="case3.html" title="&lt;no title&gt;"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" >Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

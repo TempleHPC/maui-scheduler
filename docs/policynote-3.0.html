@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p><strong>NOTE:</strong>
+For all Maui 3.0 versions, throttling policies must be specified using
+the old style convention requiring two or more parameters. The first
+parameter, <strong>*POLICY</strong>, indicates whether the policy is enabled. The
+<strong>*COUNT</strong> parameter specifies the policy hard limit. The <strong>*SCOUNT</strong>
+parameter specifies the optional policy soft limit. For example, In Maui
+3.2, you might limit the number of jobs per user using the statement
+&#8216;<code class="docutils literal"><span class="pre">USERCFG[DEFAULT]</span> <span class="pre">MAXJOB=4,6</span></code>&#8216;. In Maui 3.0, you would do the same
+thing by specifying the following:</p>
+<div class="line-block">
+<div class="line">&#8212;&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">MAXJOBPERUSERPOLICY</span> <span class="pre">ON</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">MAXJOBPERUSERCOUNT</span> <span class="pre">4</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">SMAXJOBPERUSERCOUNT</span> <span class="pre">6</span></code></div>
+<div class="line"><strong>&#8212;&#8212;</strong></div>
+</div>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>** The following translation must be used to specify policy <strong>X</strong> for
+credential <strong>Y</strong></p>
+<div class="line-block">
+<div class="line">Maui 3.2</div>
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG&lt;Y&gt;</span> <span class="pre">&lt;X&gt;=&lt;SOFTLIMIT&gt;[,&lt;HARDLIMIT&gt;]</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<div class="line-block">
+<div class="line">Maui 3.2</div>
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">&lt;X&gt;PER&lt;Y&gt;POLICY</span> <span class="pre">ON</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">&lt;X&gt;PER&lt;Y&gt;COUNT</span> <span class="pre">&lt;HARDLIMIT&gt;</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">S&lt;X&gt;PER&lt;Y&gt;COUNT</span> <span class="pre">&lt;SOFTLIMIT&gt;</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p>If you have any questions, please send a note to us at
+<a class="reference external" href="mailto:brian&#37;&#52;&#48;chpc&#46;utah&#46;edu">help</a></p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/policynote-3.0.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

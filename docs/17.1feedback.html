@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>17.1. User Feedback Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="17. Miscellaneous" href="17.0miscellaneous.html" />
+    <link rel="next" title="17.2. Grid Scheduling" href="17.2grid.html" />
+    <link rel="prev" title="17. Miscellaneous" href="17.0miscellaneous.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="17.2grid.html" title="17.2. Grid Scheduling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="17.0miscellaneous.html" title="17. Miscellaneous"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="17.0miscellaneous.html" accesskey="U">17. Miscellaneous</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-feedback-overview">
+<h1>17.1. User Feedback Overview<a class="headerlink" href="#user-feedback-overview" title="Permalink to this headline">¶</a></h1>
+<p>The &#8216;Feedback&#8217; facility allows a site to provide job performance
+information to users at job completion time. When a job completes, the
+program pointed to by the
+<a class="reference external" href="a.fparameters.html#feedbackprogram">FEEDBACKPROGRAM</a> parameter is
+called with a number of command line arguments. The site is responsible
+for creating a program capable of processing and acting upon the
+contents of the command line. The command line arguments passed are a
+follows</p>
+<div class="line-block">
+<div class="line">- job name</div>
+<div class="line">- user name</div>
+<div class="line">- NONE</div>
+<div class="line">- final job state</div>
+<div class="line">- QOS requested</div>
+<div class="line">- epoch time job was submitted</div>
+<div class="line">- epoch time job started</div>
+<div class="line">- epoch time job completed</div>
+<div class="line">- job XFactor</div>
+<div class="line">- job wallclock limit</div>
+<div class="line">- processors requested</div>
+<div class="line">- memory requested</div>
+<div class="line">- average per task cpu load</div>
+<div class="line">- maximum per task cpu load</div>
+<div class="line">- average per task memory usage</div>
+<div class="line">- maximum per task memory usage</div>
+</div>
+<p>For many sites, the feedback script is useful as a means of letting
+user&#8217;s know that accuracy of their wallclock limit estimate, as well as
+the cpu efficiency, and memory usage pattern of their job. The feedback
+script may be used as a mechanism to do any of the following:</p>
+<div class="line-block">
+<div class="line">- email users regarding statistics of all completed jobs</div>
+<div class="line">- email users only when certain criteria are met (ie. &#8220;Dear John, you
+submitted job X requesting 128MB of memory per task. It actually
+utilized 253 MB of memory per task potentially wreaking havoc with the
+entire system! Please improve your resource usage estimates in future
+jobs!&#8221;)</div>
+<div class="line">- update system databases</div>
+<div class="line">- take system actions based on job completion statistics</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">some of these fields may be set to zero if the underlying
+OS/Resource Manager does not support the necessary data collection.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="17.0miscellaneous.html"
+                        title="previous chapter">17. Miscellaneous</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="17.2grid.html"
+                        title="next chapter">17.2. Grid Scheduling</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/17.1feedback.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="17.2grid.html" title="17.2. Grid Scheduling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="17.0miscellaneous.html" title="17. Miscellaneous"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="17.0miscellaneous.html" >17. Miscellaneous</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

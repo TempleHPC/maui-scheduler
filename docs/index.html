@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Maui Scheduler™ Administrator’s Guide &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="#" />
+    <link rel="next" title="1. Philosophy" href="1.0philosophy.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="1.0philosophy.html" title="1. Philosophy"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="maui-scheduler-administrator-s-guide">
+<h1>Maui Scheduler™ Administrator&#8217;s Guide<a class="headerlink" href="#maui-scheduler-administrator-s-guide" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">version 3.5-TempleHPC</div>
+<div class="line">Copyright © 1999-2014 Adaptive Computing Enterprises, Inc All Rights Reserved</div>
+<div class="line">Distribution of this document for commercial purposes in either</div>
+<div class="line">hard or soft copy form is strictly prohibited</div>
+<div class="line">without prior written consent from Adaptive Computing, Inc.</div>
+</div>
+<p>The Maui Scheduler is a <em>policy engine</em> which allows sites control over
+when, where, and how resources such as processors, memory, and disk are
+allocated to jobs. In addition to this control, it also provides
+mechanisms which help to intelligently optimize the use of these
+resources, monitor system performance, help diagnose problems, and
+generally manage the system.</p>
+<div class="toctree-wrapper compound" id="administrative-topics">
+<p class="caption"><span class="caption-text">Administrative Topics</span><a class="headerlink" href="#administrative-topics" title="Permalink to this toctree">¶</a></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.0philosophy.html">1. Philosophy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1.1batchsysvalue.html">1.1. Value of a Batch System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.2philandgoals.html">1.2. Philosophy and Goals of the Maui Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2.0installation.html">2. Installation and Initial Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2.1installation.html">2.1. Maui Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.2initialconfig.html">2.2. Initial Maui Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.3initialtesting.html">2.3. Initial Maui Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.0basics.html">3. Scheduler Basics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.1layout.html">3.1. File Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2environment.html">3.2. Scheduling Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3jobflow.html">3.3. Scheduling Iterations and Job Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4configure.html">3.4. Configuring the Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.0commands.html">4. Scheduler Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.1clientoverview.html">4.1. Client Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2status-cmds.html">4.2. Status Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3jobmgmt-cmds.html">4.3. Job Management Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.4reservation-cmds.html">4.4. Reservation Management Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.5policy-cmds.html">4.5. Policy/Config Management Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.6user-cmds.html">4.6. End User Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.7misc-cmds.html">4.7. Miscellaneous Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.0prioritization.html">5. Prioritizing Jobs and Allocating Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.1jobprioritization.html">5.1. Job Prioritization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2nodeallocation.html">5.2. Node Allocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.3nodeaccess.html">5.3. Node Access Policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.4nodeavailability.html">5.4. Node Availability Policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.5taskdistribution.html">5.5. Task Distribution Policies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6.0managingfairness.html">6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6.1fairnessoverview.html">6.1. Fairness Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.2throttlingpolicies.html">6.2. Throttling Policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.3fairshare.html">6.3. Fairshare</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.4allocationmanagement.html">6.4. Allocation Management</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7.0controllingresourceaccess.html">7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7.1advancereservations.html">7.1. Advance Reservations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.2partitions.html">7.2. Partitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.3qos.html">7.3. Quality of Service (QoS) Facilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="8.0optimizingschedulingbehavior.html">8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="8.1optimizationoverview.html">8.1. Optimization Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8.2backfill.html">8.2. Backfill</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8.3nodesetoverview.html">8.3. Node Set Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8.4preemption.html">8.4. Preemption Policies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="9.0evaluatingsystemperformance.html">9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="9.1performanceevaluation.html">9.1. Maui Performance Evaluation Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9.2accounting.html">9.2. Accounting: Job and System Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9.3profilingusage.html">9.3. Profiling Current and Historical Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9.4testingnewversionsconfigs.html">9.4. Testing New Versions and Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="9.5whatifquestions.html">9.5. Answering &#8216;What If?&#8217; Questions with the Simulator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="10.0managingsharedresources.html">10. Managing Shared Resources - SMP Issues and Policies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="10.1consumableresourcehandling.html">10.1. Consumable Resource Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10.2loadbalancingfeatures.html">10.2. Load Balancing Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="11.0generaljobadmin.html">11. General Job Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="11.1jobholds.html">11.1. Job Holds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11.2jobpriority.html">11.2. Job Priority Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11.3suspendresume.html">11.3. Suspend/Resume Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11.4checkpointrestart.html">11.4. Checkpoint/Restart Facilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11.5jobdependencies.html">11.5. Job Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="12.0generalnodeadmin.html">12. General Node Administration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="12.1nodelocation.html">12.1. Node Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12.2nodeattributes.html">12.2. Node Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12.3nodepolicies.html">12.3. Node Specific Policies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="13.0rmandinterfaces.html">13. Resource Managers and Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="13.1rmoverview.html">13.1. Resource Manager Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13.2rmconfiguration.html">13.2. Resource Manager Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13.3rmextensions.html">13.3. Resource Manager Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13.4addingrminterfaces.html">13.4. Adding New Resource Manager Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="14.0troubleshootingandsysmaintenance.html">14. Trouble Shooting and System Maintenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="14.1internaldiagnostics.html">14.1. Internal Diagnostics/Diagnosing System Behavior and Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14.2logging.html">14.2. Logging Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14.3messagebuffer.html">14.3. Using the Message Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14.4eventmgmt.html">14.4. Handling Events with the Notification Routine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14.5troubleshootingclients.html">14.5. Issues with Client Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14.6troubleshootingsystemerrors.html">14.6. Tracking System Failures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="14.7troubleshootingjobs.html">14.7. Problems with Individual Jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="15.0improvingusereffectiveness.html">15. Improving User Effectiveness</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="15.1userfeedbackloops.html">15.1. User Feedback Loops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15.2userlevelstatistics.html">15.2. User Level Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15.3improvingwallclock.html">15.3. Enhancing Wallclock Limit Estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15.4resourceavailability.html">15.4. Providing Resource Availability Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15.5jobstarttimeestimates.html">15.5. Job Start Time Estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="15.6profilingjobs.html">15.6. Collecting Performance Information on Individual Jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="16.0simulations.html">16. Simulations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="16.1simulationoverview.html">16.1. Simulation Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16.2resourcetrace.html">16.2. Resource Traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16.3workloadtrace.html">16.3. Workload Traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="16.4simspecconfig.html">16.4. Simulation Specific Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="17.0miscellaneous.html">17. Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="17.1feedback.html">17.1. User Feedback Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17.2grid.html">17.2. Grid Scheduling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="17.3ha.html">17.3. Enabling High Availability Features</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound" id="appendices">
+<p class="caption"><span class="caption-text">Appendices</span><a class="headerlink" href="#appendices" title="Permalink to this toctree">¶</a></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="a.acasestudy.html">Appendix A: Case Studies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="casestudies/case1.html">Case Study: Mixed Parallel/Serial Homogeneous Cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudies/case2.html">Case Study: Partitioned Heterogeneous Cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudies/case4.html">Case Study: Data Staging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="casestudies/case5.html">Case Study: Multi-Queue Cluster with QOS and Charge Rates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="a.bxinterface.html">Appendix B: Extension Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.clocalinterface.html">Appendix C: Adding New Algorithms with the &#8216;Local&#8217; Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.ddevelopment.html">Appendix D: Structure Limits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.esecurity.html">Appendix E: Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.fparameters.html">Appendix F: Maui Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.gcommandoverview.html">Appendix G: Commands Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.hinterfacing.html">Appendix H: Interfacing to Maui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="a.ilargeclusters.html">Appendix I: Considerations for Large Clusters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="a.ilargeclusters.html#resource-manager-scaling">Resource Manager Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="a.ilargeclusters.html#handling-large-numbers-of-jobs">Handling Large Numbers of Jobs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="a.jdifferences.html">Appendix J: Maui Differences Guide</a></li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Maui Scheduler™ Administrator&#8217;s Guide</a><ul>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="1.0philosophy.html"
+                        title="next chapter">1. Philosophy</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="1.0philosophy.html" title="1. Philosophy"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

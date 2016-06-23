@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="event-driven-ll-interface">Event Driven LL Interface</p>
+<p><strong>Creating an event driven interface for Loadleveler requires two
+steps.</strong>
+| <strong>1) Create and enable the Loadleveler submit filter</strong>
+| <a href="#id1"><span class="problematic" id="id2">**</span></a>2) Create a suid wrapper to allow global use of the &#8216;schedctl -r&#8217;</p>
+<blockquote>
+<div>command**</div></blockquote>
+<div class="line-block">
+<div class="line"><a href="#id3"><span class="problematic" id="id4">**</span></a><a href="#id5"><span class="problematic" id="id6">**</span></a></div>
+</div>
+<p><strong>Step 1) Create a submit filter.</strong></p>
+<p><strong>The LL submit filter functions by taking a users job command file as
+STDIN and sending the command file LL should process to STDOUT. If the
+submit filter is successful, it should exit with a status of 0. A simple
+sample script is provided below:</strong></p>
+<div class="line-block">
+<div class="line"><strong>&#8212;&#8212;&#8212;&#8211;</strong></div>
+<div class="line"><strong>``#!/bin/perl -w``</strong></div>
+<div class="line"><strong>````</strong></div>
+<div class="line"><strong>``while (&lt;STDIN&gt;)``</strong></div>
+<div class="line"><strong>`` {``</strong></div>
+<div class="line"><strong>`` $line = $_;``</strong></div>
+<div class="line"><strong>`` print STDOUT $line;``</strong></div>
+<div class="line"><strong>`` }``</strong></div>
+<div class="line"><strong>````</strong></div>
+<div class="line"><strong>``# Call wakeup script to maui scheduler``````</strong></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>``system(&#8220;/usr/local/sbin/wakeup &gt; /dev/null&#8221;);``</strong></div>
+<div class="line"><strong>````</strong></div>
+<div class="line"><strong>``exit(0);``</strong></div>
+<div class="line"><strong>&#8212;&#8212;&#8212;&#8212;</strong></div>
+</div>
+<p><strong>1) create file &#8216;wakeup.c&#8217;</strong></p>
+<div class="line-block">
+<div class="line"><strong>To enable use of this script you must set SUBMITFILTER parameter in
+the LoadL_config file.</strong></div>
+<div class="line"><a href="#id7"><span class="problematic" id="id8">**</span></a><a href="#id9"><span class="problematic" id="id10">**</span></a></div>
+</div>
+<p><strong>Step 2) Create wrapper</strong></p>
+<p><strong>The maui command &#8216;schedctl&#8217; is not normally available to general end
+users. The wrapper allows users to issue a command to request that
+scheduling resume to process a newly submitted job.</strong></p>
+<div class="line-block">
+<div class="line">wakeup.c</div>
+<div class="line">&#8212;&#8211;</div>
+<div class="line">#include &lt;sys/types.h&gt;</div>
+<div class="line">#include &lt;pwd.h&gt;</div>
+</div>
+<div class="line-block">
+<div class="line">#define MAUIADMIN &#8220;loadl&#8221;</div>
+<div class="line">#define SCHEDCTLCMD /usr/local/bin/schedctl</div>
+</div>
+<p>void main()</p>
+<div class="line-block">
+<div class="line">{</div>
+<div class="line">struct passwd *buf;</div>
+</div>
+<div class="line-block">
+<div class="line">if ((buf = getpwnam(MAUIADMIN)) == NULL)</div>
+<div class="line">exit(1);</div>
+</div>
+<p>setuid(buf-&gt;pw_uid);</p>
+<p>system(&#8220;SCHEDCTLCMD -r 1&#8221;);</p>
+<div class="line-block">
+<div class="line">exit(0);</div>
+<div class="line">}</div>
+<div class="line">&#8212;&#8211;</div>
+</div>
+<p><strong>2) edit &#8216;MAUIADMIN&#8217; and &#8216;SCHEDCTLCMD&#8217; #defines in &#8216;wakeup.c&#8217; as
+needed</strong></p>
+<p><strong>3) compile code</strong></p>
+<p><strong>4) make &#8216;wakeup&#8217; owned by MAUIADMIN</strong></p>
+<p><strong>&gt; chown loadl wakeup</strong></p>
+<p><strong>5) make &#8216;wakeup&#8217; setuid for owner</strong></p>
+<p><strong>&gt; chmod 4711 wakeup</strong></p>
+<p><strong>6) verify non-admin users can successfully run &#8216;wakeup&#8217;</strong></p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/schedctlwrapper.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

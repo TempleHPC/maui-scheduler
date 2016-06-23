@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12.1. Node Location &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="12. General Node Administration" href="12.0generalnodeadmin.html" />
+    <link rel="next" title="12.2. Node Attributes" href="12.2nodeattributes.html" />
+    <link rel="prev" title="12. General Node Administration" href="12.0generalnodeadmin.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="12.2nodeattributes.html" title="12.2. Node Attributes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="12.0generalnodeadmin.html" title="12. General Node Administration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="12.0generalnodeadmin.html" accesskey="U">12. General Node Administration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="node-location">
+<h1>12.1. Node Location<a class="headerlink" href="#node-location" title="Permalink to this headline">¶</a></h1>
+<p>Nodes can be assigned three types of location information based on
+partitions, frames, and/or queues.</p>
+<div class="section" id="partitions">
+<h2>12.1.1. Partitions<a class="headerlink" href="#partitions" title="Permalink to this headline">¶</a></h2>
+<p>The first form of location assignment, the partition, allows nodes to be
+grouped according to physical resource constraints or policy needs. By
+default, jobs are not allowed to span more than one partition so
+partition boundaries are often valuable if a underlying network topology
+make certain resource allocations undesirable. Additionally,
+per-partition policies can be specified to grant control over how
+scheduling is handled on a partition by partition basis. See the
+<a class="reference external" href="7.2partitions.html">Partition Overview</a> for more information.</p>
+</div>
+<div class="section" id="frames">
+<h2>12.1.2. Frames<a class="headerlink" href="#frames" title="Permalink to this headline">¶</a></h2>
+<p>Frame based location information is orthogonal to the partition based
+configuration and is mainly an organizational construct. In general
+frame based location usage, a node is assigned both a frame and a slot
+number. This approach has descended from the IBM SP2 organizational
+approach in which a frame can contain any number of slots but typically
+contains between 1 and 64. Using the frame and slot number combo,
+individual compute nodes can be grouped and displayed in a more ordered
+manner in certain Maui commands (i.e.,
+<a class="reference external" href="commands/showstate.html">showstate</a>). Currently, frame information
+can only be specified directly by the system via the SDR interface on
+SP2/Loadleveler systems. In all other systems, this information must be
+manually specified via the <a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a>
+parameter.</p>
+<p>Example:</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">#</span> <span class="pre">maui.cfg</span></code></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node024]</span> <span class="pre">FRAME=1</span> <span class="pre">SLOT=1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node025]</span> <span class="pre">FRAME=1</span> <span class="pre">SLOT=2</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node026]</span> <span class="pre">FRAME=2</span> <span class="pre">SLOT=1</span> <span class="pre">PARTITION=special</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">...</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<p>When specifying node and frame information, slot values must be in the
+range of 1 to 32 (limited to 1 to 16 in Maui 3.0 and earlier). and
+frames must be in the range of 1 to 64.</p>
+</div>
+<div class="section" id="queues">
+<h2>12.1.3. Queues<a class="headerlink" href="#queues" title="Permalink to this headline">¶</a></h2>
+<p>Some resource managers allow queues (or classes) to be defined and then
+associated with a subset of available compute resources. With such
+systems, such as Loadleveler or PBSPro, these queue to node mappings are
+automatically detected. On resource managers which do not provide this
+service, Maui provides alternative mechanisms for enabling this feature.</p>
+<div class="section" id="openpbs-queue-to-node-mapping">
+<h3>12.1.3.1. OpenPBS Queue to Node Mapping<a class="headerlink" href="#openpbs-queue-to-node-mapping" title="Permalink to this headline">¶</a></h3>
+<p>Under OpenPBS, queue to node mapping can be accomplished setting the
+queue <code class="docutils literal"><span class="pre">acl_hosts</span></code> parameter to the mapping hostlist desired within
+PBS. Further, the <code class="docutils literal"><span class="pre">acl_host_enable</span></code> parameter should be set to
+<code class="docutils literal"><span class="pre">False</span></code>. <strong>NOTE</strong>: Setting <code class="docutils literal"><span class="pre">acl_hosts</span></code> and then setting
+<code class="docutils literal"><span class="pre">acl_host_enable</span></code> to <code class="docutils literal"><span class="pre">True</span></code> will constrain the list of hosts from
+which jobs may be submitted to the queue. Prior to Maui 3.0.7p3, queue
+to node mapping was only enabled when <code class="docutils literal"><span class="pre">acl_host_enable</span></code> was set to
+<code class="docutils literal"><span class="pre">True</span></code>, thus, for these versions, the <code class="docutils literal"><span class="pre">acl_host</span></code> list should always
+include all submission hosts.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">12.1. Node Location</a><ul>
+<li><a class="reference internal" href="#partitions">12.1.1. Partitions</a></li>
+<li><a class="reference internal" href="#frames">12.1.2. Frames</a></li>
+<li><a class="reference internal" href="#queues">12.1.3. Queues</a><ul>
+<li><a class="reference internal" href="#openpbs-queue-to-node-mapping">12.1.3.1. OpenPBS Queue to Node Mapping</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="12.0generalnodeadmin.html"
+                        title="previous chapter">12. General Node Administration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="12.2nodeattributes.html"
+                        title="next chapter">12.2. Node Attributes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/12.1nodelocation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="12.2nodeattributes.html" title="12.2. Node Attributes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="12.0generalnodeadmin.html" title="12. General Node Administration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="12.0generalnodeadmin.html" >12. General Node Administration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

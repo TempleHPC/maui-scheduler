@@ -1,0 +1,10 @@
+Installation and Initial Configuration
+######################################
+
+Maui installation consists of the following steps:
+
+.. toctree::
+
+   2.1installation
+   2.2initialconfig
+   2.3initialtesting

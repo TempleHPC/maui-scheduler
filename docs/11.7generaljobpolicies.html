@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>General Job Policies &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="general-job-policies">
+<h1>General Job Policies<a class="headerlink" href="#general-job-policies" title="Permalink to this headline">¶</a></h1>
+<p>The default scheduler configuration enables a number of policies which
+control functionality available to a job. These policies are described
+in detail in the sections below.</p>
+<div class="section" id="multi-node-support">
+<h2>Multi-Node Support<a class="headerlink" href="#multi-node-support" title="Permalink to this headline">¶</a></h2>
+<p>By default, resources allocated to a job are allowed to span multiple
+nodes. To disable this behavior, the parameter
+<a class="reference external" href="a.fparameters.html#ENABLEMULTINODEJOBS">ENABLEMULTINODEJOBS</a> should
+be set to <strong>FALSE</strong>.</p>
+</div>
+<div class="section" id="multi-req-support">
+<h2>Multi-Req Support<a class="headerlink" href="#multi-req-support" title="Permalink to this headline">¶</a></h2>
+<p>By default, jobs are only allowed to specify a single type of resource
+for allocation. For example, a job could request &#8216;4 nodes with 256 MB of
+memory&#8217; or &#8216;8 nodes with feature <code class="docutils literal"><span class="pre">fast</span></code> present&#8217;. However, the default
+behavior does not allow submission of a single job which requests both
+of these resource types. The parameter
+<a class="reference external" href="a.fparameters.html#ENABLEMULTIREQJOBS">ENABLEMULTIREQJOBS</a> can be
+set to <strong>TRUE</strong> to remove this constraint. (NOTE: only available in Moab
+4.0.0 and higher)</p>
+</div>
+<div class="section" id="job-size-policy">
+<h2>Job Size Policy<a class="headerlink" href="#job-size-policy" title="Permalink to this headline">¶</a></h2>
+<p>Moab 4.0.0 and higher allow jobs to request resource ranges. Using this
+range information, the scheduler is able to maximize the amount of
+resources available to the job while minimizing the amount of time the
+job is blocked waiting for resources. The
+<a class="reference external" href="a.fparameters.html#JOBSIZEPOLICY">JOBSIZEPOLICY</a> parameter can be
+used to set this behavior according to local site needs. NOTE: job
+resource ranges may only be specified when using a <em>local queue</em> as
+described in the <a class="reference external" href="11.8localqueue.html">Using a Local Queue</a> section.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">General Job Policies</a><ul>
+<li><a class="reference internal" href="#multi-node-support">Multi-Node Support</a></li>
+<li><a class="reference internal" href="#multi-req-support">Multi-Req Support</a></li>
+<li><a class="reference internal" href="#job-size-policy">Job Size Policy</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/11.7generaljobpolicies.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

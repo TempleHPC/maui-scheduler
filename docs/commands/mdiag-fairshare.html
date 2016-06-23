@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag-f">mdiag -f</p>
+<p><strong>(Moab Fairshare Diagnostics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">f</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">user</span><span class="o">|</span><span class="n">group</span><span class="o">|</span><span class="n">acct</span><span class="o">|</span><span class="n">qos</span><span class="o">|</span><span class="n">class</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">relative</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="n">par</span><span class="o">=&lt;</span><span class="n">PARTITIONID</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview:</strong></p>
+<p>The <strong>mdiag -f</strong> command is used to display <em>at a glance</em> information
+about the fairshare configuration and historic resource utilization. The
+fairshare usage may impact job prioritization, job eligibility, or both
+based on the credential <strong>FSTARGET</strong> and <strong>FSCAP</strong> attributes and by the
+fairshare priority weights as described in the <a class="reference external" href="../5.1jobprioritization.html">Job Prioritization
+Overview</a>. The information presented by
+this command includes fairshare configuration and credential fairshare
+usage over time.
+The command hides information about credentials which have no fairshare
+target and no fairshare cap.</p>
+<p>If an object type (&lt;OTYPE&gt;) is specified, then only information for that
+credential type (<strong>user</strong>, <strong>group</strong>, <strong>acct</strong>, <strong>class</strong>, or <strong>qos</strong>)
+will be displayed. If the <strong>relative</strong> flag is set, then per user
+fairshare usage will be displayed relative to each non-user credential
+(see Example 2 below). <strong>Note</strong>: Relative output is only displayed for
+credentials which have user mappings. For example, if there is no
+association between classes and users, no relative <em>per user</em> fairshare
+usage class breakdown will be provided.</p>
+<p><strong>Example 1</strong></p>
+<p>Standard Fairshare Output</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">f</span>
+
+<span class="n">FairShare</span> <span class="n">Information</span>
+
+<span class="n">Depth</span><span class="p">:</span> <span class="mi">6</span> <span class="n">intervals</span>   <span class="n">Interval</span> <span class="n">Length</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span>   <span class="n">Decay</span> <span class="n">Rate</span><span class="p">:</span> <span class="mf">0.50</span>
+
+<span class="n">FS</span> <span class="n">Policy</span><span class="p">:</span> <span class="n">SDEDICATEDPES</span>
+<span class="n">System</span> <span class="n">FS</span> <span class="n">Settings</span><span class="p">:</span>  <span class="n">Target</span> <span class="n">Usage</span><span class="p">:</span> <span class="mf">0.00</span>    <span class="n">Flags</span><span class="p">:</span> <span class="mi">0</span>
+
+<span class="n">FSInterval</span>        <span class="o">%</span>     <span class="n">Target</span>       <span class="mi">0</span>       <span class="mi">1</span>       <span class="mi">2</span>       <span class="mi">3</span>       <span class="mi">4</span>       <span class="mi">5</span>
+<span class="n">FSWeight</span>       <span class="o">-------</span> <span class="o">-------</span>  <span class="mf">1.0000</span>  <span class="mf">0.5000</span>  <span class="mf">0.2500</span>  <span class="mf">0.1250</span>  <span class="mf">0.0625</span>  <span class="mf">0.0312</span>
+<span class="n">TotalUsage</span>      <span class="mf">100.00</span> <span class="o">-------</span>    <span class="mf">85.3</span>   <span class="mf">476.1</span>   <span class="mf">478.9</span>   <span class="mf">478.5</span>   <span class="mf">475.5</span>   <span class="mf">482.8</span>
+
+<span class="n">USER</span>
+<span class="o">-------------</span>
+<span class="n">mattp</span>             <span class="mf">2.51</span> <span class="o">-------</span>    <span class="mf">2.20</span>    <span class="mf">2.69</span>    <span class="mf">2.21</span>    <span class="mf">2.65</span>    <span class="mf">2.65</span>    <span class="mf">3.01</span>
+<span class="n">jsmith</span>           <span class="mf">12.82</span> <span class="o">-------</span>   <span class="mf">12.66</span>   <span class="mf">15.36</span>   <span class="mf">10.96</span>    <span class="mf">8.74</span>    <span class="mf">8.15</span>   <span class="mf">13.85</span>
+<span class="n">kyliem</span>            <span class="mf">3.44</span> <span class="o">-------</span>    <span class="mf">3.93</span>    <span class="mf">2.78</span>    <span class="mf">4.36</span>    <span class="mf">3.11</span>    <span class="mf">3.94</span>    <span class="mf">4.25</span>
+<span class="n">tgh</span>               <span class="mf">4.94</span> <span class="o">-------</span>    <span class="mf">4.44</span>    <span class="mf">5.12</span>    <span class="mf">5.52</span>    <span class="mf">3.95</span>    <span class="mf">4.66</span>    <span class="mf">4.76</span>
+<span class="n">walex</span>             <span class="mf">1.51</span> <span class="o">-------</span>    <span class="mf">3.14</span>    <span class="mf">1.15</span>    <span class="mf">1.05</span>    <span class="mf">1.61</span>    <span class="mf">1.22</span>    <span class="mf">1.60</span>
+<span class="n">jimf</span>              <span class="mf">4.73</span> <span class="o">-------</span>    <span class="mf">4.67</span>    <span class="mf">4.31</span>    <span class="mf">5.67</span>    <span class="mf">4.49</span>    <span class="mf">4.93</span>    <span class="mf">4.92</span>
+<span class="n">poy</span>               <span class="mf">4.64</span> <span class="o">-------</span>    <span class="mf">4.43</span>    <span class="mf">4.61</span>    <span class="mf">4.58</span>    <span class="mf">4.76</span>    <span class="mf">5.36</span>    <span class="mf">4.90</span>
+<span class="n">mjackson</span>          <span class="mf">0.66</span> <span class="o">-------</span>    <span class="mf">0.35</span>    <span class="mf">0.78</span>    <span class="mf">0.67</span>    <span class="mf">0.77</span>    <span class="mf">0.55</span>    <span class="mf">0.43</span>
+<span class="n">tfw</span>              <span class="mf">17.44</span> <span class="o">-------</span>   <span class="mf">16.45</span>   <span class="mf">15.59</span>   <span class="mf">19.93</span>   <span class="mf">19.72</span>   <span class="mf">21.38</span>   <span class="mf">15.68</span>
+<span class="n">gjohn</span>             <span class="mf">2.81</span> <span class="o">-------</span>    <span class="mf">1.66</span>    <span class="mf">3.00</span>    <span class="mf">3.16</span>    <span class="mf">3.06</span>    <span class="mf">2.41</span>    <span class="mf">3.33</span>
+<span class="n">ljill</span>            <span class="mf">10.85</span> <span class="o">-------</span>   <span class="mf">18.09</span>    <span class="mf">7.23</span>   <span class="mf">13.28</span>    <span class="mf">9.24</span>   <span class="mf">14.76</span>    <span class="mf">6.67</span>
+<span class="n">kbill</span>            <span class="mf">11.10</span> <span class="o">-------</span>    <span class="mf">7.31</span>   <span class="mf">14.94</span>    <span class="mf">4.70</span>   <span class="mf">15.49</span>    <span class="mf">5.42</span>   <span class="mf">16.61</span>
+<span class="n">stevei</span>            <span class="mf">1.58</span> <span class="o">-------</span>    <span class="mf">1.41</span>    <span class="mf">1.34</span>    <span class="mf">2.09</span>    <span class="mf">0.75</span>    <span class="mf">3.30</span>    <span class="mf">2.15</span>
+<span class="n">gms</span>               <span class="mf">1.54</span> <span class="o">-------</span>    <span class="mf">1.15</span>    <span class="mf">1.74</span>    <span class="mf">1.63</span>    <span class="mf">1.40</span>    <span class="mf">1.38</span>    <span class="mf">0.90</span>
+<span class="n">patw</span>              <span class="mf">5.11</span> <span class="o">-------</span>    <span class="mf">5.22</span>    <span class="mf">5.11</span>    <span class="mf">4.85</span>    <span class="mf">5.20</span>    <span class="mf">5.28</span>    <span class="mf">5.78</span>
+<span class="n">wer</span>               <span class="mf">6.65</span> <span class="o">-------</span>    <span class="mf">5.04</span>    <span class="mf">7.03</span>    <span class="mf">7.52</span>    <span class="mf">6.80</span>    <span class="mf">6.43</span>    <span class="mf">2.83</span>
+<span class="n">anna</span>              <span class="mf">1.97</span> <span class="o">-------</span>    <span class="mf">2.29</span>    <span class="mf">1.68</span>    <span class="mf">2.27</span>    <span class="mf">1.80</span>    <span class="mf">2.37</span>    <span class="mf">2.17</span>
+<span class="n">susieb</span>            <span class="mf">5.69</span> <span class="o">-------</span>    <span class="mf">5.58</span>    <span class="mf">5.55</span>    <span class="mf">5.57</span>    <span class="mf">6.48</span>    <span class="mf">5.83</span>    <span class="mf">6.16</span>
+
+<span class="n">GROUP</span>
+<span class="o">-------------</span>
+<span class="n">dallas</span>           <span class="mf">13.25</span>  <span class="mf">15.00</span>    <span class="mf">14.61</span>   <span class="mf">12.41</span>   <span class="mf">13.19</span>   <span class="mf">13.29</span>   <span class="mf">15.37</span>   <span class="mf">15.09</span>
+<span class="n">sanjose</span><span class="o">*</span>          <span class="mf">8.86</span>  <span class="mf">15.00</span>     <span class="mf">6.54</span>    <span class="mf">9.55</span>    <span class="mf">9.81</span>    <span class="mf">8.97</span>    <span class="mf">8.35</span>    <span class="mf">4.16</span>
+<span class="n">seattle</span>          <span class="mf">10.05</span>  <span class="mf">15.00</span>     <span class="mf">9.66</span>   <span class="mf">10.23</span>   <span class="mf">10.37</span>    <span class="mf">9.15</span>    <span class="mf">9.94</span>   <span class="mf">10.54</span>
+<span class="n">austin</span><span class="o">*</span>          <span class="mf">30.26</span>  <span class="mf">15.00</span>    <span class="mf">29.10</span>   <span class="mf">30.95</span>   <span class="mf">30.89</span>   <span class="mf">28.45</span>   <span class="mf">29.53</span>   <span class="mf">29.54</span>
+<span class="n">boston</span><span class="o">*</span>           <span class="mf">3.44</span>  <span class="mf">15.00</span>     <span class="mf">3.93</span>    <span class="mf">2.78</span>    <span class="mf">4.36</span>    <span class="mf">3.11</span>    <span class="mf">3.94</span>    <span class="mf">4.25</span>
+<span class="n">orlando</span><span class="o">*</span>         <span class="mf">26.59</span>  <span class="mf">15.00</span>    <span class="mf">29.83</span>   <span class="mf">26.77</span>   <span class="mf">22.56</span>   <span class="mf">29.49</span>   <span class="mf">25.53</span>   <span class="mf">28.18</span>
+<span class="n">newyork</span><span class="o">*</span>          <span class="mf">7.54</span>  <span class="mf">15.00</span>     <span class="mf">6.33</span>    <span class="mf">7.31</span>    <span class="mf">8.83</span>    <span class="mf">7.54</span>    <span class="mf">7.34</span>    <span class="mf">8.24</span>
+
+<span class="n">ACCT</span>
+<span class="o">-------------</span>
+<span class="n">engineering</span>      <span class="mf">31.76</span>  <span class="mf">30.00</span>    <span class="mf">32.25</span>   <span class="mf">32.10</span>   <span class="mf">31.94</span>   <span class="mf">30.07</span>   <span class="mf">30.74</span>   <span class="mf">31.14</span>
+<span class="n">marketing</span>         <span class="mf">8.86</span>   <span class="mf">5.00</span>     <span class="mf">6.54</span>    <span class="mf">9.55</span>    <span class="mf">9.81</span>    <span class="mf">8.97</span>    <span class="mf">8.35</span>    <span class="mf">4.16</span>
+<span class="n">it</span>                <span class="mf">9.12</span>   <span class="mf">5.00</span>     <span class="mf">7.74</span>    <span class="mf">8.65</span>   <span class="mf">10.92</span>    <span class="mf">8.29</span>   <span class="mf">10.64</span>   <span class="mf">10.40</span>
+<span class="n">development</span><span class="o">*</span>     <span class="mf">24.86</span>  <span class="mf">30.00</span>    <span class="mf">24.15</span>   <span class="mf">24.76</span>   <span class="mf">25.00</span>   <span class="mf">24.84</span>   <span class="mf">26.15</span>   <span class="mf">26.78</span>
+<span class="n">research</span>         <span class="mf">25.40</span>  <span class="mf">30.00</span>    <span class="mf">29.32</span>   <span class="mf">24.94</span>   <span class="mf">22.33</span>   <span class="mf">27.84</span>   <span class="mf">24.11</span>   <span class="mf">27.53</span>
+
+<span class="n">QOS</span>
+<span class="o">-------------</span>
+<span class="n">DEFAULT</span><span class="o">*</span>          <span class="mf">0.00</span>  <span class="mf">50.00</span>  <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span>
+<span class="n">high</span><span class="o">*</span>            <span class="mf">83.69</span>  <span class="mf">90.00</span>    <span class="mf">86.76</span>   <span class="mf">83.20</span>   <span class="mf">81.71</span>   <span class="mf">84.35</span>   <span class="mf">83.19</span>   <span class="mf">88.02</span>
+<span class="n">urgent</span>            <span class="mf">0.00</span>   <span class="mf">5.00</span>  <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span> <span class="o">-------</span>
+<span class="n">low</span><span class="o">*</span>             <span class="mf">12.00</span>   <span class="mf">5.00</span>     <span class="mf">7.34</span>   <span class="mf">12.70</span>   <span class="mf">14.02</span>   <span class="mf">12.51</span>   <span class="mf">12.86</span>    <span class="mf">7.48</span>
+
+<span class="n">CLASS</span>
+<span class="o">-------------</span>
+<span class="n">batch</span><span class="o">*</span>           <span class="mf">51.69</span>  <span class="mf">70.00</span>    <span class="mf">53.87</span>   <span class="mf">52.01</span>   <span class="mf">50.80</span>   <span class="mf">50.38</span>   <span class="mf">48.67</span>   <span class="mf">52.65</span>
+<span class="n">long</span><span class="o">*</span>            <span class="mf">18.75</span>  <span class="mf">10.00</span>    <span class="mf">16.54</span>   <span class="mf">18.36</span>   <span class="mf">20.89</span>   <span class="mf">18.36</span>   <span class="mf">21.53</span>   <span class="mf">16.28</span>
+<span class="n">fast</span><span class="o">*</span>            <span class="mf">15.29</span>  <span class="mf">10.00</span>    <span class="mf">18.41</span>   <span class="mf">14.98</span>   <span class="mf">12.58</span>   <span class="mf">16.80</span>   <span class="mf">15.15</span>   <span class="mf">18.21</span>
+<span class="n">bigmem</span>           <span class="mf">14.27</span>  <span class="mf">10.00</span>    <span class="mf">11.17</span>   <span class="mf">14.65</span>   <span class="mf">15.73</span>   <span class="mf">14.46</span>   <span class="mf">14.65</span>   <span class="mf">12.87</span>
+</pre></div>
+</div>
+<p><strong>Example 2</strong></p>
+<p>Grouping User Output by Account</p>
+<p>mdiag -f -o acct &#8211;flags=relative</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">f</span> <span class="o">-</span><span class="n">o</span> <span class="n">acct</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">relative</span>
+
+<span class="n">FairShare</span> <span class="n">Information</span>
+
+<span class="n">Depth</span><span class="p">:</span> <span class="mi">6</span> <span class="n">intervals</span>   <span class="n">Interval</span> <span class="n">Length</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span>   <span class="n">Decay</span> <span class="n">Rate</span><span class="p">:</span> <span class="mf">0.50</span>
+
+<span class="n">FS</span> <span class="n">Policy</span><span class="p">:</span> <span class="n">SDEDICATEDPES</span>
+<span class="n">System</span> <span class="n">FS</span> <span class="n">Settings</span><span class="p">:</span>  <span class="n">Target</span> <span class="n">Usage</span><span class="p">:</span> <span class="mf">0.00</span>    <span class="n">Flags</span><span class="p">:</span> <span class="mi">0</span>
+
+<span class="n">FSInterval</span>        <span class="o">%</span>     <span class="n">Target</span>       <span class="mi">0</span>       <span class="mi">1</span>       <span class="mi">2</span>       <span class="mi">3</span>       <span class="mi">4</span>       <span class="mi">5</span>
+<span class="n">FSWeight</span>       <span class="o">-------</span> <span class="o">-------</span>  <span class="mf">1.0000</span>  <span class="mf">0.5000</span>  <span class="mf">0.2500</span>  <span class="mf">0.1250</span>  <span class="mf">0.0625</span>  <span class="mf">0.0312</span>
+<span class="n">TotalUsage</span>      <span class="mf">100.00</span> <span class="o">-------</span>    <span class="mf">23.8</span>   <span class="mf">476.1</span>   <span class="mf">478.9</span>   <span class="mf">478.5</span>   <span class="mf">475.5</span>   <span class="mf">482.8</span>
+
+<span class="n">ACCOUNT</span>
+<span class="o">-------------</span>
+<span class="n">dallas</span>           <span class="mf">13.12</span>  <span class="mf">15.00</span>    <span class="mf">15.42</span>   <span class="mf">12.41</span>   <span class="mf">13.19</span>   <span class="mf">13.29</span>   <span class="mf">15.37</span>   <span class="mf">15.09</span>
+  <span class="n">mattp</span>          <span class="mf">19.47</span> <span class="o">-------</span>   <span class="mf">15.00</span>   <span class="mf">21.66</span>   <span class="mf">16.75</span>   <span class="mf">19.93</span>   <span class="mf">17.26</span>   <span class="mf">19.95</span>
+  <span class="n">walex</span>           <span class="mf">9.93</span> <span class="o">-------</span>   <span class="mf">20.91</span>    <span class="mf">9.28</span>    <span class="mf">7.97</span>   <span class="mf">12.14</span>    <span class="mf">7.91</span>   <span class="mf">10.59</span>
+  <span class="n">stevei</span>         <span class="mf">12.19</span> <span class="o">-------</span>    <span class="mf">9.09</span>   <span class="mf">10.78</span>   <span class="mf">15.85</span>    <span class="mf">5.64</span>   <span class="mf">21.46</span>   <span class="mf">14.28</span>
+  <span class="n">anna</span>           <span class="mf">14.77</span> <span class="o">-------</span>   <span class="mf">16.36</span>   <span class="mf">13.54</span>   <span class="mf">17.18</span>   <span class="mf">13.55</span>   <span class="mf">15.44</span>   <span class="mf">14.37</span>
+  <span class="n">susieb</span>         <span class="mf">43.64</span> <span class="o">-------</span>   <span class="mf">38.64</span>   <span class="mf">44.74</span>   <span class="mf">42.25</span>   <span class="mf">48.74</span>   <span class="mf">37.92</span>   <span class="mf">40.81</span>
+<span class="n">sanjose</span><span class="o">*</span>          <span class="mf">9.26</span>  <span class="mf">15.00</span>     <span class="mf">8.69</span>    <span class="mf">9.55</span>    <span class="mf">9.81</span>    <span class="mf">8.97</span>    <span class="mf">8.35</span>    <span class="mf">4.16</span>
+  <span class="n">mjackson</span>        <span class="mf">7.71</span> <span class="o">-------</span>    <span class="mf">6.45</span>    <span class="mf">8.14</span>    <span class="mf">6.81</span>    <span class="mf">8.62</span>    <span class="mf">6.54</span>   <span class="mf">10.29</span>
+  <span class="n">gms</span>            <span class="mf">17.61</span> <span class="o">-------</span>   <span class="mf">21.77</span>   <span class="mf">18.25</span>   <span class="mf">16.57</span>   <span class="mf">15.58</span>   <span class="mf">16.51</span>   <span class="mf">21.74</span>
+  <span class="n">wer</span>            <span class="mf">74.68</span> <span class="o">-------</span>   <span class="mf">71.77</span>   <span class="mf">73.61</span>   <span class="mf">76.62</span>   <span class="mf">75.80</span>   <span class="mf">76.95</span>   <span class="mf">67.97</span>
+<span class="n">seattle</span>          <span class="mf">10.12</span>  <span class="mf">15.00</span>    <span class="mf">10.16</span>   <span class="mf">10.23</span>   <span class="mf">10.37</span>    <span class="mf">9.15</span>    <span class="mf">9.94</span>   <span class="mf">10.54</span>
+  <span class="n">tgh</span>            <span class="mf">49.56</span> <span class="o">-------</span>   <span class="mf">46.21</span>   <span class="mf">50.05</span>   <span class="mf">53.26</span>   <span class="mf">43.14</span>   <span class="mf">46.91</span>   <span class="mf">45.13</span>
+  <span class="n">patw</span>           <span class="mf">50.44</span> <span class="o">-------</span>   <span class="mf">53.79</span>   <span class="mf">49.95</span>   <span class="mf">46.74</span>   <span class="mf">56.86</span>   <span class="mf">53.09</span>   <span class="mf">54.87</span>
+<span class="n">austin</span><span class="o">*</span>          <span class="mf">30.23</span>  <span class="mf">15.00</span>    <span class="mf">25.58</span>   <span class="mf">30.95</span>   <span class="mf">30.89</span>   <span class="mf">28.45</span>   <span class="mf">29.53</span>   <span class="mf">29.54</span>
+  <span class="n">jsmith</span>         <span class="mf">42.44</span> <span class="o">-------</span>   <span class="mf">48.77</span>   <span class="mf">49.62</span>   <span class="mf">35.47</span>   <span class="mf">30.70</span>   <span class="mf">27.59</span>   <span class="mf">46.90</span>
+  <span class="n">tfw</span>            <span class="mf">57.56</span> <span class="o">-------</span>   <span class="mf">51.23</span>   <span class="mf">50.38</span>   <span class="mf">64.53</span>   <span class="mf">69.30</span>   <span class="mf">72.41</span>   <span class="mf">53.10</span>
+<span class="n">boston</span><span class="o">*</span>           <span class="mf">3.38</span>  <span class="mf">15.00</span>     <span class="mf">3.78</span>    <span class="mf">2.78</span>    <span class="mf">4.36</span>    <span class="mf">3.11</span>    <span class="mf">3.94</span>    <span class="mf">4.25</span>
+  <span class="n">kyliem</span>        <span class="mf">100.00</span> <span class="o">-------</span>  <span class="mf">100.00</span>  <span class="mf">100.00</span>  <span class="mf">100.00</span>  <span class="mf">100.00</span>  <span class="mf">100.00</span>  <span class="mf">100.00</span>
+<span class="n">orlando</span><span class="o">*</span>         <span class="mf">26.20</span>  <span class="mf">15.00</span>    <span class="mf">30.13</span>   <span class="mf">26.77</span>   <span class="mf">22.56</span>   <span class="mf">29.49</span>   <span class="mf">25.53</span>   <span class="mf">28.18</span>
+  <span class="n">poy</span>            <span class="mf">17.90</span> <span class="o">-------</span>   <span class="mf">16.28</span>   <span class="mf">17.22</span>   <span class="mf">20.30</span>   <span class="mf">16.15</span>   <span class="mf">20.98</span>   <span class="mf">17.39</span>
+  <span class="n">ljill</span>          <span class="mf">37.85</span> <span class="o">-------</span>   <span class="mf">58.60</span>   <span class="mf">26.99</span>   <span class="mf">58.87</span>   <span class="mf">31.33</span>   <span class="mf">57.79</span>   <span class="mf">23.67</span>
+  <span class="n">kbill</span>          <span class="mf">44.25</span> <span class="o">-------</span>   <span class="mf">25.12</span>   <span class="mf">55.79</span>   <span class="mf">20.83</span>   <span class="mf">52.52</span>   <span class="mf">21.23</span>   <span class="mf">58.94</span>
+<span class="n">newyork</span><span class="o">*</span>          <span class="mf">7.69</span>  <span class="mf">15.00</span>     <span class="mf">6.24</span>    <span class="mf">7.31</span>    <span class="mf">8.83</span>    <span class="mf">7.54</span>    <span class="mf">7.34</span>    <span class="mf">8.24</span>
+  <span class="n">jimf</span>           <span class="mf">61.42</span> <span class="o">-------</span>   <span class="mf">69.66</span>   <span class="mf">58.94</span>   <span class="mf">64.20</span>   <span class="mf">59.46</span>   <span class="mf">67.21</span>   <span class="mf">59.64</span>
+  <span class="n">gjohn</span>          <span class="mf">38.58</span> <span class="o">-------</span>   <span class="mf">30.34</span>   <span class="mf">41.06</span>   <span class="mf">35.80</span>   <span class="mf">40.54</span>   <span class="mf">32.79</span>   <span class="mf">40.36</span>
+</pre></div>
+</div>
+<p class="rubric" id="see-also">See Also:</p>
+<ul class="simple">
+<li><a class="reference external" href="../6.3fairshare.html">Fairshare Overview</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag-fairshare.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

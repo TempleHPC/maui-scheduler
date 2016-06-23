@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.4. Preemption Policies &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption" href="8.0optimizingschedulingbehavior.html" />
+    <link rel="next" title="9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation" href="9.0evaluatingsystemperformance.html" />
+    <link rel="prev" title="8.3. Node Set Overview" href="8.3nodesetoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="9.0evaluatingsystemperformance.html" title="9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="8.3nodesetoverview.html" title="8.3. Node Set Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="8.0optimizingschedulingbehavior.html" accesskey="U">8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="preemption-policies">
+<h1>8.4. Preemption Policies<a class="headerlink" href="#preemption-policies" title="Permalink to this headline">¶</a></h1>
+<p>Many sites possess workloads of varying importance. While it may be
+critical that some jobs obtain resources immediately, other jobs are
+less <em>turnaround time</em> sensitive but have an insatiable hunger for
+compute cycles, consuming every available cycle for years on end. These
+latter jobs often have turnaround times on the order of weeks or months.
+The concept of <em>cycle stealing</em>, popularized by systems such as Condor,
+handles such situations well and enables systems to run low priority,
+preemptible jobs whenever something more pressing is not running. These
+other systems are often employed on compute farms of desktops where the
+jobs must vacate anytime interactive system use is detected.</p>
+<div class="section" id="preemption-triggers">
+<h2>8.4.1. Preemption Triggers<a class="headerlink" href="#preemption-triggers" title="Permalink to this headline">¶</a></h2>
+<p>Preemption can be enabled in one of three ways. These include manual
+intervention, QOS based configuration, and use of the preemption based
+backfill algorithm.</p>
+<div class="section" id="admin-preemption-commands">
+<h3>8.4.1.1. Admin Preemption Commands<a class="headerlink" href="#admin-preemption-commands" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>mjobctl</strong> command can be used to preempt jobs. Specifically, the
+command can be used to modify a job&#8217;s execution state in the following
+ways:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="14%" />
+<col width="63%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Action</strong></td>
+<td><strong>Flag</strong></td>
+<td><strong>Details</strong></td>
+</tr>
+<tr class="row-even"><td>Cancel</td>
+<td>-c</td>
+<td>terminate and remove job from queue</td>
+</tr>
+<tr class="row-odd"><td>Checkpoint</td>
+<td>-C</td>
+<td>terminate and checkpoint job leaving job in queue</td>
+</tr>
+<tr class="row-even"><td>Requeue</td>
+<td>-R</td>
+<td>terminate job leaving job in queue</td>
+</tr>
+<tr class="row-odd"><td>Resume</td>
+<td>-r</td>
+<td>resume suspended job</td>
+</tr>
+<tr class="row-even"><td>Start (execute)</td>
+<td>-x</td>
+<td>start idle job</td>
+</tr>
+<tr class="row-odd"><td>Suspend</td>
+<td>-s</td>
+<td>suspend active job</td>
+</tr>
+</tbody>
+</table>
+<p>In general, users are allowed to suspend or terminate jobs they own.
+Administrators are allowed to suspend, terminate, resume, and execute
+any queued jobs.</p>
+</div>
+<div class="section" id="qos-based-preemption">
+<h3>8.4.1.2. QOS Based Preemption<a class="headerlink" href="#qos-based-preemption" title="Permalink to this headline">¶</a></h3>
+<p>Maui&#8217;s QoS-based preemption system allows a site the ability to specify
+preemption rules and control access to preemption privileges. These
+abilities can be used to increase system throughput, improve job
+response time for specific classes of jobs, or other enable various
+political policies. All policies are enabled by specifying some QOS&#8217;s
+with the flag <strong>PREEMPTOR</strong> , and other with the flag <strong>PREEMPTEE</strong>. For
+example, to enable a <em>cycle stealing</em> high throughput cluster, a QOS can
+be created for high priority jobs and marked with the flag
+<strong>PREEMPTOR</strong>; another QOS can be created for low priority jobs and
+marked with the flag <strong>PREEMPTEE</strong> . Finally, the <strong>RESERVATIONPOLICY</strong>
+parameter can be set to <strong>NEVER</strong>. With this configuration, low
+priority, preemptee jobs can be started whenever idle resources are
+available. These jobs will be allowed to run until a high priority job
+arrives, at which point the necessary low priority jobs will be
+preempted and the needed resources freed. This allows near immediate
+resource access for the high priority jobs. Using this approach, a
+cluster can maintain near 100% system utilization while still delivering
+excellent turnaround time to the jobs of greatest value.
+It is important to note the rules of QoS based preemption. Preemption
+<strong>only</strong> occurs when the following 3 conditions are satisfied:</p>
+<ul class="simple">
+<li>The <em>preemptor</em> job has the <strong>PREEMPTOR</strong> attribute set</li>
+<li>The <em>preemptee</em> job has the <strong>PREEMPTEE</strong> attribute set</li>
+<li>The <em>preemptor</em> job has a higher priority than the <em>preemptee</em> job</li>
+</ul>
+<p>Use of the preemption system need not be limited to controlling low
+priority jobs. Other uses include optimistic scheduling and development
+job support.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PREEMPTPOLICY</span> <span class="n">REQUEUE</span>
+
+<span class="n">QOSCFG</span><span class="p">[</span><span class="n">high</span><span class="p">]</span> <span class="n">QFLAGS</span><span class="o">=</span><span class="n">PREEMPTOR</span>
+<span class="n">QOSCFG</span><span class="p">[</span><span class="n">med</span><span class="p">]</span>
+<span class="n">QOSCFG</span><span class="p">[</span><span class="n">low</span><span class="p">]</span> <span class="n">QFLAGS</span><span class="o">=</span><span class="n">PREEMPTEE</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="preemption-based-backfill">
+<h3>8.4.1.3. Preemption Based Backfill<a class="headerlink" href="#preemption-based-backfill" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>PREEMPT</strong> backfill policy allows a site to take advantage of
+optimistic scheduling. By default, backfill only allows jobs to run if
+they are guaranteed to have adequate time to run to completion. However,
+statistically, most jobs do not utilize their full requested wallclock
+limit. The <strong>PREEMPT</strong> backfill policy allows the scheduler to start
+backfill jobs even if required walltime is not available. If the job
+runs too long and interferes with another job which was guaranteed a
+particular timeslot, the backfill job is preempted and the priority job
+is allowed to run. When another potential timeslot becomes available,
+the preempted backfill job will again be optimistically executed. In
+environments with checkpointing or with poor wallclock accuracies, this
+algorithm has potential for significant savings. See the backfill
+section for more information.</p>
+</div>
+</div>
+<div class="section" id="types-of-preemption">
+<h2>8.4.2. Types of Preemption<a class="headerlink" href="#types-of-preemption" title="Permalink to this headline">¶</a></h2>
+<p>How the scheduler preempts a job is controlled by the
+<a class="reference external" href="a.fparameters.html#preemptpolicy">PREEMPTPOLICY</a> parameter. This
+parameter allows preemption to be enforced in one of the following
+manners:</p>
+<div class="section" id="job-requeue">
+<h3>8.4.2.1. Job Requeue<a class="headerlink" href="#job-requeue" title="Permalink to this headline">¶</a></h3>
+<p>Under this policy, active jobs are terminated and returned to the job
+queue in an idle state.</p>
+</div>
+<div class="section" id="job-suspend">
+<h3>8.4.2.2. Job Suspend<a class="headerlink" href="#job-suspend" title="Permalink to this headline">¶</a></h3>
+<p>Suspend causes active jobs to stop executing but to remain in memory or
+the allocated compute nodes. While a suspended job frees up processor
+resources, it may continue to consume swap and/or other resources.
+Suspended jobs must be &#8216;resumed&#8217; to continue executing.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If &#8216;suspend&#8217; based preemption is selected, then the signal used to initiate
+the job suspend may be specified by setting the RM specific &#8216;SUSPENDSIG&#8217;
+attribute, i.e. &#8216;RMCFG[base] SUSPENDSIG=23&#8217;.</p>
+</div>
+</div>
+<div class="section" id="job-checkpoint">
+<h3>8.4.2.3. Job Checkpoint<a class="headerlink" href="#job-checkpoint" title="Permalink to this headline">¶</a></h3>
+<p>Systems which support job checkpointing allow a job to save off its
+current state and either terminate or continue running. A checkpointed
+job may be restarted at any time and resume execution from its most
+recent checkpoint.</p>
+</div>
+<div class="section" id="rm-preemption-constraints">
+<h3>8.4.2.4. RM Preemption Constraints<a class="headerlink" href="#rm-preemption-constraints" title="Permalink to this headline">¶</a></h3>
+<p>Maui is only able to utilize preemption if the underlying resource
+manager/OS combination supports this capability. The following table
+displays current preemption limitations:
+<strong>Table 8.4.2.4 Resource Manager Preemption Constraints</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="17%" />
+<col width="16%" />
+<col width="20%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Resource Manager</strong></td>
+<td><strong>OpenPBS</strong> (2.3)</td>
+<td><strong>PBSPro</strong> (5.2)</td>
+<td><strong>Loadleveler</strong> (3.1)</td>
+<td><strong>LSF</strong> (5.2)</td>
+<td><strong>SGE</strong> (5.3)</td>
+</tr>
+<tr class="row-even"><td>Cancel</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>???</td>
+</tr>
+<tr class="row-odd"><td>Requeue</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>???</td>
+</tr>
+<tr class="row-even"><td>Suspend</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>???</td>
+</tr>
+<tr class="row-odd"><td>Checkpoint</td>
+<td>(yes on IRIX)</td>
+<td>(yes on IRIX)</td>
+<td>yes</td>
+<td>(OS dependent)</td>
+<td>???</td>
+</tr>
+</tbody>
+</table>
+<div class="line-block">
+<div class="line"><strong>See Also:</strong> N/A .</div>
+<div class="line"><a class="reference external" href="7.3qos.html">QOS Overview</a></div>
+<div class="line"><a class="reference external" href="7.3qos.html#access">Managing QOS Access</a></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">8.4. Preemption Policies</a><ul>
+<li><a class="reference internal" href="#preemption-triggers">8.4.1. Preemption Triggers</a><ul>
+<li><a class="reference internal" href="#admin-preemption-commands">8.4.1.1. Admin Preemption Commands</a></li>
+<li><a class="reference internal" href="#qos-based-preemption">8.4.1.2. QOS Based Preemption</a></li>
+<li><a class="reference internal" href="#preemption-based-backfill">8.4.1.3. Preemption Based Backfill</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#types-of-preemption">8.4.2. Types of Preemption</a><ul>
+<li><a class="reference internal" href="#job-requeue">8.4.2.1. Job Requeue</a></li>
+<li><a class="reference internal" href="#job-suspend">8.4.2.2. Job Suspend</a></li>
+<li><a class="reference internal" href="#job-checkpoint">8.4.2.3. Job Checkpoint</a></li>
+<li><a class="reference internal" href="#rm-preemption-constraints">8.4.2.4. RM Preemption Constraints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="8.3nodesetoverview.html"
+                        title="previous chapter">8.3. Node Set Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="9.0evaluatingsystemperformance.html"
+                        title="next chapter">9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/8.4preemption.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="9.0evaluatingsystemperformance.html" title="9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="8.3nodesetoverview.html" title="8.3. Node Set Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="8.0optimizingschedulingbehavior.html" >8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

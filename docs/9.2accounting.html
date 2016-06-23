@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.2. Accounting: Job and System Statistics &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation" href="9.0evaluatingsystemperformance.html" />
+    <link rel="next" title="9.3. Profiling Current and Historical Usage" href="9.3profilingusage.html" />
+    <link rel="prev" title="9.1. Maui Performance Evaluation Overview" href="9.1performanceevaluation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="9.3profilingusage.html" title="9.3. Profiling Current and Historical Usage"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="9.1performanceevaluation.html" title="9.1. Maui Performance Evaluation Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="9.0evaluatingsystemperformance.html" accesskey="U">9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="accounting-job-and-system-statistics">
+<h1>9.2. Accounting: Job and System Statistics<a class="headerlink" href="#accounting-job-and-system-statistics" title="Permalink to this headline">¶</a></h1>
+<p>Maui provides extensive accounting facilities which allow resource usage
+to be tracked by resources (i.e., compute nodes), jobs, users, and other
+objects. The accounting facilities may be used in conjunction with and
+correlated with the accounting provided by the resource manager.</p>
+<p>Maui maintains a large number of statistics and provides several
+commands to allow easy access to and helpful consolidation of this
+information. These statistics are of three primary types:</p>
+<div class="section" id="accounting-overview">
+<h2>9.2.1. Accounting Overview<a class="headerlink" href="#accounting-overview" title="Permalink to this headline">¶</a></h2>
+<p>Maui provides accounting data correlated to most major objects utilized
+within scheduling. The records include job accounting, resource
+accounting, and credential based accounting.</p>
+<div class="section" id="job-accounting">
+<h3>9.2.1.1. Job Accounting<a class="headerlink" href="#job-accounting" title="Permalink to this headline">¶</a></h3>
+<p>As each job completes, Maui records a complete job trace containing
+information about who ran the job, when and where it ran, what resources
+it requested, what it actually utilized, and other pieces of key
+information. A complete description of each of the job accounting data
+fields can be found within section <a class="reference external" href="16.3workloadtrace.html">16.3 Workload
+Traces</a> of the admin manual.</p>
+</div>
+<div class="section" id="resource-accounting">
+<h3>9.2.1.2. Resource Accounting<a class="headerlink" href="#resource-accounting" title="Permalink to this headline">¶</a></h3>
+<p>N/A</p>
+</div>
+<div class="section" id="credential-accounting">
+<h3>9.2.1.3. Credential Accounting<a class="headerlink" href="#credential-accounting" title="Permalink to this headline">¶</a></h3>
+<p>N/A</p>
+</div>
+</div>
+<div class="section" id="real-time-statistics">
+<h2>9.2.2. Real Time Statistics<a class="headerlink" href="#real-time-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Maui provides real time statistical information about how the machine is
+running from a scheduling point of view. The
+<a class="reference external" href="commands/showstats.html">showstats</a> commands is actually a suite of
+commands providing detailed information on an overall scheduling basis
+as well as a per user, group, account and node basis. This command gets
+its information from in memory statistics which are loaded at scheduler
+start time from the scheduler checkpoint file. (See the Checkpoint
+Overview for more information) This checkpoint file is updated from time
+to time and when the scheduler is shutdown allowing statistics to be
+collected over an extended timeframe. At any time, real time statistics
+can be reset using the <a class="reference external" href="commands/resetstats.html">resetstats</a>
+command.
+In addition to the showstats command, the
+<a class="reference external" href="commands/showgrid.html">showgrid</a> command also obtains its
+information from the in memory stats and checkpoint file. This command
+display a processor-time based matrix of scheduling performance for a
+wide variety of metrics. Information such as backfill effectiveness or
+average job queue time can be determined on a job size/duration basis.
+See the showgrid command documentation for more information.</p>
+</div>
+<div class="section" id="profiling-historical-usage">
+<h2>9.2.3. Profiling Historical Usage<a class="headerlink" href="#profiling-historical-usage" title="Permalink to this headline">¶</a></h2>
+<p>Historical usage information can be obtained for a specific
+timeframe, class of jobs, and/or portion of resources using the
+<a class="reference external" href="commands/profiler.html">profiler</a> command. This command operates on
+the <a class="reference external" href="trace.html">detailed job trace information</a> recorded at the
+completion of each job. These traces are stored in the directory pointed
+to by the <a class="reference external" href="a.fparameters.html#statdir">STATDIR</a> parameter which
+defaults to <strong>$(MAUIHOMEDIR)/stats</strong>. Within this directory, statistics
+files are maintained using the format <code class="docutils literal"><span class="pre">WWW_MMM_DD_YYYY</span></code> (i.e,
+Mon_Jul_16_2001) with jobs traces being recorded in the file
+associated with the day the job completed. Each job trace is white space
+delimited flat text and may be viewed directly with any text reader.</p>
+<p>When profiling statistics, stat files covering the time frame of
+interest should be aggregated into a single file. This file can be
+passed to the profiler command along with a number of configuration
+flags controlling what data should be processed and how it should be
+display. Command line flags allow specification of constraints such as
+earliest start date, or latest completion date. Flags can also be used
+to evaluate only jobs associated with specific users, groups, accounts,
+or QOS&#8217;s. Further, it is possible to specify that only jobs run on
+certain nodes be processed. Because the trace files are flat text,
+simple Unix® text processing tools such as awk, sed, or grep can be used
+to create more elaborate filters should they be needed.</p>
+<p>The output of the profiler command provides extensive detailed
+information about what jobs ran and what level of scheduling service
+they received. The profiler command documentation should be consulted
+for more information.</p>
+</div>
+<div class="section" id="fairshare-usage-statistics">
+<h2>9.2.4. Fairshare Usage Statistics<a class="headerlink" href="#fairshare-usage-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Regardless of whether of not fairshare is enabled, detailed
+credential based fairshare statistics are maintained. Like job traces,
+these statistics are stored in the directory pointed to by the STATDIR
+parameter. Fairshare stats are maintained in a separate statistics file
+using the format FS.&lt;EPOCHTIME&gt; (i.e., FS.982713600) with one file
+created per fairshare window. (See the <a class="reference external" href="#fairshare">Fairshare
+Overview</a> for more information) These files are also flat
+text and record credential based usage statistics. Information from
+these files can be seen via the <a class="reference external" href="commands/diagnosefairshare.html">diagnose
+-f</a> command.
+<a href="#id1"><span class="problematic" id="id2">|image5|</span></a> The <a class="reference external" href="../mcm/index.html">Moab Cluster Manager</a><sup>TM</sup>
+<a class="reference external" href="../mcm/fairshare.html">graphically organizes</a> the fairshare values
+by credential for easy navigation and provides a
+<a class="reference external" href="../mcm/fairshare.html">GUI</a> to specify the Decay Factor, Depth,
+Interval Length and Usage Metric.</p>
+<div class="section" id="smp-aspects">
+<h3>9.2.4.1. SMP Aspects<a class="headerlink" href="#smp-aspects" title="Permalink to this headline">¶</a></h3>
+<p><strong>Shared vs Dedicated</strong></p>
+<p>SMP nodes are often used to run jobs which do not use all available
+resources on that node. How Maui handles these unused resources is
+controlled by the parameter
+<a class="reference external" href="a.fparameters.html#nodeaccesspolicy">NODEACCESSPOLICY</a>. If this
+parameter is set to <strong>SHARED</strong>, Maui will allow tasks of other jobs to
+use the resources. If this parameter is set to <strong>DEDICATED</strong>, Maui will
+mark these resources unavailable for use by other jobs.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">9.2. Accounting: Job and System Statistics</a><ul>
+<li><a class="reference internal" href="#accounting-overview">9.2.1. Accounting Overview</a><ul>
+<li><a class="reference internal" href="#job-accounting">9.2.1.1. Job Accounting</a></li>
+<li><a class="reference internal" href="#resource-accounting">9.2.1.2. Resource Accounting</a></li>
+<li><a class="reference internal" href="#credential-accounting">9.2.1.3. Credential Accounting</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#real-time-statistics">9.2.2. Real Time Statistics</a></li>
+<li><a class="reference internal" href="#profiling-historical-usage">9.2.3. Profiling Historical Usage</a></li>
+<li><a class="reference internal" href="#fairshare-usage-statistics">9.2.4. Fairshare Usage Statistics</a><ul>
+<li><a class="reference internal" href="#smp-aspects">9.2.4.1. SMP Aspects</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="9.1performanceevaluation.html"
+                        title="previous chapter">9.1. Maui Performance Evaluation Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="9.3profilingusage.html"
+                        title="next chapter">9.3. Profiling Current and Historical Usage</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/9.2accounting.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="9.3profilingusage.html" title="9.3. Profiling Current and Historical Usage"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="9.1performanceevaluation.html" title="9.1. Maui Performance Evaluation Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="9.0evaluatingsystemperformance.html" >9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

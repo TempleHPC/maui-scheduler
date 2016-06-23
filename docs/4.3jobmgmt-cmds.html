@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.3. Job Management Commands &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="4. Scheduler Commands" href="4.0commands.html" />
+    <link rel="next" title="4.4. Reservation Management Commands" href="4.4reservation-cmds.html" />
+    <link rel="prev" title="4.2. Status Commands" href="4.2status-cmds.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="4.4reservation-cmds.html" title="4.4. Reservation Management Commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="4.2status-cmds.html" title="4.2. Status Commands"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="4.0commands.html" accesskey="U">4. Scheduler Commands</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="job-management-commands">
+<h1>4.3. Job Management Commands<a class="headerlink" href="#job-management-commands" title="Permalink to this headline">¶</a></h1>
+<p>Maui shares job management tasks with the resource manager. Typically,
+the scheduler only modifies scheduling relevant aspects of the job such
+as partition access, job priority, charge account, hold state, etc. The
+table below covers the available job management commands. The <a class="reference external" href="a.gcommandoverview.html">Commands
+Overview</a> lists all available commands.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="7%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Command</strong></td>
+<td><strong>Flags</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/canceljob.html">canceljob</a></td>
+<td>&nbsp;</td>
+<td>cancel existing job</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/checkjob.html">checkjob</a></td>
+<td>&nbsp;</td>
+<td>display job state, resource requirements, environment, constraints, credentials, history, allocated resources, and resource utilization</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/diagnose.html">diagnose</a></td>
+<td>-j</td>
+<td>display summarized job information and any unexpected state</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/releasehold.html">releasehold</a></td>
+<td>[-a]</td>
+<td>remove job holds or defers</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/runjob.html">runjob</a></td>
+<td>&nbsp;</td>
+<td>start job immediately if possible</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/sethold.html">sethold</a></td>
+<td>&nbsp;</td>
+<td>set hold on job</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/setqos.html">setqos</a></td>
+<td>&nbsp;</td>
+<td>set/modify QoS of existing job</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/setspri.html">setspri</a></td>
+<td>&nbsp;</td>
+<td>adjust job/system priority of job</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="4.2status-cmds.html"
+                        title="previous chapter">4.2. Status Commands</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="4.4reservation-cmds.html"
+                        title="next chapter">4.4. Reservation Management Commands</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/4.3jobmgmt-cmds.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="4.4reservation-cmds.html" title="4.4. Reservation Management Commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="4.2status-cmds.html" title="4.2. Status Commands"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="4.0commands.html" >4. Scheduler Commands</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

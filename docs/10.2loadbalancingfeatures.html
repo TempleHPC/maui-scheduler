@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10.2. Load Balancing Features &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="10. Managing Shared Resources - SMP Issues and Policies" href="10.0managingsharedresources.html" />
+    <link rel="next" title="11. General Job Administration" href="11.0generaljobadmin.html" />
+    <link rel="prev" title="10.1. Consumable Resource Handling" href="10.1consumableresourcehandling.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="11.0generaljobadmin.html" title="11. General Job Administration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="10.1consumableresourcehandling.html" title="10.1. Consumable Resource Handling"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="10.0managingsharedresources.html" accesskey="U">10. Managing Shared Resources - SMP Issues and Policies</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="load-balancing-features">
+<h1>10.2. Load Balancing Features<a class="headerlink" href="#load-balancing-features" title="Permalink to this headline">¶</a></h1>
+<p><em>Load balancing</em> is generally defined as the incorporation of resource
+load information into scheduling decisions. Maui supports load balancing
+in a number of ways allowing sites to use node load information to both
+determine <a class="reference external" href="5.4nodeavailability.html">resource availability</a> and to
+control job <a class="reference external" href="5.2nodeallocation.html">resource allocation</a>.</p>
+<div class="section" id="resource-availability">
+<h2>10.2.1. Resource Availability<a class="headerlink" href="#resource-availability" title="Permalink to this headline">¶</a></h2>
+<p>Maui will only schedule jobs onto available nodes. Using Maui&#8217;s <a class="reference external" href="5.4nodeavailability.html">node
+availability policies</a>, a site can specify
+exactly what criteria determine the node&#8217;s availability. For load
+balancing purposes, sites may wish to configure availability criteria
+for processors, memory, and swap. Various settings can enable
+overcommiting resources if desired while others can constrain nodes to
+only accept jobs if resources exist to meet the maximum needs of all
+concurrent job requests.</p>
+</div>
+<div class="section" id="prioritizing-node-allocation">
+<h2>10.2.2. Prioritizing Node Allocation<a class="headerlink" href="#prioritizing-node-allocation" title="Permalink to this headline">¶</a></h2>
+<p>The second major aspect of load balancing has to do with the selection
+of resources for new jobs. With Maui, load information can be
+incorporated into the node allocation decision by using
+the<strong>PRIORITY</strong> <a class="reference external" href="5.2nodeallocation.html">node allocation</a> policy.
+This policy allows specification of which aspects of a node&#8217;s
+configuration contribute to its allocation priority. For load balancing
+purposes, a site would want to favor nodes with the most available
+processors and the lowest load and job count. The node allocation
+priority function is set using the <strong>PRIORITYF</strong> attribute of the
+<strong>NODECFG</strong> parameter as shown in the example below:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-----</span>
+<span class="c1"># maui.cfg</span>
+
+<span class="n">NODEALLOCATIONPOLICY</span>  <span class="n">PRIORITY</span>
+<span class="n">NODECFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>      <span class="n">PRIORITYF</span><span class="o">=</span><span class="s1">&#39;10 * APROCS - LOAD - JOBCOUNT&#39;</span>
+<span class="o">-----</span>
+</pre></div>
+</div>
+<p>Other node aspects which may be of value in configuring load-balancing
+based node allocation include <strong>SPEED</strong> and <strong>CPROCS</strong>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">10.2. Load Balancing Features</a><ul>
+<li><a class="reference internal" href="#resource-availability">10.2.1. Resource Availability</a></li>
+<li><a class="reference internal" href="#prioritizing-node-allocation">10.2.2. Prioritizing Node Allocation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="10.1consumableresourcehandling.html"
+                        title="previous chapter">10.1. Consumable Resource Handling</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="11.0generaljobadmin.html"
+                        title="next chapter">11. General Job Administration</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/10.2loadbalancingfeatures.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="11.0generaljobadmin.html" title="11. General Job Administration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="10.1consumableresourcehandling.html" title="10.1. Consumable Resource Handling"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="10.0managingsharedresources.html" >10. Managing Shared Resources - SMP Issues and Policies</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

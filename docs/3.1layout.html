@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.1. File Layout &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="3. Scheduler Basics" href="3.0basics.html" />
+    <link rel="next" title="3.2. Scheduling Environment" href="3.2environment.html" />
+    <link rel="prev" title="3. Scheduler Basics" href="3.0basics.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="3.2environment.html" title="3.2. Scheduling Environment"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="3.0basics.html" title="3. Scheduler Basics"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="3.0basics.html" accesskey="U">3. Scheduler Basics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="file-layout">
+<h1>3.1. File Layout<a class="headerlink" href="#file-layout" title="Permalink to this headline">¶</a></h1>
+<p>Maui is initially unpacked into a simple one-deep directory structure as
+shown below. Note that some of the files (i.e., log and statistics
+files) will be created as Maui is run.</p>
+<div class="line-block">
+<div class="line">$(MAUIHOMEDIR) _____ <strong>maui.cfg</strong> (general config file containing
+information required by both the Maui server and user interface
+clients)</div>
+<div class="line">|___ <strong>maui-private.cfg</strong> (config file containing private
+information required by the Maui server only)</div>
+<div class="line">|___ <strong>`fs.cfg &lt;fsconfig.html&gt;`__</strong> (fairshare config file used in
+Maui 3.0.6 and earlier)</div>
+<div class="line">|___ <strong>maui.ck</strong> (Maui checkpoint file)</div>
+<div class="line">|___ <strong>maui.pid</strong> (Maui &#8216;lock&#8217; file to prevent multiple instances)</div>
+<div class="line">|___ <strong>`log &lt;a.fparameters.html#logdir&gt;`__</strong> (directory for Maui
+log files - REQUIRED BY DEFAULT)</div>
+<div class="line">|____ <strong>`maui.log &lt;a.fparameters.html#logfile&gt;`__</strong> (Maui log
+file)</div>
+<div class="line">|____ <strong>maui.log.1</strong> (previous &#8216;rolled&#8217; Maui log file)</div>
+<div class="line">|___ <strong>`stats &lt;a.fparameters.html#statdir&gt;`__</strong> (directory for
+Maui statistics files - REQUIRED BY DEFAULT)</div>
+<div class="line">|____ Maui stats files (in format &#8216;stats.&lt;YYYY&gt;_&lt;MM&gt;_&lt;DD&gt;&#8217;)</div>
+<div class="line">|____ Maui fairshare data files (in format &#8216;FS.&lt;EPOCHTIME&gt;&#8217;)</div>
+<div class="line">|___ <strong>tools</strong> (directory for local tools called by Maui -
+OPTIONAL BY DEFAULT)</div>
+<div class="line">|___ <strong>traces</strong> (directory for Maui simulation trace files -
+REQUIRED FOR SIMULATIONS)</div>
+<div class="line">|____ resource.trace1 (sample resource trace file)</div>
+<div class="line">|____ workload.trace1 (sample workload trace file)</div>
+<div class="line">|___ <strong>bin</strong> (directory for Maui executable files - REQUIRED BY
+DEFAULT)</div>
+<div class="line">|____ <strong>maui</strong> (Maui scheduler executable)</div>
+<div class="line">|____ <strong>maui_client</strong> (Maui user interface client executable)</div>
+<div class="line">|____ <strong>`profiler &lt;commands/profiler.html&gt;`__</strong> (tool used to
+analyze Maui statistics)</div>
+<div class="line">|___ <strong>src</strong> (directory for Maui source code files - REQUIRED FOR
+BUILD)</div>
+<div class="line">|___ <strong>spool</strong> (directory for temporary Maui files - REQUIRED FOR
+ADVANCED FEATURES)</div>
+<div class="line">|___ <strong>contrib</strong> (directory containing contributed code in the
+areas of GUI&#8217;s, algorithms, policies, etc)</div>
+</div>
+<div class="line-block">
+<div class="line">$(MAUIINSTDIR) ________bin (directory for installed Maui
+executables)</div>
+<div class="line">|____ <strong>maui</strong> (Maui scheduler executable)</div>
+<div class="line">|____ <strong>maui_client</strong> (Maui user interface client executable)</div>
+<div class="line">|____ <strong>profiler</strong> (tool used to analyze Maui statistics)</div>
+</div>
+<p><strong>/etc/maui.cfg</strong> (optional file. This file is used to override default
+&#8216;$(MAUIHOMEDIR)&#8217; settings. it should contain the string &#8216;<strong>SERVERHOMEDIR
+$(DIRECTORY)</strong>&#8216; to override the &#8216;built-in&#8217; $(MAUIHOMEDIR)&#8217; setting.</p>
+<p>When Maui is configured via the <strong>configure</strong> script, the user is
+queried for the location of the Maui home directory and this directory,
+$(MAUIHOMEDIR), is compiled in as the default <strong>MAUIHOMEDIR</strong> directory
+when Maui is built. Unless specified otherwise, Maui will look in this
+directory for its various config files. If you wish to run Maui out of a
+different directory, you can override the default home directory setting
+by creating a <strong>/etc/maui.cfg</strong> file containing the string
+&#8216;<strong>SERVERHOMEDIR &lt;DIRECTORY&gt;</strong>&#8216;, by setting the environment variable
+&#8216;<strong>MAUIHOMEDIR</strong>&#8216;, or by specifying the configfile explicitly using the
+&#8216;<strong>-C</strong>&#8216; command line option on Maui and the Maui client commands.</p>
+<p>When Maui is run, it creates a log file, &#8216;<strong>maui.log</strong>&#8216; in the log
+directory and creates a statistics file in the stats directory with the
+naming convention &#8216;<strong>stats.YYYY_MM_DD</strong>&#8216; (i.e., &#8216;stats.2000_09_20&#8217;).
+Additionally, a checkpoint file, <strong>maui.ck</strong> and lock file <strong>maui.pid</strong>
+are maintained in the Maui home directory.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="3.0basics.html"
+                        title="previous chapter">3. Scheduler Basics</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="3.2environment.html"
+                        title="next chapter">3.2. Scheduling Environment</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/3.1layout.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="3.2environment.html" title="3.2. Scheduling Environment"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="3.0basics.html" title="3. Scheduler Basics"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="3.0basics.html" >3. Scheduler Basics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

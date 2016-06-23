@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11.1. Job Holds &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="11. General Job Administration" href="11.0generaljobadmin.html" />
+    <link rel="next" title="11.2. Job Priority Management" href="11.2jobpriority.html" />
+    <link rel="prev" title="11. General Job Administration" href="11.0generaljobadmin.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="11.2jobpriority.html" title="11.2. Job Priority Management"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="11.0generaljobadmin.html" title="11. General Job Administration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="11.0generaljobadmin.html" accesskey="U">11. General Job Administration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="job-holds">
+<h1>11.1. Job Holds<a class="headerlink" href="#job-holds" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="holds-and-deferred-jobs">
+<h2>11.1.1. Holds and Deferred Jobs<a class="headerlink" href="#holds-and-deferred-jobs" title="Permalink to this headline">¶</a></h2>
+<p>A job <em>hold</em> is a mechanism by which a job is placed in a state where it
+is not eligible to be run. Maui supports job holds applied by users,
+admins, and even resource managers. These holds can be seen in the
+output of the showq and checkjob commands. A job with a hold placed on
+it cannot be run until the hold is removed. If a hold is placed on a job
+via the resource manager, this hold must be released by the resource
+manager provided command (i.e., llhold for Loadleveler, or qhold for
+PBS).</p>
+<p>Maui supports two other types of holds. The first is a temporary hold
+known as a &#8216;defer&#8217;. A job is deferred if the scheduler determines that
+it cannot run. This can be because it asks for resources which do not
+currently exist, does not have allocations to run, is rejected by the
+resource manager, repeatedly fails after start up, etc. Each time a job
+gets deferred, it will stay that way, unable to run for a period of time
+specified by the <a class="reference external" href="a.fparameters.html#defertime">DEFERTIME</a> parameter.
+If a job appears with a state of deferred, it indicates one of the
+previously mentioned failures has occurred. Details regarding the
+failure are available by issuing the
+&#8216;<a class="reference external" href="commands/checkjob.html">checkjob</a> &lt;JOBID&gt;&#8217; command. Once the time
+specified by DEFERTIME has elapsed, the job is automatically released
+and the scheduler again attempts to schedule it. The &#8216;defer&#8217; mechanism
+can be disabled by setting DEFERTIME to &#8216;0&#8217;. To release a job from the
+defer state, issue &#8216;<a class="reference external" href="commands/releasehold.html">releasehold</a> -a
+&lt;JOBID&gt;&#8217;.</p>
+<p>The second &#8216;Maui-specific&#8217; type of hold is known as a &#8216;batch&#8217; hold. A
+batch hold is only applied by the scheduler and is only applied after a
+serious or repeated job failure. If a job has been deferred and released
+DEFERCOUNT times, Maui will place it in a batch hold. It will remain in
+this hold until a scheduler admin examines it and takes appropriate
+action. Like the defer state, the causes of a batch hold can be
+determined via <a class="reference external" href="commands/checkjob.html">checkjob</a> and the hold can be
+released via <a class="reference external" href="commands/releasehold.html">releasehold</a>.</p>
+<p>Like most schedulers, Maui supports the concept of a job hold. Actually,
+Maui supports four distinct types of holds, <em>user</em> holds, <em>system</em>
+holds, <em>batch</em> holds, and <em>defer</em> holds. Each of these holds effectively
+block a job, preventing it from running, until the hold is removed.</p>
+</div>
+<div class="section" id="user-holds">
+<h2>11.1.2. User Holds<a class="headerlink" href="#user-holds" title="Permalink to this headline">¶</a></h2>
+<p>User holds are very straightforward. Many, if not most, resource
+managers provide interfaces by which users can place a hold on their own
+job which basically tells the scheduler not to run the job while the
+hold is in place. The user may utilize this capability because the job&#8217;s
+data is not yet ready, or he wants to be present when the job runs so as
+to monitor results. Such user holds are created by, and under the
+control of a non-privileged and may be removed at any time by that user.
+As would be expected, users can only place holds on their jobs. Jobs
+with a user hold in place will have a Maui state of <strong>Hold</strong> or
+<strong>UserHold</strong> depending on the resource manager being used.</p>
+</div>
+<div class="section" id="system-holds">
+<h2>11.1.3. System Holds<a class="headerlink" href="#system-holds" title="Permalink to this headline">¶</a></h2>
+<p>The second category of hold is the system hold. This hold is put in
+place by a system administrator either manually or by way of an
+automated tool. As with all holds, the job is not allowed to run so long
+as this hold is in place. A batch administrator can place and release
+system holds on any job regardless of job ownership. However, unlike a
+user hold, a normal user cannot release a system hold even on his own
+jobs. System holds are often used during system maintenance and to
+prevent particular jobs from running in accordance with current system
+needs. Jobs with a system hold in place will have a Maui state of
+<strong>Hold</strong> or <strong>SystemHold</strong> depending on the resource manager being used.</p>
+</div>
+<div class="section" id="batch-holds">
+<h2>11.1.4. Batch Holds<a class="headerlink" href="#batch-holds" title="Permalink to this headline">¶</a></h2>
+<p>Batch holds constitute the third category of job holds. These holds are
+placed on a job by the scheduler itself when it determines that a job
+cannot run. The reasons for this vary but can be displayed by issuing
+the &#8216;<strong>`checkjob &lt;commands/checkjob.html&gt;`__ &lt;JOBID&gt;</strong>&#8216; command. Some of
+the possible reasons are listed below:</p>
+<div class="line-block">
+<div class="line">No Resources - the job requests resources of a type or amount that do
+not exist on the system</div>
+<div class="line">System Limits - the job is larger or longer than what is allowed by
+the specified system policies</div>
+<div class="line">Bank Failure - the allocations bank is experiencing failures</div>
+<div class="line">No Allocations - the job requests use of an account which is out of
+allocations and no fallback account has been specified</div>
+<div class="line">RM Reject - the resource manager refuses to start the job</div>
+<div class="line">RM Failure - the resource manager is experiencing failures</div>
+<div class="line">Policy Violation - the job violates certain throttling policies
+preventing it from running now and in the future</div>
+<div class="line">No QOS Access - the job does not have access to the QOS level it
+requests</div>
+</div>
+<p>Jobs which are placed in a batch hold will show up within Maui in the
+state <strong>BatchHold</strong>.</p>
+</div>
+<div class="section" id="job-defer">
+<h2>11.1.5. Job Defer<a class="headerlink" href="#job-defer" title="Permalink to this headline">¶</a></h2>
+<p>In most cases, a job violating these policies will not be placed into a
+batch hold immediately. Rather, it will be deferred. The parameter
+<a class="reference external" href="a.fparameters.html#defertime">DEFERTIME</a> indicates how long it will
+be deferred. At this time, it will be allowed back into the idle queue
+and again considered for scheduling. If it again is unable to run at
+that time or at any time in the future, it is again deferred for the
+timeframe specified by DEFERTIME. A job will be released and deferred up
+to <a class="reference external" href="a.fparameters.html#defercount">DEFERCOUNT</a> times at which point
+the scheduler places a batch hold on the job and waits for a system
+administrator to determine the correct course of action. Deferred jobs
+will have a Maui state of <strong>Deferred</strong>. As with jobs in the BatchHold
+state, the reason the job was deferred can be determined by use of the
+<strong>checkjob</strong> command.</p>
+<p>At any time, a job can be released from any hold or deferred state using
+the &#8216;<a class="reference external" href="commands/releasehold.html">releasehold</a>&#8216; command. The Maui logs
+should provide detailed information about the cause of any batch hold or
+job deferral.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As of Maui 3.0.7, the reason a job is deferred or placed in a batch hold is stored in memory
+but is not checkpointed. Thus this info is available only until Maui is recycled at which point
+the checkjob command will no longer display this &#8216;reason&#8217; info.</p>
+</div>
+<hr class="docutils" />
+<p>(under construction)</p>
+<div class="line-block">
+<div class="line">Controlling Backfill Reservation Behavior</div>
+<div class="line">Reservation Thresholds</div>
+<div class="line">Reservation Depth</div>
+<div class="line">Resource Allocation Method</div>
+<div class="line">First Available</div>
+<div class="line">Min Resource</div>
+<div class="line">Last Available</div>
+<div class="line">WallClock Limit</div>
+<div class="line">Allowing jobs to exceed wallclock limit</div>
+<div class="line">MAXJOBOVERRUN</div>
+<div class="line">Using Machine Speed for WallClock limit scaling</div>
+<div class="line">USEMACHINESPEED</div>
+<div class="line">Controlling Node Access</div>
+<div class="line">NODEACCESSPOLICY</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">11.1. Job Holds</a><ul>
+<li><a class="reference internal" href="#holds-and-deferred-jobs">11.1.1. Holds and Deferred Jobs</a></li>
+<li><a class="reference internal" href="#user-holds">11.1.2. User Holds</a></li>
+<li><a class="reference internal" href="#system-holds">11.1.3. System Holds</a></li>
+<li><a class="reference internal" href="#batch-holds">11.1.4. Batch Holds</a></li>
+<li><a class="reference internal" href="#job-defer">11.1.5. Job Defer</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="11.0generaljobadmin.html"
+                        title="previous chapter">11. General Job Administration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="11.2jobpriority.html"
+                        title="next chapter">11.2. Job Priority Management</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/11.1jobholds.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="11.2jobpriority.html" title="11.2. Job Priority Management"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="11.0generaljobadmin.html" title="11. General Job Administration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="11.0generaljobadmin.html" >11. General Job Administration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

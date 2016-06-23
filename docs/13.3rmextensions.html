@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.3. Resource Manager Extensions &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="13. Resource Managers and Interfaces" href="13.0rmandinterfaces.html" />
+    <link rel="next" title="13.4. Adding New Resource Manager Interfaces" href="13.4addingrminterfaces.html" />
+    <link rel="prev" title="13.2. Resource Manager Configuration" href="13.2rmconfiguration.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="13.4addingrminterfaces.html" title="13.4. Adding New Resource Manager Interfaces"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="13.2rmconfiguration.html" title="13.2. Resource Manager Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" accesskey="U">13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="resource-manager-extensions">
+<h1>13.3. Resource Manager Extensions<a class="headerlink" href="#resource-manager-extensions" title="Permalink to this headline">¶</a></h1>
+<p>All resource managers are not created equal. There is a wide range in
+what capabilities are available from system to system. Additionally,
+there is a large body of functionality which many if not all resource
+managers have no concept of. A good example of this is job QoS. Since
+most resource managers do not have a concept of quality of service, they
+do not provide a mechanism for users to specify this information. In
+many cases, Maui is able to add capabilities at a global level. However,
+a number of features require a &#8216;per job&#8217; specification. Resource manager
+extensions allow this information to be associated with the job.</p>
+<p>How this is done varies with the resource manager. Both Loadleveler and
+Wiki allow the specification of a <em>comment</em> field. (In Loadleveler,
+specified as &#8216;<code class="docutils literal"><span class="pre">#&#64;comment=&quot;&lt;X&gt;&quot;</span></code>`) PBS does not support this ability
+by default but is extensible via the &#8216;<strong>-W</strong> &#8216; flag. (see the <a class="reference external" href="13.3.1pbsrmextensions.html">PBS
+Resource Manager Extension Overview</a> )</p>
+<div class="line-block">
+<div class="line">Using the resource manager specific method, the following job
+extensions are currently available:</div>
+</div>
+<p><strong>Name</strong>
+<strong>Format</strong>
+<strong>Default Value</strong>
+<strong>Description</strong>
+<strong>Example</strong>
+<strong>ADVRES</strong>
+[&lt;RESID&gt;]
+[NONE]
+specifies that reserved resources are required to run the job. If
+&lt;RESID&gt; is specified, then only resources within the specified
+reservation may be allocated
+ADVRES:meta.3
+<strong>DMEM</strong>
+&lt;INTEGER&gt;
+0
+dedicated memory per task in MB
+<code class="docutils literal"><span class="pre">DMEM:512</span></code>
+<strong>FLAGS</strong>
+one or more of the following comma separated keywords
+<strong>ADVRES[:RESID]</strong>, <strong>RESTARTABLE</strong>, <strong>PREEMPTEE</strong>, <strong>PREEMPTOR</strong>,
+<strong>NOQUEUE</strong>
+[NONE]
+associates various flags with the job
+<code class="docutils literal"><span class="pre">FLAGS:ADVRES</span></code>
+<strong>GRES</strong>
+comma delimited list of generic resources where each resource is
+specified using the format &lt;RESTYPE&gt;[&#64;&lt;COUNT&gt;]
+[NONE]
+indicates generic resources required by the job on a <em>per task</em> basis.
+If a &lt;COUNT&gt; is not specified, the resource count defaults to 1.
+<code class="docutils literal"><span class="pre">GRES:tape,matlab&#64;2</span></code>
+<strong>HOSTLIST</strong>
+comma delimited list of hostnames
+[NONE]
+indicates a exact set, superset, or subset of nodes on which the job
+must run
+<code class="docutils literal"><span class="pre">HOSTLIST:nodeA,nodeB,nodeE</span></code>
+<strong>` &lt;&gt;`__ NACCESSPOLICY</strong>
+one of <strong>SHARED</strong>, <strong>SINGLEJOB</strong>, <strong>SINGLETASK</strong> , or <strong>SINGLEUSER</strong>
+[NONE]
+specifies how node resources should be accessed
+NACCESSPOLICY:SINGLEUSER
+<strong>` &lt;&gt;`__ NALLOCPOLICY</strong>
+one of the valid settings for the parameter
+<a class="reference external" href="a.fparameters.html#nodeallocationpolicy">NODEALLOCATIONPOLICY</a>
+[NONE]
+specifies how node resources should be selected and allocated to the job
+NALLOCPOLICY:MINRESOURCE
+<strong>NODESET</strong>
+&lt;SETTYPE&gt;:&lt;SETATTR&gt;[:&lt;SETLIST&gt;]
+[NONE]
+specifies nodeset constraints for job resource allocation. (See the
+NodeSet Overview for more information)
+<code class="docutils literal"><span class="pre">NODESET:ONEOF:PROCSPEED:350,400,450</span></code>
+<strong>PARTITION</strong>
+&lt;STRING&gt;[:&lt;STRING&gt;]...
+[NONE]
+specifies the partition (or partitions) in which the job must run.
+<strong>NOTE</strong>: the job must have access to this partition based on system
+wide or credential based partition access lists.
+<code class="docutils literal"><span class="pre">PARTITION:math:geology</span></code>
+(The job must only run in the <code class="docutils literal"><span class="pre">math</span></code> partition or the `` geology``
+partition)</p>
+<p><strong>QOS</strong>
+&lt;STRING&gt;
+[NONE]
+<code class="docutils literal"><span class="pre">QOS:highprio</span></code>
+<strong>QUEUEJOB</strong>
+one of <code class="docutils literal"><span class="pre">TRUE</span> <span class="pre">or</span> <span class="pre">FALSE</span></code></p>
+<p><code class="docutils literal"><span class="pre">TRUE</span></code>
+Indicates whether or not the scheduler should queue the job if resources
+are not available to run the job immediately
+<code class="docutils literal"><span class="pre">QUEUEJOB:FALSE</span></code>
+<strong>SGE</strong>
+&lt;WINDOWCOUNT&gt;:&lt;DISPLAYNAME&gt;
+[NONE]
+<code class="docutils literal"><span class="pre">SGE:8:pinky</span></code>
+<strong>SID</strong>
+&lt;STRING&gt;
+[NONE]
+<code class="docutils literal"><span class="pre">SID:silverA</span></code>
+<strong>TPN</strong>
+&lt;INTEGER&gt;
+0
+<code class="docutils literal"><span class="pre">TPN:4</span></code>
+<strong>TRL</strong>
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]...
+0
+<code class="docutils literal"><span class="pre">TRL:2,4,8,16</span></code>
+If more than one extension is required in a given job, extensions can be
+concatenated with a semicolon separator using the format
+&#8216;<code class="docutils literal"><span class="pre">&lt;ATTR&gt;:&lt;VALUE&gt;[;&lt;ATTR&gt;:&lt;VALUE&gt;]...</span></code>&#8216;</p>
+<p>See the following examples:</p>
+<div class="line-block">
+<div class="line"><strong>Example 1</strong></div>
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">#</span> <span class="pre">Loadleveler</span> <span class="pre">command</span> <span class="pre">file</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">#&#64;comment=&quot;HOSTLIST:node1,node2;QOS:special;SID:silverA&quot;</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p>Job must run on nodes <code class="docutils literal"><span class="pre">node1</span></code> and <code class="docutils literal"><span class="pre">node2</span></code> using the QoS <code class="docutils literal"><span class="pre">special</span></code>.
+The job is also associated with the system id <code class="docutils literal"><span class="pre">silverA</span></code> allowing the
+silver daemon to monitor and control the job.</p>
+<div class="line-block">
+<div class="line"><strong>Example 2</strong></div>
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">#</span> <span class="pre">PBS</span> <span class="pre">command</span> <span class="pre">file</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">#</span> <span class="pre">PBS</span> <span class="pre">-W</span> <span class="pre">x=\&quot;NODESET:ONEOF:NETWORK;DMEM:64\&quot;</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p>Job will have resources allocated subject to network based nodeset
+constraints. Further, each task will dedicate 64 MB of memory.</p>
+<p><strong>Example 3</strong></p>
+<div class="line-block">
+<div class="line">&#8212;-</div>
+<div class="line"># qsub -l nodes=4,walltime=1:00:00 -W x=&#8221;FLAGS:ADVRES:john.1&#8221;</div>
+<div class="line">&#8212;&#8211;</div>
+</div>
+<p>Job will be forced to run within the <code class="docutils literal"><span class="pre">john.1</span></code> reservation.</p>
+<p><strong>See Also:</strong></p>
+<p><a class="reference external" href="13.1rmoverview.html">Resource Manager Overview</a></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="13.2rmconfiguration.html"
+                        title="previous chapter">13.2. Resource Manager Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="13.4addingrminterfaces.html"
+                        title="next chapter">13.4. Adding New Resource Manager Interfaces</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/13.3rmextensions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="13.4addingrminterfaces.html" title="13.4. Adding New Resource Manager Interfaces"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="13.2rmconfiguration.html" title="13.2. Resource Manager Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" >13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

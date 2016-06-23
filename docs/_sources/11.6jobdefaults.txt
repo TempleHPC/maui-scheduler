@@ -1,0 +1,65 @@
+Job Defaults and Per Job Limits
+###############################
+
+Job Defaults
+************
+
+Job defaults can be specified on a *per queue* basis. These defaults are
+specified using the `CLASSCFG <a.fparameters.html#CLASSSCFG>`__
+parameter. The table below show the applicable attributes:
+
++--------------------------------------------------------------------------+
+| **Attribute**                                                            |
+| **Format**                                                               |
+| **Example**                                                              |
++--------------------------------------------------------------------------+
+| DEFAULT.FEATURES                                                         |
+| comma delimited list of node features                                    |
+| ``CLASSCFG[batch] DEFAULT.FEATURES=fast,io``                             |
+| (jobs submitted to class ``batch`` will request nodes features ``fast``  |
+| and ``io``                                                               |
++--------------------------------------------------------------------------+
+| DEFAULT.WCLIMIT                                                          |
+| [[[DD:]HH:]MM:]SS                                                        |
+| ``CLASSCFG[batch] DEFAULT.WCLIMIT=1:00:00``                              |
+| (jobs submitted to class ``batch`` will request one hour of walltime by  |
+| default.)                                                                |
++--------------------------------------------------------------------------+
+
+Per Job Maximum Limits
+**********************
+
+Job defaults can be specified on a *per queue* basis. These defaults are
+specified using t he `CLASSCFG <a.fparameters.html#CLASSSCFG>`__
+parameter. The table below shows the applicable attributes:
+
++--------------------------------------------------------------------------+
+| **Attribute**                                                            |
+| **Format**                                                               |
+| **Example**                                                              |
++--------------------------------------------------------------------------+
+| MAX.WCLIMIT                                                              |
+| [[[DD:]HH:]MM:]SS                                                        |
+| ``CLASSCFG[batch] MAX.WCLIMIT=1:00:00``                                  |
+| (jobs submitted to class ``batch`` can request no more than one hour of  |
+| walltime.)                                                               |
++--------------------------------------------------------------------------+
+
+Per Job Minimum Limits
+**********************
+
+Furthermore, minimum job defaults can be specified on with the
+`CLASSCFG <a.fparameters.html#classcfg>`__ parameter. The table below
+shows the applicable attributes:
+
++--------------------------------------------------------------------------+
+| **Attribute**                                                            |
+| **Format**                                                               |
+| **Example**                                                              |
++--------------------------------------------------------------------------+
+| MIN.PROC                                                                 |
+| <integer>                                                                |
+| ``CLASSCFG[batch] MIN.PROC=10``                                          |
+| (jobs submitted to class ``batch`` can request no less than ten          |
+| processors.)                                                             |
++--------------------------------------------------------------------------+

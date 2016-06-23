@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showgrid">showgrid</p>
+<p><strong>showgrid *STATISTICTYPE* [-h]</strong></p>
+<p><strong>Purpose</strong></p>
+<p>Shows table of various scheduler statistics.</p>
+<p><strong>Permissions</strong></p>
+<p>This command can be run by any Maui Scheduler Administrator.</p>
+<p><strong>Parameters</strong></p>
+<p><em>STATISTICTYPE</em>
+Values for this parameter:
+AVGBYPASS
+Average bypass count. Includes summary of job-weighted expansion bypass
+and total samples.
+AVGQTIME
+Average queue time. Includes summary of job-weighted queue time and
+total samples.
+AVGXFACTOR
+Average expansion factor. Includes summary of job-weighted expansion
+factor, node-weighted expansion factor, node-second-weighted expansion
+factor, and total number of samples.
+BFCOUNT
+Number of jobs backfilled. Includes summary of job-weighted backfill job
+percent and total samples.
+BFNHRUN
+Number of node-hours backfilled. Includes summary of job-weighted
+backfill node-second percentage and total samples.
+JOBCOUNT
+Number of jobs. Includes summary of total jobs and total samples.
+JOBEFFICIENCY
+Job efficiency. Includes summary of job-weighted job efficiency percent
+and total samples.
+MAXBYPASS
+Maximum bypass count. Includes summary of overall maximum bypass and
+total samples.
+MAXXFACTOR
+Maximum expansion factor. Includes summary of overall maximum expansion
+factor and total samples.
+NHREQUEST
+Node-hours requested. Includes summary of total node-hours requested and
+total samples.
+NHRUN
+Node-hours run. Includes summary of total node-hours run and total
+samples.
+QOSDELIVERED
+Quality of service delivered. Includes summary of job-weighted quality
+of service success rate and total samples.
+WCACCURACY
+Wall clock accuracy. Includes summary of overall wall clock accuracy and
+total samples.</p>
+<blockquote>
+<div><strong>NOTE</strong>
+The <em>STATISTICTYPE</em> parameter value must be entered in uppercase
+characters.</div></blockquote>
+<p><strong>Flags</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>-h</td>
+<td>Help for this command.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong></p>
+<p>This command displays a table of the selected Maui Scheduler statistics,
+such as expansion factor, bypass count, jobs, node-hours, wall clock
+accuracy, and backfill information.</p>
+<p><strong>Example</strong></p>
+<p><code class="docutils literal"><span class="pre">%</span> <span class="pre">showgrid</span> <span class="pre">AVGXFACTOR</span></code></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Average</span> <span class="n">XFactor</span> <span class="n">Grid</span>
+
+<span class="p">[</span> <span class="n">NODES</span> <span class="p">][</span> <span class="mi">00</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">00</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">00</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">00</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">00</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">01</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">02</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">04</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">08</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">17</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span> <span class="mi">34</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">00</span> <span class="p">][</span>   <span class="n">TOTAL</span>  <span class="p">]</span>
+<span class="p">[</span>    <span class="mi">1</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="p">[</span>    <span class="mi">2</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="p">[</span>    <span class="mi">4</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.00</span>   <span class="mi">1</span><span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.12</span>   <span class="mi">2</span><span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.10</span>   <span class="mi">3</span><span class="p">]</span>
+<span class="p">[</span>    <span class="mi">8</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.00</span>   <span class="mi">2</span><span class="p">][</span>  <span class="mf">1.24</span>   <span class="mi">2</span><span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.15</span>   <span class="mi">4</span><span class="p">]</span>
+<span class="p">[</span>   <span class="mi">16</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.01</span>   <span class="mi">2</span><span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.01</span>   <span class="mi">2</span><span class="p">]</span>
+<span class="p">[</span>   <span class="mi">32</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="p">[</span>   <span class="mi">64</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="p">[</span>  <span class="mi">128</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="p">[</span>  <span class="mi">256</span>  <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="p">[</span> <span class="n">T</span> <span class="n">TOT</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">][</span>  <span class="mf">1.01</span>   <span class="mi">2</span><span class="p">][</span>  <span class="mf">1.00</span>   <span class="mi">3</span><span class="p">][</span>  <span class="mf">1.24</span>   <span class="mi">2</span><span class="p">][</span>  <span class="mf">1.12</span>   <span class="mi">2</span><span class="p">][</span> <span class="o">--------</span> <span class="p">][</span> <span class="o">--------</span> <span class="p">]</span>
+<span class="n">Job</span> <span class="n">Weighted</span> <span class="n">X</span> <span class="n">Factor</span><span class="p">:</span>     <span class="mf">1.0888</span>
+<span class="n">Node</span> <span class="n">Weighted</span> <span class="n">X</span> <span class="n">Factor</span><span class="p">:</span>    <span class="mf">1.1147</span>
+<span class="n">NS</span> <span class="n">Weighted</span> <span class="n">X</span> <span class="n">Factor</span><span class="p">:</span>      <span class="mf">1.1900</span>
+<span class="n">Total</span> <span class="n">Samples</span><span class="p">:</span>                <span class="mi">9</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">showgrid</span></code> command returns a table with data for the specified
+<em>STASTICTYPE</em> parameter. The left-most column shows the maximum number
+of nodes required by the jobs shown in the other columns. The column
+heads indicate the maximum wall clock time (in HH:MM:SS notation)
+requested by the jobs shown in the columns. The data returned in the
+table varies by the <em>STATISTICTYPE</em> requested. For table entries with
+one number, it is of the data requested. For table entries with two
+numbers, the left number is the data requested and the right number is
+the number of jobs used to calculate the average. Table entries that
+contain only dashes (&#8212;&#8212;-) indicate no job has completed that matches
+the profile associated for this inquiry. The bottom row shows the totals
+for each column. Following each table is a summary, which varies by the
+<em>STATISTICTYPE</em> requested.</p>
+<p>This particular example shows the average expansion factor grid. Each
+table entry indicates two pieces of information &#8211; the average expansion
+factor for all jobs that meet this slot&#8217;s profile and the number of jobs
+that were used to calculate this average. For example, the XFactors of
+two jobs were averaged to obtain an average XFactor of 1.24 for jobs
+requiring over 2 hours 8 minutes, but not more than 4 hours 16 minutes
+and between 5 and 8 nodes. Totals along the bottom provide overall
+XFactor averages weighted by job, node, and node-seconds.</p>
+<p><strong>Related Commands</strong></p>
+<p>None.</p>
+<p><strong>Default File Location</strong></p>
+<p><code class="docutils literal"><span class="pre">/u/loadl/maui/bin/showgrid</span></code></p>
+<p><strong>Notes</strong></p>
+<p>None.</p>
+<p>© Copyright 1998, Maui High Performance Computing Center. All rights
+reserved.</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showgrid.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+User Feedback Loops
+###################
+
+In evaluating a given system, it is interesting to note that almost
+invariably, real world systems outperform simulated systems. Even when
+all policies, reservations, workload, and resource distributions are
+fully captured and emulated. What is it about real world usage that is
+not emulated via a simulation? The answer is the 'user feedback' loop,
+the impact of users making decisions to optimize their level of service
+based on real time information.
+
+A user feedback loop is created any time information is provided to a
+user which modifies his job submission or job management behavior. As in
+a market economy, the cumulative effect of many users taking steps to
+improve their individual scheduling performance results in better job
+packing, lower queue time, and better system utilization overall.
+Because this behavior is beneficial to the system at large, system
+admins and management should encourage this behavior and provide the
+best possible information to them.
+
+There are two primary types of information which help users make
+improved decisions. Cluster wide resource availability information and
+per job resource utilization information.
+
+Improving Job Size/Duration Requests
+************************************
+
+Maui provides a number of informational commands which help users make
+improved job management decisions based on real-time cluster wide
+resource availability information. These commands include
+`showbf <commands/showbf.html>`__,
+`showgrid <commands/showgrid.html>`__, and
+`showq <commands/showq.html>`__. Using these commands, a user can
+determine what resources are available, and what job configurations
+statistically receive the best scheduling performance.
+
+Improving Resource Requirement Specification
+********************************************
+
+A job's resource requirement specification tells the scheduler what type
+of compute nodes are required to run the job. These requirements may
+state that a certain amount of memory is required per node or that a
+node have a minimum processor speed. At many sites, users will determine
+the resource requirements needed to run an initial job. Then, for the
+next several years, they will use the same basic batch command file to
+run all of their remaining jobs even though the resource requirements of
+their subsequent jobs may be very different from their initial run.
+Users often do not update their batch command files even though these
+constraints may be unnecessarily limiting the resources available to
+their jobs for two reasons: 1) users do not know how much their
+performance will improve if better information were provided. 2) users
+do not no exactly what resources their jobs are utilizing and are afraid
+to lower their job's resource requirements since doing so might cause
+their job to fail.
+
+To help with determining accurate per job resource utilization
+information, Maui provides the
+`FEEDBACKPROGRAM <a.fparameters.html#feedbackprogram>`__ facility. This
+tool allows sites to send detailed resource utilization information back
+to users via email, to store it in a centralized database for report
+preparation, or use it in other ways to help users refine their batch
+jobs.

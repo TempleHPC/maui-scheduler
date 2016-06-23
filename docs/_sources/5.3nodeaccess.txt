@@ -1,0 +1,41 @@
+Node Access Policies
+####################
+
+Maui allocates resources to jobs on the basis of a job task. As
+described in the glossary, a task is an atomic collection of resources
+which must be co-located on a single compute node. A given job may
+request 20 tasks where each task is defined as 'one processor and 128 MB
+of RAM'. Compute nodes with multiple processors often possess enough
+resources to support more than one task simultaneously. When it is
+possible for more than one task to run on a node, node access policies
+determine which tasks may share the compute nodes resources.
+Maui supports four distinct node access policies which are listed in the
+table below.
+
++------------------+------------------------------------------------------------------------------+
+| **Policy**       | **Description**                                                              |
++------------------+------------------------------------------------------------------------------+
+| **SHARED**       | Tasks from any combination of jobs may utilize available resources           |
++------------------+------------------------------------------------------------------------------+
+| **SINGLEUSER**   | Tasks from any jobs owned by the same user may utilize available resources   |
++------------------+------------------------------------------------------------------------------+
+| **SINGLEJOB**    | Tasks from a single job may utilize available resources                      |
++------------------+------------------------------------------------------------------------------+
+| **SINGLETASK**   | A single task from a single job may run on the node                          |
++------------------+------------------------------------------------------------------------------+
+
+Node Access polices may be specified via the parameter
+`**NODEACCESSPOLICY** <a.fparameters.html#nodeaccesspolicy>`__ . The
+global default may be overridden using QOS flags or on a job-by-job
+basis using the resource manager extension
+**`NACCESSPOLICY <13.3rmextensions.html#NACCESSPOLICY>`__ .** By
+default, nodes are accessible using the setting of the system wide
+**NODEACCESSPOLICY** parameter. However, jobs may override this policy
+and subsequent jobs are bound to conform to the access policies of all
+jobs currently running on a given node. For example, if the
+**NODEACCESSPOLICY** parameter was set to **SHARED**, a new job may be
+launched on an idle node with a job specific access policy of
+**SINGLEUSER**. While this job is running, subsequent job tasks may
+only be launched on this node provided they were submitted by the same
+user. When all single user jobs have completed on that node, the node
+can again be used in **SHARED** mode.

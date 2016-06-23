@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.3. Node Access Policies &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="5. Prioritizing Jobs and Allocating Resources" href="5.0prioritization.html" />
+    <link rel="next" title="5.4. Node Availability Policies" href="5.4nodeavailability.html" />
+    <link rel="prev" title="5.2. Node Allocation" href="5.2nodeallocation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="5.4nodeavailability.html" title="5.4. Node Availability Policies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="5.2nodeallocation.html" title="5.2. Node Allocation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" accesskey="U">5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="node-access-policies">
+<h1>5.3. Node Access Policies<a class="headerlink" href="#node-access-policies" title="Permalink to this headline">¶</a></h1>
+<p>Maui allocates resources to jobs on the basis of a job task. As
+described in the glossary, a task is an atomic collection of resources
+which must be co-located on a single compute node. A given job may
+request 20 tasks where each task is defined as &#8216;one processor and 128 MB
+of RAM&#8217;. Compute nodes with multiple processors often possess enough
+resources to support more than one task simultaneously. When it is
+possible for more than one task to run on a node, node access policies
+determine which tasks may share the compute nodes resources.
+Maui supports four distinct node access policies which are listed in the
+table below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Policy</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td><strong>SHARED</strong></td>
+<td>Tasks from any combination of jobs may utilize available resources</td>
+</tr>
+<tr class="row-odd"><td><strong>SINGLEUSER</strong></td>
+<td>Tasks from any jobs owned by the same user may utilize available resources</td>
+</tr>
+<tr class="row-even"><td><strong>SINGLEJOB</strong></td>
+<td>Tasks from a single job may utilize available resources</td>
+</tr>
+<tr class="row-odd"><td><strong>SINGLETASK</strong></td>
+<td>A single task from a single job may run on the node</td>
+</tr>
+</tbody>
+</table>
+<p>Node Access polices may be specified via the parameter
+<a class="reference external" href="a.fparameters.html#nodeaccesspolicy">**NODEACCESSPOLICY**</a> . The
+global default may be overridden using QOS flags or on a job-by-job
+basis using the resource manager extension
+<strong>`NACCESSPOLICY &lt;13.3rmextensions.html#NACCESSPOLICY&gt;`__ .</strong> By
+default, nodes are accessible using the setting of the system wide
+<strong>NODEACCESSPOLICY</strong> parameter. However, jobs may override this policy
+and subsequent jobs are bound to conform to the access policies of all
+jobs currently running on a given node. For example, if the
+<strong>NODEACCESSPOLICY</strong> parameter was set to <strong>SHARED</strong>, a new job may be
+launched on an idle node with a job specific access policy of
+<strong>SINGLEUSER</strong>. While this job is running, subsequent job tasks may
+only be launched on this node provided they were submitted by the same
+user. When all single user jobs have completed on that node, the node
+can again be used in <strong>SHARED</strong> mode.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="5.2nodeallocation.html"
+                        title="previous chapter">5.2. Node Allocation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="5.4nodeavailability.html"
+                        title="next chapter">5.4. Node Availability Policies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/5.3nodeaccess.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="5.4nodeavailability.html" title="5.4. Node Availability Policies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="5.2nodeallocation.html" title="5.2. Node Allocation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

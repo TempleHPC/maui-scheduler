@@ -1,0 +1,112 @@
+Reservation Policies
+####################
+
+In addition to standing and administrative reservations, Maui can also
+create *priority* reservations. These reservations are used to allow the
+benefits of out-of-order execution (such as is available with
+`backfill <8.2backfill.html>`__) without the side effect of job
+starvation. Starvation can occur in any system where the potential
+exists for a job to be overlooked by the scheduler for an indefinite
+period. In the case of backfill, small jobs may continue to be run on
+available resources as they become available while a large job sits in
+the queue never able to find enough nodes available simultaneously to
+run on. To avoid such situations, priority reservations are created for
+high priority jobs which cannot run immediately. When making these
+reservations, the scheduler determines the earliest time the job could
+start, and then reserves these resources for use by this job at that
+future time.
+
+By default, only the highest priority job will receive a priority
+reservation. However, this behavior is configurable via the
+`RESERVATIONDEPTH <a.fparameters.html#reservationdepth>`__ policy.
+Maui's default behavior of only reserving the highest priority job
+allows backfill to be used in a form known as *liberal* backfill. This
+liberal backfill tends to maximize system utilization and minimize
+overall average job turnaround time. However, it does lead to the
+potential of some lower priority jobs being indirectly delayed and may
+lead to greater variance in job turnaround time. The
+**RESERVATIONDEPTH** parameter can be set to a very large value,
+essentially enabling what is called *conservative* backfill where every
+job which cannot run is given a reservation. Most sites prefer the
+liberal backfill approach associated with the default
+**RESERVATIONDEPTH** of 1 or select a slightly higher value. It is
+important to note that to prevent starvation in conjunction with
+reservations, monotonically increasing priority factors such as
+queuetime or job xfactor should be enabled. See the `Prioritization
+Overview <11.2jobpriority.html>`__ for more information on priority
+factors.
+
+Another important consequence of backfill and reservation depth is its
+affect on job priority. In Maui, all jobs are prioritized. Backfill
+allows jobs to be run out of order and thus, to some extent, job
+priority to be ignored. This effect, known as 'priority dilution' can
+cause many site policies implemented via Maui prioritization policies to
+be ineffective. Setting the **RESERVATIONDEPTH** parameter to a higher
+value will give job priority 'more teeth' at the cost of slightly lower
+system utilization. This lower utilization results from the constraints
+of these additional reservations, decreasing the scheduler's freedom and
+its ability to find additional optimizing schedules. Anecdotal evidence
+indicates that these utilization losses are fairly minor, rarely
+exceeding 8%.
+
+In addition to **RESERVATIONDEPTH**, sites also have the ability to
+control how reservations are maintained. Maui's dynamic job
+prioritization allows sites to prioritize jobs so that their priority
+order can change over time. It is possible that one job can be at the
+top of the priority queue for a time, and then get bypassed by another
+job submitted later. The parameter
+`RESERVATIONPOLICY <a.fparameters.html#reservationpolicy>`__ allows a
+site to determine what how existing reservations should be handled when
+new reservations are made. The value **HIGHEST** will cause that all
+jobs which have ever received a priority reservation will maintain that
+reservation until they run even if other jobs later bypass them in
+priority value. The value **CURRENTHIGHEST** will cause that only the
+current top <RESERVATIONDEPTH> priority jobs will receive reservations.
+If a job had a reservation but has been bypassed in priority by another
+job so that it no longer qualifies as being amongst the top
+<RESERVATIONDEPTH> jobs, it will lose its reservation. Finally, the
+value **NEVER** indicates that no priority reservations will be made.
+
+QOS based reservation depths can be enabled via the
+`RESERVATIONQOSLIST <a.fparameters.html#reservationqoslist>`__
+parameter. This parameter allows varying reservation depths to be
+associated with different sets of job QoS's. For example, the following
+configuration will create two reservation depth *groupings*:
+
+| ----
+| ``RESERVATIONDEPTH[0] 8``
+| ``RESERVATIONQOSLIST[0] highprio interactive debug``
+
+| ``RESERVATIONDEPTH[1] 2``
+| ``RESERVATIONQOSLIST[1] batch``
+| ----
+
+This example will cause that the top 8 jobs belonging to the aggregate
+group of ``highprio``, ``interactive``, and ``debug`` QoS jobs will
+receive priority reservations. Additionally, the top 2 ``batch`` QoS
+jobs will also receive priority reservations. Use of this feature allows
+sites to maintain high throughput for important jobs by guaranteeing the
+a significant proportion of these jobs are making progress towards
+starting through use of the priority reservation.
+
+A final reservation policy is in place to handle a number of real-world
+issues. Occasionally when a reservation becomes active and a job
+attempts to start, various resource manager race conditions or corrupt
+state situations will prevent the job from starting. By default, Maui
+assumes the resource manager is corrupt, releases the reservation, and
+attempts to re-create the reservation after a short timeout. However, in
+the interval between the reservation release and the re-creation
+timeout, other priority reservations may allocate the newly available
+resources, reserving them before the original reservation gets an
+opportunity to reallocate them. Thus, when the original job reservation
+is re-established, its original resource may be unavailable and the
+resulting new reservation may be delayed several hours from the earlier
+start time. The parameter
+`RESERVATIONRETYTIME <a.fparameters.html#reservationretrytime>`__ allows
+a site that is experiencing frequent resource manager race conditions
+and/or corruption situations to tell Maui to hold on to the reserved
+resource for a period of time in an attempt to allow the resource
+manager to correct its state.
+
+See also: `Reservation Overview <7.1.1resoverview.html>`__,
+`Backfill <8.2backfill.html>`__

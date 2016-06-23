@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14.5. Issues with Client Commands &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="14. Trouble Shooting and System Maintenance" href="14.0troubleshootingandsysmaintenance.html" />
+    <link rel="next" title="14.6. Tracking System Failures" href="14.6troubleshootingsystemerrors.html" />
+    <link rel="prev" title="14.4. Handling Events with the Notification Routine" href="14.4eventmgmt.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="14.6troubleshootingsystemerrors.html" title="14.6. Tracking System Failures"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="14.4eventmgmt.html" title="14.4. Handling Events with the Notification Routine"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" accesskey="U">14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="issues-with-client-commands">
+<h1>14.5. Issues with Client Commands<a class="headerlink" href="#issues-with-client-commands" title="Permalink to this headline">¶</a></h1>
+<p><strong>Client Overview:</strong></p>
+<p>Maui clients are implemented as symbolic links to the executable
+<strong>maui_client</strong>. When a maui client command is run, the client
+executable determines the name under which it is run and behaves
+accordingly. At the time Maui was configured, a <em>home directory</em> was
+specified. The Maui client will attempt to open the config file
+<strong>maui.cfg</strong> in this home directory on the node where the client command
+is executed. This means that the home directory specified at configure
+time must be available on all hosts where the maui client commands will
+be executed. This also means that a <strong>maui.cfg</strong> file must be available
+in this directory. When the clients open this file, they will try to
+load the <strong>MAUISERVER</strong> and <strong>MAUIPORT</strong> parameters to determine how to
+contact the Maui server.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The home directory value specified at configure time can be overridden
+by creating an <strong>/etc/maui.cfg</strong> file or by setting the &#8216;<strong>MAUIHOMEDIR</strong>&#8216; environment
+variable. Once the client has determined where the Maui server is located, it
+creates a message, adds an encrypted checksum, and sends the message to
+the server. Note that the Maui client and Maui server must use the same secret checksum
+seed for this to work. When the Maui server receives the client request and verifies the
+checksum, it processes the command and returns a reply.</p>
+</div>
+<p><strong>Diagnosing Client Problems:</strong></p>
+<p>The easiest way to determine where client failures are occurring is to
+utilize built in maui logging. On the client side, use the &#8216;<strong>-L</strong>&#8216;
+flag. For example,</p>
+<p>`` showq -L9``</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Maui 3.0.6 and earlier specified the desired client side
+logging level using the &#8216;<strong>-D</strong>&#8216; flag (i.e., <code class="docutils literal"><span class="pre">showq</span> <span class="pre">-D</span> <span class="pre">9</span></code>)</p>
+</div>
+<p>This will dump out a plethora of information about loading the
+configfile, connecting to the maui server, sending a request, and
+receiving a response. Wading through this information almost always will
+reveal the source of the problem. If it does not, the next step is to
+look at the maui server side logs. The easiest way to do this is to use
+the following steps:</p>
+<div class="line-block">
+<div class="line">`` schedctl -s``</div>
+<div class="line">(stop Maui scheduling so that the only activity is handling maui
+client requests)</div>
+<div class="line">`` changeparam LOGLEVEL 7``</div>
+<div class="line">(set the logging level to &#8216;very verbose&#8217;)</div>
+<div class="line">`` tail -f log/maui.log | more``</div>
+<div class="line">(tail the maui.log activity)</div>
+</div>
+<p>(In another window)</p>
+<p>`` showq``</p>
+<p>The <strong>maui.log</strong> file should record the client request and any reasons
+it was rejected.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="14.4eventmgmt.html"
+                        title="previous chapter">14.4. Handling Events with the Notification Routine</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="14.6troubleshootingsystemerrors.html"
+                        title="next chapter">14.6. Tracking System Failures</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/14.5troubleshootingclients.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="14.6troubleshootingsystemerrors.html" title="14.6. Tracking System Failures"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="14.4eventmgmt.html" title="14.4. Handling Events with the Notification Routine"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" >14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

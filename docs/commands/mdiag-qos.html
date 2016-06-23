@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag-q">mdiag -q</p>
+<p><strong>(Moab QoS Diagnostics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">q</span> <span class="p">[</span><span class="n">qosid</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The &#8216;<strong>mdiag -q</strong>&#8216; command is used to present information about each QOS
+maintained by Moab. The information presented includes QOS name,
+membership, scheduling priority, weights and flags.
+<strong>Example 1: Standard QOS Diagnostics</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">q</span>
+<span class="n">QOS</span> <span class="n">Status</span>
+
+<span class="n">System</span> <span class="n">QOS</span> <span class="n">Settings</span><span class="p">:</span>  <span class="n">QList</span><span class="p">:</span> <span class="n">DEFAULT</span> <span class="p">(</span><span class="n">Def</span><span class="p">:</span> <span class="n">DEFAULT</span><span class="p">)</span>  <span class="n">Flags</span><span class="p">:</span> <span class="mi">0</span>
+
+<span class="n">Name</span>                <span class="o">*</span> <span class="n">Priority</span> <span class="n">QTWeight</span> <span class="n">QTTarget</span> <span class="n">XFWeight</span> <span class="n">XFTarget</span>     <span class="n">QFlags</span>   <span class="n">JobFlags</span> <span class="n">Limits</span>
+
+<span class="n">DEFAULT</span>                      <span class="mi">1</span>        <span class="mi">1</span>        <span class="mi">3</span>        <span class="mi">1</span>     <span class="mf">5.00</span>  <span class="n">PREEMPTEE</span>     <span class="p">[</span><span class="n">NONE</span><span class="p">]</span> <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">Accounts</span><span class="p">:</span>  <span class="n">it</span> <span class="n">research</span>
+  <span class="n">Classes</span><span class="p">:</span>  <span class="n">batch</span>
+<span class="p">[</span><span class="n">ALL</span><span class="p">]</span>                        <span class="mi">0</span>        <span class="mi">0</span>        <span class="mi">0</span>        <span class="mi">0</span>     <span class="mf">0.00</span>     <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>     <span class="p">[</span><span class="n">NONE</span><span class="p">]</span> <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+<span class="n">high</span>                      <span class="mi">1000</span>        <span class="mi">1</span>        <span class="mi">2</span>        <span class="mi">1</span>    <span class="mf">10.00</span>  <span class="n">PREEMPTOR</span>     <span class="p">[</span><span class="n">NONE</span><span class="p">]</span> <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">Accounts</span><span class="p">:</span>  <span class="n">engineering</span> <span class="n">it</span> <span class="n">development</span> <span class="n">research</span>
+  <span class="n">Classes</span><span class="p">:</span>  <span class="n">fast</span>
+<span class="n">urgent</span>                   <span class="mi">10000</span>        <span class="mi">1</span>        <span class="mi">1</span>        <span class="mi">1</span>     <span class="mf">7.00</span>  <span class="n">PREEMPTOR</span>     <span class="p">[</span><span class="n">NONE</span><span class="p">]</span> <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">Accounts</span><span class="p">:</span>  <span class="n">engineering</span> <span class="n">it</span> <span class="n">development</span>
+<span class="n">low</span>                        <span class="mi">100</span>        <span class="mi">1</span>        <span class="mi">5</span>        <span class="mi">1</span>     <span class="mf">1.00</span>  <span class="n">PREEMPTEE</span>     <span class="p">[</span><span class="n">NONE</span><span class="p">]</span> <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">Accounts</span><span class="p">:</span>  <span class="n">engineering</span> <span class="n">marketing</span> <span class="n">it</span> <span class="n">development</span> <span class="n">research</span>
+  <span class="n">Classes</span><span class="p">:</span>  <span class="n">long</span> <span class="n">bigmem</span>
+</pre></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag-qos.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

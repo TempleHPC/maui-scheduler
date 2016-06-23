@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showres">showres</p>
+<p><strong>(Show Reservation)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showres</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">n</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span><span class="p">]]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span><span class="p">]</span> <span class="p">[</span><span class="n">reservationid</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>This command displays all reservations currently in place within Moab.
+The default behavior is to display reservations on a
+reservation-by-reservation basis.
+<strong>Access</strong></p>
+<p>By default, this command can be run by any Moab administrator, or by any
+valid user if the parameter
+<a class="reference external" href="../a.fparameters.html#rsvctlpolicy">RSVCTLPOLICY</a> is set to <strong>ANY</strong>.</p>
+<p>Flag
+Description
+<strong>-f</strong>
+show <em>free</em> (unreserved) resources rather than reserved resources. &nbsp;The
+&#8216;<strong>-f</strong>&#8216; flag cannot be used in conjunction with the any other flag
+<strong>-g</strong>
+when used with the &#8216;-n&#8217; flag, shows &#8216;<em>grep</em>&#8216;-able output with nodename
+on every line
+<strong>-n</strong>
+display information regarding all <em>nodes</em> reserved by &lt;RSVID&gt;
+<strong>-o</strong>
+display all reservations which <em>overlap</em> &lt;RSVID&gt; (in time and space)
+&nbsp;<strong>Note</strong>: not supported with &#8216;-n&#8217; flag
+<strong>-r</strong>
+display reservation timeframes in <em>relative</em> time mode
+<strong>-v</strong>
+show <em>verbose</em> output. If used with the &#8216;<strong>-n</strong>&#8216; flag, the command will
+display all reservations found on nodes contained in &lt;RSVID&gt;. Otherwise,
+it will show long reservation start dates including the reservation
+year.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>RSVID</strong></td>
+<td>ID of reservation of interest - optional</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showres</span>
+
+<span class="n">ReservationID</span>       <span class="n">Type</span> <span class="n">S</span>       <span class="n">Start</span>         <span class="n">End</span>    <span class="n">Duration</span>    <span class="n">N</span><span class="o">/</span><span class="n">P</span>    <span class="n">StartTime</span>
+
+<span class="mi">12941</span>                <span class="n">Job</span> <span class="n">R</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">01</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mi">39</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">40</span>   <span class="mi">13</span><span class="o">/</span><span class="mi">25</span>   <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12944</span>                <span class="n">Job</span> <span class="n">R</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">01</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">59</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>   <span class="mi">16</span><span class="o">/</span><span class="mi">16</span>   <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12946</span>                <span class="n">Job</span> <span class="n">R</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">01</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">59</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">1</span><span class="o">/</span><span class="mi">2</span>    <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12954</span>                <span class="n">Job</span> <span class="n">R</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">59</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">01</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">2</span><span class="o">/</span><span class="mi">4</span>    <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12956</span>                <span class="n">Job</span> <span class="n">I</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">59</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">59</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>   <span class="mi">16</span><span class="o">/</span><span class="mi">32</span>   <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12969</span>                <span class="n">Job</span> <span class="n">I</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">59</span>    <span class="mi">13</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">59</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">4</span><span class="o">/</span><span class="mi">4</span>    <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">21</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mi">50</span>
+
+<span class="mi">6</span> <span class="n">reservations</span> <span class="n">located</span>
+</pre></div>
+</div>
+<p>The above example shows all reservations on the system. The fields are
+as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Type</strong></td>
+<td>Reservation Type. This will be one of the following: Job, User, Group, Account, or System.</td>
+</tr>
+<tr class="row-odd"><td><strong>ReservationID</strong></td>
+<td>This is the name of the reservation. Job reservation names are identical to the job name. User, Group, or Account reservations are the user, group, or account name followed by a number. System reservations are given the name SYSTEM followed by a number.</td>
+</tr>
+<tr class="row-even"><td><strong>S</strong></td>
+<td>State. This field is valid only for job reservations. It indicates whether the job is (S)tarting, (R)unning, or (I)dle.</td>
+</tr>
+<tr class="row-odd"><td><strong>Start</strong></td>
+<td>Relative start time of the reservation. Time is displayed in HH:MM:SS notation and is relative to the present time.</td>
+</tr>
+<tr class="row-even"><td><strong>End</strong></td>
+<td>Relative end time of the reservation. Time is displayed in HH:MM:SS notation and is relative to the present time. Reservation that will not complete in 1,000 hours are marked with the keyword INFINITY.</td>
+</tr>
+<tr class="row-odd"><td><strong>Duration</strong></td>
+<td>Duration of the reservation in HH:MM:SS notation. Reservations lasting more than 1,000 hours are marked with the keyword INFINITY.</td>
+</tr>
+<tr class="row-even"><td><strong>Nodes</strong></td>
+<td>Number of nodes involved in reservation.</td>
+</tr>
+<tr class="row-odd"><td><strong>StartTime</strong></td>
+<td>Time Reservation became active.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 2</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showres</span> <span class="o">-</span><span class="n">n</span>
+<span class="n">reservations</span> <span class="n">on</span> <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">49</span><span class="p">:</span><span class="mi">59</span>
+
+<span class="n">NodeName</span>        <span class="n">Type</span>      <span class="n">ReservationID</span>   <span class="n">JobState</span> <span class="n">Task</span>       <span class="n">Start</span>    <span class="n">Duration</span>  <span class="n">StartTime</span>
+
+<span class="n">G5</span><span class="o">-</span><span class="mi">001</span>           <span class="n">Job</span>              <span class="mi">12946</span>    <span class="n">Running</span>    <span class="mi">2</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">001</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">002</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">002</span>           <span class="n">Job</span>              <span class="mi">12953</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">003</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">003</span>           <span class="n">Job</span>              <span class="mi">12953</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">004</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">004</span>           <span class="n">Job</span>              <span class="mi">12953</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">005</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">005</span>           <span class="n">Job</span>              <span class="mi">12953</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">006</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">006</span>           <span class="n">Job</span>              <span class="mi">12953</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">007</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">007</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">008</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">008</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">009</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">009</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">010</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">010</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">011</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">011</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">012</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">012</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">013</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">013</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">014</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">014</span>           <span class="n">Job</span>              <span class="mi">12939</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">37</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">22</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">015</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">015</span>           <span class="n">Job</span>              <span class="mi">12949</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">57</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mi">02</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">016</span>           <span class="n">Job</span>              <span class="mi">12956</span>       <span class="n">Idle</span>    <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">G5</span><span class="o">-</span><span class="mi">016</span>           <span class="n">Job</span>              <span class="mi">12947</span>    <span class="n">Running</span>    <span class="mi">2</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">57</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">16</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mi">02</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">001</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">002</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">003</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">004</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">005</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">006</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">007</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">008</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">009</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">010</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">011</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">012</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">013</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">013</span>         <span class="n">Job</span>              <span class="mi">12969</span>       <span class="n">Idle</span>    <span class="mi">1</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">21</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">014</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">014</span>         <span class="n">Job</span>              <span class="mi">12969</span>       <span class="n">Idle</span>    <span class="mi">1</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">21</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">015</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">015</span>         <span class="n">Job</span>              <span class="mi">12969</span>       <span class="n">Idle</span>    <span class="mi">1</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">21</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">016</span>         <span class="n">Job</span>              <span class="mi">12944</span>    <span class="n">Running</span>    <span class="mi">1</span>    <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">47</span><span class="p">:</span><span class="mi">09</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">016</span>         <span class="n">Job</span>              <span class="mi">12969</span>       <span class="n">Idle</span>    <span class="mi">1</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">52</span><span class="p">:</span><span class="mi">51</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">21</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mi">50</span>
+
+<span class="mi">52</span> <span class="n">nodes</span> <span class="n">reserved</span>
+</pre></div>
+</div>
+<p>This example shows reservations for nodes. The fields are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>NodeName</strong></td>
+<td>Node on which reservation is placed.</td>
+</tr>
+<tr class="row-odd"><td><strong>Type</strong></td>
+<td>Reservation Type. This will be one of the following: Job, User, Group, Account, or System.</td>
+</tr>
+<tr class="row-even"><td><strong>ReservationID</strong></td>
+<td>This is the name of the reservation. Job reservation names are identical to the job name. User, Group, or Account reservations are the user, group, or account name followed by a number. System reservations are given the name SYSTEM followed by a number.</td>
+</tr>
+<tr class="row-odd"><td><strong>JobState</strong></td>
+<td>This field is valid only for job reservations. It indicates the state of the job associated with the reservation.</td>
+</tr>
+<tr class="row-even"><td><strong>Start</strong></td>
+<td>Relative start time of the reservation. Time is displayed in HH:MM:SS notation and is relative to the present time.</td>
+</tr>
+<tr class="row-odd"><td><strong>Duration</strong></td>
+<td>Duration of the reservation in HH:MM:SS notation. Reservations lasting more than 1000 hours are marked with the keyword INFINITY.</td>
+</tr>
+<tr class="row-even"><td><strong>StartTime</strong></td>
+<td>Time Reservation became active.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 3</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showres</span> <span class="mi">12956</span>
+
+<span class="n">ReservationID</span>       <span class="n">Type</span> <span class="n">S</span>       <span class="n">Start</span>         <span class="n">End</span>    <span class="n">Duration</span>    <span class="n">N</span><span class="o">/</span><span class="n">P</span>    <span class="n">StartTime</span>
+
+<span class="mi">12956</span>                <span class="n">Job</span> <span class="n">I</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">32</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">49</span><span class="p">:</span><span class="mi">32</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>   <span class="mi">16</span><span class="o">/</span><span class="mi">32</span>   <span class="n">Fri</span> <span class="n">Sep</span>  <span class="mi">2</span> <span class="mi">21</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+
+<span class="mi">1</span> <span class="n">reservation</span> <span class="n">located</span>
+</pre></div>
+</div>
+<p>In this example, information for a specific reservation (job) is
+displayed.</p>
+<p class="rubric" id="see-also">See Also:</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="mrsvctl.html">mrsvctl -c</a> - create new reservations.</li>
+<li><a class="reference external" href="mrsvctl.html">mrsvctl -r</a> - release existing reservations.</li>
+<li><a class="reference external" href="mdiag.html">mdiag -r</a> - diagnose/view the state of existing
+reservations.</li>
+<li><a class="reference external" href="../7.1.1resoverview.html">Reservation Overview</a> - description of
+reservations and their use.</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showres.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

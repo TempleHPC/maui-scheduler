@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14.2. Logging Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="14. Trouble Shooting and System Maintenance" href="14.0troubleshootingandsysmaintenance.html" />
+    <link rel="next" title="14.3. Using the Message Buffer" href="14.3messagebuffer.html" />
+    <link rel="prev" title="14.1. Internal Diagnostics/Diagnosing System Behavior and Problems" href="14.1internaldiagnostics.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="14.3messagebuffer.html" title="14.3. Using the Message Buffer"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="14.1internaldiagnostics.html" title="14.1. Internal Diagnostics/Diagnosing System Behavior and Problems"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" accesskey="U">14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="logging-overview">
+<h1>14.2. Logging Overview<a class="headerlink" href="#logging-overview" title="Permalink to this headline">¶</a></h1>
+<p>The Maui Scheduler provides the ability to produce detailed logging of
+all of its activities. The <a class="reference external" href="a.fparameters.html#logfile">LOGFILE</a>
+and/or <a class="reference external" href="a.fparameters.html#logdir">LOGDIR</a> parameters within the
+maui.cfg file specify the destination of this logging information.
+Logging information will be written in the file
+&lt;MAUIHOMEDIR&gt;/&lt;LOGDIR&gt;&lt;LOGFILE&gt; unless &lt;LOGDIR&gt; or &lt;LOGFILE&gt; is
+specified using an absolute path. If the log file is not specified or
+points to an invalid file, all logging information is directed to
+STDERR. However, because of the sheer volume of information that can be
+logged, it is not recommended that this be done while in production. By
+default, LOGDIR and LOGFILE are set to &#8216;<strong>log</strong>&#8216; and &#8216;<strong>maui.log</strong>&#8216;
+respectively, resulting in scheduler logs being written to
+<strong>&lt;MAUIHOMEDIR&gt;/log/maui.log</strong>.
+The parameter <a class="reference external" href="a.fparameters.html#logfilemaxsize">LOGFILEMAXSIZE</a>
+determines how large the log file is allowed to become before it is
+rolled and is set to 10 MB by default. When the log file reaches this
+specified size, the log file is rolled. The parameter
+<a class="reference external" href="a.fparameters.html#logfilerolldepth">LOGFILEROLLDEPTH</a> will control
+the number of old logs maintained and defaults to 1. Rolled log files
+will have a numeric suffix appended indicating their order.</p>
+<p>The parameter <a class="reference external" href="a.fparameters.html#logfile">LOGLEVEL</a> controls the
+verbosity of the information. Currently, LOGLEVEL values between 0 and 9
+are used to control the amount of information logged, with 0 being the
+most terse, logging only the most server problems detected, while 9 is
+the most verbose, commenting on just about everything. The amount of
+information provided at each log level is approximately an order of
+magnitude greater than what is provided at the log level immediately
+below it. A LOGLEVEL of 2 will record virtually all critical messages,
+while a log level of 4 will provide general information describing all
+actions taken by the scheduler. If a problem is detected, you may wish
+to increase the LOGLEVEL value to get more details. However, doing so
+will cause the logs to roll faster and will also cause a lot of possibly
+unrelated information to clutter up the logs. Also be aware of the fact
+that high LOGLEVEL values will result in large volumes of possibly
+unnecessary file I/O to occur on the scheduling machine. Consequently,
+it is not recommended that high LOGLEVEL values be used unless tracking
+a problem or similar circumstances warrant the I/O cost. NOTE: If high
+log levels are desired for an extended period of time and your Maui home
+directory is located on a network filesystem, performance may be
+improved by moving your log directory to a local file system using the
+&#8216;LOGDIR&#8217; parameter.</p>
+<p>A final log related parameter is
+<strong>`LOGFACILITY &lt;a.fparameters.html#logfacility&gt;`__</strong>. This parameter can
+be used to focus logging on a subset of scheduler activities. This
+parameter is specified as a list of one or more scheduling facilities as
+listed in the parameters documentation.</p>
+<p>The logging that occurs is of five major types, subroutine information,
+status information, scheduler warnings, scheduler alerts, and scheduler
+errors. These are described in detail below:</p>
+<p><strong>1.Subroutine Information</strong>. Each subroutine is logged, along with all
+printable parameters. Major subroutines are logged at lower LOGLEVELs
+while all subroutines are logged at higher LOGLEVELs. Example:</p>
+<p>CheckPolicies(fr4n01.923.0,2,Reason)</p>
+<p><strong>2.Status Information</strong>. Information about internal status is logged at
+all LOGLEVELs. Critical internal status is indicated at low LOGLEVELs
+while less critical and voluminous status information is logged at
+higher LOGLEVELs. Example:</p>
+<div class="line-block">
+<div class="line">INFO: Job fr4n01.923.0 Rejected (Max User Jobs)</div>
+<div class="line">INFO: Job[25] &#8216;fr4n01.923.0&#8217; Rejected (MaxJobPerUser Policy Failure)</div>
+</div>
+<p><strong>3.Scheduler Warnings</strong>. Warnings are logged when the scheduler detects
+an unexpected value or receives an unexpected result from a system call
+or subroutine. They are not necessarily indicative of problems and are
+not catastrophic to the scheduler. Example:</p>
+<p>WARNING: cannot open fairshare data file
+&#8216;/home/loadl/maui/stats/FS.87000&#8217;</p>
+<p><strong>4.Scheduler Alerts</strong>. Alerts are logged when the scheduler detects
+events of an unexpected nature which may indicate problems in other
+systems or in objects. They are typically of a more severe nature than
+are warnings and possibly should be brought to the attention of
+scheduler administrators. Example:</p>
+<p>ALERT: job &#8216;fr5n02.202.0&#8217; cannot run. deferring job for 360 Seconds</p>
+<p><strong>5.Schedulers Errors</strong>. Errors are logged when the scheduler detects
+problems of a nature of which it is not prepared to deal. It will try to
+back out and recover as best it can, but will not necessarily succeed.
+Errors should definitely be be monitored by administrators. Example:</p>
+<p>ERROR: cannot connect to Loadleveler API</p>
+<p>On a regular basis, use the command grep -E &#8220;WARNING|ALERT|ERROR&#8221;
+maui.log to get a listing of the problems the scheduler is detecting. On
+a production system working normally, this list should usually turn up
+empty. The messages are usually self-explanatory but if not, viewing the
+log can give context to the message.</p>
+<p>If a problem is occurring early when starting the Maui Scheduler (before
+the configuration file is read) Maui can be started up using the -L
+LOGLEVEL flag. If this is the first flag on the command line, then the
+LOGLEVEL is set to the specified level immediately before any setup
+processing is done and additional logging will be recorded.</p>
+<div class="line-block">
+<div class="line">If problems are detected in the use of one of the client commands, the
+client command can be re-issued with the -L &lt;LOGLEVEL&gt; command line
+arg specified. This argument causes debug information to be logged to
+STDERR as the client command is running. Again, &lt;LOGLEVEL&gt; values from
+0 to 9 are</div>
+<div class="line">supported.</div>
+</div>
+<p>In addition to the log file, the Maui Scheduler reports all events it
+determines to be critical to the Unix® syslog facility via the &#8216;daemon&#8217;
+facility using priorities ranging from &#8216;INFO&#8217; to &#8216;ERROR&#8217;. This logging
+is not affected by LOGLEVEL. In addition to errors and critical events,
+all user commands that affect the state of the jobs, nodes, or the
+scheduler are also logged via syslog.</p>
+<p>The logging information is extremely helpful in diagnosing problems, but
+it can also be useful if you are simply trying to become familiar with
+the &#8220;flow&#8221; of the scheduler. The scheduler can be run with a low
+LOGLEVEL value at first to show the highest level functions. This shows
+high-level data and control flow. Increasing the LOGLEVEL increases the
+number of functions displayed as familiarity with the scheduler flow
+grows.</p>
+<p>The LOGLEVEL can be changed &#8220;on-the-fly&#8221; by use of the
+<a class="reference external" href="commands/changeparam.html">changeparam</a> command, or by modifying the
+maui.cfg file and sending the scheduler process a SIGHUP. Also, if the
+scheduler appears to be &#8220;hung&#8221; or is not properly responding, the
+LOGLEVEL can be incremented by one by sending a SIGUSR1 signal to the
+scheduler process. Repeated SIGUSR1 signals will continue to increase
+the LOGLEVEL. The SIGUSR2 signal can be used to decrement the LOGLEVEL
+by one.</p>
+<p>If an unexpected problem does occur, save the log file as it is often
+very helpful in isolating and correcting the problem.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="14.1internaldiagnostics.html"
+                        title="previous chapter">14.1. Internal Diagnostics/Diagnosing System Behavior and Problems</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="14.3messagebuffer.html"
+                        title="next chapter">14.3. Using the Message Buffer</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/14.2logging.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="14.3messagebuffer.html" title="14.3. Using the Message Buffer"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="14.1internaldiagnostics.html" title="14.1. Internal Diagnostics/Diagnosing System Behavior and Problems"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" >14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.1. Resource Manager Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="13. Resource Managers and Interfaces" href="13.0rmandinterfaces.html" />
+    <link rel="next" title="13.2. Resource Manager Configuration" href="13.2rmconfiguration.html" />
+    <link rel="prev" title="13. Resource Managers and Interfaces" href="13.0rmandinterfaces.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="13.2rmconfiguration.html" title="13.2. Resource Manager Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="13.0rmandinterfaces.html" title="13. Resource Managers and Interfaces"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" accesskey="U">13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="resource-manager-overview">
+<h1>13.1. Resource Manager Overview<a class="headerlink" href="#resource-manager-overview" title="Permalink to this headline">¶</a></h1>
+<p>Maui requires the services of a resource manager in order to properly
+function. This resource manager provides information about the state of
+compute resources (nodes) and workload (jobs). Maui also depends on the
+resource manager to manage jobs, instructing it when to start and/or
+cancel jobs.</p>
+<p>Maui can be configured to manage one or more resource managers
+simultaneously, even resource managers of different types. However,
+migration of jobs from one resource manager to another is not currently
+allowed. Or, in other words, jobs submitted onto one resource manager
+cannot run on the resources of another.</p>
+<div class="section" id="scheduler-resource-manager-interactions">
+<h2>13.1.1. Scheduler/Resource Manager Interactions<a class="headerlink" href="#scheduler-resource-manager-interactions" title="Permalink to this headline">¶</a></h2>
+<p>Maui interacts with all resource managers in the same basic format.
+Interfaces are created to translate Maui concepts regarding workload and
+resources into native resource manager objects, attributes, and
+commands.
+Information on creation a new scheduler resource manager interface can
+be found in the <a class="reference external" href="13.4addingrminterfaces.html">Adding New Resource Manager
+Interfaces</a> section.</p>
+<div class="section" id="resource-manager-commands">
+<h3>13.1.1.1. Resource Manager Commands<a class="headerlink" href="#resource-manager-commands" title="Permalink to this headline">¶</a></h3>
+<p>In the simplest configuration, Maui interacts with the resource manager
+using the four primary functions listed below:</p>
+<p><strong>GETJOBINFO</strong></p>
+<p>Collect detailed state and requirement information about idle, running,
+and recently completed jobs.</p>
+<p><strong>GETNODEINFO</strong></p>
+<p>Collect detailed state information about idle, busy, and defined nodes.</p>
+<p><strong>STARTJOB</strong></p>
+<p>Immediately start a specific job on a particular set of nodes.</p>
+<p><strong>CANCELJOB</strong></p>
+<p>Immediately cancel a specific job regardless of job state.</p>
+<p>Using these four simple commands, Maui enables nearly its entire suite
+of scheduling functions. More detailed information about resource
+manager specific requirements and semantics for each of these commands
+can be found in the specific resource manager overviews. (LL, PBS, or
+<a class="reference external" href="wiki">WIKI</a>).</p>
+<p>In addition to these base commands, other commands are required to
+support advanced features such a dynamic job support, suspend/resume,
+gang scheduling, and scheduler initiated checkpoint/restart.</p>
+</div>
+<div class="section" id="resource-manager-flow">
+<h3>13.1.1.2. Resource Manager Flow<a class="headerlink" href="#resource-manager-flow" title="Permalink to this headline">¶</a></h3>
+<p>Early versions of Maui (i.e., Maui 3.0.x) interacted with resource
+managers in a very basic manner stepping through a serial sequence of
+steps each scheduling iteration. These steps are outlined below:</p>
+<ol class="arabic simple">
+<li>load global resource information</li>
+<li>load node specific information (optional)</li>
+<li>load job information</li>
+<li>load queue information (optional)</li>
+<li>cancel jobs which violate policies</li>
+<li>start jobs in accordance with available resources and policy
+constraints</li>
+<li>handle user commands</li>
+<li>repeat</li>
+</ol>
+<p>Each step would complete before the next step started. As systems
+continued to grow in size and complexity however, it became apparent
+that the serial model described above would not work. Three primary
+motivations drove the effort to replace the serial model with a
+concurrent threaded approach. These motivations were reliability,
+concurrency, and responsiveness.
+<strong>Reliability</strong></p>
+<p>A number of the resource managers Maui interfaces to were unreliable to
+some extent. This resulted in calls to resource management API&#8217;s with
+exited or crashed taking the entire scheduler with them. Use of a
+threaded approach would cause only the calling thread to fail allowing
+the master scheduling thread to recover. Additionally, a number of
+resource manager calls would hang indefinitely, locking up the
+scheduler. These hangs could likewise be detected by the master
+scheduling thread and handled appropriately in a threaded environment.</p>
+<p><strong>Concurrency</strong></p>
+<p>As resource managers grew in size, the duration of each API global query
+call grew proportionally. Particularly, queries which required contact
+with each node individually became excessive as systems grew into the
+thousands of nodes. A threaded interface allowed the scheduler to
+concurrently issue multiple node queries resulting in much quicker
+aggregate RM query times.</p>
+<p><strong>Responsiveness</strong></p>
+<p>Finally, in the non-threaded serial approach, the user interface was
+blocked while the scheduler updated various aspects of its workload,
+resource, and queue state. In a threaded model, the scheduler could
+continue to respond to queries and other commands even while fresh
+resource manager state information was being loaded resulting in much
+shorter average response times for user commands.</p>
+<p>Under the threaded interface, all resource manager information is loaded
+and processed while the user interface is still active. Average
+aggregate resource manager API query times are tracked and new RM
+updates are launched so that the RM query will complete before the next
+scheduling iteration should start. Where needed, the loading process
+uses a <em>pool</em> of worker threads to issue large numbers of node specific
+information queries concurrently to accelerate this process. The master
+thread continues to respond to user commands until all needed resource
+manager information is loaded <strong>and</strong> either a scheduling relevant
+<em>event</em> has occurred <strong>or</strong> the scheduling iteration time has arrived.
+At this point, the updated information is integrated into Maui&#8217;s state
+information and scheduling is performed.</p>
+</div>
+</div>
+<div class="section" id="resource-manager-specific-details-limitations-special-features">
+<h2>13.1.2. Resource Manager Specific Details (Limitations/Special Features)<a class="headerlink" href="#resource-manager-specific-details-limitations-special-features" title="Permalink to this headline">¶</a></h2>
+<p>(Under Construction)</p>
+<div class="line-block">
+<div class="line">LL/LL2</div>
+<div class="line">PBS</div>
+<div class="line"><a class="reference external" href="wikiinterface.html">Wiki</a></div>
+</div>
+<div class="line-block">
+<div class="line">Synchronizing Conflicting Information</div>
+<div class="line">Maui does not trust resource manager. All node and job information is
+reloaded</div>
+<div class="line">on each iteration. Discrepancies are logged and handled where
+possible.</div>
+<div class="line">NodeSyncDeadline/JobSyncDeadline overview.</div>
+</div>
+<p>Purging Stale Information</p>
+<p>Thread</p>
+<p><strong>See Also:</strong></p>
+<p><a class="reference external" href="13.2rmconfiguration.html">Resource Manager Configuration</a>, <a class="reference external" href="13.3rmextensions.html">Resource
+Manager Extensions</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">13.1. Resource Manager Overview</a><ul>
+<li><a class="reference internal" href="#scheduler-resource-manager-interactions">13.1.1. Scheduler/Resource Manager Interactions</a><ul>
+<li><a class="reference internal" href="#resource-manager-commands">13.1.1.1. Resource Manager Commands</a></li>
+<li><a class="reference internal" href="#resource-manager-flow">13.1.1.2. Resource Manager Flow</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resource-manager-specific-details-limitations-special-features">13.1.2. Resource Manager Specific Details (Limitations/Special Features)</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="13.0rmandinterfaces.html"
+                        title="previous chapter">13. Resource Managers and Interfaces</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="13.2rmconfiguration.html"
+                        title="next chapter">13.2. Resource Manager Configuration</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/13.1rmoverview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="13.2rmconfiguration.html" title="13.2. Resource Manager Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="13.0rmandinterfaces.html" title="13. Resource Managers and Interfaces"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" >13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case Study: Partitioned Heterogeneous Cluster &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" />
+    <link rel="up" title="Appendix A: Case Studies" href="../a.acasestudy.html" />
+    <link rel="next" title="&lt;no title&gt;" href="case3.html" />
+    <link rel="prev" title="Case Study: Mixed Parallel/Serial Homogeneous Cluster" href="case1.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="case3.html" title="&lt;no title&gt;"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="case1.html" title="Case Study: Mixed Parallel/Serial Homogeneous Cluster"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" accesskey="U">Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-partitioned-heterogeneous-cluster">
+<h1>Case Study: Partitioned Heterogeneous Cluster<a class="headerlink" href="#case-study-partitioned-heterogeneous-cluster" title="Permalink to this headline">¶</a></h1>
+<p><strong>Overview</strong></p>
+<p>A site possessing a mixture of uniprocessor and dual processor nodes
+desires to dedicate a subset of nodes to time-sharing serial jobs, a
+subset to parallel batch jobs, and provide a set of nodes to be used as
+overflow.</p>
+<p><strong>Resources</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Compute Nodes:</td>
+<td><em>Group A</em>: 16 single processor Linux® nodes with 128 MB RAM and 1 GB local scratch space
+<em>Group B</em>: 8 2-way SMP Linux® nodes with 256 MB RAM and 4 GB local scratch space
+<em>Group C</em>: 8 single processor Linux® nodes with 192 MB RAM and 2 GB local scratch space</td>
+</tr>
+<tr class="row-even"><td>Resource Manager:</td>
+<td>OpenPBS 2.3</td>
+</tr>
+<tr class="row-odd"><td>Network:</td>
+<td>100 MB switched Ethernet</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workload</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="97%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Job Size:</td>
+<td>Range in size from 1 to 32 processors with approximate quartile job frequency distribution of:
+1 - 2, 3 - 8, 9 - 24, and 25 - 32 nodes</td>
+</tr>
+<tr class="row-even"><td>Job Length:</td>
+<td>Jobs range in length from 1 to 24 hours</td>
+</tr>
+<tr class="row-odd"><td>Job Owners:</td>
+<td>Six major groups consisting of about 50 users in total</td>
+</tr>
+<tr class="row-even"><td>Notes:</td>
+<td>During prime time hours, the majority of jobs submitted are smaller, short running development jobs where users are testing out new code and new data sets. The owners of these jobs are often unable to proceed with their work until a job they have submitted completes. Many of these jobs are interactive in nature. Throughout the day, large, longer running production workload is also submitted but these jobs do not have comparable turnaround time pressure.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Goals</strong></p>
+<p>Nodes in Group A must run only parallel jobs. Nodes in Group B must only
+run serial jobs, with up to 4 serial jobs per node. Nodes in Group C
+must not be used unless a job cannot locate resources elsewhere. The
+scheduler should attempt to intelligently load balance the timesharing
+nodes.</p>
+<p><strong>Analysis</strong></p>
+<p>The network topology is flat and and nodes are homogeneous within each
+group. The easiest way to configure the overflow group is to create two
+PBS queues, <em>serial</em> and <em>parallel</em>, with appropriate min and max node
+counts as desired.</p>
+<p>By default, Moab interprets the PBS <em>exclusive hostlist</em> queue attribute
+as constraining jobs in the queue to run only on the nodes contained in
+the hostlist. We can take advantage of this behavior to assign nodes in
+Group A and Group C to the queue <em>parallel</em> while the nodes in Group B
+and Group C are assigned to the queue <em>serial</em>. The same can be done
+with classes if using Loadleveler. Moab will incorporate this queue
+information when making scheduling decisions.</p>
+<p>The next step is to make the scheduler use the overflow nodes of group C
+only as a last resort. This can be accomplished using a negative
+affinity <a class="reference external" href="../7.1.3standingreservations.html">standing reservation</a>.
+This configuration will tell the scheduler that these nodes can be used,
+but should only be used if it cannot find compute resources elsewhere.</p>
+<p>The final step, load balancing, is accomplished in two parts. First, the
+nodes in group B must be configured to allow up to 4 serial jobs to run
+at a time. This is best accomplished using the PBS <em>virtual nodes</em>
+capability. To load balance, simply select the
+<a class="reference external" href="../5.2nodeallocation.html">CPULOAD</a> allocation algorithm in Moab.
+This algorithm will instruct Moab to schedule the job based on which
+node has the most idle CPU time.</p>
+<p><strong>Configuration</strong></p>
+<p>This site requires both resource manager and scheduler configuration.
+The following Moab configuration would be needed:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># reserve overflow processors</span>
+<span class="n">SRNAME</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>         <span class="n">overflow</span>
+<span class="n">SRHOSTLIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="n">cn0</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="mi">8</span><span class="p">]</span>          <span class="c1"># hostname regular expression</span>
+<span class="n">SRCLASSLIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    <span class="n">parallel</span><span class="o">-</span> <span class="n">batch</span><span class="o">-</span>  <span class="c1"># use minus sign to indicate negative affinity</span>
+
+<span class="c1"># allow SMP node sharing</span>
+<span class="n">ALLOCATIONPOLICY</span>  <span class="n">CPULOAD</span>
+<span class="n">NODEACCESSPOLICY</span>  <span class="n">SHARED</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">set</span> <span class="n">queue</span> <span class="n">serial</span> <span class="n">resources_max</span><span class="o">.</span><span class="n">nodeccount</span><span class="o">=</span><span class="mi">1</span>
+<span class="nb">set</span> <span class="n">queue</span> <span class="n">serial</span> <span class="n">acl_hosts</span><span class="o">=</span><span class="n">an01</span><span class="o">+</span><span class="n">an02</span><span class="o">+...</span><span class="n">an16</span><span class="o">+</span><span class="n">cn01</span><span class="o">+</span><span class="n">cn02</span><span class="o">+...</span><span class="n">cn08</span>
+<span class="nb">set</span> <span class="n">queue</span> <span class="n">serial</span> <span class="n">acl_host_enable</span><span class="o">=</span><span class="n">true</span>
+
+<span class="nb">set</span> <span class="n">queue</span> <span class="n">parallel</span> <span class="n">resources_min</span><span class="o">.</span><span class="n">nodecount</span><span class="o">=</span><span class="mi">2</span>
+<span class="nb">set</span> <span class="n">queue</span> <span class="n">parallel</span> <span class="n">acl_hosts</span><span class="o">=</span><span class="n">bn01</span><span class="o">+</span><span class="n">bn02</span><span class="o">+...</span><span class="n">bn08</span><span class="o">+</span><span class="n">cn01</span><span class="o">+</span><span class="n">cn02</span><span class="o">+...</span><span class="n">cn08</span>
+<span class="nb">set</span> <span class="n">queue</span> <span class="n">parallel</span> <span class="n">acl_host_enable</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bn01</span> <span class="n">np</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">bn01</span> <span class="n">np</span><span class="o">=</span><span class="mi">4</span>
+</pre></div>
+</div>
+<p><strong>Monitoring</strong></p>
+<p>The commands <a class="reference external" href="../commands/mdiag.html">mdiag -s</a> and <a class="reference external" href="../commands/mdiag-reservations.html">mdiag
+-r</a> can be used to examine the
+standing reservations and all reservations in more detail. The <a class="reference external" href="../commands/mdiag-class.html">mdiag
+-c</a> command can be used to examine and
+verify class/queue information. The <a class="reference external" href="../commands/mshow.html">mshow</a>
+command may also be used to display information about a class/queue,
+job, and reservation.</p>
+<p><strong>Conclusions</strong></p>
+<p>Moab&#8217;s policy engine supports an incredible range of capabilities.
+Configuring different groups of nodes to provide different types of
+service is a straightforward process.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="case1.html"
+                        title="previous chapter">Case Study: Mixed Parallel/Serial Homogeneous Cluster</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="case3.html"
+                        title="next chapter">&lt;no title&gt;</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/casestudies/case2.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="case3.html" title="&lt;no title&gt;"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="case1.html" title="Case Study: Mixed Parallel/Serial Homogeneous Cluster"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" >Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

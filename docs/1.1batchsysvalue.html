@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1.1. Value of a Batch System &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="1. Philosophy" href="1.0philosophy.html" />
+    <link rel="next" title="1.2. Philosophy and Goals of the Maui Scheduler" href="1.2philandgoals.html" />
+    <link rel="prev" title="1. Philosophy" href="1.0philosophy.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="1.2philandgoals.html" title="1.2. Philosophy and Goals of the Maui Scheduler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="1.0philosophy.html" title="1. Philosophy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="1.0philosophy.html" accesskey="U">1. Philosophy</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="value-of-a-batch-system">
+<h1>1.1. Value of a Batch System<a class="headerlink" href="#value-of-a-batch-system" title="Permalink to this headline">¶</a></h1>
+<p>Batch systems provide a mechanism for submitting, launching, and
+tracking jobs on a shared resource. These services fullfil one of the
+major responsibilities of a batch system, providing centralized access
+to distributed resources. This greatly simplifies the use of the
+cluster&#8217;s distributed resources allowing users a &#8216;single system image&#8217;
+in terms of the management of their jobs and the aggregate compute
+resources available. However, batch systems must do much more than
+provide a global view of the cluster. As with many shared systems,
+complexities arise when attempting to utilize compute resources in a
+fair and effective manner. These complexities can lead to poor
+performance and significant inequalities in usage. With a batch system,
+a scheduler is assigned the job of determining, when, where, and how
+jobs are run so as to maximize the output of the cluster. These
+decisions are broken into three primary areas.</p>
+<div class="section" id="traffic-control">
+<h2>1.1.1. Traffic Control<a class="headerlink" href="#traffic-control" title="Permalink to this headline">¶</a></h2>
+<p>A scheduler is responsible for preventing jobs from interfering with
+each other. If jobs are allowed to contend for resources, they will
+generally decrease the performance of the cluster, delay the execution
+of these jobs, and possibly cause one or more of the jobs to fail. The
+scheduler is responsible for internally tracking and dedicating
+requested resources to a job, thus preventing use of these resources by
+other jobs.</p>
+</div>
+<div class="section" id="mission-policies">
+<h2>1.1.2. Mission Policies<a class="headerlink" href="#mission-policies" title="Permalink to this headline">¶</a></h2>
+<p>When clusters or other HPC platforms are created, they are typically
+created for one or more specific purposes. These purposes, or mission
+goals, often define various rules about how the system should be used
+and who or what will be allowed to use it. To be effective, a scheduler
+must provide a suite of policies which allow a site to <em>map</em> site
+mission policies into scheduling behavior.</p>
+</div>
+<div class="section" id="optimizations">
+<h2>1.1.3. Optimizations<a class="headerlink" href="#optimizations" title="Permalink to this headline">¶</a></h2>
+<p>The compute power of a cluster is a limited resource and over time,
+demand will inevitably exceed supply. Intelligent scheduling decisions
+can significantly improve the effectiveness of the cluster resulting in
+more jobs being run and quicker job turnaround. Subject to the
+constraints of the traffic control and mission policies, it is the job
+of the scheduler to use whatever freedom is available to schedule jobs
+in such a manner so as to maximize cluster performance.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1.1. Value of a Batch System</a><ul>
+<li><a class="reference internal" href="#traffic-control">1.1.1. Traffic Control</a></li>
+<li><a class="reference internal" href="#mission-policies">1.1.2. Mission Policies</a></li>
+<li><a class="reference internal" href="#optimizations">1.1.3. Optimizations</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="1.0philosophy.html"
+                        title="previous chapter">1. Philosophy</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="1.2philandgoals.html"
+                        title="next chapter">1.2. Philosophy and Goals of the Maui Scheduler</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/1.1batchsysvalue.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="1.2philandgoals.html" title="1.2. Philosophy and Goals of the Maui Scheduler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="1.0philosophy.html" title="1. Philosophy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="1.0philosophy.html" >1. Philosophy</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

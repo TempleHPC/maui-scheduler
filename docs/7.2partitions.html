@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.2. Partitions &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities" href="7.0controllingresourceaccess.html" />
+    <link rel="next" title="7.3. Quality of Service (QoS) Facilities" href="7.3qos.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="7.1.6userreservations.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="7.3qos.html" title="7.3. Quality of Service (QoS) Facilities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="7.1.6userreservations.html" title="&lt;no title&gt;"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="7.0controllingresourceaccess.html" accesskey="U">7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="partitions">
+<h1>7.2. Partitions<a class="headerlink" href="#partitions" title="Permalink to this headline">¶</a></h1>
+<p>Partitions are a logical construct which divide available resources. By
+default, a given job may only utilize resources within a single
+partition and any resource (i.e., compute node) may only be associated
+with a single partition. In general, partitions are organized along
+physical or political boundaries. For example, a cluster may consist of
+256 nodes containing four 64 port switches. This cluster may receive
+excellent interprocess communication speeds for parallel job tasks
+located within the same switch but sub-stellar performance for tasks
+which span switches. To handle this, the site may choose to create four
+partitions, allowing jobs to run within any of the four partitions but
+not span them.</p>
+<p>While partitions do have value, it is important to note that within
+Maui, the <a class="reference external" href="7.1.3standingreservations.html">standing reservation</a>
+facility provides significantly improved flexibility and should be used
+in the vast majority of cases where partitions are required under other
+resource management systems. Standing reservations provide time
+flexibility, improved access control features, and more extended
+resource specification options. Also, another Maui facility called <a class="reference external" href="8.3nodesetoverview.html">Node
+sets</a> allows intelligent aggregation of
+resources to improve per job node allocation decisions. In cases where
+system partitioning is considered for such reasons, node sets may be
+able to provide a better solution.</p>
+<p>Still, one key advantage of partitions over standing reservations and
+node sets is the ability to specify partition specific policies, limits,
+priorities, and scheduling algorithms although this feature is rarely
+required. An example of this need may be a cluster consisting of 48
+nodes owned by the Astronomy Department and 16 nodes owned by the
+Mathematics Department. Each department may be willing to allow sharing
+of resources but wants to specify how their partition will be used. As
+mentioned earlier, many of Maui&#8217;s scheduling policies may be specified
+on a per partition basis allowing each department to control the
+scheduling goals within their partition.</p>
+<p>The partition associated with each node must be specified as indicated
+in the <a class="reference external" href="12.1nodelocation.html">Node Location</a> section. With this
+done, partition access lists may be specified on a per job or per QOS
+basis to constrain which resources a job may have access to (See the
+<a class="reference external" href="7.3qos.html">QOS Overview</a> for more information). By default, QOS&#8217;s
+and jobs allow global partition access.</p>
+<p>If no partition is specified, Maui creates a single partition named
+&#8216;<strong>DEFAULT</strong>&#8216; into which all resources are placed. In addition to the
+DEFAULT partition, a pseudo-partition named &#8216;<strong>[ALL]</strong> &#8216; is created
+which contains the aggregate resources of all partitions. <strong>NOTE</strong>:
+While DEFAULT is a real partition containing all resources not
+explicitly assigned to another partition, the [ALL] partition is only a
+convenience construct and is not a real partition; thus it cannot be
+requested by jobs or included in configuration ACL&#8217;s.</p>
+<div class="section" id="defining-partitions">
+<h2>7.2.1. Defining Partitions<a class="headerlink" href="#defining-partitions" title="Permalink to this headline">¶</a></h2>
+<p>Node to partition mappings are established using the
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> parameter as shown in the
+example below.</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node001]</span> <span class="pre">PARTITION=astronomy</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node002]</span> <span class="pre">PARTITION=astronomy</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">...</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node049]</span> <span class="pre">PARTITION=math</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">...</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, Maui only allows the creation of 4 partitions total. Two of these partitions, <strong>DEFAULT</strong>, and <strong>[ALL]</strong>,
+are used internally, leaving only two additional partition definition slots available. If more partitions will be
+needed, the maximum partition count should be adjusted. See Appendix D,
+<a class="reference external" href="a.ddevelopment.html">Adjusting Default Limits</a>, for information on increasing the maximum number of partitions.</p>
+</div>
+</div>
+<div class="section" id="managing-partition-access">
+<h2>7.2.2. Managing Partition Access<a class="headerlink" href="#managing-partition-access" title="Permalink to this headline">¶</a></h2>
+<p>Determining who can use which partition is specified using the <strong>*CFG</strong>
+parameters (<a class="reference external" href="a.fparameters.html#usercfg">USERCFG</a> ,
+<a class="reference external" href="a.fparameters.html#groupcfg">GROUPCFG</a> ,
+<a class="reference external" href="a.fparameters.html#accountcfg">ACCOUNTCFG</a> ,
+<a class="reference external" href="a.fparameters.html#qoscfg">QOSCFG</a> ,
+<a class="reference external" href="a.fparameters.html#classcfg">CLASSCFG</a> , and
+<a class="reference external" href="a.fparameters.html#systemcfg">SYSTEMCFG</a> ). These parameters allow
+both a partition access list and default partition to be selected on a
+credential or system wide basis using the PLIST and PDEF keywords. By
+default, the access associated with any given job is the <em>logical or</em> of
+all partition access lists assigned to the job&#8217;s credentials. Assume a
+site with two partitions, general, and test. The site management would
+like everybody to use the general partition by default. However, one
+user, steve, needs to perform the majority of his work on the test
+partition. Two special groups, staff and mgmt will also need access to
+use the test partition from time to time but will perform most of their
+work in the general partition. The example configuration below will
+enable the needed user and group access and defaults for this site.</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">SYSCFG[base]</span>&nbsp; <span class="pre">PLIST=</span>&nbsp; <span class="pre">USERCFG[DEFAULT]</span> <span class="pre">PLIST=general</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[steve]</span> <span class="pre">PLIST=general:test</span> <span class="pre">PDEF=test</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">GROUPCFG[staff]</span> <span class="pre">PLIST=general:test</span> <span class="pre">PDEF=general</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">GROUPCFG[mgmt]</span> <span class="pre">PLIST=general:test</span> <span class="pre">PDEF=general</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the system partition access list allows <em>global</em>
+access to all partitions. If using <em>logically or</em> based partition access
+lists, the system partition list should be explicitly constrained using
+the <strong>SYSCFG</strong> parameter.</p>
+</div>
+<p>While using a <em>logical or</em> approach allows sites to add access to
+certain jobs, some sites prefer to work the other way around. In these
+cases, access is granted by default and certain credentials are then
+restricted from access various partitions. To use this model, a system
+partition list must be specified. See the example below:</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">SYSCFG[base]</span>&nbsp;&nbsp; <span class="pre">PLIST=general,test&amp;</span>&nbsp; <span class="pre">USERCFG[demo]</span>&nbsp; <span class="pre">PLIST=test&amp;</span>&nbsp; <span class="pre">GROUPCFG[staff]</span> <span class="pre">PLIST=general&amp;</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<p>In the above example, note the <em>ampersand</em> (&#8216;&amp;&#8217;). This character, which
+can be located anywhere in the <strong>PLIST</strong> line, indicates that the
+specified partition list should be <em>logically and&#8217;d</em> with other
+partition access lists. In this case, the configuration will limit jobs
+from user <strong>demo</strong> to running in partition <strong>test</strong> and jobs from group
+<strong>staff</strong> to running in partition <strong>general</strong> . All other jobs will be
+allowed to run in either partition. <strong>NOTE</strong> : When using and based
+partition access lists, the base system access list must be specified
+with <strong>SYSCFG</strong>.</p>
+</div>
+<div class="section" id="requesting-partitions">
+<h2>7.2.3. Requesting Partitions<a class="headerlink" href="#requesting-partitions" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">Users may request to use any partition they have access to on a per
+job basis. This is accomplished using the resource manager extensions
+since most native batch systems do not support the partition concept.
+For example, on a PBS system, a job submitted by a member of the group
+staff could request that the job run in the test partition by adding
+the line &#8216;#PBS -W x=PARTITION:test&#8217; to the command file. See the
+<a class="reference external" href="13.3rmextensions.html">resource manager extension overview</a> for
+more information on configuring and utilizing resource manager
+extensions.</div>
+</div>
+</div>
+<div class="section" id="miscellaneous-partition-issues">
+<h2>7.2.4. Miscellaneous Partition Issues<a class="headerlink" href="#miscellaneous-partition-issues" title="Permalink to this headline">¶</a></h2>
+<p>Special jobs may be allowed to span the resources of multiple partitions
+if desired by associating the job with a QOS which has the flag
+&#8216;<strong>SPAN</strong>&#8216; set. (See the <a class="reference external" href="a.fparameters.html#qoscfg">QOSCFG</a>
+parameter)</p>
+<p>A brief caution, use of partitions has been quite limited in recent
+years as other, more effective approaches are selected for site
+scheduling policies. Consequently, some aspects of partitions have
+received only minor testing. Still note that partitions are fully
+supported and any problem found will be rectified.</p>
+<p><strong>See Also:</strong></p>
+<p>Standing Reservations, Node Sets</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">7.2. Partitions</a><ul>
+<li><a class="reference internal" href="#defining-partitions">7.2.1. Defining Partitions</a></li>
+<li><a class="reference internal" href="#managing-partition-access">7.2.2. Managing Partition Access</a></li>
+<li><a class="reference internal" href="#requesting-partitions">7.2.3. Requesting Partitions</a></li>
+<li><a class="reference internal" href="#miscellaneous-partition-issues">7.2.4. Miscellaneous Partition Issues</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="7.1.6userreservations.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="7.3qos.html"
+                        title="next chapter">7.3. Quality of Service (QoS) Facilities</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/7.2partitions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="7.3qos.html" title="7.3. Quality of Service (QoS) Facilities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="7.1.6userreservations.html" title="&lt;no title&gt;"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="7.0controllingresourceaccess.html" >7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

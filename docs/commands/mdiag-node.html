@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag-n">mdiag -n</p>
+<p><strong>(Moab Node Diagnostics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">n</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partitionid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">A</span> <span class="n">creds</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span><span class="p">]</span> <span class="p">[</span><span class="n">nodeid</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The <strong>mdiag -n</strong> command provides detailed information about the state
+of nodes Moab is currently tracking. This command also performs a large
+number of sanity and state checks. The node configuration and status
+information as well as the results of the various checks are presented
+by this command.
+<strong>Arguments</strong></p>
+<p>Flag
+Argument
+Description
+[-A]
+{user|group|account|qos|class|job}:&lt;OBJECTID&gt;
+report if each node is accessible by requested job or credential
+[-t]
+&lt;partitionid&gt;
+report only nodes from specified partition
+[-v]
+-
+show verbose output (do not truncate columns and add columns for
+additional node attributes)
+<strong>Output</strong></p>
+<p>This command presents detailed node information in whitespace delineated
+fields.
+The output of this command can be extensive and the values for a number
+of fields may be truncated. If truncated, the &#8216;<strong>-v</strong> flag can be used
+to display full field content.</p>
+<p>Column
+Format
+Name
+&lt;NODE NAME
+State
+&lt;NODE STATE
+Procs
+&lt;AVAILABLE PROCS&gt;:&lt;CONFIGURED PROCS&gt;
+Memory
+&lt;AVAILABLE MEMORY&gt;:&lt;CONFIGURED MEMORY&gt;
+Disk
+&lt;AVAILABLE DISK&gt;:&lt;CONFIGURED DISK&gt;
+Swap
+&lt;AVAILABLE SWAP&gt;:&lt;CONFIGURED SWAP&gt;
+Speed
+&lt;RELATIVE MACHINE SPEED&gt;
+Opsys
+&lt;NODE OPERATING SYSTEM&gt;
+Arch
+&lt;NODE HARDWARE ARCHITECTURE&gt;
+Par
+&lt;PARTITION NODE IS ASSIGNED TO&gt;
+Load
+&lt;CURRENT 1 MINUTE BSD LOAD&gt;
+Rsv
+&lt;NUMBER OF RESERVATIONS ON NODE&gt;
+Classes
+&lt;CLASS NAME&gt;&lt;CLASS INSTANCES AVAILABLE&gt;:&lt;CLASS INSTANCES CONFIGURED&gt;...
+Network
+&lt;NETWORK NAME&gt;...
+Features
+&lt;NODE FEATURE&gt;...
+<strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">n</span>
+
+<span class="n">compute</span> <span class="n">node</span> <span class="n">summary</span>
+<span class="n">Name</span>                    <span class="n">State</span>   <span class="n">Procs</span>      <span class="n">Memory</span>         <span class="n">Opsys</span>
+
+<span class="n">opt</span><span class="o">-</span><span class="mi">001</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">002</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">003</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">004</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">005</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">006</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">WARNING</span><span class="p">:</span>   <span class="n">swap</span> <span class="ow">is</span> <span class="n">low</span> <span class="n">on</span> <span class="n">node</span> <span class="n">opt</span><span class="o">-</span><span class="mi">006</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">007</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">008</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">009</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">010</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">011</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">012</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">013</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">014</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">015</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">opt</span><span class="o">-</span><span class="mi">016</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">2</span>      <span class="mi">2048</span><span class="p">:</span><span class="mi">2048</span>        <span class="n">SuSE</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">001</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">002</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">003</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">004</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">005</span>                  <span class="n">Idle</span>    <span class="mi">1</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">006</span>                  <span class="n">Idle</span>    <span class="mi">1</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">007</span>                  <span class="n">Idle</span>    <span class="mi">1</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">008</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">009</span>                  <span class="n">Down</span>    <span class="mi">1</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">010</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">011</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">012</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">013</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">014</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">015</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">x86</span><span class="o">-</span><span class="mi">016</span>                  <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>       <span class="mi">512</span><span class="p">:</span><span class="mi">512</span>       <span class="n">Redhat</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">001</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">002</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">003</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">004</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">005</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">006</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">007</span>                 <span class="n">Idle</span>    <span class="mi">1</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">008</span>                 <span class="n">Idle</span>    <span class="mi">1</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">WARNING</span><span class="p">:</span>   <span class="n">node</span> <span class="n">P690</span><span class="o">-</span><span class="mi">008</span> <span class="ow">is</span> <span class="n">missing</span> <span class="n">ethernet</span> <span class="n">adapter</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">009</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">010</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">011</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">012</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">013</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">014</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">015</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="n">P690</span><span class="o">-</span><span class="mi">016</span>                 <span class="n">Busy</span>    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span>     <span class="mi">16384</span><span class="p">:</span><span class="mi">16384</span>        <span class="n">AIX</span>
+<span class="o">-----</span>                     <span class="o">---</span>    <span class="mi">6</span><span class="p">:</span><span class="mi">64</span>   <span class="mi">745472</span><span class="p">:</span><span class="mi">745472</span>     <span class="o">-----</span>
+
+<span class="n">Total</span> <span class="n">Nodes</span><span class="p">:</span> <span class="mi">36</span>  <span class="p">(</span><span class="n">Active</span><span class="p">:</span> <span class="mi">30</span>  <span class="n">Idle</span><span class="p">:</span> <span class="mi">5</span>  <span class="n">Down</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Warning messages are interspersed with the node configuration
+information with all warnings preceded by the keyword &#8216;<strong>WARNING</strong>&#8216;.</p>
+<p><strong>XML Output</strong></p>
+<p>If XML output is requested (via the <a class="reference external" href="#synopsis">&#8211;format=xml</a>
+argument), XML based node information will be written to STDOUT in the
+following format:</p>
+<p>mdiag -n &#8211;format=xml</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Data</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">node</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">ATTR</span><span class="o">&gt;=</span><span class="s2">&quot;&lt;VAL&gt;&quot;</span> <span class="o">...</span> <span class="o">&lt;/</span><span class="n">node</span><span class="o">&gt;</span>
+  <span class="o">...</span>
+<span class="o">&lt;/</span><span class="n">Data</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>In addition to the attributes listed below, mdiag -n&#8217;s node element XML
+has children that describe a node&#8217;s messages
+(<a class="reference external" href="../xml/Messages.html">Messages</a> XML element).</p>
+<p><strong>XML Attributes</strong></p>
+<p>Name
+Description
+AGRES
+Available generic resources
+ALLOCRES
+Special allocated resources (like vlans)
+ARCH
+The node&#8217;s processor architecture.
+AVLETIME
+Time when the node will no longer be availble (used in Utility centers)
+AVLSTIME
+Time when the node will be available (used in Utility centers)
+CFGCLASS
+Classes configured on the node
+GRES
+generic resources on the node
+ENABLEPROFILING
+If true, a node&#8217;s state and usage is tracked over time.
+FEATURES
+A list of comma separated custom features describing a node.
+GMETRIC
+A list of comma separated consumable resources associated with a node.
+HOPCOUNT
+How many hops the node took to reach this Moab (used in hierarchical
+grids)
+ISDELETED
+Node has been deleted
+ISDYNAMIC
+Node is dynamic (used in Utility centers)
+JOBLIST
+The list of jobs currently running on a node.
+LOAD
+current load as reported by the resource manager
+LOADWEIGHT
+load weight used when calculating node priority
+MAXJOB
+See <a class="reference external" href="12.3nodepolicies.html">Node Policies</a> for details.
+MAXJOBPERUSER
+See <a class="reference external" href="12.3nodepolicies.html">Node Policies</a> for details.
+MAXLOAD
+See <a class="reference external" href="12.3nodepolicies.html">Node Policies</a> for details.
+MAXPROC
+See <a class="reference external" href="12.3nodepolicies.html">Node Policies</a> for details.
+MAXPROCPERUSER
+See <a class="reference external" href="12.3nodepolicies.html">Node Policies</a> for details.
+NETWORK
+The ability to specify which networks are available to a given node is
+limited to only a few resource manager. Using the <strong>NETWORK</strong> attribute,
+administrators can establish this node to network connection directly
+through the scheduler. The <a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a>
+parameter allows this list to be specified in a comma delimited list.
+NODEID
+The unique identifier for a node.
+NODESTATE
+The state of a node.
+OS
+A node&#8217;s operating system.
+OSLIST
+Operating systems the node can run
+OSMODACTION
+URL for changing the operating system
+OWNER
+Credential type and name of owner
+PARTITION
+The partition a node belongs to. See <a class="reference external" href="12.1nodelocation.html">Node
+Location</a> for details.
+POWER
+The state of the node&#8217;s power. Either ON or OFF.
+PRIORITY
+The fixed node priority relative to other nodes.
+PROCSPEED
+A node&#8217;s processsor speed information specified in MHz.
+RACK
+The rack associated with a node&#8217;s physical location.
+RADISK
+The total available disk on a node.
+RAMEM
+The total available memory available on a node.&lt;
+RAPROC
+The total number of processors available on a node.
+RASWAP
+The total available swap on a node.
+RCMEM
+The total configured memory on a node.
+RCPROC
+The total configured processors on a node.
+RCSWAP
+The total configured swap on a node.
+RESCOUNT
+Number of reservations on the node
+RSVLIST
+List of reservations on the node
+RESOURCES
+Deprecated (use GRES)
+RMACCESSLIST
+A comma separated list of resource managers who have access to a node.
+SIZE
+The number of slots or size units consumed by the node.
+SLOT
+The first slot in the rack associated with the node&#8217;s physical location.
+SPEED
+A node&#8217;s relative speed.
+SPEEDWEIGHT
+speed weight used to calculate node&#8217;s priority
+STATACTIVETIME
+Time node was active
+STATMODIFYTIME
+Time node&#8217;s state was modified
+STATTOTALTIME
+Time node has been monitored
+STATUPTIME
+Time node has been up
+TASKCOUNT
+The number of tasks on a node.
+.. rubric:: See Also</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">see-also</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ul class="simple">
+<li><a class="reference external" href="checknode.html">checknode</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag-node.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="changeparam">changeparam</p>
+<p><strong>(Change Parameter)</strong>
+<strong>Caution</strong>: This command is deprecated. Use <a class="reference external" href="mschedctl.html#MODIFY">mschedctl
+-m</a> instead.</p>
+<p class="rubric" id="synopsis">Synopsis</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">changeparam</span> <span class="n">parameter</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p class="rubric" id="overview">Overview</p>
+<p>&nbsp;&nbsp; The <strong>changeparam</strong> command is used to dynamically change the value
+of any parameter which can be specified in the <code class="docutils literal"><span class="pre">moab.cfg</span></code> file. The
+changes take affect at the beginning of the next scheduling iteration.
+They are not persistent, only lasting until Moab is shutdown.
+&nbsp;&nbsp; <strong>changeparam</strong> is a compact command of <a class="reference external" href="mschedctl.html#MODIFY">mschedctl
+-m</a>.</p>
+<p class="rubric" id="access">Access</p>
+<p>&nbsp;&nbsp; This command can be run by a level 1 Moab administrator.
+.. rubric:: Format</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">format</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="14%" />
+<col width="11%" />
+<col width="12%" />
+<col width="42%" />
+<col width="12%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Flag</strong></td>
+<td><strong>Name</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Default</strong></td>
+<td><strong>Description</strong></td>
+<td><strong>Example</strong></td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td><strong>PARAMETER</strong></td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>The name a Moab configuration parameter</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td><strong>VALUE</strong></td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>any valid value for <a class="reference external" href="#PARAMETER">&lt;PARAMETER&gt;</a></td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="example-1">Example 1</p>
+<p>&nbsp;&nbsp; Set Moab&#8217;s LOGLEVEL to 6 for the current run:</p>
+<p>changeparam</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">changeparam</span> <span class="n">LOGLEVEL</span> <span class="mi">6</span>
+
+<span class="n">parameters</span> <span class="n">changed</span>
+</pre></div>
+</div>
+<p class="rubric" id="example-2">Example 2</p>
+<p>&nbsp;&nbsp; Set Moab&#8217;s ADMIN1 userlist to sys, mike and peter</p>
+<p>changeparam</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">changeparam</span> <span class="n">ADMIN1</span> <span class="n">sys</span> <span class="n">mike</span> <span class="n">peter</span>
+
+<span class="n">parameters</span> <span class="n">changed</span>
+</pre></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/changeparam.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

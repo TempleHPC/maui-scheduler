@@ -1,0 +1,83 @@
+Adding New Resource Manager Interfaces
+######################################
+
+Maui interfaces with numerous resource management systems. Some of these
+interact through a resource manager specific interface (i.e.,
+OpenPBS/PBSPro, Loadleveler, SGE) while others interact through
+generalized interfaces such as SSS or Wiki. (see the `Wiki
+Overview <wiki>`__). For most resource managers, either route is
+possible depending on where it is easiest to focus development effort.
+Use of Wiki generally requires modifications on the resource manager
+side while creation of a new resource manager specific Maui interface
+would require more changes to Maui modules. If a scheduling API already
+exists within the resource manager, creation of a resource manager
+specific scheduler interface is often selected.
+
+Regardless of the interface approach selected, adding support for a new
+resource manager is typically a straight forward process for about 95%
+of all supported features. The final 5% of features usually requires a
+bit more effort as each resource manager has a number of distinct
+concepts which must be addressed.
+
+Resource Manager Specific Interfaces
+************************************
+
+If the resource manger specific interface is desired, then typically a
+scheduling API library/header file combo is required. (i.e., for PBS,
+libpbs.a + pbs\_ifl.h, etc.) This resource manager provided API provides
+calls which can be linked into Maui to obtain the *raw* resource manager
+data including both jobs and compute nodes. Additionally, this API
+should provide policy information about the resource manager
+configuration if it is desired that such policies be specified via the
+resource manager rather than the scheduler and that Maui know of and
+respect these policies. The new 'M<X>I.c' module would be responsible
+for loading information from the resource manager, translating this
+information, and then populating the appropriate scheduler data
+structures. The existing **MLLI.c**, **MPBSI.c** and **MWikiI.c**
+modules provide templates indicating how to do this.
+
+The first step in this process is defining the new resource manager
+type. This is accomplished by modifying **moab.h** and **MConst.c**
+files to define the new `RMTYPE <a.fparameters.html#rmtype>`__ parameter
+value. With this defined, the MRMI.c module must be modified to call the
+appropriate resource manager specific calls which will eventually be
+created within the 'M<X>I.c' module. This process is straightforward and
+involves extending existing resource manager specific case statements
+within the general resource manager calls.
+
+The vast majority of the development effort is entailed in creating the
+resource manager specific data collection and job management calls.
+These calls populate Maui data structures, and are responsible for
+passing Maui scheduling commands on to the resource manager. The base
+commands are GetJobs, GetNodes, StartJob, and CancelJob but if the
+resource manager support is available, extended functionality can be
+enabled by creating commands to suspend/resume jobs, checkpoint/restart
+jobs, and/or allow support of dynamic jobs.
+
+If the resource manager provides a form of event driven scheduling
+interface, this will also need to be enabled. The **MPBSI.c** module
+provides a template for enabling such an interface within the
+MPBSProcessEvent() call.
+
+Wiki Interface
+**************
+
+The Wiki interface is a good alternative if the resource manager does
+not already support some form of existing scheduling API. For the most
+part, use of this API requires the same amount of effort as creating a
+resource manager specific interface but development effort focused
+within the resource manager. Since Wiki is already defined as a resource
+manager type, no modifications are required within Maui. Additionally,
+no resource manager specific library or header file is required.
+However, within the resource manager, internal job and node objects and
+attributes must be manipulated and placed within Wiki based interface
+concepts as defined in the `Wiki Overview <wiki>`__. Additionally,
+resource manager parameters must be created to allow a site to configure
+this interface appropriately.
+
+SSS Interface
+*************
+
+The SSS interface is a new XML based generalized resource manager
+interface. It provides an extensible, scalable, and secure method of
+querying and modifying general workload and resource information.

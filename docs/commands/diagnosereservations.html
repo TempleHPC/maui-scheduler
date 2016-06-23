@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="diagnose-r">diagnose -r</p>
+<p><strong>(Maui Reservation Diagnostics)</strong>
+.. rubric:: Synopsis</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">synopsis</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>diagnose -r [reservationid]
+.. rubric:: Overview</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">overview</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The <strong>diagnose -r</strong> command allows administrators to look at detailed
+reservation information. It provides the name, type, partition,
+starttime and endtime, proc and node counts, as well as actual
+utilization figures. It also provides detailed information about which
+resources are being used, how many nodes, how much memory, swap, and
+processors are being associated with each task. Administrators can also
+view the Access Control Lists for each reservation as well as any flags
+that may be active in the reservation.
+.. rubric:: Example</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">example</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">diagnose</span> <span class="o">-</span><span class="n">r</span>
+<span class="n">Diagnosing</span> <span class="n">Reservations</span>
+<span class="n">RsvID</span>                      <span class="n">Type</span> <span class="n">Par</span>   <span class="n">StartTime</span>     <span class="n">EndTime</span>     <span class="n">Duration</span> <span class="n">Node</span> <span class="n">Task</span> <span class="n">Proc</span>
+<span class="o">-----</span>                      <span class="o">----</span> <span class="o">---</span>   <span class="o">---------</span>     <span class="o">-------</span>     <span class="o">--------</span> <span class="o">----</span> <span class="o">----</span> <span class="o">----</span>
+<span class="n">engineer</span><span class="o">.</span><span class="mf">0.1</span>               <span class="n">User</span>   <span class="n">A</span>    <span class="o">-</span><span class="mi">6</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">00</span>    <span class="n">INFINITY</span>     <span class="n">INFINITY</span>    <span class="mi">0</span>    <span class="mi">0</span>    <span class="mi">7</span>
+    <span class="n">Flags</span><span class="p">:</span> <span class="n">STANDINGRSV</span> <span class="n">IGNSTATE</span> <span class="n">OWNERPREEMPT</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">CLASS</span><span class="o">==</span><span class="n">batch</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">long</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">fast</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">bigmem</span><span class="o">+</span> <span class="n">QOS</span><span class="o">==</span><span class="n">low</span><span class="o">-</span><span class="p">:</span><span class="o">==</span><span class="n">high</span><span class="o">+</span> <span class="n">JATTR</span><span class="o">==</span><span class="n">PREEMPTEE</span><span class="o">+</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">RSV</span><span class="o">==</span><span class="n">engineer</span><span class="o">.</span><span class="mf">0.1</span>
+    <span class="n">Task</span> <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="p">[</span><span class="n">ALL</span><span class="p">]</span>
+    <span class="n">Attributes</span> <span class="p">(</span><span class="n">HostExp</span><span class="o">=</span><span class="s1">&#39;fr10n01 fr10n03 fr10n05 fr10n07 fr10n09 fr10n11 fr10n13 fr10n15&#39;</span><span class="p">)</span>
+    <span class="n">Active</span> <span class="n">PH</span><span class="p">:</span> <span class="mf">43.77</span><span class="o">/</span><span class="mf">45.44</span> <span class="p">(</span><span class="mf">96.31</span><span class="o">%</span><span class="p">)</span>
+    <span class="n">SRAttributes</span> <span class="p">(</span><span class="n">TaskCount</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">StartTime</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">EndTime</span><span class="p">:</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Days</span><span class="p">:</span> <span class="n">ALL</span><span class="p">)</span>
+
+<span class="n">research</span><span class="o">.</span><span class="mf">0.2</span>               <span class="n">User</span>   <span class="n">A</span>    <span class="o">-</span><span class="mi">6</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">00</span>    <span class="n">INFINITY</span>     <span class="n">INFINITY</span>    <span class="mi">0</span>    <span class="mi">0</span>    <span class="mi">8</span>
+    <span class="n">Flags</span><span class="p">:</span> <span class="n">STANDINGRSV</span> <span class="n">IGNSTATE</span> <span class="n">OWNERPREEMPT</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">CLASS</span><span class="o">==</span><span class="n">batch</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">long</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">fast</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">bigmem</span><span class="o">+</span> <span class="n">QOS</span><span class="o">==</span><span class="n">high</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">low</span><span class="o">-</span> <span class="n">JATTR</span><span class="o">==</span><span class="n">PREEMPTEE</span><span class="o">+</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">RSV</span><span class="o">==</span><span class="n">research</span><span class="o">.</span><span class="mf">0.2</span>
+    <span class="n">Task</span> <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="p">[</span><span class="n">ALL</span><span class="p">]</span>
+    <span class="n">Attributes</span> <span class="p">(</span><span class="n">HostExp</span><span class="o">=</span><span class="s1">&#39;fr3n01 fr3n03 fr3n05 fr3n07 fr3n07 fr3n09 fr3n11 fr3n13 fr3n15&#39;</span><span class="p">)</span>
+    <span class="n">Active</span> <span class="n">PH</span><span class="p">:</span> <span class="mf">51.60</span><span class="o">/</span><span class="mf">51.93</span> <span class="p">(</span><span class="mf">99.36</span><span class="o">%</span><span class="p">)</span>
+    <span class="n">SRAttributes</span> <span class="p">(</span><span class="n">TaskCount</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">StartTime</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">EndTime</span><span class="p">:</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Days</span><span class="p">:</span> <span class="n">ALL</span><span class="p">)</span>
+
+<span class="n">fast</span><span class="o">.</span><span class="mf">0.3</span>                   <span class="n">User</span>   <span class="n">A</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">05</span>     <span class="mi">5</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">05</span>      <span class="mi">5</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">0</span>    <span class="mi">0</span>   <span class="mi">16</span>
+    <span class="n">Flags</span><span class="p">:</span> <span class="n">STANDINGRSV</span> <span class="n">IGNSTATE</span> <span class="n">OWNERPREEMPT</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">CLASS</span><span class="o">==</span><span class="n">fast</span><span class="o">+</span> <span class="n">QOS</span><span class="o">==</span><span class="n">high</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">low</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">urgent</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">DEFAULT</span><span class="o">+</span> <span class="n">JATTR</span><span class="o">==</span><span class="n">PREEMPTEE</span><span class="o">+</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">RSV</span><span class="o">==</span><span class="n">fast</span><span class="o">.</span><span class="mf">0.3</span>
+    <span class="n">Task</span> <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="p">[</span><span class="n">ALL</span><span class="p">]</span>
+    <span class="n">Attributes</span> <span class="p">(</span><span class="n">HostExp</span><span class="o">=</span><span class="s1">&#39;fr12n01 fr12n02 fr12n03 fr12n04 fr12n05 fr12n06 fr12n07 fr12n08 fr12n09 fr12n10 fr12n11 fr12n12 fr12n13 fr12n14 fr12n15 fr12n16&#39;</span><span class="p">)</span>
+    <span class="n">SRAttributes</span> <span class="p">(</span><span class="n">TaskCount</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">StartTime</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">EndTime</span><span class="p">:</span> <span class="mi">5</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Days</span><span class="p">:</span> <span class="n">Mon</span><span class="p">,</span><span class="n">Tue</span><span class="p">,</span><span class="n">Wed</span><span class="p">,</span><span class="n">Thu</span><span class="p">,</span><span class="n">Fri</span><span class="p">)</span>
+
+<span class="n">fast</span><span class="o">.</span><span class="mf">1.4</span>                   <span class="n">User</span>   <span class="n">A</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">05</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">05</span>      <span class="mi">5</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">0</span>    <span class="mi">0</span>   <span class="mi">16</span>
+    <span class="n">Flags</span><span class="p">:</span> <span class="n">STANDINGRSV</span> <span class="n">IGNSTATE</span> <span class="n">OWNERPREEMPT</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">CLASS</span><span class="o">==</span><span class="n">fast</span><span class="o">+</span> <span class="n">QOS</span><span class="o">==</span><span class="n">high</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">low</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">urgent</span><span class="o">+</span><span class="p">:</span><span class="o">==</span><span class="n">DEFAULT</span><span class="o">+</span> <span class="n">JATTR</span><span class="o">==</span><span class="n">PREEMPTEE</span><span class="o">+</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">RSV</span><span class="o">==</span><span class="n">fast</span><span class="o">.</span><span class="mf">1.4</span>
+    <span class="n">Task</span> <span class="n">Resources</span><span class="p">:</span> <span class="n">PROCS</span><span class="p">:</span> <span class="p">[</span><span class="n">ALL</span><span class="p">]</span>
+    <span class="n">Attributes</span> <span class="p">(</span><span class="n">HostExp</span><span class="o">=</span><span class="s1">&#39;fr12n01 fr12n02 fr12n03 fr12n04 fr12n05 fr12n06 fr12n07 fr12n08 fr12n09 fr12n10 fr12n11 fr12n12 fr12n13 fr12n14 fr12n15 fr12n16&#39;</span><span class="p">)</span>
+    <span class="n">SRAttributes</span> <span class="p">(</span><span class="n">TaskCount</span><span class="p">:</span> <span class="mi">0</span>  <span class="n">StartTime</span><span class="p">:</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">EndTime</span><span class="p">:</span> <span class="mi">5</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Days</span><span class="p">:</span> <span class="n">Mon</span><span class="p">,</span><span class="n">Tue</span><span class="p">,</span><span class="n">Wed</span><span class="p">,</span><span class="n">Thu</span><span class="p">,</span><span class="n">Fri</span><span class="p">)</span>
+
+<span class="n">job2411</span>                     <span class="n">Job</span>   <span class="n">A</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">30</span>     <span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">30</span>    <span class="mi">0</span>    <span class="mi">0</span>    <span class="mi">6</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">JOB</span><span class="o">==</span><span class="n">job2411</span><span class="o">=</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">JOB</span><span class="o">==</span><span class="n">job2411</span> <span class="n">USER</span><span class="o">==</span><span class="n">jimf</span> <span class="n">GROUP</span><span class="o">==</span><span class="n">newyork</span> <span class="n">ACCT</span><span class="o">==</span><span class="n">it</span> <span class="n">CLASS</span><span class="o">==</span><span class="n">bigmem</span> <span class="n">QOS</span><span class="o">==</span><span class="n">low</span> <span class="n">JATTR</span><span class="o">==</span><span class="n">PREEMPTEE</span> <span class="n">DURATION</span><span class="o">==</span><span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">30</span> <span class="n">PROC</span><span class="o">==</span><span class="mi">6</span> <span class="n">PS</span><span class="o">==</span><span class="mi">2700</span>
+
+<span class="n">job1292</span>                     <span class="n">Job</span>   <span class="n">A</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">30</span>     <span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">30</span>    <span class="mi">0</span>    <span class="mi">0</span>    <span class="mi">4</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">JOB</span><span class="o">==</span><span class="n">job1292</span><span class="o">=</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">JOB</span><span class="o">==</span><span class="n">job1292</span> <span class="n">USER</span><span class="o">==</span><span class="n">jimf</span> <span class="n">GROUP</span><span class="o">==</span><span class="n">newyork</span> <span class="n">ACCT</span><span class="o">==</span><span class="n">it</span> <span class="n">CLASS</span><span class="o">==</span><span class="n">batch</span> <span class="n">QOS</span><span class="o">==</span><span class="n">DEFAULT</span> <span class="n">JATTR</span><span class="o">==</span><span class="n">PREEMPTEE</span> <span class="n">DURATION</span><span class="o">==</span><span class="mi">00</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">30</span> <span class="n">PROC</span><span class="o">==</span><span class="mi">4</span> <span class="n">PS</span><span class="o">==</span><span class="mi">1800</span>
+</pre></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/diagnosereservations.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

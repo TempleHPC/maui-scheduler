@@ -1,0 +1,392 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scheduling Dictionary &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scheduling-dictionary">
+<h1>Scheduling Dictionary<a class="headerlink" href="#scheduling-dictionary" title="Permalink to this headline">¶</a></h1>
+<p><strong>Term</strong>
+<strong>Definition</strong>
+<strong>Example</strong>
+<strong>SSS v0.1 Token</strong>
+` &lt;&gt;`__<strong>Account</strong>
+A credential also known as &#8216;project ID&#8217;. Multiple users may be
+associated a single account ID and each user may have access to multiple
+accounts. (See <a class="reference external" href="#Credential">Credential</a> )
+<code class="docutils literal"><span class="pre">ACCOUNT=projectX</span></code>
+account
+` &lt;&gt;`__<strong>ACL (Access Control List)</strong>
+Within the scheduling world, an access control list is used and applied
+much as it is elsewhere. An ACL defines what credentials are required to
+access or utilizes particular objects. The principle objects to which
+ACL&#8217;s are applied are <a class="reference external" href="#Reservation">reservations</a> and
+<a class="reference external" href="#QOS">QOS</a>&#8216;s. ACL&#8217;s may contain both allow and deny statements, may
+include wildcards, and may contain rules based on multiple object types.
+Reservation META1 contains 4 access statements.
+Allow jobs owned by user <code class="docutils literal"><span class="pre">john</span></code> or <code class="docutils literal"><span class="pre">bob</span></code>
+Allow jobs with QOS <code class="docutils literal"><span class="pre">premium</span></code>
+Deny jobs in class <code class="docutils literal"><span class="pre">debug</span></code>
+Allow jobs with a duration of less than 1 hour
+<strong>AS</strong> (Access Statement)
+Attributes:</p>
+<div class="line-block">
+<div class="line"><strong>``TYPE``</strong> one of <code class="docutils literal"><span class="pre">ALLOW</span></code>, <code class="docutils literal"><span class="pre">DENY</span></code></div>
+<div class="line"><strong>``OBJECT``</strong> one of <code class="docutils literal"><span class="pre">USER</span></code>, <code class="docutils literal"><span class="pre">GROUP</span></code>, <code class="docutils literal"><span class="pre">ACCOUNT</span></code>, <code class="docutils literal"><span class="pre">QOS</span></code>,
+<code class="docutils literal"><span class="pre">CLASS</span></code>, <code class="docutils literal"><span class="pre">DURATION</span></code></div>
+<div class="line"><strong>``NAME &lt;STRING&gt;``</strong></div>
+</div>
+<p>Members:</p>
+<p>[NONE]</p>
+<p>Example:</p>
+<div class="line-block">
+<div class="line">&lt;AS TYPE=&#8221;ALLOW&#8221; OBJECT=&#8221;USER&#8221; NAME=&#8221;john&#8221;/&gt;</div>
+<div class="line">&lt;AS TYPE=&#8221;ALLOW&#8221; OBJECT=&#8221;USER&#8221; NAME=&#8221;bob&#8221;/&gt;</div>
+<div class="line">&lt;AS TYPE=&#8221;ALLOW&#8221; OBJECT=&#8221;QOS&#8221; NAME=&#8221;premium&#8221;/&gt;</div>
+<div class="line">&lt;AS TYPE=&#8221;DENY&#8221; OBJECT=&#8221;CLASS&#8221; NAME=&#8221;debug&#8221;/&gt;</div>
+<div class="line">&lt;AS TYPE=&#8221;ALLOW&#8221; OBJECT=&#8221;DURATION&#8221; NAME=&#8221;1:00:00&#8221;/&gt;</div>
+</div>
+<p>(used in reservation and job creation and queries)
+` &lt;&gt;`__<strong>Allocation</strong>
+A logical, scalar unit assigned to users on a credential basis,
+providing access to a particular quantity of compute resources.
+Allocations are consumed by jobs associated with those credentials.
+<code class="docutils literal"><span class="pre">ALLOCATION=30000</span></code>
+ALLOCATION
+Attributes:</p>
+<p>Members:</p>
+<p>(used in ???)
+` &lt;&gt;`__<strong>Class</strong>
+(see <a class="reference external" href="#Queue">Queue</a> ) A class is a logical container object which
+holds jobs allowing a site to associate various constraints and defaults
+to these jobs. Class access can also be tied to individual nodes
+defining whether or not a particular node will accept a job associated
+with a given class. Class based access to a node is denied unless
+explicitly allowed via resource manager configuration. Within Maui,
+classes are tied to jobs as a <a class="reference external" href="#Credential">credential</a>.
+job cw.073 is submitted to class batch
+node cl02 accepts jobs in class batch</p>
+<p>reservation weekend allows access to jobs in class batch
+<strong>class</strong>
+Attributes:</p>
+<p>Name: &lt;STRING&gt;</p>
+<p>Members:</p>
+<p>[NONE]</p>
+<p>(used in ???)
+` &lt;&gt;`__<strong>CPU</strong>
+A single processing unit. A CPU is a consumable resource. Nodes
+typically consist of one or more CPU&#8217;s. (same as
+<a class="reference external" href="#Processor">processor</a> )
+N/A
+proc
+` &lt;&gt;`__<strong>Credential</strong>
+An attribute associated with <a class="reference external" href="#Job">jobs</a> and other objects which
+determines object identity. In the case of schedulers and resource
+managers,
+credential based policies and limits are often established. At submit
+time, jobs are associated with a number of credentials such as
+<a class="reference external" href="#User">user</a> , <a class="reference external" href="#Group">group</a> , <a class="reference external" href="#Account">account</a> ,
+<a class="reference external" href="#QOS">QOS</a> , and <a class="reference external" href="#Class">class</a> . These job credentials subject
+the job to various polices and grant it various types of access.
+In most cases, credentials set both the privileges of the job and the ID
+of the actual job <a class="reference external" href="#Execution-Environment">executable</a> .
+Job cw.24001 possesses the following credentials:
+<code class="docutils literal"><span class="pre">USER=john;GROUP=staff;ACCOUNT=[NONE];</span></code>
+<code class="docutils literal"><span class="pre">QOS=[DEFAULT];CLASS=batch</span></code>
+cred
+` &lt;&gt;`__<strong>Disk</strong>
+A quantity of local disk available for use by batch jobs. Disk is a
+<a class="reference external" href="#Resource-Consumable">consumable resource</a> .
+N/A
+disk
+` &lt;&gt;`__<strong>Execution Environment</strong>
+A description of the environment in which the executable is launched.
+This environment may include attributes such as the following:
+an executable
+command line args
+input file
+output file
+local user id
+local group id
+process resource limits
+Job cw.24001 possesses the following execution environment:
+<code class="docutils literal"><span class="pre">EXEC=/bin/sleep;ARGS=&quot;60&quot;;</span></code>
+<code class="docutils literal"><span class="pre">INPUT=[NONE];OUTPUT=[NONE];</span></code>
+<code class="docutils literal"><span class="pre">USER=loadl;GROUP=staff;</span></code>
+` &lt;&gt;`__<strong>Fairshare</strong>
+N/A
+N/A
+N/A
+` &lt;&gt;`__<strong>Fairness</strong>
+N/A
+N/A
+N/A
+` &lt;&gt;`__<strong>Group</strong>
+A <a class="reference external" href="#Credential">credential</a> typically directly mapping to a user&#8217;s
+Unix® group ID.
+N/A
+N/A
+` &lt;&gt;`__<strong>Job</strong>
+The fundamental object of resource consumption. A job contains the
+following components:
+A list of required <a class="reference external" href="#Resource-Consumable">consumable resources</a>
+A list of <a class="reference external" href="#Resource-Constraints">resource constraints</a> controlling
+which resources may be allocated to the job
+A list of <a class="reference external" href="#Job-Constraints">job constraints</a> controlling where,
+when, and how the job should be run
+A list of <a class="reference external" href="#Credential">credentials</a>
+An <a class="reference external" href="#Execution-Environment">execution environment</a>
+N/A
+N/A
+` &lt;&gt;`__<strong>Job Constraints</strong>
+A set of conditions which must be fulfilled in order for the job to
+start. These conditions are far reaching and may include one or more of
+the following:
+When the job may run (i.e., after time X, within Y minutes, etc.)
+Which resources may be allocated (i.e., Node must possess at least 512MB
+of RAM, run only in partition or Partition C, or run an HostA and HostB)
+Starting job relative to an particular event (i.e., start after job X
+successfully completes)
+<code class="docutils literal"><span class="pre">RELEASETIME&gt;='Fri</span> <span class="pre">Jun</span> <span class="pre">06,</span> <span class="pre">10:00AM'</span></code>
+<code class="docutils literal"><span class="pre">DEPENDENCY=AFTERCOMPLETION:cw.2004</span></code>
+<code class="docutils literal"><span class="pre">NODEMEMORY==256MB</span></code>
+` &lt;&gt;`__<strong>Memory</strong>
+A quantity of physical memory (RAM). Memory is provided by compute
+nodes. It is required as a constraint or consumed as a consumable
+resource by jobs. Within Maui, memory is tracked and reported in
+megabytes (MB).
+Node node001 provides the following resources
+<code class="docutils literal"><span class="pre">PROCS=1,MEMORY=512,SWAP=1024</span></code>
+Job cw.24004 consumes the following resources per task
+<code class="docutils literal"><span class="pre">PROCS=1,MEMORY=256</span></code>
+N/A
+` &lt;&gt;`__<strong>Node</strong>
+A node is the fundamental object associated with compute resources. Each
+node contains the following components
+A list of <a class="reference external" href="#Resource-Consumable">consumable resources</a>
+A list of <a class="reference external" href="#Node-Attribute">node attributes</a>
+N/A
+N/A
+` &lt;&gt;`__<strong>Node Attribute</strong>
+A node attribute is a non-quantitative aspect of a node. Attributes
+typically describe the node itself or possibly aspects of various node
+resources such as processors or memory. While it is probably not optimal
+to aggregate node and resource attributes together in this manner, it is
+common practice. Common node attributes include processor architecture,
+operating system, or processor speed. Jobs often specify that resources
+be allocated from nodes possessing certain node attributes.
+<code class="docutils literal"><span class="pre">ARCH=AMD,OS=LINUX24,PROCSPEED=950</span></code>
+N/A
+` &lt;&gt;`__<strong>Node Feature</strong>
+A node feature is a <a class="reference external" href="#Node-Attribute">node attribute</a> which is
+typically specified locally via some form of configuration file. Node
+features are opaque strings associated with the node by the resource
+manager which generally only have meaning to the end user or possibly to
+the scheduler. Commonly, a node feature will be associated with a subset
+of nodes allowing end users to request use of this subset by requiring
+that resources be allocated from nodes with this feature present. In
+many cases, node features are used to extend the information provided by
+the resource manager.
+<code class="docutils literal"><span class="pre">FEATURE=s950,pIII,geology</span></code>
+(This may be used to indicate that the node possesses a 950 MHz Pentium
+III processor and that the node is owned by the Geology dept)
+N/A
+` &lt;&gt;`__<strong>Processor</strong>
+A processing unit. A processor is a consumable resource. Nodes typically
+consist of one or more processors. (same as CPU)
+N/A
+N/A
+` &lt;&gt;`__<strong>Quality of Service (QOS)</strong>
+An object which provides special services, resources, etc.
+N/A
+N/A
+` &lt;&gt;`__<strong>Queue</strong>
+(see <a class="reference external" href="#Class">Class</a> )
+N/A
+N/A
+` &lt;&gt;`__<strong>Reservation</strong>
+An object which reserves a specific collection or resources for a
+specific timeframe for use by jobs which meet specific conditions
+Reserve 24 processors and 8 GB of memory from time T1 to time T2 for use
+by user X or jobs in the class batch
+<strong>RESERVATION</strong>
+| Attributes:
+| STARTTIME (optional)
+| DURATION (mandatory)
+| FLAGS (optional)
+| OWNER (optional)
+| NAME (optional)</p>
+<div class="line-block">
+<div class="line">Contains</div>
+<div class="line">AS (1+:required)</div>
+<div class="line">RESOURCES (1+:required)</div>
+</div>
+<p>Example:</p>
+<p>&lt;RESERVATION STARTTIME=&#8221;98066503&#8221;&gt;&lt;AS TYPE=&#8221;ALLOW&#8221; OBJECT=&#8221;QOS&#8221;
+NAME=&#8221;premium&#8221;/&gt;&lt;RES TYPE=PROC COUNT=&#8221;4&#8221; &lt;CONSTRAINT ATTR=&#8221;PROCSPEED&#8221;
+CMP=&#8221;&gt;=900&#8221;/&gt;&lt;/RESERVATION&gt;</p>
+<p>(use: reservation creation, modification, destruction, and reporting)
+<strong>Resource</strong>
+N/A
+N/A
+N/A
+` &lt;&gt;`__<strong>Resource, Available</strong>
+All <a class="reference external" href="#Resource-Consumable">consumable resources</a> are tracked and
+managed in a number of ways. A compute node&#8217;s available resources is
+calculated as its <a class="reference external" href="#Resource-Configured">configured resources</a> minus
+the sum of the resources actually utilized by all job tasks running on
+the node.
+Node cl003 is configured with 4 processors and 512 MB of memory. This
+node is executing 2 tasks of job clserver.0041 which is utilizing 1
+processor and 60 MB of memory each. Additionally, it is also running 1
+task of job clserver.0047 which is using 1 processor and 250 MB of
+memory.
+Node cl003&#8217;s available resources are thus</p>
+<p>processors = 4 - (2 * 1 + 1 * 1) = 1
+memory = 512 - (2 * 60 + 1 * 250) = 142 MB
+N/A
+` &lt;&gt;`__<strong>Resource, Configured</strong>
+N/A
+N/A
+N/A
+` &lt;&gt;`__<strong>Resource, Consumable</strong>
+Any object which can be utilized (i.e., consumed and thus made
+unavailable to another job) by, or dedicated to a job is considered to
+be a resource. Common examples of resources are a node&#8217;s physical memory
+or local disk. As these resources may given to one job and thus
+unavailable to another, they are considered to be consumable. Other
+aspects of a node, such as its operating system, are not considered to
+be consumable since its use by one job does not preclude its use by
+another.
+Note that some node objects, such as a network adapter, may be dedicated
+under some operating systems and resource managers and not under others.
+On systems where the network adapter cannot be dedicated and the network
+usage per job cannot be specified or tracked, network adapters are not
+considered to be resources, but rather attributes.</p>
+<p>Nodes possess a specific quantity of consumable resources such as real
+memory, local disk, or processors. In a resource management system, the
+node manager may choose to report only those configured resources
+available to batch jobs. For example, a node may possess a 80 GB hard
+drive but may have only 20 GB dedicated to batch jobs. Consequently, the
+resource manager may report that the node has 20 GB of local disk
+available when idle. Jobs may explicitly request a certain quantity of
+consumable resources
+N/A
+N/A
+` &lt;&gt;`__Resource, Constraint
+A resource constraint imposes a rule on which resources can be be used
+to <em>match</em> a resource request. Resource constraints either specify a
+required quantity and type of resource or a required node attribute. All
+resource constraints must be met by any given node in order for a
+<em>match</em> to be established.
+<strong>Resource, Dedicated</strong>
+A job may request that a block of resources be dedicated while the job
+is executing. In this case, the scheduler is responsible to guaranteeing
+that these resources, whether utilized by the job or not, are set aside,
+unavailable to other jobs.
+N/A
+N/A
+` &lt;&gt;`__<strong>Swap</strong>
+A quantity of virtual memory available for use by batch jobs. Swap is a
+consumable resource provided by nodes and consumed by jobs
+N/A
+N/A
+` &lt;&gt;`__<strong>Task</strong>
+An atomic collection of consumable resources.
+N/A
+N/A
+<strong>User, Global</strong>
+The user credential used to provide access to functions and resources.
+In local scheduling, global user IDs map directly to local user IDs.
+N/A
+N/A
+<strong>User, Local</strong>
+The user credential under which the job executable will be launched.
+N/A
+N/A
+Workload
+generalized term
+N/A
+N/A</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/3.2.1dictionary.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

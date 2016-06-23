@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.2. Throttling Policies &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management" href="6.0managingfairness.html" />
+    <link rel="next" title="6.3. Fairshare" href="6.3fairshare.html" />
+    <link rel="prev" title="6.1. Fairness Overview" href="6.1fairnessoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="6.3fairshare.html" title="6.3. Fairshare"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="6.1fairnessoverview.html" title="6.1. Fairness Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="6.0managingfairness.html" accesskey="U">6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="throttling-policies">
+<h1>6.2. Throttling Policies<a class="headerlink" href="#throttling-policies" title="Permalink to this headline">¶</a></h1>
+<p>Maui possesses a number of policies which allow an administrator to
+control the flow of jobs through the system. These throttling policies
+work as filters allowing or disallowing a job to be considered for
+scheduling by specifying limits regarding system usage for any given
+moment. These policies may be specified as global or specific
+constraints specified on a per user, group, account, QOS, or class
+basis.</p>
+<div class="section" id="fairness-via-throttling-policies">
+<h2>6.2.1. Fairness via Throttling Policies<a class="headerlink" href="#fairness-via-throttling-policies" title="Permalink to this headline">¶</a></h2>
+<p>Significant improvements in the flexibility of throttling policies were
+introduced in Maui 3.2. Those sites using versions prior to this should
+consult the <a class="reference external" href="throttling306.html">Maui 3.0 style throttling policy configuration
+documentation</a>. At a high level, Maui allows
+resource usage limits to be specified for in three primary dimensions:</p>
+<div class="section" id="basic-fairness-policies">
+<h3>6.2.1.1. Basic Fairness Policies<a class="headerlink" href="#basic-fairness-policies" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">- Active Job Limits (Constrains the total cumulative resource
+available to active jobs at a given time)</div>
+<div class="line">- Idle Job Limits (Constrains the total cumulative resources available
+to idle jobs at a given time)</div>
+<div class="line">- System Job Limits (Constrains the maximum resource requirements of
+any single job)</div>
+</div>
+<p>These limits can be applied to any job credential (user, group, account,
+QOS, and class), or on a system-wide basis. Using the keyword
+<strong>DEFAULT</strong>, a site may also specify the default setting for the desired
+user, group, account, QOS, and class. Additionally, QoS&#8217;s may be
+configured to allow limit <a href="#id5"><span class="problematic" id="id6">`overrides &lt;&gt;`__</span></a> to any particular policy.</p>
+<div class="line-block">
+<div class="line">For a job to run, it must meet all policy limits. Limits are applied
+using the &#8216;<strong>*CFG</strong>&#8216; set of parameters, particularly,
+<a class="reference external" href="a.fparameters.html#usercfg">USERCFG</a>,
+<a class="reference external" href="a.fparameters.html#groupcfg">GROUPCFG</a>,
+<a class="reference external" href="a.fparameters.html#accountcfg">ACCOUNTCFG</a>,
+<a class="reference external" href="a.fparameters.html#qoscfg">QOSCFG</a>,
+<a class="reference external" href="a.fparameters.html#classcfg">CLASSCFG</a>, and
+<a class="reference external" href="a.fparameters.html#systemcfg">SYSTEMCFG</a>. Limits are specified by
+associating the desired limit to the individual or default object. The
+usage limits currently supported are listed in the table below.</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="9%" />
+<col width="84%" />
+<col width="5%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>NAME</strong></td>
+<td><strong>UNITS</strong></td>
+<td><strong>DESCRIPTION</strong></td>
+<td><strong>EXAMPLE</strong></td>
+</tr>
+<tr class="row-even"><td><strong>MAXJOB</strong></td>
+<td># of jobs</td>
+<td>Limits the number of jobs a credential may have active (Starting or Running) at any given time.</td>
+<td>MAXJOB=8 or MAXJOB=2,4</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPROC</strong></td>
+<td># of processors</td>
+<td>Limits the total number of dedicated processors which can be allocated by active jobs at any given time.</td>
+<td>MAXPROC=32</td>
+</tr>
+<tr class="row-even"><td><strong>MAXPS</strong></td>
+<td>&lt;# of processors&gt; * &lt;walltime&gt;</td>
+<td>Limits the number of outstanding processor-seconds a credential may have allocated at any given time. For example, if a user has a 4 processor job which will complete in 1 hour and a 2 processor job which will complete in 6 hours, he has &#8216;4 * 1 * 3600 + 2 * 6 * 3600 = 16 * 3600&#8217; outstanding processor-seconds. The outstanding processor-second usage of each credential is updated each scheduling iteration, decreasing as job&#8217;s approach their completion time.</td>
+<td>MAXPS=720000</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXPE</strong></td>
+<td># of <a class="reference external" href="#PEoverview">processor equivalents</a></td>
+<td>Limits the total number of dedicated processor-equivalents which can be allocated by active jobs at any given time.</td>
+<td>MAXPE=128</td>
+</tr>
+<tr class="row-even"><td><strong>MAXWC</strong></td>
+<td>job duration [[[DDD:]HH:]MM:]SS</td>
+<td>Limits the number of outstanding seconds a credential may have associated with active jobs. It behaves identically to the MAXPS limit above only lacking the processor weighting. Like MAXPS, the outstanding second usage of each credential is also updated each scheduling iteration.</td>
+<td>MAXWC=72:00:00</td>
+</tr>
+<tr class="row-odd"><td><strong>MAXNODE</strong></td>
+<td># of nodes</td>
+<td>limits the total number of compute nodes which can be in use by active jobs at any given time.
+<strong>NOTE:</strong> on some systems (including torque/pbs) nodes have been softly defined rather than strictly defined; ie. a job may request 2 nodes but torque will translate this request to 1 node with 2 procs. This can prevent Moab from enforcing a <strong>MAXNODE</strong> policy correctly for a single job. Correct behavior can be achieved using <strong>MAXPROC</strong>.</td>
+<td>MAXNODE=64</td>
+</tr>
+<tr class="row-even"><td><strong>MAXMEM</strong></td>
+<td>total memory in MB</td>
+<td>Limits the total amount of dedicated memory (in MB) which can be allocated by a credential&#8217;s active jobs at any given time.</td>
+<td>MAXMEM=2048</td>
+</tr>
+</tbody>
+</table>
+<p>The example below demonstrates a simple limit specification.</p>
+<div class="line-block">
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[DEFAULT]</span> <span class="pre">MAXJOB=4</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[john]</span> <span class="pre">MAXJOB=8</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p>This example will allow user <em>john</em> to run up to 8 jobs while all other
+users may only run up to 4.</p>
+<p>Simultaneous limits of different types may be applied per credential and
+multiple types of credential may have limits specified. The next example
+demonstrates this mixing of limits and is a bit more complicated .</p>
+<div class="line-block">
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[steve]</span> <span class="pre">MAXJOB=2</span> <span class="pre">MAXNODE=30</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">GROUPCFG[staff]</span> <span class="pre">MAXJOB=5</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">CLASSCFG[DEFAULT]</span> <span class="pre">MAXNODE=16</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">CLASSCFG[batch]</span> <span class="pre">MAXNODE=32</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p>This configuration may potentially apply multiple limits to a single
+job. Limits for user <em>steve</em> will cause that jobs submitted under his
+user ID will be constrained so that he may only run up to 2 simultaneous
+jobs with an aggregate node consumption of 30 nodes. However, if he
+submits a job to a class other than <em>batch</em>, he may be limited further.
+Only 16 total nodes may be used simultaneously by jobs running in any
+given class with the exception of the class <em>batch</em>. If <em>steve</em>
+submitted a job to run in the class <em>interactive</em> for example, and there
+were jobs already running in this class using a total of 14 nodes, his
+job would be blocked unless it requested 2 or fewer nodes by the default
+limit of 16 nodes per class.<a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a></p>
+</div>
+<div class="section" id="multi-dimension-fairness-policies">
+<h3>6.2.1.2. Multi-Dimension Fairness Policies<a class="headerlink" href="#multi-dimension-fairness-policies" title="Permalink to this headline">¶</a></h3>
+<p>Multi-dimensional fairness policies allow a site to specify policies
+based on combinations of job credentials. A common example might be
+setting a maximum number of jobs allowed per queue per user or a total
+number of processors per group per QoS. As with basic fairness policies,
+multi-dimension policies are specified using the <strong>*CFG</strong> parameters.
+Maui 3.2 supports the most commonly used multi-dimensional fairness
+policies including the following:</p>
+<div class="line-block">
+<div class="line"><strong>MAXJOB[Class,User]</strong></div>
+<div class="line"><strong>MAXNODE[Class,User]</strong></div>
+<div class="line"><strong>MAXPROC[Class,User]</strong></div>
+</div>
+<p>These limits are specified using the following format:</p>
+<p><code class="docutils literal"><span class="pre">*CFG[X]</span> <span class="pre">&lt;LIMIT&gt;[&lt;CRED&gt;]=&lt;LIMIT&gt;</span></code></p>
+<p>where &lt;LIMIT&gt; is one of the policies listed in table in <a class="reference external" href="#basic">section
+6.2.1.1</a> and &lt;CRED&gt; is of the format <em>&lt;CREDTYPE&gt;[:&lt;VALUE&gt;]</em>
+with <em>CREDTYPE</em> being one of <strong>USER</strong>, <strong>GROUP</strong>, <strong>ACCOUNT</strong>, <strong>QOS</strong>,
+or <strong>CLASS</strong>. The optional &lt;VALUE&gt; setting can be used to specify that
+the policy only applies to a specific credential value. For example, the
+config below sets limits on the class <em>fast</em> controlling the maximum
+number of jobs any group can have active at any given time and the
+number of processors in use at any given time for user <em>steve</em>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-----</span>
+<span class="c1"># maui.cfg</span>
+
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">fast</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="p">[</span><span class="n">GROUP</span><span class="p">]</span><span class="o">=</span><span class="mi">12</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">fast</span><span class="p">]</span> <span class="n">MAXPROC</span><span class="p">[</span><span class="n">USER</span><span class="p">:</span><span class="n">steve</span><span class="p">]</span><span class="o">=</span><span class="mi">50</span>
+<span class="o">-----</span>
+</pre></div>
+</div>
+<p>The following example config may clarify further:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">------</span>
+<span class="c1"># maui.cfg</span>
+
+<span class="c1"># allow class batch to run up the 3 simultaneous jobs</span>
+<span class="c1"># allow any user to use up to 8 total nodes within class</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">3</span> <span class="n">MAXNODE</span><span class="p">[</span><span class="n">USER</span><span class="p">]</span><span class="o">=</span><span class="mi">8</span>
+
+<span class="c1"># allow users steve and bob to use up to 3 and 4 total processors respectively within class</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">fast</span><span class="p">]</span> <span class="n">MAXPROC</span><span class="p">[</span><span class="n">USER</span><span class="p">:</span><span class="n">steve</span><span class="p">]</span><span class="o">=</span><span class="mi">3</span> <span class="n">MAXPROC</span><span class="p">[</span><span class="n">USER</span><span class="p">:</span><span class="n">bob</span><span class="p">]</span><span class="o">=</span><span class="mi">4</span>
+<span class="o">------</span>
+</pre></div>
+</div>
+<p>NOTE: Maui 3.2 does not fully support all multi-dimensional throttling
+policies. For such systems, a subset of these policies can be specified
+using the attributes <strong>MAXNODEPERUSER</strong>, <strong>MAXJOBPERUSER</strong>, and
+<strong>MAXPROCPERUSER</strong>.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>See Also:</strong></div>
+</div>
+<div class="line-block">
+<div class="line">N/A</div>
+</div>
+</div>
+</div>
+<div class="section" id="override-limits">
+<h2>6.2.2. Override Limits<a class="headerlink" href="#override-limits" title="Permalink to this headline">¶</a></h2>
+<p>Like all job credentials, the QOS object may be also be associated with
+resource usage limits. However, this credential can also be given
+special override limits which supersede the limits of other credentials.
+Override limits are applied by preceding the limit specification with
+the capital letter &#8216;<strong>O</strong>&#8216;. The configuration below provides an example
+of this.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">----</span>
+<span class="n">USERCFG</span><span class="p">[</span><span class="n">steve</span><span class="p">]</span>    <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">2</span>   <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">GROUPCFG</span><span class="p">[</span><span class="n">staff</span><span class="p">]</span>   <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span> <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">16</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span>   <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">32</span>
+<span class="n">QOSCFG</span><span class="p">[</span><span class="n">hiprio</span><span class="p">]</span>    <span class="n">OMAXJOB</span><span class="o">=</span><span class="mi">3</span>  <span class="n">OMAXNODE</span><span class="o">=</span><span class="mi">64</span>
+<span class="o">----</span>
+</pre></div>
+</div>
+<p>This configuration is identical to the example shown earlier with the
+exception of the final <strong>QOSCFG</strong> line. In this case, the <strong>QOSCFG</strong>
+parameter does two things:</p>
+<ul class="simple">
+<li>Only 3 <em>hiprio</em> QOS jobs may run simultaneously</li>
+<li><em>hiprio</em> QOS jobs may run with up to 64 nodes per credential ignoring
+other credential <strong>MAXNODE</strong> limits.</li>
+</ul>
+<p>Given the above configuration, assume a job was now submitted with the
+credentials, user steve, group staff, class batch, and QOS hiprio.</p>
+<p>This job will be allowed to start so long as running it does not lead to
+any of the following conditions:</p>
+<ul class="simple">
+<li>total nodes used by user <em>steve</em> jobs do not exceed 64</li>
+<li>total active jobs associated with user <em>steve</em> does not exceed 2</li>
+<li>total active jobs associated with group <em>staff</em> does not exceed 5</li>
+<li>total nodes dedicated to class <em>batch</em> jobs do not exceed 64</li>
+<li>total active jobs associated with QOS <em>hiprio</em> does not exceed 3</li>
+</ul>
+<p>While the above example is a bit complicated for actual use at most
+sites, similar combinations may be needed to enforce site policies on
+many larger systems.</p>
+</div>
+<div class="section" id="idle-job-limits">
+<h2>6.2.3. Idle Job Limits<a class="headerlink" href="#idle-job-limits" title="Permalink to this headline">¶</a></h2>
+<p>Idle job limits control which jobs are eligible for scheduling. To be
+eligible for scheduling, a job must meet the following conditions:</p>
+<ul class="simple">
+<li>be &#8216;idle&#8217; as far as the resource manager is concerned (no holds, etc)</li>
+<li>have all job prerequisites satisfied (no outstanding job or data
+dependencies)</li>
+<li>meet all &#8216;idle&#8217; job throttling policies</li>
+</ul>
+<p>If a job fails to meet any these conditions, it will not be considered
+for scheduling and will not accrue &#8216;service&#8217; based job prioritization
+(see <a class="reference external" href="5.1.2priorityfactors.html#servicecomponent">service component</a>
+and <a class="reference external" href="a.fparameters.html#jobprioaccrualpolicy">JOBPRIOACCRUALPOLICY</a>).
+The primary purpose of idle job limits is to ensure fairness amongst
+competing users by preventing &#8216;queue stuffing&#8217; and other similar abuses.
+&#8216;Queue stuffing&#8217; occurs when a single entity submits large numbers of
+jobs, perhaps thousands, all at once so the they begin accruing
+queuetime based priority and remain first to run despite subsequent
+submissions by other users.</p>
+<p>Idle limits are specified in a manner almost identical to active job
+limits with the insertion of the capital letter &#8216;I&#8217; into the middle of
+the limit name. For example, to limit the number of idle (eligible) jobs
+a given user could have at once, the following parameter could be used:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">------</span>
+<span class="c1"># maui.cfg</span>
+
+<span class="n">USERCFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>  <span class="n">MAXIJOB</span><span class="o">=</span><span class="mi">20</span>
+<span class="o">------</span>
+</pre></div>
+</div>
+<p>As shown above, idle limits can constrain the total number of jobs
+considered to be eligible on a per credential basis. Further, like
+active job limits, idle job limits can also constrain eligible jobs
+based on aggregate requested resources. This could, for example, allow a
+site to indicate that for a given user, only jobs requesting up to a
+total of 64 processors, or 3200 processor-seconds would be considered at
+any given time. Which jobs to select is accomplished by prioritizing all
+&#8216;idle&#8217; jobs, and then adding jobs to the &#8216;eligible&#8217; list one at a time
+in priority order until jobs can no longer be added. This &#8216;eligible&#8217; job
+selection is done only once per scheduling iteration so consequently,
+idle job limits only support a single &#8216;hard&#8217; limit specification. Any
+specified &#8216;soft&#8217; limit will be ignored.</p>
+<p>All job limit types supported as active job limits are also supported as
+idle job limits. (See <a class="reference external" href="#basic">Basic Fairness Policies</a>).</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-------</span>
+<span class="c1"># maui.cfg</span>
+<span class="n">USERCFG</span><span class="p">[</span><span class="n">steve</span><span class="p">]</span>    <span class="n">MAXIJOB</span><span class="o">=</span><span class="mi">2</span> <span class="n">MAXIPROC</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">GROUPCFG</span><span class="p">[</span><span class="n">staff</span><span class="p">]</span>   <span class="n">MAXIJOB</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span> <span class="n">MAXIPROC</span><span class="o">=</span><span class="mi">16</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span>   <span class="n">MAXIPROC</span><span class="o">=</span><span class="mi">32</span>
+<span class="n">QOSCFG</span><span class="p">[</span><span class="n">hiprio</span><span class="p">]</span>    <span class="n">MAXIJOB</span><span class="o">=</span><span class="mi">3</span> <span class="n">MAXIPROC</span><span class="o">=</span><span class="mi">64</span>
+<span class="o">-------</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="hard-and-soft-limits">
+<h2>6.2.4. Hard and Soft Limits<a class="headerlink" href="#hard-and-soft-limits" title="Permalink to this headline">¶</a></h2>
+<p>Hard and soft limit specification allow a site to balance both fairness
+and utilization on a given system. Typically, throttling limits are used
+to constrain the quantity of resources a given credential (user, group,
+etc) is allowed to consume. These limits can be very effective in
+enforcing fair usage amongst a group of users. However, in a lightly
+loaded system or one in which there are significant swings in usage from
+project to project, these limits can reduce system utilization by
+blocking jobs even when no competing jobs are queued.</p>
+<p>Soft limits help address this problem by providing additional scheduling
+flexibility. They allow sites to specify two tiers of limits, the more
+constraining limits, <em>soft</em> limits, are basically in effect in heavily
+loaded situations and reflect tight fairness constraints. The more
+flexible <em>hard</em> limits specify how flexible the scheduler can be in
+selecting jobs when there are idle resources available after all jobs
+meeting the tighter soft limits have been started. Soft and hard limits
+are specified in the format <em>[&lt;SOFTLIMIT&gt;,]&lt;HARDLIMIT&gt;</em>. For example, a
+given site may want to use the following configuration:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-------</span>
+<span class="c1"># maui.cfg</span>
+<span class="n">USERCFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>  <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span>
+<span class="o">-------</span>
+</pre></div>
+</div>
+<p>With this configuration, the scheduler would select all jobs which meet
+the per user <strong>MAXJOB</strong> limit of 2. It would then attempt to start and
+or reserve resources for all of these selected jobs. If after doing so
+there still remain available resources, the scheduler would then select
+all jobs which meet the less constraining hard per user <strong>MAXJOB</strong> limit
+of 8 jobs. These jobs would then be scheduled and/or reserved as
+available resources allowed.</p>
+<div class="line-block">
+<div class="line">If no soft limit is specified or the soft limit is less constraining
+the the hard limit, the soft limit is set equal to the hard limit.
+Examples:</div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">-------</span>
+<span class="c1">#maui.cfg</span>
+
+<span class="n">USERCFG</span><span class="p">[</span><span class="n">steve</span><span class="p">]</span>    <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span> <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="mi">30</span>
+<span class="n">GROUPCFG</span><span class="p">[</span><span class="n">staff</span><span class="p">]</span>   <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span> <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="mi">32</span>
+<span class="n">CLASSCFG</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span>   <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="mi">32</span>
+<span class="n">QOSCFG</span><span class="p">[</span><span class="n">hiprio</span><span class="p">]</span>    <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span> <span class="n">MAXNODE</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span><span class="mi">64</span>
+<span class="o">-------</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.2. Throttling Policies</a><ul>
+<li><a class="reference internal" href="#fairness-via-throttling-policies">6.2.1. Fairness via Throttling Policies</a><ul>
+<li><a class="reference internal" href="#basic-fairness-policies">6.2.1.1. Basic Fairness Policies</a></li>
+<li><a class="reference internal" href="#multi-dimension-fairness-policies">6.2.1.2. Multi-Dimension Fairness Policies</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#override-limits">6.2.2. Override Limits</a></li>
+<li><a class="reference internal" href="#idle-job-limits">6.2.3. Idle Job Limits</a></li>
+<li><a class="reference internal" href="#hard-and-soft-limits">6.2.4. Hard and Soft Limits</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="6.1fairnessoverview.html"
+                        title="previous chapter">6.1. Fairness Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="6.3fairshare.html"
+                        title="next chapter">6.3. Fairshare</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/6.2throttlingpolicies.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="6.3fairshare.html" title="6.3. Fairshare"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="6.1fairnessoverview.html" title="6.1. Fairness Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="6.0managingfairness.html" >6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

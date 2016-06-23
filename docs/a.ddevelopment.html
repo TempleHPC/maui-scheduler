@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix D: Structure Limits &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="Appendix E: Security" href="a.esecurity.html" />
+    <link rel="prev" title="Appendix C: Adding New Algorithms with the ‘Local’ Interface" href="a.clocalinterface.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="a.esecurity.html" title="Appendix E: Security"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="a.clocalinterface.html" title="Appendix C: Adding New Algorithms with the ‘Local’ Interface"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appendix-d-structure-limits">
+<h1>Appendix D: Structure Limits<a class="headerlink" href="#appendix-d-structure-limits" title="Permalink to this headline">¶</a></h1>
+<p>Maui is distributed in a configuration capable of supporting multiple
+architectures and systems ranging from a few processors to several
+thousand processors. However, in spite of its flexibility, it still
+contains a number of static structures defined in header files. These
+structures limit the default number of jobs, reservations, nodes, etc,
+which Maui can handle and are set to values which provide a reasonable
+compromise between capability and memory consumption for most sites.
+However, many sites desire to increase some of these settings to extend
+functionality, or decrease them to save consumed memory. The most common
+parameters are listed below and can be adjusted by simply modifying the
+appropriate <strong>#define</strong> and rebuilding Maui.</p>
+<p>The documented limits have been well tested however caution is advised
+that changes to some limits may result in undesirable side-affects.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="8%" />
+<col width="5%" />
+<col width="75%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Parameter</strong></td>
+<td><strong>Location</strong></td>
+<td><strong>Limit</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td><strong>MMAX_ATTR</strong></td>
+<td>moab.h</td>
+<td>128</td>
+<td>total number of distinct node attributes (PBS node attributes/LL node features) which can be tracked</td>
+</tr>
+<tr class="row-odd"><td><strong>MMAX_CLASS</strong></td>
+<td>moab.h</td>
+<td>12</td>
+<td>total number of distinct job classes/queues available</td>
+</tr>
+<tr class="row-even"><td><strong>MMAX_CLIENT</strong></td>
+<td>moab.h</td>
+<td>4</td>
+<td>total number of simultaneous client connections allowed</td>
+</tr>
+<tr class="row-odd"><td><strong>MMAX_FSDEPTH</strong></td>
+<td>moab.h</td>
+<td>24</td>
+<td>number of active fairshare windows</td>
+</tr>
+<tr class="row-even"><td><strong>MMAX_JOB</strong></td>
+<td>moab.h</td>
+<td>4096</td>
+<td>maximum total number of simultaneous idle/active jobs allowed. <strong>NOTE</strong>: on some releases of Maui, <strong>MAX_MJOB</strong> may also need to be set and synchronized with <strong>MMAX_JOB</strong>.</td>
+</tr>
+<tr class="row-odd"><td><strong>MMAX_NODE</strong></td>
+<td>moab.h</td>
+<td>5120</td>
+<td>maximum number of compute nodes supported</td>
+</tr>
+<tr class="row-even"><td><strong>MMAX_NODE_PER_JOB</strong></td>
+<td>msched-common.h</td>
+<td>1024</td>
+<td>maximum number of compute nodes which can be allocated to a single job</td>
+</tr>
+<tr class="row-odd"><td><strong>MAX_MPAR</strong></td>
+<td>moab.h</td>
+<td>4</td>
+<td>maximum number of partitions supported</td>
+</tr>
+<tr class="row-even"><td><strong>MAX_MQOS</strong></td>
+<td>moab.h</td>
+<td>128</td>
+<td>total number of distinct QOS objects available to jobs</td>
+</tr>
+<tr class="row-odd"><td><strong>MMAX_RES_DEPTH</strong></td>
+<td>moab.h</td>
+<td>256</td>
+<td>total number of distinct reservations allowed per node</td>
+</tr>
+<tr class="row-even"><td><strong>MMAX_SRES</strong></td>
+<td>moab.h</td>
+<td>128</td>
+<td>total number of distinct standing reservations available</td>
+</tr>
+<tr class="row-odd"><td><strong>MMAX_TASK</strong></td>
+<td>moab.h</td>
+<td>1560</td>
+<td>total number of tasks allowed per job</td>
+</tr>
+</tbody>
+</table>
+<p>Maui currently possesses hooks to allow sites to create local algorithms
+for handling site specific needs in several areas. The &#8216;contrib&#8217;
+directory contains a number of sample &#8216;local&#8217; algorithms for various
+purposes. The &#8216;Local.c&#8217; module incorporates the algorithm of interest
+into the main code. The following scheduling areas are currently handled
+via the &#8216;Local.c&#8217; hooks.</p>
+<div class="line-block">
+<div class="line"><strong>Local Job Attributes</strong></div>
+<div class="line"><strong>Local Node Allocation Policies</strong></div>
+<div class="line"><strong>Local Job Priorities</strong></div>
+<div class="line"><strong>Local Fairness Policies</strong></div>
+</div>
+<p><strong>Overview of Major Structures</strong> (Under Construction)</p>
+<div class="line-block">
+<div class="line">Nodes</div>
+<div class="line">mnode_t</div>
+</div>
+<div class="line-block">
+<div class="line">Jobs</div>
+<div class="line">mjob_t</div>
+</div>
+<div class="line-block">
+<div class="line">Reservations</div>
+<div class="line">mres_t</div>
+</div>
+<div class="line-block">
+<div class="line">Partitions</div>
+<div class="line">mpar_t</div>
+</div>
+<div class="line-block">
+<div class="line">QOS</div>
+<div class="line">mqos_t</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="a.clocalinterface.html"
+                        title="previous chapter">Appendix C: Adding New Algorithms with the &#8216;Local&#8217; Interface</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="a.esecurity.html"
+                        title="next chapter">Appendix E: Security</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/a.ddevelopment.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="a.esecurity.html" title="Appendix E: Security"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="a.clocalinterface.html" title="Appendix C: Adding New Algorithms with the ‘Local’ Interface"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

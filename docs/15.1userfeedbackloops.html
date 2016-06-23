@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15.1. User Feedback Loops &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="15. Improving User Effectiveness" href="15.0improvingusereffectiveness.html" />
+    <link rel="next" title="15.2. User Level Statistics" href="15.2userlevelstatistics.html" />
+    <link rel="prev" title="15. Improving User Effectiveness" href="15.0improvingusereffectiveness.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="15.2userlevelstatistics.html" title="15.2. User Level Statistics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="15.0improvingusereffectiveness.html" title="15. Improving User Effectiveness"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="15.0improvingusereffectiveness.html" accesskey="U">15. Improving User Effectiveness</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-feedback-loops">
+<h1>15.1. User Feedback Loops<a class="headerlink" href="#user-feedback-loops" title="Permalink to this headline">¶</a></h1>
+<p>In evaluating a given system, it is interesting to note that almost
+invariably, real world systems outperform simulated systems. Even when
+all policies, reservations, workload, and resource distributions are
+fully captured and emulated. What is it about real world usage that is
+not emulated via a simulation? The answer is the &#8216;user feedback&#8217; loop,
+the impact of users making decisions to optimize their level of service
+based on real time information.</p>
+<p>A user feedback loop is created any time information is provided to a
+user which modifies his job submission or job management behavior. As in
+a market economy, the cumulative effect of many users taking steps to
+improve their individual scheduling performance results in better job
+packing, lower queue time, and better system utilization overall.
+Because this behavior is beneficial to the system at large, system
+admins and management should encourage this behavior and provide the
+best possible information to them.</p>
+<p>There are two primary types of information which help users make
+improved decisions. Cluster wide resource availability information and
+per job resource utilization information.</p>
+<div class="section" id="improving-job-size-duration-requests">
+<h2>15.1.1. Improving Job Size/Duration Requests<a class="headerlink" href="#improving-job-size-duration-requests" title="Permalink to this headline">¶</a></h2>
+<p>Maui provides a number of informational commands which help users make
+improved job management decisions based on real-time cluster wide
+resource availability information. These commands include
+<a class="reference external" href="commands/showbf.html">showbf</a>,
+<a class="reference external" href="commands/showgrid.html">showgrid</a>, and
+<a class="reference external" href="commands/showq.html">showq</a>. Using these commands, a user can
+determine what resources are available, and what job configurations
+statistically receive the best scheduling performance.</p>
+</div>
+<div class="section" id="improving-resource-requirement-specification">
+<h2>15.1.2. Improving Resource Requirement Specification<a class="headerlink" href="#improving-resource-requirement-specification" title="Permalink to this headline">¶</a></h2>
+<p>A job&#8217;s resource requirement specification tells the scheduler what type
+of compute nodes are required to run the job. These requirements may
+state that a certain amount of memory is required per node or that a
+node have a minimum processor speed. At many sites, users will determine
+the resource requirements needed to run an initial job. Then, for the
+next several years, they will use the same basic batch command file to
+run all of their remaining jobs even though the resource requirements of
+their subsequent jobs may be very different from their initial run.
+Users often do not update their batch command files even though these
+constraints may be unnecessarily limiting the resources available to
+their jobs for two reasons: 1) users do not know how much their
+performance will improve if better information were provided. 2) users
+do not no exactly what resources their jobs are utilizing and are afraid
+to lower their job&#8217;s resource requirements since doing so might cause
+their job to fail.</p>
+<p>To help with determining accurate per job resource utilization
+information, Maui provides the
+<a class="reference external" href="a.fparameters.html#feedbackprogram">FEEDBACKPROGRAM</a> facility. This
+tool allows sites to send detailed resource utilization information back
+to users via email, to store it in a centralized database for report
+preparation, or use it in other ways to help users refine their batch
+jobs.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">15.1. User Feedback Loops</a><ul>
+<li><a class="reference internal" href="#improving-job-size-duration-requests">15.1.1. Improving Job Size/Duration Requests</a></li>
+<li><a class="reference internal" href="#improving-resource-requirement-specification">15.1.2. Improving Resource Requirement Specification</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="15.0improvingusereffectiveness.html"
+                        title="previous chapter">15. Improving User Effectiveness</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="15.2userlevelstatistics.html"
+                        title="next chapter">15.2. User Level Statistics</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/15.1userfeedbackloops.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="15.2userlevelstatistics.html" title="15.2. User Level Statistics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="15.0improvingusereffectiveness.html" title="15. Improving User Effectiveness"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="15.0improvingusereffectiveness.html" >15. Improving User Effectiveness</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

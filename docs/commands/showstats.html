@@ -1,0 +1,759 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showstats">showstats</p>
+<p><strong>(Show Statistics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showstats</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">a</span> <span class="p">[</span><span class="n">accountid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">c</span> <span class="p">[</span><span class="n">classid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">f</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">g</span> <span class="p">[</span><span class="n">groupid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">j</span> <span class="p">[</span><span class="n">jobtemplate</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">n</span> <span class="p">[</span><span class="n">nodeid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">q</span> <span class="p">[</span><span class="n">qosid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">s</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">T</span> <span class="p">[</span><span class="n">leafid</span> <span class="o">|</span> <span class="n">tree</span><span class="o">-</span><span class="n">level</span><span class="p">]</span>
+<span class="n">showstats</span> <span class="o">-</span><span class="n">u</span> <span class="p">[</span><span class="n">userid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">TIMESPEC</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>This command shows various accounting and resource usage statistics for
+the system. Historical statistics cover the timeframe from the most
+recent execution of the <a class="reference external" href="resetstats.html">resetstats</a> command.
+<strong>Access</strong></p>
+<p>By default, this command can be run by any Moab level 1, 2, or 3
+Administrator.
+<strong>Parameters</strong></p>
+<p><strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">a</span>
+
+<span class="n">Account</span> <span class="n">Statistics</span> <span class="n">Initialized</span> <span class="n">Tue</span> <span class="n">Aug</span> <span class="mi">26</span> <span class="mi">14</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">39</span>
+
+              <span class="o">|-----</span> <span class="n">Running</span> <span class="o">------|---------------------------------</span> <span class="n">Completed</span> <span class="o">----------------------------------|</span>
+  <span class="n">Account</span>     <span class="n">Jobs</span> <span class="n">Procs</span> <span class="n">ProcHours</span> <span class="n">Jobs</span>    <span class="o">%</span>   <span class="n">PHReq</span>    <span class="o">%</span>    <span class="n">PHDed</span>    <span class="o">%</span>   <span class="n">FSTgt</span>  <span class="n">AvgXF</span>  <span class="n">MaxXF</span>  <span class="n">AvgQH</span>  <span class="n">Effic</span>  <span class="n">WCAcc</span>
+   <span class="mi">137651</span>       <span class="mi">16</span>    <span class="mi">92</span>   <span class="mf">1394.52</span>  <span class="mi">229</span>  <span class="mf">39.15</span> <span class="mi">18486</span>  <span class="mf">45.26</span> <span class="mf">7003.5</span>  <span class="mf">41.54</span> <span class="mf">40.00</span>   <span class="mf">0.77</span>   <span class="mf">8.15</span>   <span class="mf">5.21</span>  <span class="mf">90.70</span>  <span class="mf">34.69</span>
+   <span class="mi">462212</span>       <span class="mi">11</span>    <span class="mi">63</span>    <span class="mf">855.27</span>   <span class="mi">43</span>   <span class="mf">7.35</span>  <span class="mi">6028</span>  <span class="mf">14.76</span> <span class="mf">3448.4</span>  <span class="mf">20.45</span>  <span class="mf">6.25</span>   <span class="mf">0.71</span>   <span class="mf">5.40</span>   <span class="mf">3.14</span>  <span class="mf">98.64</span>  <span class="mf">40.83</span>
+   <span class="mi">462213</span>        <span class="mi">6</span>    <span class="mi">72</span>    <span class="mf">728.12</span>   <span class="mi">90</span>  <span class="mf">15.38</span>  <span class="mi">5974</span>  <span class="mf">14.63</span> <span class="mf">3170.7</span>  <span class="mf">18.81</span>  <span class="mf">6.25</span>   <span class="mf">0.37</span>   <span class="mf">4.88</span>   <span class="mf">0.52</span>  <span class="mf">82.01</span>  <span class="mf">24.14</span>
+   <span class="mi">005810</span>        <span class="mi">3</span>    <span class="mi">24</span>    <span class="mf">220.72</span>   <span class="mi">77</span>  <span class="mf">13.16</span>  <span class="mi">2537</span>   <span class="mf">6.21</span> <span class="mf">1526.6</span>   <span class="mf">9.06</span> <span class="o">-----</span>   <span class="mf">1.53</span>  <span class="mf">14.81</span>   <span class="mf">0.42</span>  <span class="mf">98.73</span>  <span class="mf">28.40</span>
+   <span class="mi">175436</span>        <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">12</span>   <span class="mf">2.05</span>  <span class="mi">6013</span>  <span class="mf">14.72</span>  <span class="mf">958.6</span>   <span class="mf">5.69</span>  <span class="mf">2.50</span>   <span class="mf">1.78</span>   <span class="mf">8.61</span>   <span class="mf">5.60</span>  <span class="mf">83.64</span>  <span class="mf">17.04</span>
+   <span class="mi">000102</span>        <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">1</span>   <span class="mf">0.17</span>    <span class="mi">64</span>   <span class="mf">0.16</span>    <span class="mf">5.1</span>   <span class="mf">0.03</span> <span class="o">-----</span>  <span class="mf">10.85</span>  <span class="mf">10.85</span>  <span class="mf">10.77</span>  <span class="mf">27.90</span>   <span class="mf">7.40</span>
+   <span class="mi">000023</span>        <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">1</span>   <span class="mf">0.17</span>    <span class="mi">12</span>   <span class="mf">0.03</span>    <span class="mf">0.2</span>   <span class="mf">0.00</span> <span class="o">-----</span>   <span class="mf">0.04</span>   <span class="mf">0.04</span>   <span class="mf">0.19</span>  <span class="mf">21.21</span>   <span class="mf">1.20</span>
+</pre></div>
+</div>
+<p>This example shows a statistical listing of all active accounts. The top
+line (Account Statistics Initialized...) of the output indicates the
+beginning of the timeframe covered by the displayed statistics.</p>
+<p>The statistical output is divided into two categories, Running and
+Completed. Running statistics include information about jobs that are
+currently running. Completed statistics are compiled using historical
+information from both running and completed jobs.</p>
+<p>The fields are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Account</td>
+<td>Account Number.</td>
+</tr>
+<tr class="row-odd"><td>Jobs</td>
+<td>Number of running jobs.</td>
+</tr>
+<tr class="row-even"><td>Procs</td>
+<td>Number of processors allocated to
+running jobs.</td>
+</tr>
+<tr class="row-odd"><td>ProcHours</td>
+<td>Number of proc-hours required to
+complete running jobs.</td>
+</tr>
+<tr class="row-even"><td>Jobs*</td>
+<td>Number of jobs completed.</td>
+</tr>
+<tr class="row-odd"><td>%</td>
+<td>Percentage of total jobs that were
+completed by account.</td>
+</tr>
+<tr class="row-even"><td>PHReq*</td>
+<td>Total proc-hours requested by
+completed jobs.</td>
+</tr>
+<tr class="row-odd"><td>%</td>
+<td>Percentage of total proc-hours
+requested by completed jobs that
+were requested by account.</td>
+</tr>
+<tr class="row-even"><td>PHDed</td>
+<td>Total proc-hours dedicated to active
+and completed jobs. The proc-hours
+dedicated to a job are calculated by
+multiplying the number of allocated
+procs by the length of time the
+procs were allocated, regardless of
+the job&#8217;s CPU usage.</td>
+</tr>
+<tr class="row-odd"><td>%</td>
+<td>Percentage of total proc-hours
+dedicated that were dedicated by
+account.</td>
+</tr>
+<tr class="row-even"><td>FSTgt</td>
+<td>Fairshare target. An account&#8217;s
+fairshare target is specified in the
+<code class="docutils literal"><span class="pre">fs.cfg</span></code> file. This value should
+be compared to the account&#8217;s
+node-hour dedicated percentage to
+determine if the target is being
+met.</td>
+</tr>
+<tr class="row-odd"><td>AvgXF*</td>
+<td>Average expansion factor for jobs
+completed. A job&#8217;s XFactor
+(expansion factor) is calculated by
+the following formula: (QueuedTime +
+RunTime) / WallClockLimit.</td>
+</tr>
+<tr class="row-even"><td>MaxXF*</td>
+<td>Highest expansion factor received by
+jobs completed.</td>
+</tr>
+<tr class="row-odd"><td>AvgQH*</td>
+<td>Average queue time (in hours) of
+jobs.</td>
+</tr>
+<tr class="row-even"><td>Effic</td>
+<td>Average job efficiency. Job
+efficiency is calculated by dividing
+the actual node-hours of CPU time
+used by the job by the node-hours
+allocated to the job.</td>
+</tr>
+<tr class="row-odd"><td>WCAcc*</td>
+<td><p class="first">Average wall clock accuracy for jobs
+completed. Wall clock accuracy is
+calculated by dividing a job&#8217;s
+actual run time by its specified
+wall clock limit.</p>
+<ul class="simple">
+<li></li>
+</ul>
+<div class="line-block">
+<div class="line"><a href="#id1"><span class="problematic" id="id2">|Note|</span></a>   | A job&#8217;s wallclock accur</div>
+</div>
+<p>acy is capped at 100% so even if a j
+ob exceeds its requested walltime it</p>
+<blockquote>
+<div>will report an accuracy of 100%.</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="last simple">
+<li></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>* These fields are empty until an account has completed at least one job.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 2</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">g</span>
+
+<span class="n">Group</span> <span class="n">Statistics</span> <span class="n">Initialized</span> <span class="n">Tue</span> <span class="n">Aug</span> <span class="mi">26</span> <span class="mi">14</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">39</span>
+
+              <span class="o">|-----</span> <span class="n">Running</span> <span class="o">------|---------------------------------</span> <span class="n">Completed</span> <span class="o">----------------------------------|</span>
+<span class="n">GroupName</span>  <span class="n">GID</span> <span class="n">Jobs</span> <span class="n">Procs</span> <span class="n">ProcHours</span> <span class="n">Jobs</span>    <span class="o">%</span>   <span class="n">PHReq</span>    <span class="o">%</span>    <span class="n">PHDed</span>    <span class="o">%</span>   <span class="n">FSTgt</span>  <span class="n">AvgXF</span>  <span class="n">MaxXF</span>  <span class="n">AvgQH</span>  <span class="n">Effic</span>  <span class="n">WCAcc</span>
+     <span class="n">univ</span>  <span class="mi">214</span>   <span class="mi">16</span>    <span class="mi">92</span>   <span class="mf">1394.52</span>  <span class="mi">229</span>  <span class="mf">39.15</span> <span class="mi">18486</span>  <span class="mf">45.26</span> <span class="mf">7003.5</span>  <span class="mf">41.54</span> <span class="mf">40.00</span>   <span class="mf">0.77</span>   <span class="mf">8.15</span>   <span class="mf">5.21</span>  <span class="mf">90.70</span>  <span class="mf">34.69</span>
+      <span class="n">daf</span>  <span class="mi">204</span>   <span class="mi">11</span>    <span class="mi">63</span>    <span class="mf">855.27</span>   <span class="mi">43</span>   <span class="mf">7.35</span>  <span class="mi">6028</span>  <span class="mf">14.76</span> <span class="mf">3448.4</span>  <span class="mf">20.45</span>  <span class="mf">6.25</span>   <span class="mf">0.71</span>   <span class="mf">5.40</span>   <span class="mf">3.14</span>  <span class="mf">98.64</span>  <span class="mf">40.83</span>
+    <span class="n">dnavy</span>  <span class="mi">207</span>    <span class="mi">6</span>    <span class="mi">72</span>    <span class="mf">728.12</span>   <span class="mi">90</span>  <span class="mf">15.38</span>  <span class="mi">5974</span>  <span class="mf">14.63</span> <span class="mf">3170.7</span>  <span class="mf">18.81</span>  <span class="mf">6.25</span>   <span class="mf">0.37</span>   <span class="mf">4.88</span>   <span class="mf">0.52</span>  <span class="mf">82.01</span>  <span class="mf">24.14</span>
+     <span class="n">govt</span>  <span class="mi">232</span>    <span class="mi">3</span>    <span class="mi">24</span>    <span class="mf">220.72</span>   <span class="mi">77</span>  <span class="mf">13.16</span>  <span class="mi">2537</span>   <span class="mf">6.21</span> <span class="mf">1526.6</span>   <span class="mf">9.06</span> <span class="o">-----</span>   <span class="mf">1.53</span>  <span class="mf">14.81</span>   <span class="mf">0.42</span>  <span class="mf">98.73</span>  <span class="mf">28.40</span>
+      <span class="n">asp</span>  <span class="mi">227</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">12</span>   <span class="mf">2.05</span>  <span class="mi">6013</span>  <span class="mf">14.72</span>  <span class="mf">958.6</span>   <span class="mf">5.69</span>  <span class="mf">2.50</span>   <span class="mf">1.78</span>   <span class="mf">8.61</span>   <span class="mf">5.60</span>  <span class="mf">83.64</span>  <span class="mf">17.04</span>
+    <span class="n">derim</span>  <span class="mi">229</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">74</span>  <span class="mf">12.65</span>   <span class="mi">669</span>   <span class="mf">1.64</span>  <span class="mf">352.5</span>   <span class="mf">2.09</span> <span class="o">-----</span>   <span class="mf">0.50</span>   <span class="mf">1.93</span>   <span class="mf">0.51</span>  <span class="mf">96.03</span>  <span class="mf">32.60</span>
+   <span class="n">dchall</span>  <span class="mi">274</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">3</span>   <span class="mf">0.51</span>   <span class="mi">447</span>   <span class="mf">1.10</span>  <span class="mf">169.2</span>   <span class="mf">1.00</span> <span class="mf">25.00</span>   <span class="mf">0.52</span>   <span class="mf">0.88</span>   <span class="mf">2.49</span>  <span class="mf">95.82</span>  <span class="mf">33.67</span>
+      <span class="n">nih</span>  <span class="mi">239</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">17</span>   <span class="mf">2.91</span>   <span class="mi">170</span>   <span class="mf">0.42</span>  <span class="mf">148.1</span>   <span class="mf">0.88</span> <span class="o">-----</span>   <span class="mf">0.95</span>   <span class="mf">1.83</span>   <span class="mf">0.14</span>  <span class="mf">97.59</span>  <span class="mf">84.31</span>
+    <span class="n">darmy</span>  <span class="mi">205</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">31</span>   <span class="mf">5.30</span>   <span class="mi">366</span>   <span class="mf">0.90</span>   <span class="mf">53.9</span>   <span class="mf">0.32</span>  <span class="mf">6.25</span>   <span class="mf">0.14</span>   <span class="mf">0.59</span>   <span class="mf">0.07</span>  <span class="mf">81.33</span>  <span class="mf">12.73</span>
+  <span class="n">systems</span>   <span class="mi">80</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">6</span>   <span class="mf">1.03</span>    <span class="mi">67</span>   <span class="mf">0.16</span>   <span class="mf">22.4</span>   <span class="mf">0.13</span> <span class="o">-----</span>   <span class="mf">4.07</span>   <span class="mf">8.49</span>   <span class="mf">1.23</span>  <span class="mf">28.68</span>  <span class="mf">37.34</span>
+      <span class="n">pdc</span>  <span class="mi">252</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">1</span>   <span class="mf">0.17</span>    <span class="mi">64</span>   <span class="mf">0.16</span>    <span class="mf">5.1</span>   <span class="mf">0.03</span> <span class="o">-----</span>  <span class="mf">10.85</span>  <span class="mf">10.85</span>  <span class="mf">10.77</span>  <span class="mf">27.90</span>   <span class="mf">7.40</span>
+    <span class="n">staff</span>    <span class="mi">1</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">1</span>   <span class="mf">0.17</span>    <span class="mi">12</span>   <span class="mf">0.03</span>    <span class="mf">0.2</span>   <span class="mf">0.00</span> <span class="o">-----</span>   <span class="mf">0.04</span>   <span class="mf">0.04</span>   <span class="mf">0.19</span>  <span class="mf">21.21</span>   <span class="mf">1.20</span>
+</pre></div>
+</div>
+<p>This example shows a statistical listing of all active groups. The top
+line (Group Statistics Initialized...) of the output indicates the
+beginning of the timeframe covered by the displayed statistics.</p>
+<p>The statistical output is divided into two categories, Running and
+Completed. Running statistics include information about jobs that are
+currently running. Completed statistics are compiled using historical
+information from both running and completed jobs.</p>
+<p>The fields are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GroupName</td>
+<td>Name of group.</td>
+</tr>
+<tr class="row-odd"><td>GID</td>
+<td>Group ID of group.</td>
+</tr>
+<tr class="row-even"><td>Jobs</td>
+<td>Number of running jobs.</td>
+</tr>
+<tr class="row-odd"><td>Procs</td>
+<td>Number of procs allocated to running
+jobs.</td>
+</tr>
+<tr class="row-even"><td>ProcHours</td>
+<td>Number of proc-hours required to
+complete running jobs.</td>
+</tr>
+<tr class="row-odd"><td>Jobs*</td>
+<td>Number of jobs completed.</td>
+</tr>
+<tr class="row-even"><td>%</td>
+<td>Percentage of total jobs that were
+completed by group.</td>
+</tr>
+<tr class="row-odd"><td>PHReq*</td>
+<td>Total proc-hours requested by
+completed jobs.</td>
+</tr>
+<tr class="row-even"><td>%</td>
+<td>Percentage of total proc-hours
+requested by completed jobs that
+were requested by group.</td>
+</tr>
+<tr class="row-odd"><td>PHDed</td>
+<td>Total proc-hours dedicated to active
+and completed jobs. The proc-hours
+dedicated to a job are calculated by
+multiplying the number of allocated
+procs by the length of time the
+procs were allocated, regardless of
+the job&#8217;s CPU usage.</td>
+</tr>
+<tr class="row-even"><td>%</td>
+<td>Percentage of total proc-hours
+dedicated that were dedicated by
+group.</td>
+</tr>
+<tr class="row-odd"><td>FSTgt</td>
+<td>Fairshare target. A group&#8217;s
+fairshare target is specified in the
+<code class="docutils literal"><span class="pre">fs.cfg</span></code> file. This value should
+be compared to the group&#8217;s node-hour
+dedicated percentage to determine if
+the target is being met.</td>
+</tr>
+<tr class="row-even"><td>AvgXF*</td>
+<td>Average expansion factor for jobs
+completed. A job&#8217;s XFactor
+(expansion factor) is calculated by
+the following formula: (QueuedTime +
+RunTime) / WallClockLimit.</td>
+</tr>
+<tr class="row-odd"><td>MaxXF*</td>
+<td>Highest expansion factor received by
+jobs completed.</td>
+</tr>
+<tr class="row-even"><td>AvgQH*</td>
+<td>Average queue time (in hours) of
+jobs.</td>
+</tr>
+<tr class="row-odd"><td>Effic</td>
+<td>Average job efficiency. Job
+efficiency is calculated by dividing
+the actual node-hours of CPU time
+used by the job by the node-hours
+allocated to the job.</td>
+</tr>
+<tr class="row-even"><td>WCAcc*</td>
+<td><p class="first">Average wall clock accuracy for jobs
+completed. Wall clock accuracy is
+calculated by dividing a job&#8217;s
+actual run time by its specified
+wall clock limit.</p>
+<ul class="simple">
+<li></li>
+</ul>
+<div class="line-block">
+<div class="line"><a href="#id5"><span class="problematic" id="id6">|Note|</span></a>   | A job&#8217;s wallclock accur</div>
+</div>
+<p>acy is capped at 100% so even if a j
+ob exceeds its requested walltime it</p>
+<blockquote>
+<div>will report an accuracy of 100%.</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="last simple">
+<li></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id7"><span class="problematic" id="id8">|Note|</span></a></td>
+<td>* These fields are empty until a group has completed at least one job.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 3</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">n</span>
+<span class="n">node</span> <span class="n">stats</span> <span class="kn">from</span> <span class="nn">Mon</span> <span class="n">Jul</span> <span class="mi">10</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="n">to</span> <span class="n">Mon</span> <span class="n">Jul</span> <span class="mi">10</span> <span class="mi">16</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span>
+
+<span class="n">node</span>      <span class="n">CfgMem</span> <span class="n">MinMem</span> <span class="n">MaxMem</span> <span class="n">AvgMem</span> <span class="o">|</span> <span class="n">CfgProcs</span> <span class="n">MinLoad</span> <span class="n">MaxLoad</span> <span class="n">AvgLoad</span>
+<span class="n">node01</span>     <span class="mi">58368</span>      <span class="mi">0</span>  <span class="mi">21122</span>   <span class="mi">5841</span>       <span class="mi">32</span>    <span class="mf">0.00</span>   <span class="mf">32.76</span>   <span class="mf">27.62</span>
+<span class="n">node02</span>    <span class="mi">122880</span>      <span class="mi">0</span>  <span class="mi">19466</span>    <span class="mi">220</span>       <span class="mi">30</span>    <span class="mf">0.00</span>   <span class="mf">33.98</span>   <span class="mf">29.54</span>
+<span class="n">node03</span>     <span class="mi">18432</span>      <span class="mi">0</span>   <span class="mi">9533</span>   <span class="mi">2135</span>       <span class="mi">24</span>    <span class="mf">0.00</span>   <span class="mf">25.10</span>   <span class="mf">18.64</span>
+<span class="n">node04</span>     <span class="mi">60440</span>      <span class="mi">0</span>  <span class="mi">17531</span>   <span class="mi">4468</span>       <span class="mi">32</span>    <span class="mf">0.00</span>   <span class="mf">30.55</span>   <span class="mf">24.61</span>
+<span class="n">node05</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">2597</span>   <span class="mi">1189</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">9.85</span>    <span class="mf">8.45</span>
+<span class="n">node06</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3800</span>   <span class="mi">1112</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.66</span>    <span class="mf">5.27</span>
+<span class="n">node07</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">2179</span>   <span class="mi">1210</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">9.62</span>    <span class="mf">8.27</span>
+<span class="n">node08</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3243</span>   <span class="mi">1995</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">11.71</span>    <span class="mf">8.02</span>
+<span class="n">node09</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">2287</span>   <span class="mi">1943</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">10.26</span>    <span class="mf">7.58</span>
+<span class="n">node10</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">2183</span>   <span class="mi">1505</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">13.12</span>    <span class="mf">9.28</span>
+<span class="n">node11</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3269</span>   <span class="mi">2448</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.93</span>    <span class="mf">6.71</span>
+<span class="n">node12</span>     <span class="mi">13312</span>      <span class="mi">0</span>  <span class="mi">10114</span>   <span class="mi">6900</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">13.13</span>    <span class="mf">8.44</span>
+<span class="n">node13</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">2616</span>   <span class="mi">2501</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">9.24</span>    <span class="mf">8.21</span>
+<span class="n">node14</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3888</span>    <span class="mi">869</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.10</span>    <span class="mf">3.85</span>
+<span class="n">node15</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3788</span>    <span class="mi">308</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.40</span>    <span class="mf">4.67</span>
+<span class="n">node16</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">4386</span>   <span class="mi">2191</span>        <span class="mi">7</span>    <span class="mf">0.00</span>   <span class="mf">18.37</span>    <span class="mf">8.36</span>
+<span class="n">node17</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3158</span>   <span class="mi">1870</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.95</span>    <span class="mf">5.91</span>
+<span class="n">node18</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">5022</span>   <span class="mi">2397</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">19.25</span>    <span class="mf">8.19</span>
+<span class="n">node19</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">2437</span>   <span class="mi">1371</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.98</span>    <span class="mf">7.09</span>
+<span class="n">node20</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">4474</span>   <span class="mi">2486</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.51</span>    <span class="mf">7.11</span>
+<span class="n">node21</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">4111</span>   <span class="mi">2056</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.93</span>    <span class="mf">6.68</span>
+<span class="n">node22</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">5136</span>   <span class="mi">2313</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.61</span>    <span class="mf">5.75</span>
+<span class="n">node23</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">1850</span>   <span class="mi">1752</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.39</span>    <span class="mf">5.71</span>
+<span class="n">node24</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3850</span>   <span class="mi">2539</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">8.94</span>    <span class="mf">7.80</span>
+<span class="n">node25</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3789</span>   <span class="mi">3702</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">21.22</span>   <span class="mf">12.83</span>
+<span class="n">node26</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3809</span>   <span class="mi">1653</span>        <span class="mi">8</span>    <span class="mf">0.00</span>    <span class="mf">9.34</span>    <span class="mf">4.91</span>
+<span class="n">node27</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">5637</span>     <span class="mi">70</span>        <span class="mi">4</span>    <span class="mf">0.00</span>   <span class="mf">17.97</span>    <span class="mf">2.46</span>
+<span class="n">node28</span>     <span class="mi">13312</span>      <span class="mi">0</span>   <span class="mi">3076</span>   <span class="mi">2864</span>        <span class="mi">8</span>    <span class="mf">0.00</span>   <span class="mf">22.91</span>   <span class="mf">10.33</span>
+</pre></div>
+</div>
+<p><strong>Example 4</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">v</span>
+
+<span class="n">current</span> <span class="n">scheduler</span> <span class="n">time</span><span class="p">:</span> <span class="n">Sat</span> <span class="n">Aug</span> <span class="mi">18</span> <span class="mi">18</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">02</span> <span class="mi">2007</span>
+
+<span class="n">moab</span> <span class="n">active</span> <span class="k">for</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">01</span>   <span class="n">started</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Dec</span> <span class="mi">31</span> <span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">statistics</span> <span class="k">for</span> <span class="n">iteration</span>     <span class="mi">0</span>  <span class="n">initialized</span> <span class="n">on</span> <span class="n">Sat</span> <span class="n">Aug</span> <span class="mi">11</span> <span class="mi">23</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">25</span>
+
+<span class="n">Eligible</span><span class="o">/</span><span class="n">Idle</span> <span class="n">Jobs</span><span class="p">:</span>                 <span class="mi">6</span><span class="o">/</span><span class="mi">8</span>      <span class="p">(</span><span class="mf">75.000</span><span class="o">%</span><span class="p">)</span>
+<span class="n">Active</span> <span class="n">Jobs</span><span class="p">:</span>                       <span class="mi">13</span>
+<span class="n">Successful</span><span class="o">/</span><span class="n">Completed</span> <span class="n">Jobs</span><span class="p">:</span>        <span class="mi">167</span><span class="o">/</span><span class="mi">167</span>    <span class="p">(</span><span class="mf">100.000</span><span class="o">%</span><span class="p">)</span>
+<span class="n">Preempt</span> <span class="n">Jobs</span><span class="p">:</span>                       <span class="mi">0</span>
+<span class="n">Avg</span><span class="o">/</span><span class="n">Max</span> <span class="n">QTime</span> <span class="p">(</span><span class="n">Hours</span><span class="p">):</span>           <span class="mf">0.34</span><span class="o">/</span><span class="mf">2.07</span>
+<span class="n">Avg</span><span class="o">/</span><span class="n">Max</span> <span class="n">XFactor</span><span class="p">:</span>                 <span class="mf">1.165</span><span class="o">/</span><span class="mf">3.26</span>
+<span class="n">Avg</span><span class="o">/</span><span class="n">Max</span> <span class="n">Bypass</span><span class="p">:</span>                  <span class="mf">0.40</span><span class="o">/</span><span class="mf">8.00</span>
+
+<span class="n">Dedicated</span><span class="o">/</span><span class="n">Total</span> <span class="n">ProcHours</span><span class="p">:</span>      <span class="mf">4.46</span><span class="n">K</span><span class="o">/</span><span class="mf">4.47</span><span class="n">K</span>  <span class="p">(</span><span class="mf">99.789</span><span class="o">%</span><span class="p">)</span>
+<span class="n">Preempt</span><span class="o">/</span><span class="n">Dedicated</span> <span class="n">ProcHours</span><span class="p">:</span>     <span class="mf">0.00</span><span class="o">/</span><span class="mf">4.46</span><span class="n">K</span>  <span class="p">(</span><span class="mf">0.000</span><span class="o">%</span><span class="p">)</span>
+
+<span class="n">Current</span> <span class="n">Active</span><span class="o">/</span><span class="n">Total</span> <span class="n">Procs</span><span class="p">:</span>        <span class="mi">32</span><span class="o">/</span><span class="mi">32</span>     <span class="p">(</span><span class="mf">100.0</span><span class="o">%</span><span class="p">)</span>
+<span class="n">Current</span> <span class="n">Active</span><span class="o">/</span><span class="n">Total</span> <span class="n">Nodes</span><span class="p">:</span>        <span class="mi">16</span><span class="o">/</span><span class="mi">16</span>      <span class="p">(</span><span class="mf">100.0</span><span class="o">%</span><span class="p">)</span>
+
+<span class="n">Avg</span> <span class="n">WallClock</span> <span class="n">Accuracy</span><span class="p">:</span>          <span class="mf">64.919</span><span class="o">%</span>
+<span class="n">Avg</span> <span class="n">Job</span> <span class="n">Proc</span> <span class="n">Efficiency</span><span class="p">:</span>         <span class="mf">99.683</span><span class="o">%</span>
+<span class="n">Min</span> <span class="n">System</span> <span class="n">Utilization</span><span class="p">:</span>          <span class="mf">87.323</span><span class="o">%</span> <span class="p">(</span><span class="n">on</span> <span class="n">iteration</span> <span class="mi">46</span><span class="p">)</span>
+<span class="n">Est</span><span class="o">/</span><span class="n">Avg</span> <span class="n">Backlog</span><span class="p">:</span>                <span class="mi">02</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">06</span><span class="o">/</span><span class="mi">03</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">567</span>
+</pre></div>
+</div>
+<p>This example shows a concise summary of the system scheduling state.
+Note that <code class="docutils literal"><span class="pre">showstats</span></code> and <code class="docutils literal"><span class="pre">showstats</span> <span class="pre">-s</span></code> are equivalent.</p>
+<p>The first line of output indicates the number of scheduling iterations
+performed by the current scheduling process, followed by the time the
+scheduler started. The second line indicates the amount of time the Moab
+Scheduler has been scheduling in HH:MM:SS notation followed by the
+statistics initialization time.</p>
+<p>The fields are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Active Jobs</td>
+<td>Number of jobs currently active (Running or Starting).</td>
+</tr>
+<tr class="row-odd"><td>Eligible Jobs</td>
+<td>Number of jobs in the system queue (jobs that are considered when scheduling).</td>
+</tr>
+<tr class="row-even"><td>Idle Jobs</td>
+<td>Number of jobs both in and out of the system queue that are in the LoadLeveler Idle state.</td>
+</tr>
+<tr class="row-odd"><td>Completed Jobs</td>
+<td>Number of jobs completed since statistics were initialized.</td>
+</tr>
+<tr class="row-even"><td>Successful Jobs</td>
+<td>Jobs that completed successfully without abnormal termination.</td>
+</tr>
+<tr class="row-odd"><td>XFactor</td>
+<td>Average expansion factor of all completed jobs.</td>
+</tr>
+<tr class="row-even"><td>Max XFactor</td>
+<td>Maximum expansion factor of completed jobs.</td>
+</tr>
+<tr class="row-odd"><td>Max Bypass</td>
+<td>Maximum bypass of completed jobs.</td>
+</tr>
+<tr class="row-even"><td>Available ProcHours</td>
+<td>Total proc-hours available to the scheduler.</td>
+</tr>
+<tr class="row-odd"><td>Dedicated ProcHours</td>
+<td>Total proc-hours made available to jobs.</td>
+</tr>
+<tr class="row-even"><td>Effic</td>
+<td>Scheduling efficiency (DedicatedProcHours / Available ProcHours).</td>
+</tr>
+<tr class="row-odd"><td>Min Efficiency</td>
+<td>Minimum scheduling efficiency obtained since scheduler was started.</td>
+</tr>
+<tr class="row-even"><td>Iteration</td>
+<td>Iteration on which the minimum scheduling efficiency occurred.</td>
+</tr>
+<tr class="row-odd"><td>Available Procs</td>
+<td>Number of procs currently available.</td>
+</tr>
+<tr class="row-even"><td>Busy Procs</td>
+<td>Number of procs currently busy.</td>
+</tr>
+<tr class="row-odd"><td>Effic</td>
+<td>Current system efficiency (BusyProcs/AvailableProcs).</td>
+</tr>
+<tr class="row-even"><td>WallClock Accuracy</td>
+<td>Average wall clock accuracy of completed jobs (job-weighted average).</td>
+</tr>
+<tr class="row-odd"><td>Job Efficiency</td>
+<td>Average job efficiency (UtilizedTime / DedicatedTime).</td>
+</tr>
+<tr class="row-even"><td>Est Backlog</td>
+<td>Estimated backlog of queued work in hours.</td>
+</tr>
+<tr class="row-odd"><td>Avg Backlog</td>
+<td>Average backlog of queued work in hours.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 5</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">u</span>
+
+<span class="n">User</span> <span class="n">Statistics</span> <span class="n">Initialized</span> <span class="n">Tue</span> <span class="n">Aug</span> <span class="mi">26</span> <span class="mi">14</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">39</span>
+
+              <span class="o">|-----</span> <span class="n">Running</span> <span class="o">------|---------------------------------</span> <span class="n">Completed</span> <span class="o">----------------------------------|</span>
+ <span class="n">UserName</span>  <span class="n">UID</span> <span class="n">Jobs</span> <span class="n">Procs</span> <span class="n">ProcHours</span> <span class="n">Jobs</span>    <span class="o">%</span>   <span class="n">PHReq</span>    <span class="o">%</span>    <span class="n">PHDed</span>    <span class="o">%</span>   <span class="n">FSTgt</span>  <span class="n">AvgXF</span>  <span class="n">MaxXF</span>  <span class="n">AvgQH</span>  <span class="n">Effic</span>  <span class="n">WCAcc</span>
+  <span class="n">moorejt</span> <span class="mi">2617</span>    <span class="mi">1</span>    <span class="mi">16</span>     <span class="mf">58.80</span>    <span class="mi">2</span>   <span class="mf">0.34</span>   <span class="mi">221</span>   <span class="mf">0.54</span> <span class="mf">1896.6</span>  <span class="mf">11.25</span> <span class="o">-----</span>   <span class="mf">1.02</span>   <span class="mf">1.04</span>   <span class="mf">0.14</span>  <span class="mf">99.52</span> <span class="mf">100.00</span>
+    <span class="n">zhong</span> <span class="mi">1767</span>    <span class="mi">3</span>    <span class="mi">24</span>    <span class="mf">220.72</span>   <span class="mi">20</span>   <span class="mf">3.42</span>  <span class="mi">2306</span>   <span class="mf">5.65</span> <span class="mf">1511.3</span>   <span class="mf">8.96</span> <span class="o">-----</span>   <span class="mf">0.71</span>   <span class="mf">0.96</span>   <span class="mf">0.49</span>  <span class="mf">99.37</span>  <span class="mf">67.48</span>
+      <span class="n">lui</span> <span class="mi">2467</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">16</span>   <span class="mf">2.74</span>  <span class="mi">1970</span>   <span class="mf">4.82</span> <span class="mf">1505.1</span>   <span class="mf">8.93</span> <span class="o">-----</span>   <span class="mf">1.02</span>   <span class="mf">6.33</span>   <span class="mf">0.25</span>  <span class="mf">98.96</span>  <span class="mf">57.72</span>
+    <span class="n">evans</span> <span class="mi">3092</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">62</span>  <span class="mf">10.60</span>  <span class="mi">4960</span>  <span class="mf">12.14</span> <span class="mf">1464.3</span>   <span class="mf">8.69</span>   <span class="mf">5.0</span>   <span class="mf">0.62</span>   <span class="mf">1.64</span>   <span class="mf">5.04</span>  <span class="mf">87.64</span>  <span class="mf">30.62</span>
+   <span class="n">wengel</span> <span class="mi">2430</span>    <span class="mi">2</span>    <span class="mi">64</span>    <span class="mf">824.90</span>    <span class="mi">1</span>   <span class="mf">0.17</span>   <span class="mi">767</span>   <span class="mf">1.88</span>  <span class="mf">630.3</span>   <span class="mf">3.74</span> <span class="o">-----</span>   <span class="mf">0.18</span>   <span class="mf">0.18</span>   <span class="mf">4.26</span>  <span class="mf">99.63</span>   <span class="mf">0.40</span>
+    <span class="n">mukho</span> <span class="mi">2961</span>    <span class="mi">2</span>    <span class="mi">16</span>     <span class="mf">71.06</span>    <span class="mi">6</span>   <span class="mf">1.03</span>   <span class="mi">776</span>   <span class="mf">1.90</span>  <span class="mf">563.5</span>   <span class="mf">3.34</span> <span class="o">-----</span>   <span class="mf">0.31</span>   <span class="mf">0.82</span>   <span class="mf">0.20</span>  <span class="mf">93.15</span>  <span class="mf">30.28</span>
+  <span class="n">jimenez</span> <span class="mi">1449</span>    <span class="mi">1</span>    <span class="mi">16</span>    <span class="mf">302.29</span>    <span class="mi">2</span>   <span class="mf">0.34</span>   <span class="mi">768</span>   <span class="mf">1.88</span>  <span class="mf">458.3</span>   <span class="mf">2.72</span> <span class="o">-----</span>   <span class="mf">0.80</span>   <span class="mf">0.98</span>   <span class="mf">2.31</span>  <span class="mf">97.99</span>  <span class="mf">70.30</span>
+     <span class="n">neff</span> <span class="mi">3194</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">74</span>  <span class="mf">12.65</span>   <span class="mi">669</span>   <span class="mf">1.64</span>  <span class="mf">352.5</span>   <span class="mf">2.09</span>  <span class="mf">10.0</span>   <span class="mf">0.50</span>   <span class="mf">1.93</span>   <span class="mf">0.51</span>  <span class="mf">96.03</span>  <span class="mf">32.60</span>
+   <span class="n">cholik</span> <span class="mi">1303</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">2</span>   <span class="mf">0.34</span>   <span class="mi">552</span>   <span class="mf">1.35</span>  <span class="mf">281.9</span>   <span class="mf">1.67</span> <span class="o">-----</span>   <span class="mf">1.72</span>   <span class="mf">3.07</span>  <span class="mf">25.35</span>  <span class="mf">99.69</span>  <span class="mf">66.70</span>
+ <span class="n">jshoemak</span> <span class="mi">2508</span>    <span class="mi">1</span>    <span class="mi">24</span>    <span class="mf">572.22</span>    <span class="mi">1</span>   <span class="mf">0.17</span>   <span class="mi">576</span>   <span class="mf">1.41</span>  <span class="mf">229.1</span>   <span class="mf">1.36</span> <span class="o">-----</span>   <span class="mf">0.55</span>   <span class="mf">0.55</span>   <span class="mf">3.74</span>  <span class="mf">99.20</span>  <span class="mf">39.20</span>
+     <span class="n">kudo</span> <span class="mi">2324</span>    <span class="mi">1</span>     <span class="mi">8</span>    <span class="mf">163.35</span>    <span class="mi">6</span>   <span class="mf">1.03</span>  <span class="mi">1152</span>   <span class="mf">2.82</span>  <span class="mf">211.1</span>   <span class="mf">1.25</span> <span class="o">-----</span>   <span class="mf">0.12</span>   <span class="mf">0.34</span>   <span class="mf">1.54</span>  <span class="mf">96.77</span>   <span class="mf">5.67</span>
+   <span class="n">xztang</span> <span class="mi">1835</span>    <span class="mi">1</span>     <span class="mi">8</span>     <span class="mf">18.99</span> <span class="o">----</span> <span class="o">------</span> <span class="o">-----</span> <span class="o">------</span>  <span class="mf">176.3</span>   <span class="mf">1.05</span>  <span class="mf">10.0</span> <span class="o">------</span> <span class="o">------</span> <span class="o">------</span>  <span class="mf">99.62</span> <span class="o">------</span>
+   <span class="n">feller</span> <span class="mi">1880</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>   <span class="mi">17</span>   <span class="mf">2.91</span>   <span class="mi">170</span>   <span class="mf">0.42</span>  <span class="mf">148.1</span>   <span class="mf">0.88</span> <span class="o">-----</span>   <span class="mf">0.95</span>   <span class="mf">1.83</span>   <span class="mf">0.14</span>  <span class="mf">97.59</span>  <span class="mf">84.31</span>
+    <span class="n">maxia</span> <span class="mi">2936</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">1</span>   <span class="mf">0.17</span>   <span class="mi">191</span>   <span class="mf">0.47</span>  <span class="mf">129.1</span>   <span class="mf">0.77</span>   <span class="mf">7.5</span>   <span class="mf">0.88</span>   <span class="mf">0.88</span>   <span class="mf">4.49</span>  <span class="mf">99.84</span>  <span class="mf">69.10</span>
+ <span class="n">ktgnov71</span> <span class="mi">2838</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">1</span>   <span class="mf">0.17</span>   <span class="mi">192</span>   <span class="mf">0.47</span>   <span class="mf">95.5</span>   <span class="mf">0.57</span> <span class="o">-----</span>   <span class="mf">0.53</span>   <span class="mf">0.53</span>   <span class="mf">0.34</span>  <span class="mf">90.07</span>  <span class="mf">51.20</span>
+</pre></div>
+</div>
+<p>This example shows a statistical listing of all active users. The top
+line (User Statistics Initialized...) of the output indicates the
+timeframe covered by the displayed statistics.</p>
+<p>The statistical output is divided into two statistics categories,
+Running and Completed. Running statistics include information about jobs
+that are currently running. Completed statistics are compiled using
+historical information from both running and completed jobs.</p>
+<p>The fields are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>UserName</td>
+<td>Name of user.</td>
+</tr>
+<tr class="row-odd"><td>UID</td>
+<td>User ID of user.</td>
+</tr>
+<tr class="row-even"><td>Jobs</td>
+<td>Number of running jobs.</td>
+</tr>
+<tr class="row-odd"><td>Procs</td>
+<td>Number of procs allocated to running
+jobs.</td>
+</tr>
+<tr class="row-even"><td>ProcHours</td>
+<td>Number of proc-hours required to
+complete running jobs.</td>
+</tr>
+<tr class="row-odd"><td>Jobs*</td>
+<td>Number of jobs completed.</td>
+</tr>
+<tr class="row-even"><td>%</td>
+<td>Percentage of total jobs that were
+completed by user.</td>
+</tr>
+<tr class="row-odd"><td>PHReq*</td>
+<td>Total proc-hours requested by
+completed jobs.</td>
+</tr>
+<tr class="row-even"><td>%</td>
+<td>Percentage of total proc-hours
+requested by completed jobs that
+were requested by user.</td>
+</tr>
+<tr class="row-odd"><td>PHDed</td>
+<td>Total proc-hours dedicated to active
+and completed jobs. The proc-hours
+dedicated to a job are calculated by
+multiplying the number of allocated
+procs by the length of time the
+procs were allocated, regardless of
+the job&#8217;s CPU usage.</td>
+</tr>
+<tr class="row-even"><td>%</td>
+<td>Percentage of total prochours
+dedicated that were dedicated by
+user.</td>
+</tr>
+<tr class="row-odd"><td>FSTgt</td>
+<td>Fairshare target. A user&#8217;s fairshare
+target is specified in the
+<code class="docutils literal"><span class="pre">fs.cfg</span></code> file. This value should
+be compared to the user&#8217;s node-hour
+dedicated percentage to determine if
+the target is being met.</td>
+</tr>
+<tr class="row-even"><td>AvgXF*</td>
+<td>Average expansion factor for jobs
+completed. A job&#8217;s XFactor
+(expansion factor) is calculated by
+the following formula: (QueuedTime +
+RunTime) / WallClockLimit.</td>
+</tr>
+<tr class="row-odd"><td>MaxXF*</td>
+<td>Highest expansion factor received by
+jobs completed.</td>
+</tr>
+<tr class="row-even"><td>AvgQH*</td>
+<td>Average queue time (in hours) of
+jobs.</td>
+</tr>
+<tr class="row-odd"><td>Effic</td>
+<td>Average job efficiency. Job
+efficiency is calculated by dividing
+the actual node-hours of CPU time
+used by the job by the node-hours
+allocated to the job.</td>
+</tr>
+<tr class="row-even"><td>WCAcc*</td>
+<td><p class="first">Average wallclock accuracy for jobs
+completed. Wallclock accuracy is
+calculated by dividing a job&#8217;s
+actual run time by its specified
+wallclock limit.</p>
+<ul class="simple">
+<li></li>
+</ul>
+<div class="line-block">
+<div class="line"><a href="#id9"><span class="problematic" id="id10">|Note|</span></a>   | A job&#8217;s wallclock accur</div>
+</div>
+<p>acy is capped at 100% so even if a j
+ob exceeds its requested walltime it</p>
+<blockquote>
+<div>will report an accuracy of 100%.</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="last simple">
+<li></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id11"><span class="problematic" id="id12">|Note|</span></a></td>
+<td>* These fields are empty until a user has completed at least one job.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 6</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">T</span>
+<span class="n">statistics</span> <span class="n">initialized</span> <span class="n">Mon</span> <span class="n">Jul</span> <span class="mi">10</span> <span class="mi">15</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">41</span>
+
+              <span class="o">|--------</span> <span class="n">Active</span> <span class="o">---------|----------------------------------</span> <span class="n">Completed</span> <span class="o">-----------------------------------|</span>
+<span class="n">user</span>           <span class="n">Jobs</span> <span class="n">Procs</span> <span class="n">ProcHours</span>  <span class="n">Mem</span> <span class="n">Jobs</span>    <span class="o">%</span>    <span class="n">PHReq</span>    <span class="o">%</span>    <span class="n">PHDed</span>    <span class="o">%</span>   <span class="n">FSTgt</span>   <span class="n">AvgXF</span>  <span class="n">MaxXF</span>  <span class="n">AvgQH</span>  <span class="n">Effic</span>  <span class="n">WCAcc</span>
+<span class="n">root</span>              <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">56</span> <span class="mf">100.00</span>  <span class="mf">2.47</span><span class="n">K</span> <span class="mf">100.00</span>  <span class="mf">1.58</span><span class="n">K</span>  <span class="mf">48.87</span> <span class="o">-----</span>    <span class="mf">1.22</span>   <span class="mf">0.00</span>   <span class="mf">0.24</span> <span class="mf">100.00</span>  <span class="mf">58.84</span>
+ <span class="n">l1</span><span class="o">.</span><span class="mi">1</span>             <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">25</span>  <span class="mf">44.64</span> <span class="mf">845.77</span>  <span class="mf">34.31</span> <span class="mf">730.25</span>  <span class="mf">22.54</span> <span class="o">-----</span>    <span class="mf">1.97</span>   <span class="mf">0.00</span>   <span class="mf">0.20</span> <span class="mf">100.00</span>  <span class="mf">65.50</span>
+  <span class="n">Administrati</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">10</span>  <span class="mf">17.86</span> <span class="mf">433.57</span>  <span class="mf">17.59</span> <span class="mf">197.17</span>   <span class="mf">6.09</span> <span class="o">-----</span>    <span class="mf">3.67</span>   <span class="mf">0.00</span>   <span class="mf">0.25</span> <span class="mf">100.00</span>  <span class="mf">62.74</span>
+  <span class="n">Engineering</span>     <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">15</span>  <span class="mf">26.79</span> <span class="mf">412.20</span>  <span class="mf">16.72</span> <span class="mf">533.08</span>  <span class="mf">16.45</span> <span class="o">-----</span>    <span class="mf">0.83</span>   <span class="mf">0.00</span>   <span class="mf">0.17</span> <span class="mf">100.00</span>  <span class="mf">67.35</span>
+ <span class="n">l1</span><span class="o">.</span><span class="mi">2</span>             <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">31</span>  <span class="mf">55.36</span>  <span class="mf">1.62</span><span class="n">K</span>  <span class="mf">65.69</span> <span class="mf">853.00</span>  <span class="mf">26.33</span> <span class="o">-----</span>    <span class="mf">0.62</span>   <span class="mf">0.00</span>   <span class="mf">0.27</span> <span class="mf">100.00</span>  <span class="mf">53.46</span>
+  <span class="n">Shared</span>          <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>    <span class="mi">3</span>   <span class="mf">5.36</span>  <span class="mf">97.17</span>   <span class="mf">3.94</span>  <span class="mf">44.92</span>   <span class="mf">1.39</span> <span class="o">-----</span>    <span class="mf">0.58</span>   <span class="mf">0.00</span>   <span class="mf">0.56</span> <span class="mf">100.00</span>  <span class="mf">31.73</span>
+  <span class="n">Test</span>            <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>    <span class="mi">3</span>   <span class="mf">5.36</span>  <span class="mf">14.44</span>   <span class="mf">0.59</span>  <span class="mf">14.58</span>   <span class="mf">0.45</span> <span class="o">-----</span>    <span class="mf">0.43</span>   <span class="mf">0.00</span>   <span class="mf">0.17</span> <span class="mf">100.00</span>  <span class="mf">30.57</span>
+  <span class="n">Research</span>        <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">25</span>  <span class="mf">44.64</span>  <span class="mf">1.51</span><span class="n">K</span>  <span class="mf">61.16</span> <span class="mf">793.50</span>  <span class="mf">24.49</span> <span class="o">-----</span>    <span class="mf">0.65</span>   <span class="mf">0.00</span>   <span class="mf">0.24</span> <span class="mf">100.00</span>  <span class="mf">58.82</span>
+
+
+<span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">T</span> <span class="mi">2</span>
+<span class="n">statistics</span> <span class="n">initialized</span> <span class="n">Mon</span> <span class="n">Jul</span> <span class="mi">10</span> <span class="mi">15</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">41</span>
+
+              <span class="o">|--------</span> <span class="n">Active</span> <span class="o">---------|----------------------------------</span> <span class="n">Completed</span> <span class="o">-----------------------------------|</span>
+<span class="n">user</span>           <span class="n">Jobs</span> <span class="n">Procs</span> <span class="n">ProcHours</span>  <span class="n">Mem</span> <span class="n">Jobs</span>    <span class="o">%</span>    <span class="n">PHReq</span>    <span class="o">%</span>    <span class="n">PHDed</span>    <span class="o">%</span>   <span class="n">FSTgt</span>   <span class="n">AvgXF</span>  <span class="n">MaxXF</span>  <span class="n">AvgQH</span>  <span class="n">Effic</span>  <span class="n">WCAcc</span>
+  <span class="n">Test</span>            <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">22</span>   <span class="mf">4.99</span> <span class="mf">271.27</span>   <span class="mf">0.55</span> <span class="mf">167.42</span>   <span class="mf">0.19</span> <span class="o">-----</span>    <span class="mf">3.86</span>   <span class="mf">0.00</span>   <span class="mf">2.89</span> <span class="mf">100.00</span>  <span class="mf">60.76</span>
+  <span class="n">Shared</span>          <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">59</span>  <span class="mf">13.38</span> <span class="mf">12.30</span><span class="n">K</span>  <span class="mf">24.75</span>  <span class="mf">4.46</span><span class="n">K</span>   <span class="mf">5.16</span> <span class="o">-----</span>    <span class="mf">6.24</span>   <span class="mf">0.00</span>  <span class="mf">10.73</span> <span class="mf">100.00</span>  <span class="mf">49.87</span>
+  <span class="n">Research</span>        <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>  <span class="mi">140</span>  <span class="mf">31.75</span>  <span class="mf">9.54</span><span class="n">K</span>  <span class="mf">19.19</span>  <span class="mf">5.40</span><span class="n">K</span>   <span class="mf">6.25</span> <span class="o">-----</span>    <span class="mf">2.84</span>   <span class="mf">0.00</span>   <span class="mf">5.52</span> <span class="mf">100.00</span>  <span class="mf">57.86</span>
+  <span class="n">Administrati</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">84</span>  <span class="mf">19.05</span>  <span class="mf">7.94</span><span class="n">K</span>  <span class="mf">15.96</span>  <span class="mf">4.24</span><span class="n">K</span>   <span class="mf">4.91</span> <span class="o">-----</span>    <span class="mf">4.77</span>   <span class="mf">0.00</span>   <span class="mf">0.34</span> <span class="mf">100.00</span>  <span class="mf">62.31</span>
+  <span class="n">Engineering</span>     <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>  <span class="mi">136</span>  <span class="mf">30.84</span> <span class="mf">19.67</span><span class="n">K</span>  <span class="mf">39.56</span> <span class="mf">28.77</span><span class="n">K</span>  <span class="mf">33.27</span> <span class="o">-----</span>    <span class="mf">3.01</span>   <span class="mf">0.00</span>   <span class="mf">3.66</span> <span class="mf">100.00</span>  <span class="mf">63.70</span>
+
+
+<span class="o">&gt;</span> <span class="n">showstats</span> <span class="o">-</span><span class="n">T</span> <span class="n">l1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">statistics</span> <span class="n">initialized</span> <span class="n">Mon</span> <span class="n">Jul</span> <span class="mi">10</span> <span class="mi">15</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">41</span>
+
+              <span class="o">|--------</span> <span class="n">Active</span> <span class="o">---------|----------------------------------</span> <span class="n">Completed</span> <span class="o">-----------------------------------|</span>
+<span class="n">user</span>           <span class="n">Jobs</span> <span class="n">Procs</span> <span class="n">ProcHours</span>  <span class="n">Mem</span> <span class="n">Jobs</span>    <span class="o">%</span>    <span class="n">PHReq</span>    <span class="o">%</span>    <span class="n">PHDed</span>    <span class="o">%</span>   <span class="n">FSTgt</span>   <span class="n">AvgXF</span>  <span class="n">MaxXF</span>  <span class="n">AvgQH</span>  <span class="n">Effic</span>  <span class="n">WCAcc</span>
+ <span class="n">l1</span><span class="o">.</span><span class="mi">1</span>             <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>  <span class="mi">220</span>  <span class="mf">49.89</span> <span class="mf">27.60</span><span class="n">K</span>  <span class="mf">55.52</span> <span class="mf">33.01</span><span class="n">K</span>  <span class="mf">38.17</span> <span class="o">-----</span>    <span class="mf">3.68</span>   <span class="mf">0.00</span>   <span class="mf">2.39</span> <span class="mf">100.00</span>  <span class="mf">63.17</span>
+  <span class="n">Administrati</span>    <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="mi">84</span>  <span class="mf">19.05</span>  <span class="mf">7.94</span><span class="n">K</span>  <span class="mf">15.96</span>  <span class="mf">4.24</span><span class="n">K</span>   <span class="mf">4.91</span> <span class="o">-----</span>    <span class="mf">4.77</span>   <span class="mf">0.00</span>   <span class="mf">0.34</span> <span class="mf">100.00</span>  <span class="mf">62.31</span>
+  <span class="n">Engineering</span>     <span class="mi">0</span>     <span class="mi">0</span>      <span class="mf">0.00</span>    <span class="mi">0</span>  <span class="mi">136</span>  <span class="mf">30.84</span> <span class="mf">19.67</span><span class="n">K</span>  <span class="mf">39.56</span> <span class="mf">28.77</span><span class="n">K</span>  <span class="mf">33.27</span> <span class="o">-----</span>    <span class="mf">3.01</span>   <span class="mf">0.00</span>   <span class="mf">3.66</span> <span class="mf">100.00</span>  <span class="mf">63.70</span>
+</pre></div>
+</div>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="resetstats.html">resetstats</a> command - re-initialize statistics</li>
+<li><a class="reference external" href="showstatsf.html">showstats -f</a> command - display full matrix
+statistics</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showstats.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

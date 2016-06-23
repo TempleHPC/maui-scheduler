@@ -1,0 +1,10 @@
+Prioritizing Jobs and Allocating Resources
+##########################################
+
+.. toctree::
+
+   5.1jobprioritization
+   5.2nodeallocation
+   5.3nodeaccess
+   5.4nodeavailability
+   5.5taskdistribution

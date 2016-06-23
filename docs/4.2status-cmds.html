@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.2. Status Commands &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="4. Scheduler Commands" href="4.0commands.html" />
+    <link rel="next" title="4.3. Job Management Commands" href="4.3jobmgmt-cmds.html" />
+    <link rel="prev" title="4.1. Client Overview" href="4.1clientoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="4.3jobmgmt-cmds.html" title="4.3. Job Management Commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="4.1clientoverview.html" title="4.1. Client Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="4.0commands.html" accesskey="U">4. Scheduler Commands</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="status-commands">
+<h1>4.2. Status Commands<a class="headerlink" href="#status-commands" title="Permalink to this headline">¶</a></h1>
+<p>Maui provides an array of commands to organize and present information
+about the current state and historical statistics of the scheduler,
+jobs, resources, users, accounts, etc. The table below presents the
+primary status commands and flags. The <a class="reference external" href="a.gcommandoverview.html">Commands
+Overview</a> lists all available commands.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="8%" />
+<col width="67%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Command</strong></td>
+<td><strong>Flags</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/checkjob.html">checkjob</a></td>
+<td>&nbsp;</td>
+<td>display job state, resource requirements, environment, constraints, credentials, history, allocated resources, and resource utilization</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/checknode.html">checknode</a></td>
+<td>&nbsp;</td>
+<td>display node state, resources, attributes, reservations, history, and statistics</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/diagnosefairshare.html">diagnose</a></td>
+<td>-f</td>
+<td>display summarized fairshare information and any unexpected configuration</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/diagnose.html">diagnose</a></td>
+<td>-j</td>
+<td>display summarized job information and any unexpected state</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/diagnose.html">diagnose</a></td>
+<td>-n</td>
+<td>display summarized node information and any unexpected state</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/diagnosepriority.html">diagnose</a></td>
+<td>-p</td>
+<td>display summarized job priority information</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/diagnosereservations.html">diagnose</a></td>
+<td>-r</td>
+<td>display summarized reservation information</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/showgrid.html">showgrid</a></td>
+<td>&nbsp;</td>
+<td>display various aspects of scheduling performance across a job duration/job size matrix</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/showq.html">showq</a></td>
+<td>[ -r | -i ]</td>
+<td>display various views of currently queued active, idle, and non-eligible jobs</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/showstats.html">showstats</a></td>
+<td>-f</td>
+<td>display historical fairshare usage on a per credential basis</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/showstats.html">showstats</a></td>
+<td>-g</td>
+<td>display current and historical usage on a per group basis</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="commands/showstats.html">showstats</a></td>
+<td>-u</td>
+<td>display current and historical usage on a per user basis</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="commands/showstats.html">showstats</a></td>
+<td>-v</td>
+<td>display high level current and historical scheduling statistics</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="4.1clientoverview.html"
+                        title="previous chapter">4.1. Client Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="4.3jobmgmt-cmds.html"
+                        title="next chapter">4.3. Job Management Commands</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/4.2status-cmds.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="4.3jobmgmt-cmds.html" title="4.3. Job Management Commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="4.1clientoverview.html" title="4.1. Client Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="4.0commands.html" >4. Scheduler Commands</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>17.2. Grid Scheduling &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="17. Miscellaneous" href="17.0miscellaneous.html" />
+    <link rel="next" title="17.3. Enabling High Availability Features" href="17.3ha.html" />
+    <link rel="prev" title="17.1. User Feedback Overview" href="17.1feedback.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="17.3ha.html" title="17.3. Enabling High Availability Features"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="17.1feedback.html" title="17.1. User Feedback Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="17.0miscellaneous.html" accesskey="U">17. Miscellaneous</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="grid-scheduling">
+<h1>17.2. Grid Scheduling<a class="headerlink" href="#grid-scheduling" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="grid-scheduling-overview">
+<h2>17.2.1. Grid Scheduling Overview<a class="headerlink" href="#grid-scheduling-overview" title="Permalink to this headline">¶</a></h2>
+<p>Maui can participate in a grid environment providing functionality and
+information critical to effective grid scheduling. Maui can provide
+information to grid schedulers about what resources are available, how
+much the resources cost, and when remote jobs can run. Maui also
+provides resource reservation and job staging facilities to allow grid
+scheduling systems integrated support with Maui facilities.
+Currently, the <a class="reference external" href="http://www.clusterresources.com/products/mgs/docs/">Silver Grid
+Scheduler</a> is the
+most advanced grid scheduler taking advantage of these capabilities. It
+provides automated data staging, account and allocation management, and
+resource reservation optimizations. It provides an intuitive interface
+for job submission and job management, using submission languages from
+popular resource management systems. The the <a class="reference external" href="http://www.clusterresources.com/products/mgs">Silver Home
+Page</a> for more
+information.</p>
+</div>
+<div class="section" id="configuring-maui-to-inter-operate-with-grid-schedulers">
+<h2>17.2.2. Configuring Maui to Inter-Operate with Grid Schedulers<a class="headerlink" href="#configuring-maui-to-inter-operate-with-grid-schedulers" title="Permalink to this headline">¶</a></h2>
+<p>To utilize cluster scheduler facilities, the grid scheduler must be
+authenticated and authorized. Grid scheduler authentication is enabled
+by adding an entry to the <code class="docutils literal"><span class="pre">maui-private.cfg</span></code> file as shown in the
+<a class="reference external" href="a.esecurity.html#interface">Interface Security</a> section of appendix
+E. Once authentication is setup, the level of grid scheduler
+authorization is configured. In most cases, the grid scheduler is
+assigned the role of a <em>level 1 admin</em> using the
+<a class="reference external" href="a.fparameters.html">ADMIN1</a> parameter.
+In most cases, not only must the grid scheduler be authenticated to
+Maui, but Maui must also be authenticated to the grid scheduler. In the
+case of Silver, this is accomplished by <em>naming</em> the instance of Maui by
+using the <a class="reference external" href="a.fparameters.html#schedcfg">SCHEDCFG</a> parameter and
+adding the shared secret key to silver&#8217;s <code class="docutils literal"><span class="pre">silver.cfg</span></code> file.</p>
+</div>
+<div class="section" id="specifying-cluster-level-policies-for-grid-jobs">
+<h2>17.2.3. Specifying Cluster Level Policies for Grid Jobs<a class="headerlink" href="#specifying-cluster-level-policies-for-grid-jobs" title="Permalink to this headline">¶</a></h2>
+<p>The number and type of resources available for grid jobs can be
+constrained using policies and/or reservations. All grid workload is
+assigned the job attribute <strong>GRID</strong>. Reservations and policies can be
+configured to allow or deny access based on this attribute providing
+access to or exclusion from specific resources, limiting the quantity of
+grid jobs which can run at any given time, or constraining access to
+other special functions such as preemption.</p>
+</div>
+<div class="section" id="evaluating-performance-impact-of-grid-workload">
+<h2>17.2.4. Evaluating Performance Impact of Grid Workload<a class="headerlink" href="#evaluating-performance-impact-of-grid-workload" title="Permalink to this headline">¶</a></h2>
+<p>Maui integrates the grid jobs into the standard job queue and, unless
+specifically directed by special grid policies, treats grid jobs just
+like ordinary workload. In fact, aside from having the <strong>GRID</strong> job
+attribute set, grid jobs are identical to locally submitted workload.
+&amp;nbps;When a grid job is received, Maui tracks two additional pieces of
+information. This information, <strong>System Id</strong> and <strong>System Job Id</strong>
+indicates the submitting grid scheduler and <em>global</em> job id
+respectively. To determine a job&#8217;s global job id, the
+<a class="reference external" href="commands/showq.html">showq</a> command can be run with the &#8216;<strong>-g</strong>&#8216;
+flag.</p>
+</div>
+<div class="section" id="diagnosing-grid-based-issues">
+<h2>17.2.5. Diagnosing Grid Based Issues<a class="headerlink" href="#diagnosing-grid-based-issues" title="Permalink to this headline">¶</a></h2>
+<p>To address various grid specific failures, Maui provides integrated
+diagnostic tools. Among the most useful is the <a class="reference external" href="commands/diagnose.html">diagnose
+-S</a> command. This command provides
+information about the status of required grid management modules and the
+status of grid scheduler interface. In addition, it also reports on any
+grid level failures or discrepancies it locates.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">17.2. Grid Scheduling</a><ul>
+<li><a class="reference internal" href="#grid-scheduling-overview">17.2.1. Grid Scheduling Overview</a></li>
+<li><a class="reference internal" href="#configuring-maui-to-inter-operate-with-grid-schedulers">17.2.2. Configuring Maui to Inter-Operate with Grid Schedulers</a></li>
+<li><a class="reference internal" href="#specifying-cluster-level-policies-for-grid-jobs">17.2.3. Specifying Cluster Level Policies for Grid Jobs</a></li>
+<li><a class="reference internal" href="#evaluating-performance-impact-of-grid-workload">17.2.4. Evaluating Performance Impact of Grid Workload</a></li>
+<li><a class="reference internal" href="#diagnosing-grid-based-issues">17.2.5. Diagnosing Grid Based Issues</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="17.1feedback.html"
+                        title="previous chapter">17.1. User Feedback Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="17.3ha.html"
+                        title="next chapter">17.3. Enabling High Availability Features</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/17.2grid.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="17.3ha.html" title="17.3. Enabling High Availability Features"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="17.1feedback.html" title="17.1. User Feedback Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="17.0miscellaneous.html" >17. Miscellaneous</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

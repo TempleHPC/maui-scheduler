@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16.2. Resource Traces &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="16. Simulations" href="16.0simulations.html" />
+    <link rel="next" title="16.3. Workload Traces" href="16.3workloadtrace.html" />
+    <link rel="prev" title="16.1. Simulation Overview" href="16.1simulationoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="16.3workloadtrace.html" title="16.3. Workload Traces"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="16.1simulationoverview.html" title="16.1. Simulation Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="16.0simulations.html" accesskey="U">16. Simulations</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="resource-traces">
+<h1>16.2. Resource Traces<a class="headerlink" href="#resource-traces" title="Permalink to this headline">¶</a></h1>
+<p>Resource traces fully describe all scheduling relevant aspects of a
+batch system&#8217;s compute resources. In most cases, each resource trace
+describes a single compute node providing information about configured
+resources, node location, supported classes and queues, etc. Each
+resource trace consists of a single line composed of 21 whitespace
+delimited fields. Each field is described in detail in the table
+below.</p>
+<p><strong>Field Name</strong>
+<strong>Field Index</strong>
+<strong>Data Format</strong>
+<strong>Default Value</strong>
+<strong>Details</strong>
+Resource Type
+1
+one of <strong>COMPUTENODE</strong>
+<strong>COMPUTENODE</strong>
+currently the only legal value is <strong>COMPUTENODE</strong>
+Event Type
+2
+one of <strong>AVAILABLE</strong>, <strong>DEFINED</strong>, or <strong>DRAINED</strong>
+[NONE]
+when <strong>AVAILABLE</strong>, <strong>DEFINED</strong>, or <strong>DRAINED</strong> is specified, node will
+start in the state Idle, Down, or Drained respectively.
+Event Time
+3
+&lt;EPOCHTIME&gt;
+1
+time event occurred. (currently ignored)
+Resource ID
+4
+&lt;STRING&gt;
+N/A
+for <strong>COMPUTENODE</strong> resources, this should be the name of the node.
+Resource Manager Name
+5
+&lt;STRING&gt;
+[NONE]
+name of resource manager resource is associated with
+Configured Swap
+6
+&lt;INTEGER&gt;
+1
+amount of virtual memory (in MB) configured on node
+Configured Memory
+7
+&lt;INTEGER&gt;
+1
+amount of real memory (in MB) configured on node (i.e. RAM)
+Configured Disk
+8
+&lt;INTEGER&gt;
+1
+amount of local disk (in MB) on node available to batch jobs
+Configured Processors
+9
+&lt;INTEGER&gt;
+1
+number of processors configured on node
+Resource Frame Location
+10
+&lt;INTEGER&gt;
+1
+number of frame containing node (SP2 only)
+Resource Slot Location
+11
+&lt;INTEGER&gt;
+1
+Number of first frame slot used by node (SP2 only)
+Resource Slot Use Count
+12
+&lt;INTEGER&gt;
+1
+Number of frame slots used by node (SP2 only)
+Node Operating System
+13
+&lt;STRING&gt;
+[NONE]
+node operating system
+Node Architecture
+14
+&lt;STRING&gt;
+[NONE]
+node architecture
+Configured Node Features
+15
+&lt;STRING&gt;
+[NONE]
+square bracket delimited list of node features/attributes (ie,
+&#8216;[amd][s1200]&#8217;)
+Configured Run Classes
+16
+&lt;STRING&gt;
+[batch:1]
+square bracket delimited list of CLASSNAME:CLASSCOUNT pairs.
+Configured Network Adapters
+17
+&lt;STRING&gt;
+[NONE]
+square bracket delimited list of configured network adapters (ie,
+&#8216;[atm][fddi][ethernet]&#8217;)
+Relative Resource Speed
+18
+&lt;DOUBLE&gt;
+1.0
+relative machine speed value
+RESERVED FIELD 1
+19
+&lt;STRING&gt;
+[NONE]
+[NONE]
+RESERVED FIELD 2
+20
+&lt;STRING&gt;
+[NONE]
+[NONE]
+RESERVED FIELD 3
+21
+&lt;STRING&gt;
+[NONE]
+[NONE]</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no applicable value is specified, the exact string &#8216;<strong>[NONE]</strong>&#8216; should be entered.</p>
+</div>
+<p>Sample Resource Trace:</p>
+<p>&#8216;<code class="docutils literal"><span class="pre">COMPUTENODE</span> <span class="pre">AVAILABLE</span> <span class="pre">0</span> <span class="pre">cluster008</span> <span class="pre">PBS1</span> <span class="pre">423132</span> <span class="pre">256</span> <span class="pre">7140</span> <span class="pre">2</span> <span class="pre">-1</span> <span class="pre">-1</span> <span class="pre">1</span> <span class="pre">LINUX62</span> <span class="pre">AthlonK7</span> <span class="pre">[s950][compute]</span> <span class="pre">[batch:2]</span>&nbsp; <span class="pre">[ethernet][atm]</span> <span class="pre">1.67</span> <span class="pre">[NONE]</span> <span class="pre">[NONE]</span> <span class="pre">[NONE]</span></code>&#8216;</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="16.1simulationoverview.html"
+                        title="previous chapter">16.1. Simulation Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="16.3workloadtrace.html"
+                        title="next chapter">16.3. Workload Traces</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/16.2resourcetrace.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="16.3workloadtrace.html" title="16.3. Workload Traces"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="16.1simulationoverview.html" title="16.1. Simulation Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="16.0simulations.html" >16. Simulations</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

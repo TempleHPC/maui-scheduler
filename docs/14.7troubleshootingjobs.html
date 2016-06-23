@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14.7. Problems with Individual Jobs &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="14. Trouble Shooting and System Maintenance" href="14.0troubleshootingandsysmaintenance.html" />
+    <link rel="next" title="15. Improving User Effectiveness" href="15.0improvingusereffectiveness.html" />
+    <link rel="prev" title="14.6. Tracking System Failures" href="14.6troubleshootingsystemerrors.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="15.0improvingusereffectiveness.html" title="15. Improving User Effectiveness"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="14.6troubleshootingsystemerrors.html" title="14.6. Tracking System Failures"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" accesskey="U">14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="problems-with-individual-jobs">
+<h1>14.7. Problems with Individual Jobs<a class="headerlink" href="#problems-with-individual-jobs" title="Permalink to this headline">¶</a></h1>
+<p>To determine why a particular job will not start, there are several
+commands which can be helpful.</p>
+<p><strong>`checkjob -v &lt;commands/checkjob.html&gt;`__</strong></p>
+<p>Checkjob will evaluate the ability of a job to start immediately. Tests
+include resource access, node state, job constraints (ie, startdate,
+taskspernode,QOS, etc). Additionally, command line flags may be
+specified to provide further information.</p>
+<div class="line-block">
+<div class="line">-l &lt;POLICYLEVEL&gt; // evaluate impact of throttling policies on job
+feasibility</div>
+<div class="line">-n &lt;NODENAME&gt; // evaluate resource access on specific node</div>
+<div class="line">-r &lt;RESERVATION_LIST&gt; // evaluate access to specified reservations</div>
+</div>
+<p><strong>`checknode &lt;commands/checknode.html&gt;`__</strong></p>
+<p>Display detailed status of node</p>
+<p><strong>`diagnose -j &lt;commands/diagnosejob.html&gt;`__</strong></p>
+<p>Display high level summary of job attributes and perform sanity check on
+job attributes/state.</p>
+<p><strong>`diagnose -q &lt;commands/diagnosequeue.html&gt;`__</strong></p>
+<p>Display various reasons job is considered &#8216;blocked&#8217; or &#8216;non-queued&#8217;.</p>
+<p><strong>`showbf -v &lt;commands/showbf.html&gt;`__</strong></p>
+<p>Determine general resource availability subject to specified
+constraints.</p>
+<p><strong>See also:</strong></p>
+<p><strong>`Diagnosing System Behavior/Problems &lt;troubleshooting.html&gt;`__</strong></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="14.6troubleshootingsystemerrors.html"
+                        title="previous chapter">14.6. Tracking System Failures</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="15.0improvingusereffectiveness.html"
+                        title="next chapter">15. Improving User Effectiveness</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/14.7troubleshootingjobs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="15.0improvingusereffectiveness.html" title="15. Improving User Effectiveness"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="14.6troubleshootingsystemerrors.html" title="14.6. Tracking System Failures"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" >14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

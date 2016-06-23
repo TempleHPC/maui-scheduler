@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Case Study: Mixed Parallel/Serial Homogeneous Cluster &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" />
+    <link rel="up" title="Appendix A: Case Studies" href="../a.acasestudy.html" />
+    <link rel="next" title="Case Study: Partitioned Heterogeneous Cluster" href="case2.html" />
+    <link rel="prev" title="Appendix A: Case Studies" href="../a.acasestudy.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="case2.html" title="Case Study: Partitioned Heterogeneous Cluster"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../a.acasestudy.html" title="Appendix A: Case Studies"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" accesskey="U">Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study-mixed-parallel-serial-homogeneous-cluster">
+<h1>Case Study: Mixed Parallel/Serial Homogeneous Cluster<a class="headerlink" href="#case-study-mixed-parallel-serial-homogeneous-cluster" title="Permalink to this headline">¶</a></h1>
+<p><strong>Overview</strong></p>
+<p>A multi-user site wishes to control the distribution of compute cycles
+while minimizing job turnaround time and maximizing overall system
+utilization.</p>
+<p><strong>Resources</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Compute Nodes:</td>
+<td>64 2-way SMP Linux® nodes with 512 MB RAM and 16 GB local scratch space</td>
+</tr>
+<tr class="row-even"><td>Resource Manager:</td>
+<td>OpenPBS 2.3</td>
+</tr>
+<tr class="row-odd"><td>Network:</td>
+<td>100 MB switched Ethernet</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workload</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Job Size:</td>
+<td>Range in size from 1 to 32 processors with approximate quartile job frequency distribution of:
+1 - 2, 3 - 8, 9 - 24, and 25 - 32 nodes</td>
+</tr>
+<tr class="row-even"><td>Job Length:</td>
+<td>Jobs range in length from 1 to 24 hours</td>
+</tr>
+<tr class="row-odd"><td>Job Owners:</td>
+<td>Six major groups consisting of about 50 users in total</td>
+</tr>
+<tr class="row-even"><td>Notes:</td>
+<td>During prime time hours, the majority of jobs submitted are smaller, short running development jobs where users are testing out new code and new data sets.&nbsp; The owners of these jobs are often unable to proceed with their work until a job they have submitted completes.&nbsp; Many of these jobs are interactive in nature.&nbsp; Throughout the day, large, longer running production workload is also submitted but these jobs do not have comparable turnaround time pressure.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Goals</strong></p>
+<p>The groups &#8216;Meteorology&#8217; and &#8216;Statistics&#8217; must receive approximately 45%
+and 35% of the total computing resources respectively.&nbsp; Nodes cannot be
+shared among tasks from different jobs.</p>
+<p>The system should attempt to minimize turnaround time during prime hours
+(Mon - Fri, 8:00 AM to 5:00 PM) and maximize system utilization during
+all other times.&nbsp; System maintenance should be scheduled efficiently
+within these constraints.</p>
+<p><strong>Analysis</strong></p>
+<p>The network topology is flat and nodes are homogeneous.&nbsp; This makes life
+significantly simpler.&nbsp; The focus for this site is controlling
+distribution of compute cycles without negatively impacting overall
+system turnaround and utilization.&nbsp; Currently, the best mechanism for
+doing this is <a class="reference external" href="../6.3fairshare.html">Fairshare</a>.</p>
+<p>Fairshare can be used to adjust the priority of jobs to favor or
+disfavor jobs based on fairshare targets and historical usage.&nbsp; In
+essence, this feature improves the turnaround time of the jobs not
+meeting their fairshare target at the expense of those that are.
+Depending on the criticality of the resource distribution constraints,
+an allocation bank such as
+<a class="reference external" href="http://www.adaptivecomputing.com/gold">Gold</a>, which enables more
+stringent control over the amount of resources which can be delivered to
+various users, may be desirable.</p>
+<p>To manage the prime time job turnaround constraints, a <a class="reference external" href="../7.1.3standingreservations.html">standing
+reservation</a> would probably be the
+best approach.&nbsp; A standing reservation can be used to set aside a subset
+of the nodes for quick turnaround jobs.&nbsp; This reservation can be
+configured with a time based access point to allow only jobs which will
+complete within some time X to utilize these resources.&nbsp; The reservation
+has advantages over a typical queue based solution in this case in that
+these quick turnaround jobs can be run anywhere resources are available,
+either inside, or outside the reservation, or even crossing reservation
+boundaries.&nbsp; The site does not have any hard constraints about what is
+acceptable turnaround time so the best approach would probably be to
+analyze the site&#8217;s workload under a number of configurations using the
+<a class="reference external" href="../16.3.0simulations.html">simulator</a> and observe the corresponding
+scheduling behavior.</p>
+<p>For general optimization, there are a number of scheduling aspects to
+consider, scheduling algorithm, reservation policies, node allocation
+policies, and job prioritization.&nbsp; It is almost always a good idea to
+utilize the scheduler&#8217;s <a class="reference external" href="../8.2backfill.html">backfill</a> capability
+since this has a tendency to increase average system utilization and
+decrease average turnaround time in a surprisingly fair manner.&nbsp; It does
+tend to favor somewhat small and short jobs over others which is exactly
+what this site desires.&nbsp; Reservation policies are often best left alone
+unless rare starvation issues arise or quality of service policies are
+desired.&nbsp; Node allocation policies are effectively meaningless since the
+system is homogeneous.&nbsp; The final scheduling aspect, job prioritization,
+can play a significant role in meeting site goals.</p>
+<p>To maximize overall system utilization, maintaining a significant
+<a class="reference external" href="../5.1.4prioritystrategies.html">Resource</a> priority factor will
+favor large resource (processor) jobs, pushing them to the front of the
+queue.&nbsp; Large jobs, though often only a small portion of a site&#8217;s job
+count, regularly account for the majority of a site&#8217;s delivered compute
+cycles.&nbsp; To minimize job turnaround, the
+<a class="reference external" href="../5.1.2priorityfactors.html">XFactor</a> priority factor will favor
+short running jobs.&nbsp; Finally, in order for fairshare to be effective, a
+significant <a class="reference external" href="../6.3fairshare.html">Fairshare</a> priority factor must be
+included.</p>
+<p><strong>Configuration</strong></p>
+<p>For this scenario, a resource manager configuration consisting of a
+single, global queue/class with no constraints would allow Moab the
+maximum flexibility and opportunities for optimization.</p>
+<p>The following Moab configuration would be a good initial stab:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># reserve 16 processors during prime time for jobs requiring less than 2 hours to complete</span>
+<span class="n">SRNAME</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>          <span class="n">fast</span>
+<span class="n">SRTASKCOUNT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">16</span>
+<span class="n">SRDAYS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>          <span class="n">MON</span> <span class="n">TUE</span> <span class="n">WED</span> <span class="n">THU</span> <span class="n">FRI</span>
+<span class="n">SRSTARTTIME</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="mi">8</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">SRENDTIME</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>       <span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">SRMAXTIME</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>       <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+
+<span class="c1"># prioritize jobs for Fairshare, XFactor, and Resources</span>
+<span class="n">RESOURCEWEIGHT</span>     <span class="mi">20</span>
+<span class="n">XFACTORWEIGHT</span>      <span class="mi">100</span>
+<span class="n">FAIRSHAREWEIGHT</span>    <span class="mi">100</span>
+
+<span class="c1"># disable SMP node sharing</span>
+<span class="n">NODEACCESSPOLICY</span>   <span class="n">DEDICATED</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Group</span><span class="p">:</span><span class="n">Meteorology</span>  <span class="n">FSTARGET</span><span class="o">=</span><span class="mi">45</span>
+<span class="n">Group</span><span class="p">:</span><span class="n">Statistics</span>   <span class="n">FSTARGET</span><span class="o">=</span><span class="mi">35</span>
+</pre></div>
+</div>
+<p><strong>Monitoring</strong></p>
+<p>The <a class="reference external" href="../commands/mdiag-fairshare.html">mdiag -f</a> command will allow
+you to monitor the effectiveness of the fairshare component of your job
+prioritization.&nbsp; Adjusting the Fairshare priority factor will make
+fairshare more or less effective.&nbsp; A trade off must occur between
+fairshare and other goals managed via job prioritization.
+The <a class="reference external" href="../commands/mdiag-priority.html">mdiag -p</a> command will help you
+analyze the priority distributions of the currently idle jobs.&nbsp; The
+<a class="reference external" href="../commands/showstatsf.html">showstats -f AVGXFACTOR</a> command will
+provide a good indication of average job turnaround while the
+<a class="reference external" href="../commands/showstats.html">showstats</a> command will give an
+excellent analysis of longer term historical performance statistics.</p>
+<p><strong>Conclusions</strong></p>
+<p>Any priority configuration will need to be tuned over time because the
+effect of priority weights is highly dependent upon the site specific
+workload.&nbsp; Additionally, the priority weights themselves are part of a
+feedback loop which adjust the site workload.&nbsp; However, most sites
+quickly stabilize and significant priority tuning is unnecessary after a
+few days.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../a.acasestudy.html"
+                        title="previous chapter">Appendix A: Case Studies</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="case2.html"
+                        title="next chapter">Case Study: Partitioned Heterogeneous Cluster</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/casestudies/case1.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="case2.html" title="Case Study: Partitioned Heterogeneous Cluster"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../a.acasestudy.html" title="Appendix A: Case Studies"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../a.acasestudy.html" >Appendix A: Case Studies</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

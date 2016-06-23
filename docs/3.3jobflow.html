@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.3. Scheduling Iterations and Job Flow &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="3. Scheduler Basics" href="3.0basics.html" />
+    <link rel="next" title="3.4. Configuring the Scheduler" href="3.4configure.html" />
+    <link rel="prev" title="3.2. Scheduling Environment" href="3.2environment.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="3.4configure.html" title="3.4. Configuring the Scheduler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="3.2environment.html" title="3.2. Scheduling Environment"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="3.0basics.html" accesskey="U">3. Scheduler Basics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scheduling-iterations-and-job-flow">
+<h1>3.3. Scheduling Iterations and Job Flow<a class="headerlink" href="#scheduling-iterations-and-job-flow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="scheduling-iterations">
+<h2>3.3.1. Scheduling Iterations<a class="headerlink" href="#scheduling-iterations" title="Permalink to this headline">¶</a></h2>
+<p>In any given scheduling iteration, many activities take place. These are
+broken into the following major categories:</p>
+<ul class="simple">
+<li>Update State Information</li>
+<li>Refresh Reservations</li>
+<li>Schedule Reserved Jobs</li>
+<li>Schedule Priority Jobs</li>
+<li>Backfill Jobs</li>
+<li>Update Statistics</li>
+<li>Handle User Requests</li>
+</ul>
+<div class="section" id="update-state-information">
+<h3>3.3.1.1. Update State Information<a class="headerlink" href="#update-state-information" title="Permalink to this headline">¶</a></h3>
+<p>Each iteration, the scheduler contacts the resource manager(s) and
+requests up to date information on compute resources, workload, and
+policy configuration. On most systems, these calls are to a centralized
+resource manager daemon which possesses all information.</p>
+</div>
+<div class="section" id="refresh-reservations">
+<h3>3.3.1.2. Refresh Reservations<a class="headerlink" href="#refresh-reservations" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="schedule-reserved-jobs">
+<h3>3.3.1.3. Schedule Reserved Jobs<a class="headerlink" href="#schedule-reserved-jobs" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="schedule-priority-jobs">
+<h3>3.3.1.4. Schedule Priority Jobs<a class="headerlink" href="#schedule-priority-jobs" title="Permalink to this headline">¶</a></h3>
+<p>In scheduling jobs, multiple steps occur.</p>
+</div>
+<div class="section" id="backfill-jobs">
+<h3>3.3.1.5. Backfill Jobs<a class="headerlink" href="#backfill-jobs" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="update-statistics">
+<h3>3.3.1.6. Update Statistics<a class="headerlink" href="#update-statistics" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="handle-user-requests">
+<h3>3.3.1.7. Handle User Requests<a class="headerlink" href="#handle-user-requests" title="Permalink to this headline">¶</a></h3>
+<p>User requests include any call requesting state information,
+configuration changes, or job or resource manipulation commands. These
+requests may come in the form of user client calls, peer daemon calls,
+or process signals.</p>
+</div>
+<div class="section" id="perform-next-scheduling-cycle">
+<h3>3.3.1.8. Perform Next Scheduling Cycle<a class="headerlink" href="#perform-next-scheduling-cycle" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">Maui operates on a polling/event driven basis. When all scheduling
+activities are complete, Maui will process user requests until a new
+resource manager event is received or an internal event is generated.
+Resource manager events include activities such as a new job
+submission or completion of an active job, addition of new node
+resources, or changes in resource manager policies. Internal events
+include admin &#8216;<a class="reference external" href="commands/schedctl.html">schedule</a>&#8216; requests,
+reservation activation/deactivation, or the expiration of the
+<a class="reference external" href="a.fparameters.html#rmpollinterval">RMPOLLINTERVAL</a> timer.</div>
+</div>
+</div>
+</div>
+<div class="section" id="detailed-job-flow">
+<h2>3.3.2. Detailed Job Flow<a class="headerlink" href="#detailed-job-flow" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="determine-basic-job-feasibility">
+<h3>3.3.2.1. Determine Basic Job Feasibility<a class="headerlink" href="#determine-basic-job-feasibility" title="Permalink to this headline">¶</a></h3>
+<p>The first step in scheduling is determining which jobs are feasible.
+This step eliminates jobs which have job holds in place, invalid job
+states (i.e., Completed, Not Queued, Defered, etc), or unsatisfied
+preconditions. Preconditions may include stage-in files or completion of
+preliminary job steps.</p>
+</div>
+<div class="section" id="prioritize-jobs">
+<h3>3.3.2.2. Prioritize Jobs<a class="headerlink" href="#prioritize-jobs" title="Permalink to this headline">¶</a></h3>
+<p>With a list of feasible jobs created, the next step involves
+<a class="reference external" href="5.1jobprioritization.html">determining the relative priority</a> of all
+jobs within that list. A priority for each job is calculated based on
+job attributes such as job owner, job size, length of time the job has
+been queued, and so forth.</p>
+</div>
+<div class="section" id="enforce-configured-throttling-policies">
+<h3>3.3.2.3. Enforce Configured Throttling Policies<a class="headerlink" href="#enforce-configured-throttling-policies" title="Permalink to this headline">¶</a></h3>
+<p>Any configured <a class="reference external" href="6.2throttlingpolicies.html">throttling policies</a> are
+then applied constraining how many jobs, nodes, processors, etc are
+allowed on a per credential basis. Jobs which violate these policies are
+not considered for scheduling.</p>
+</div>
+<div class="section" id="determine-resource-availability">
+<h3>3.3.2.4. Determine Resource Availability<a class="headerlink" href="#determine-resource-availability" title="Permalink to this headline">¶</a></h3>
+<p>For each job, Maui attempts to locate the required compute resources
+needed by the job. In order for a match to be made, the node must
+possess all node attributes specified by the job and possess adequate
+available resources to meet the <em>TasksPerNode</em> job constraint (Default
+TasksPerNode is 1) Normally, Maui determine a node to have adequate
+resources if the resources are <em>neither utilized by nor dedicated to</em>
+another job using the calculation</p>
+<div class="math">
+\[R.Available = R.Configured - MAX(R.Dedicated,R.Utilized).\]</div>
+<p>The
+<a class="reference external" href="a.fparameters.html#resourceavailabilitypolicy">RESOURCEAVAILABILITYPOLICY</a>
+parameter can be modified to adjust this behavior.</p>
+</div>
+<div class="section" id="allocate-resources-to-job">
+<h3>3.3.2.5. Allocate Resources to Job<a class="headerlink" href="#allocate-resources-to-job" title="Permalink to this headline">¶</a></h3>
+<p>If adequate resources can be found for a job, the <a class="reference external" href="5.2nodeallocation.html">node allocation
+policy</a> is then applied to select the best
+set of resources. These allocation policies allow selection criteria
+such as speed of node, type of reservations, or excess node resources to
+be figured into the allocation decision to improve the performance of
+the job and/or maximize the freedom of the scheduler in making future
+scheduling decisions.</p>
+</div>
+<div class="section" id="distribute-jobs-tasks-across-allocated-resources">
+<h3>3.3.2.6. Distribute Jobs Tasks Across Allocated Resources<a class="headerlink" href="#distribute-jobs-tasks-across-allocated-resources" title="Permalink to this headline">¶</a></h3>
+<p>With the resources selected, Maui then maps job tasks to the actual
+resources. This distribution of tasks is typically based on simple task
+distribution algorithms such as round-robin or max blocking, but can
+also incorporate parallel language library (i.e., MPI, PVM, etc)
+specific patterns used to minimize interprocess communication overhead.</p>
+</div>
+<div class="section" id="launch-job">
+<h3>3.3.2.7. Launch Job<a class="headerlink" href="#launch-job" title="Permalink to this headline">¶</a></h3>
+<p>With the resources selected and task distribution mapped, the scheduler
+then contacts the resource manager and informs it where and how to
+launch the job. The resource manager then initiates the actual job
+executable.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.3. Scheduling Iterations and Job Flow</a><ul>
+<li><a class="reference internal" href="#scheduling-iterations">3.3.1. Scheduling Iterations</a><ul>
+<li><a class="reference internal" href="#update-state-information">3.3.1.1. Update State Information</a></li>
+<li><a class="reference internal" href="#refresh-reservations">3.3.1.2. Refresh Reservations</a></li>
+<li><a class="reference internal" href="#schedule-reserved-jobs">3.3.1.3. Schedule Reserved Jobs</a></li>
+<li><a class="reference internal" href="#schedule-priority-jobs">3.3.1.4. Schedule Priority Jobs</a></li>
+<li><a class="reference internal" href="#backfill-jobs">3.3.1.5. Backfill Jobs</a></li>
+<li><a class="reference internal" href="#update-statistics">3.3.1.6. Update Statistics</a></li>
+<li><a class="reference internal" href="#handle-user-requests">3.3.1.7. Handle User Requests</a></li>
+<li><a class="reference internal" href="#perform-next-scheduling-cycle">3.3.1.8. Perform Next Scheduling Cycle</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#detailed-job-flow">3.3.2. Detailed Job Flow</a><ul>
+<li><a class="reference internal" href="#determine-basic-job-feasibility">3.3.2.1. Determine Basic Job Feasibility</a></li>
+<li><a class="reference internal" href="#prioritize-jobs">3.3.2.2. Prioritize Jobs</a></li>
+<li><a class="reference internal" href="#enforce-configured-throttling-policies">3.3.2.3. Enforce Configured Throttling Policies</a></li>
+<li><a class="reference internal" href="#determine-resource-availability">3.3.2.4. Determine Resource Availability</a></li>
+<li><a class="reference internal" href="#allocate-resources-to-job">3.3.2.5. Allocate Resources to Job</a></li>
+<li><a class="reference internal" href="#distribute-jobs-tasks-across-allocated-resources">3.3.2.6. Distribute Jobs Tasks Across Allocated Resources</a></li>
+<li><a class="reference internal" href="#launch-job">3.3.2.7. Launch Job</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="3.2environment.html"
+                        title="previous chapter">3.2. Scheduling Environment</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="3.4configure.html"
+                        title="next chapter">3.4. Configuring the Scheduler</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/3.3jobflow.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="3.4configure.html" title="3.4. Configuring the Scheduler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="3.2environment.html" title="3.2. Scheduling Environment"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="3.0basics.html" >3. Scheduler Basics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

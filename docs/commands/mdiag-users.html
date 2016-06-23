@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag-u">mdiag -u</p>
+<p><strong>(Moab User Diagnostics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">u</span> <span class="p">[</span><span class="n">userid</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The <strong>mdiag -u</strong> command is used to present information about user
+records maintained by Moab. The information presented includes user
+name, UID, scheduling priority, default job flags, default QOS level,
+List of accessible QOS levels, and list of accessible partitions.
+<strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">u</span>
+<span class="n">evaluating</span> <span class="n">user</span> <span class="n">information</span>
+<span class="n">Name</span>         <span class="n">Priority</span>        <span class="n">Flags</span>         <span class="n">QDef</span>      <span class="n">QOSList</span><span class="o">*</span>        <span class="n">PartitionList</span> <span class="n">Target</span>  <span class="n">Limits</span>
+
+<span class="n">jvella</span>              <span class="mi">0</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>                <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>   <span class="mf">0.00</span>  <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">ALIST</span><span class="o">=</span><span class="n">Engineering</span>
+  <span class="n">Message</span><span class="p">:</span>  <span class="n">profiling</span> <span class="n">enabled</span> <span class="p">(</span><span class="mi">597</span> <span class="n">of</span> <span class="mi">3000</span> <span class="n">samples</span><span class="o">/</span><span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span> <span class="n">interval</span><span class="p">)</span>
+<span class="p">[</span><span class="n">NONE</span><span class="p">]</span>              <span class="mi">0</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>                <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>   <span class="mf">0.00</span>  <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+<span class="n">reynolds</span>            <span class="mi">0</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>                <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>   <span class="mf">0.00</span>  <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">ALIST</span><span class="o">=</span><span class="n">Administration</span>
+  <span class="n">Message</span><span class="p">:</span>  <span class="n">profiling</span> <span class="n">enabled</span> <span class="p">(</span><span class="mi">597</span> <span class="n">of</span> <span class="mi">3000</span> <span class="n">samples</span><span class="o">/</span><span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span> <span class="n">interval</span><span class="p">)</span>
+<span class="n">mshaw</span>               <span class="mi">0</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>                <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>   <span class="mf">0.00</span>  <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">ALIST</span><span class="o">=</span><span class="n">Test</span>
+  <span class="n">Message</span><span class="p">:</span>  <span class="n">profiling</span> <span class="n">enabled</span> <span class="p">(</span><span class="mi">584</span> <span class="n">of</span> <span class="mi">3000</span> <span class="n">samples</span><span class="o">/</span><span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span> <span class="n">interval</span><span class="p">)</span>
+<span class="n">kforbes</span>             <span class="mi">0</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>                <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>   <span class="mf">0.00</span>  <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">ALIST</span><span class="o">=</span><span class="n">Shared</span>
+  <span class="n">Message</span><span class="p">:</span>  <span class="n">profiling</span> <span class="n">enabled</span> <span class="p">(</span><span class="mi">597</span> <span class="n">of</span> <span class="mi">3000</span> <span class="n">samples</span><span class="o">/</span><span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span> <span class="n">interval</span><span class="p">)</span>
+<span class="n">gastor</span>              <span class="mi">0</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>       <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>                <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>   <span class="mf">0.00</span>  <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+  <span class="n">ALIST</span><span class="o">=</span><span class="n">Engineering</span>
+  <span class="n">Message</span><span class="p">:</span>  <span class="n">profiling</span> <span class="n">enabled</span> <span class="p">(</span><span class="mi">597</span> <span class="n">of</span> <span class="mi">3000</span> <span class="n">samples</span><span class="o">/</span><span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span> <span class="n">interval</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that only users which have jobs which are currently queued or have
+been queued since Moab was most recently started are listed.</p>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="showstats.html">showstats</a> command (display user statistics)</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag-users.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

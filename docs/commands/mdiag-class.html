@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag-c">mdiag -c</p>
+<p><strong>(Moab Class Diagnostics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">c</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="n">classid</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The <strong>mdiag -c</strong> command provides detailed information about the classes
+Moab is currently tracking. This command also allows an administrator to
+verify correct throttling policies and access provided to and from other
+credentials.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>The term <a class="reference external" href="../3.2environment.html#classdefinition">class</a> is used interchangeably with the term <em>queue</em> and generally refers to resource manager queue.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>`XML Output &lt;&gt;`__</strong></p>
+<p><strong>mdiag -c</strong> information can be reported as XML as well. This is done
+with the command &#8220;mdiag -c &lt;CLASS_ID&gt; &#8211;format=xml&#8221;. XML based class
+information will be written to STDOUT in the following format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>&lt;Data&gt;
+  &lt;class &lt;ATTR&gt;=&quot;&lt;VAL&gt;&quot; ... &gt;
+    &lt;stats &lt;ATTR&gt;=&quot;&lt;VAL&gt;&quot; ... &gt;
+      &lt;Profile &lt;ATTR&gt;=&quot;&lt;VAL&gt;&quot; ... &gt;
+      &lt;/Profile&gt;
+    &lt;/stats&gt;
+  &lt;/class&gt;
+&lt;Data&gt;
+
+  ...
+&lt;/Data&gt;
+</pre></div>
+</div>
+<p>In addition to the attributes listed below, mdiag -c&#8217;s XML children
+describe its general statistics information (stats XML Element) and
+profile based statistics (<a class="reference external" href="../xml/Profile.html">Profile</a> XML
+element).</p>
+<p><strong>XML Attributes</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ADEF</td>
+<td>Accounts a class has access to.</td>
+</tr>
+<tr class="row-odd"><td>CAPACITY</td>
+<td>Number of procs available to the class.</td>
+</tr>
+<tr class="row-even"><td>DEFAULT.ATTR</td>
+<td>Default attributes attached to a job.</td>
+</tr>
+<tr class="row-odd"><td>DEFAULT.DISK</td>
+<td>Default required disk attached to a job.</td>
+</tr>
+<tr class="row-even"><td>DEFAULT.FEATURES</td>
+<td>Default required node features attached to a job.</td>
+</tr>
+<tr class="row-odd"><td>DEFAULT.GRES</td>
+<td>Default generic resources attached to a job.</td>
+</tr>
+<tr class="row-even"><td>DEFAULT.MEM</td>
+<td>Default required memeory attached to a job.</td>
+</tr>
+<tr class="row-odd"><td>DEFAULT.NODESET</td>
+<td>Default specified nodeset attached to a job.</td>
+</tr>
+<tr class="row-even"><td>DEFAULT.WCLIMIT</td>
+<td>Default wallclock limit attached to a job.</td>
+</tr>
+<tr class="row-odd"><td>EXCL.FEATURES</td>
+<td>List of excluded (disallowed) node features.</td>
+</tr>
+<tr class="row-even"><td>EXCL.FLAGS</td>
+<td>List of excluded (disallowed) job flags.</td>
+</tr>
+<tr class="row-odd"><td>FSTARGET</td>
+<td>The class&#8217; fairshare target.</td>
+</tr>
+<tr class="row-even"><td>HOLD</td>
+<td>If TRUE this credential has a hold on it, FALSE otherwise.</td>
+</tr>
+<tr class="row-odd"><td>HOSTLIST</td>
+<td>The list of hosts in this class.</td>
+</tr>
+<tr class="row-even"><td>JOBEPILOG</td>
+<td>Scheduler level job epilog to be run after job is completed by resource manager (script path).</td>
+</tr>
+<tr class="row-odd"><td>JOBFLAGS</td>
+<td>Default flags attached to jobs in the class.</td>
+</tr>
+<tr class="row-even"><td>JOBPROLOG</td>
+<td>Scheduler level job prolog to be run before job is started by resource manager (script path).</td>
+</tr>
+<tr class="row-odd"><td>ID</td>
+<td>The unique ID of this class.</td>
+</tr>
+<tr class="row-even"><td>LOGLEVEL</td>
+<td>The log level attached to jobs in the class.</td>
+</tr>
+<tr class="row-odd"><td>MAX.PROC</td>
+<td>The max processors per job in the class.</td>
+</tr>
+<tr class="row-even"><td>MAX.PS</td>
+<td>The max processor-seconds per job in the class.</td>
+</tr>
+<tr class="row-odd"><td>MAX.WCLIMIT</td>
+<td>The max wallclock limit per job in the class.</td>
+</tr>
+<tr class="row-even"><td>MAXIJOB</td>
+<td>The max idle jobs in the class.</td>
+</tr>
+<tr class="row-odd"><td>MAXIPROC</td>
+<td>The max idle processors in the class.</td>
+</tr>
+<tr class="row-even"><td>MAXJOBPERUSER</td>
+<td>The max jobs per user.</td>
+</tr>
+<tr class="row-odd"><td>MAXNODEPERJOB</td>
+<td>The max nodes per job.</td>
+</tr>
+<tr class="row-even"><td>MAXNODEPERUSER</td>
+<td>The max nodes per user.</td>
+</tr>
+<tr class="row-odd"><td>MAXPROCPERJOB</td>
+<td>The max processors per job.</td>
+</tr>
+<tr class="row-even"><td>MAXPROCPERNODE</td>
+<td>The max processors per node.</td>
+</tr>
+<tr class="row-odd"><td>MAXPROCPERUSER</td>
+<td>The max processors per user.</td>
+</tr>
+<tr class="row-even"><td>MIN.NODE</td>
+<td>The minimum nodes per job in the class.</td>
+</tr>
+<tr class="row-odd"><td>MIN.PROC</td>
+<td>The minimum processors per job in the class.</td>
+</tr>
+<tr class="row-even"><td>MIN.WCLIMIT</td>
+<td>The minimum wallclock limit per job in the class.</td>
+</tr>
+<tr class="row-odd"><td>NODEACCESSPOLICY</td>
+<td>The node access policy associated with jobs in the class.</td>
+</tr>
+<tr class="row-even"><td>OCDPROCFACTOR</td>
+<td>Dedicated processor factor.</td>
+</tr>
+<tr class="row-odd"><td>OCNODE</td>
+<td>Overcommit node.</td>
+</tr>
+<tr class="row-even"><td>PRIORITY</td>
+<td>The class&#8217; associated priority.</td>
+</tr>
+<tr class="row-odd"><td>PRIORITYF</td>
+<td>Priority calculation function.</td>
+</tr>
+<tr class="row-even"><td>REQ.FEATURES</td>
+<td>Required features for a job to be considered in the class.</td>
+</tr>
+<tr class="row-odd"><td>REQ.FLAGS</td>
+<td>Required flags for a job to be considered in the class.</td>
+</tr>
+<tr class="row-even"><td>REQ.IMAGE</td>
+<td>Required image for a job to be considered in the class.</td>
+</tr>
+<tr class="row-odd"><td>REQUIREDUSERLIST</td>
+<td>The list of users who have access to the class.</td>
+</tr>
+<tr class="row-even"><td>RM</td>
+<td>The resouce manager reporting the class.</td>
+</tr>
+<tr class="row-odd"><td>RMLIST</td>
+<td>The list of resource managers who have access to the class.</td>
+</tr>
+<tr class="row-even"><td>STATE</td>
+<td>The class&#8217; state.</td>
+</tr>
+<tr class="row-odd"><td>WCOVERRUN</td>
+<td>Tolerated amount of time beyond the specified wall clock limit.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">c</span>
+
+<span class="n">Class</span><span class="o">/</span><span class="n">Queue</span> <span class="n">Status</span>
+
+<span class="n">ClassID</span>        <span class="n">Priority</span> <span class="n">Flags</span>        <span class="n">QDef</span>              <span class="n">QOSList</span><span class="o">*</span> <span class="n">PartitionList</span>        <span class="n">Target</span> <span class="n">Limits</span>
+
+<span class="n">DEFAULT</span>               <span class="mi">0</span> <span class="o">---</span>          <span class="o">---</span>                   <span class="o">---</span>  <span class="o">---</span>                   <span class="mf">0.00</span>  <span class="o">---</span>
+<span class="n">batch</span>                 <span class="mi">1</span> <span class="o">---</span>          <span class="o">---</span>                   <span class="o">---</span>  <span class="p">[</span><span class="n">A</span><span class="p">][</span><span class="n">B</span><span class="p">]</span>               <span class="mf">70.00</span>  <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">33</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span><span class="mi">250</span>
+  <span class="n">MAX</span><span class="o">.</span><span class="n">WCLIMIT</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">MAXPROCPERJOB</span><span class="o">=</span><span class="mi">128</span>
+<span class="n">long</span>                  <span class="mi">1</span> <span class="o">---</span>          <span class="n">low</span>                   <span class="n">low</span>  <span class="p">[</span><span class="n">A</span><span class="p">]</span>                  <span class="mf">10.00</span>  <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">3</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span>
+  <span class="n">MAX</span><span class="o">.</span><span class="n">WCLIMIT</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">MAXPROCPERJOB</span><span class="o">=</span><span class="mi">128</span>
+<span class="n">fast</span>                <span class="mi">100</span> <span class="o">---</span>          <span class="n">high</span>                 <span class="n">high</span>  <span class="p">[</span><span class="n">B</span><span class="p">]</span>                  <span class="mf">10.00</span>  <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">8</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="mi">150</span>
+  <span class="n">MAX</span><span class="o">.</span><span class="n">WCLIMIT</span><span class="o">=</span><span class="mi">00</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span>  <span class="n">MAXPROCPERJOB</span><span class="o">=</span><span class="mi">128</span>
+<span class="n">bigmem</span>                <span class="mi">1</span> <span class="o">---</span>          <span class="n">low</span><span class="p">,</span><span class="n">high</span>              <span class="n">low</span>  <span class="o">---</span>                  <span class="mf">10.00</span>  <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span>
+  <span class="n">MAXPROCPERJOB</span><span class="o">=</span><span class="mi">128</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>The <strong>Limits</strong> column will display
+limits in the following format:
+&lt;USAGE&gt;:&lt;HARDLIMIT&gt;[,&lt;SOFTLIMIT&gt;]</td>
+</tr>
+</tbody>
+</table>
+<p>In the example above, class <code class="docutils literal"><span class="pre">fast</span></code> has <strong>MAXJOB</strong> soft and hard limits
+of 100 and 150 respectively and is currently running 8 jobs.</p>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="showstats.html">showstats</a> command - display general statistics</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag-class.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

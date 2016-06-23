@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showstart">showstart</p>
+<p><strong>(Show Start Estimate)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showstart</span> <span class="p">{</span><span class="n">jobid</span><span class="o">|</span><span class="n">proccount</span><span class="p">[</span><span class="nd">@duration</span><span class="p">]</span><span class="o">|</span><span class="n">s3jobspec</span><span class="p">}</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span> <span class="p">{</span><span class="nb">all</span><span class="o">|</span><span class="n">hist</span><span class="o">|</span><span class="n">prio</span><span class="o">|</span><span class="n">rsv</span><span class="p">}]</span>
+          <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="p">[</span><span class="n">peer</span><span class="p">]]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">qos</span><span class="o">=&lt;</span><span class="n">QOS</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>This command displays the estimated start time of a job based a number
+of analysis types. This analysis may include information based on
+historical usage, earliest available reservable resources, and priority
+based backlog analysis. Each type of analysis will provide somewhat
+different estimates base on current cluster environmental conditions. By
+default, only reservation based analysis is performed.
+<strong>Historical</strong> analysis utilizes historical queue times for
+jobs which match a similiar processor count and job duration profile.
+This information is updated on a sliding window which is configurable
+within <code class="docutils literal"><span class="pre">moab.cfg</span></code></p>
+<p><strong>Reservation</strong> based start time estimation incorporates
+information regarding current administrative, user, and job reservations
+to determine the earliest time the specified job could allocate the
+needed resources and start running. In essence, this estimate will
+indicate the earliest time the job would start <em>assuming this job was
+the highest priority job in the queue</em>.</p>
+<p><strong>Priority</strong> based job start analysis determines when the
+queried job would fit in the queue and determines the estimated amount
+of time required to complete the jobs which are currently running or
+scheduled to run before this job can start.</p>
+<p>In all cases, if the job is running, this command will return the time
+the job started. If the job already has a reservation, this command will
+return the start time of the reservation.</p>
+<p><strong>Access</strong></p>
+<p>By default, this command can be run by any user.
+<strong>Parameters</strong></p>
+<p>Parameter
+Description
+<strong>DURATION</strong>
+duration of pseudo-job to be checked in format [[[DD:]HH:]MM:]SS
+(default duration is 1 second)
+<strong>-e</strong>
+estimate method. By default, Moab will use the reservation based
+estimation method.
+<strong>-f</strong>
+use <em>feedback</em>. If specified, Moab will apply historical accuracy
+information to improve the quality of the estimate. See
+<a class="reference external" href="../a.fparameters.html#enablestartestimatestats">ENABLESTARTESTIMATESTATS</a>
+for more information.
+<strong>-g</strong>
+grid mode. Obtain showstart information from remote resource managers.
+If -g is not used and Moab determines that job is already migrated, Moab
+obtains showstart information form the remote Moab where the job was
+migrated to. All resource managers can be queried by using the keyword
+&#8220;all&#8221; which returns all information in a table.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ showstart -g all head.1
+
+Estimated Start Times
+
+[ Remote RM ] [ Reservation ] [ Priority ] [ Historical ]
+[ c1 ] [ 00:15:35 ] [ ] [ ]
+[ c2 ] [ 3:15:38 ] [ ] [ ]
+</pre></div>
+</div>
+<p><strong>-l qos=&lt;QOS&gt;</strong>
+Specifies what QOS the job must start under, using the same syntax as
+the <a class="reference external" href="msub.html">**msub**</a> command. Currently, no other resource
+manager extensions are supported. This flag only applies to hypothetical
+jobs by using the <code class="docutils literal"><span class="pre">proccount[&#64;duration]</span></code> syntax.
+<strong>JOBID</strong>
+job to be checked
+<strong>PROCCOUNT</strong>
+number of processors in pseudo-job to be checked
+<strong>S3JOBSPEC</strong>
+XML describing the job according to the Dept. of Energy <a class="reference external" href="../SSSWireProtocol_3.0.3.html">Scalable
+Systems Software</a>/S3 job
+specification.
+<strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstart</span> <span class="n">orion</span><span class="o">.</span><span class="mi">13762</span>
+
+<span class="n">job</span> <span class="n">orion</span><span class="o">.</span><span class="mi">13762</span> <span class="n">requires</span> <span class="mi">2</span> <span class="n">procs</span> <span class="k">for</span> <span class="mi">0</span><span class="p">:</span><span class="mi">33</span><span class="p">:</span><span class="mi">20</span>
+
+<span class="n">Estimated</span> <span class="n">Rsv</span> <span class="n">based</span> <span class="n">start</span> <span class="ow">in</span>                 <span class="mi">1</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">55</span> <span class="n">on</span> <span class="n">Fri</span> <span class="n">Jul</span> <span class="mi">15</span> <span class="mi">12</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">40</span>
+<span class="n">Estimated</span> <span class="n">Rsv</span> <span class="n">based</span> <span class="n">completion</span> <span class="ow">in</span>            <span class="mi">2</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">55</span> <span class="n">on</span> <span class="n">Fri</span> <span class="n">Jul</span> <span class="mi">15</span> <span class="mi">14</span><span class="p">:</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span>
+
+<span class="n">Estimated</span> <span class="n">Priority</span> <span class="n">based</span> <span class="n">start</span> <span class="ow">in</span>            <span class="mi">5</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">55</span> <span class="n">on</span> <span class="n">Fri</span> <span class="n">Jul</span> <span class="mi">15</span> <span class="mi">17</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">40</span>
+<span class="n">Estimated</span> <span class="n">Priority</span> <span class="n">based</span> <span class="n">completion</span> <span class="ow">in</span>       <span class="mi">6</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">55</span> <span class="n">on</span> <span class="n">Fri</span> <span class="n">Jul</span> <span class="mi">15</span> <span class="mi">18</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">40</span>
+
+<span class="n">Estimated</span> <span class="n">Historical</span> <span class="n">based</span> <span class="n">start</span> <span class="ow">in</span>         <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="n">on</span> <span class="n">Fri</span> <span class="n">Jul</span> <span class="mi">15</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">45</span>
+<span class="n">Estimated</span> <span class="n">Historical</span> <span class="n">based</span> <span class="n">completion</span> <span class="ow">in</span>     <span class="mi">1</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span> <span class="n">on</span> <span class="n">Fri</span> <span class="n">Jul</span> <span class="mi">15</span> <span class="mi">13</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">45</span>
+
+<span class="n">Best</span> <span class="n">Partition</span><span class="p">:</span> <span class="n">fast</span>
+</pre></div>
+</div>
+<p><strong>Example 2</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstart</span> <span class="mi">12</span><span class="nd">@3600</span>
+
+<span class="n">job</span> <span class="mi">12</span><span class="nd">@3600</span> <span class="n">requires</span> <span class="mi">12</span> <span class="n">procs</span> <span class="k">for</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">Earliest</span> <span class="n">start</span> <span class="ow">in</span>         <span class="mi">00</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">39</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Aug</span> <span class="mi">31</span> <span class="mi">16</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">45</span>
+<span class="n">Earliest</span> <span class="n">completion</span> <span class="ow">in</span>     <span class="mi">1</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">39</span> <span class="n">on</span> <span class="n">Wed</span> <span class="n">Aug</span> <span class="mi">31</span> <span class="mi">17</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">45</span>
+<span class="n">Best</span> <span class="n">Partition</span><span class="p">:</span> <span class="mi">32</span><span class="n">Bit</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>You cannot specify job flags when running <strong>showstart</strong>, and since a job by default can only run on one partition, <strong>showstart</strong> fails when querying for a job requiring more nodes than the largest partition available.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Additional Information</strong></p>
+<p>For reservation based estimates, the information provided by this
+command is more highly accurate if the job is highest priority, if the
+job has a reservation, or if the majority of the jobs which are of
+higher priority have reservations. &nbsp;Consequently, sites wishing to make
+decisions based on this information may want to consider using the
+<a class="reference external" href="../a.fparameters.html#reservationdepth">RESERVATIONDEPTH</a> parameter
+to increase the number of priority based reservations.&nbsp; This can be set
+so that most, or even all idle jobs receive priority reservations and
+make the results of this command generally useful.&nbsp; The only caution of
+this approach is that increasing the <strong>RESERVATIONDEPTH</strong> parameter more
+tightly constrains the decisions of the scheduler and may resulting in
+slightly lower system utilization (typically less than 8% reduction).
+.. rubric:: See Also</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">see-also</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="checkjob.html">checkjob</a></li>
+<li><a class="reference external" href="showres.html">showres</a></li>
+<li><a class="reference external" href="showstatsf.html#eststarttime">showstats -f eststarttime</a></li>
+<li><a class="reference external" href="showstatsf.html#avgqtime">showstats -f avgqtime</a></li>
+<li><a class="reference external" href="../15.3jobstarttimeestimates.html">Job Start Estimates</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showstart.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

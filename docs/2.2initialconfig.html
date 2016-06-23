@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.2. Initial Maui Configuration &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="2. Installation and Initial Configuration" href="2.0installation.html" />
+    <link rel="next" title="2.3. Initial Maui Testing" href="2.3initialtesting.html" />
+    <link rel="prev" title="2.1. Maui Installation" href="2.1installation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="2.3initialtesting.html" title="2.3. Initial Maui Testing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2.1installation.html" title="2.1. Maui Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="2.0installation.html" accesskey="U">2. Installation and Initial Configuration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="initial-maui-configuration">
+<h1>2.2. Initial Maui Configuration<a class="headerlink" href="#initial-maui-configuration" title="Permalink to this headline">¶</a></h1>
+<p>After you install Maui, there are a few decisions which must be made and
+some corresponding information which will need to be provided in the
+Maui configuration file, <strong>maui.cfg</strong>. The <strong>configure</strong> script
+automatically sets most of these parameters for you. However, this
+document provides some additional information to allow further initial
+configuration. If you are satisfied with the values specified in
+<strong>configure</strong> then you can probably skip this section. The parameters
+needed for proper initial startup include the following:</p>
+<ul class="simple">
+<li><strong>SERVERHOST</strong></li>
+</ul>
+<p>This specifies where Maui will run. It allows Maui client commands to
+locate the Maui server. It must specify the fully qualified hostname of
+the machine on which Maui will run. (Example: <code class="docutils literal"><span class="pre">SERVERHOST</span> <span class="pre">cw.psu.edu</span></code>)</p>
+<ul class="simple">
+<li><strong>SERVERPORT</strong></li>
+</ul>
+<p>This specifies the port on which the Maui server will listen for client
+connections. Unless the default port of 40559 is unacceptable, this
+parameter need not be set. (Example: <code class="docutils literal"><span class="pre">SERVERPORT</span> <span class="pre">50001</span></code>)</p>
+<ul class="simple">
+<li><strong>ADMIN1</strong></li>
+</ul>
+<p>Maui has 3 major levels of admin access. Users which are to be granted
+full control of all Maui functions should be indicated by setting the
+<strong>ADMIN1</strong> parameter. The first user in this list is considered the
+<em>primary</em> admin. It is the ID under which Maui should always run. Maui
+will only run under the primary admin user id and will shut itself down
+otherwise. In order for Maui to properly interact with both PBS and
+Loadleveler, it is important that the primary Maui admin also be
+configured as a resource manager admin within each of those systems.
+(Example: <code class="docutils literal"><span class="pre">ADMIN1</span> <span class="pre">joe</span> <span class="pre">charles</span></code>)</p>
+<ul class="simple">
+<li><strong>RMTYPE[X]</strong></li>
+</ul>
+<p>Maui must be told which resource manager(s) to talk to. Maui currently
+has interfaces to Loadleveler, Wiki, and PBS. To specify a resource
+manager, typically only the resource manager type needs to be indicated
+using the keywords LL, WIKI, or PBS (Example: <code class="docutils literal"><span class="pre">RMTYPE[0]</span> <span class="pre">PBS</span></code>). The
+array index in the parameter name allows more than one resource manager
+to be specified. In these multiple resource manager situations,
+additional parameters may need to be specified depending on the resource
+manager type. Some of the related resource management parameters are
+listed below. Further information about each is available in the
+<a class="reference external" href="a.fparameters.html">parameters</a> documentation.</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="a.fparameters.html#rmport">RMPORT</a></div>
+<div class="line"><a class="reference external" href="a.fparameters.html#rmserver">RMSERVER</a></div>
+<div class="line"><a class="reference external" href="a.fparameters.html#rmtype">RMTYPE</a></div>
+<div class="line"><a class="reference external" href="a.fparameters.html#rmauthtype">RMAUTHTYPE</a></div>
+<div class="line"><a class="reference external" href="a.fparameters.html#rmconfigfile">RMCONFIGFILE</a></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="2.1installation.html"
+                        title="previous chapter">2.1. Maui Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="2.3initialtesting.html"
+                        title="next chapter">2.3. Initial Maui Testing</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/2.2initialconfig.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="2.3initialtesting.html" title="2.3. Initial Maui Testing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2.1installation.html" title="2.1. Maui Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="2.0installation.html" >2. Installation and Initial Configuration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

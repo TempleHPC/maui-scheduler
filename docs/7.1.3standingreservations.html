@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7.1.3. Standing Reservations &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="7.1. Advance Reservations" href="7.1advancereservations.html" />
+    <link rel="next" title="7.1.4. Reservation Policies" href="7.1.4reservationpolicies.html" />
+    <link rel="prev" title="7.1.2. Administrative Reservations" href="7.1.2adminreservations.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="7.1.4reservationpolicies.html" title="7.1.4. Reservation Policies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="7.1.2adminreservations.html" title="7.1.2. Administrative Reservations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="7.0controllingresourceaccess.html" >7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="7.1advancereservations.html" accesskey="U">7.1. Advance Reservations</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="standing-reservations">
+<h1>7.1.3. Standing Reservations<a class="headerlink" href="#standing-reservations" title="Permalink to this headline">¶</a></h1>
+<p>Standing reservations build upon the capabilities of advance
+reservations to enable a site to enforce advanced usage policies in an
+efficient manner. Standing reservations provide a superset of the
+capabilities typically found in a batch queuing system&#8217;s class or queue
+architecture. For example, queues can be used to allow only particular
+types of jobs access to certain compute resources. Also, some batch
+systems allow these queues to configured so that they only allow this
+access during certain times of the day or week. Standing reservations
+allow these same capabilities but with greater flexibility and
+efficiency than is typically found in a normal queue management system.</p>
+<p>Standing Reservations provide a mechanism by which a site can dedicate a
+particular block of resources for a special use on a regular daily or
+weekly basis. For example, node X could be dedicated to running jobs
+only from users in the accounting group every Friday from 4 to 10 PM.
+See the <a class="reference external" href="7.1.1resoverview.html">Reservation Overview</a> for more
+information about the use of reservations. The <a class="reference external" href="7.1.5managingreservations.html">Managing
+Reservations</a> section provides a
+detailed explanation of the concepts and steps involved in the creation
+and configuration of standing reservations.</p>
+<div class="line-block">
+<div class="line">A standing reservation is a powerful means of</div>
+<div class="line">Controlling Access to Resources</div>
+<div class="line">Controlling Turnaround</div>
+</div>
+<p>see the following parameters for more information:
+<a class="reference external" href="a.fparameters.html#SRNAME">SRNAME</a><a class="reference external" href="a.fparameters.html#SRRESOURCES">SRRESOURCES</a><a class="reference external" href="a.fparameters.html#SRDAYS">SRDAYS</a><a class="reference external" href="a.fparameters.html#SRFLAGS">SRFLAGS</a><a class="reference external" href="a.fparameters.html#SRSTARTTIME">SRSTARTTIME</a><a class="reference external" href="a.fparameters.html#SRENDTIME">SRENDTIME</a><a class="reference external" href="a.fparameters.html#SRWSTARTTIME">SRWSTARTTIME</a><a class="reference external" href="a.fparameters.html#SRWENDTIME">SRWENDTIME</a><a class="reference external" href="a.fparameters.html#SRDEPTH">SRDEPTH</a><a class="reference external" href="a.fparameters.html#SRTASKCOUNT">SRTASKCOUNT</a><a class="reference external" href="a.fparameters.html#SRHOSTLIST">SRHOSTLIST</a><a class="reference external" href="a.fparameters.html#SRTPN">SRTPN</a><a class="reference external" href="a.fparameters.html#SRUSERLIST">SRUSERLIST</a><a class="reference external" href="a.fparameters.html#SRGROUPLIST">SRGROUPLIST</a><a class="reference external" href="a.fparameters.html#SRACCOUNTLIST">SRACCOUNTLIST</a><a class="reference external" href="a.fparameters.html#SRQOSLIST">SRQOSLIST</a><a class="reference external" href="a.fparameters.html#SRCLASSLIST">SRCLASSLIST</a><a class="reference external" href="a.fparameters.html#SRMAXTIME">SRMAXTIME</a><a class="reference external" href="a.fparameters.html#SRTIMELOGIC">SRTIMELOGIC</a><a class="reference external" href="a.fparameters.html#SRPARTITION">SRPARTITION</a><a class="reference external" href="a.fparameters.html#SRACCESS">SRACCESS</a></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="7.1.2adminreservations.html"
+                        title="previous chapter">7.1.2. Administrative Reservations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="7.1.4reservationpolicies.html"
+                        title="next chapter">7.1.4. Reservation Policies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/7.1.3standingreservations.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="7.1.4reservationpolicies.html" title="7.1.4. Reservation Policies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="7.1.2adminreservations.html" title="7.1.2. Administrative Reservations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="7.0controllingresourceaccess.html" >7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="7.1advancereservations.html" >7.1. Advance Reservations</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

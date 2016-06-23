@@ -1,0 +1,138 @@
+Scheduling Iterations and Job Flow
+##################################
+
+Scheduling Iterations
+*********************
+
+In any given scheduling iteration, many activities take place. These are
+broken into the following major categories:
+
+* Update State Information
+* Refresh Reservations
+* Schedule Reserved Jobs
+* Schedule Priority Jobs
+* Backfill Jobs
+* Update Statistics
+* Handle User Requests
+
+Update State Information
+========================
+
+Each iteration, the scheduler contacts the resource manager(s) and
+requests up to date information on compute resources, workload, and
+policy configuration. On most systems, these calls are to a centralized
+resource manager daemon which possesses all information.
+
+Refresh Reservations
+====================
+
+Schedule Reserved Jobs
+======================
+
+Schedule Priority Jobs
+======================
+
+In scheduling jobs, multiple steps occur.
+
+Backfill Jobs
+=============
+
+Update Statistics
+=================
+
+Handle User Requests
+====================
+
+User requests include any call requesting state information,
+configuration changes, or job or resource manipulation commands. These
+requests may come in the form of user client calls, peer daemon calls,
+or process signals.
+
+Perform Next Scheduling Cycle
+=============================
+
+| Maui operates on a polling/event driven basis. When all scheduling
+  activities are complete, Maui will process user requests until a new
+  resource manager event is received or an internal event is generated.
+  Resource manager events include activities such as a new job
+  submission or completion of an active job, addition of new node
+  resources, or changes in resource manager policies. Internal events
+  include admin '`schedule <commands/schedctl.html>`__' requests,
+  reservation activation/deactivation, or the expiration of the
+  `RMPOLLINTERVAL <a.fparameters.html#rmpollinterval>`__ timer.
+
+Detailed Job Flow
+*****************
+
+Determine Basic Job Feasibility
+===============================
+
+The first step in scheduling is determining which jobs are feasible.
+This step eliminates jobs which have job holds in place, invalid job
+states (i.e., Completed, Not Queued, Defered, etc), or unsatisfied
+preconditions. Preconditions may include stage-in files or completion of
+preliminary job steps.
+
+Prioritize Jobs
+===============
+
+With a list of feasible jobs created, the next step involves
+`determining the relative priority <5.1jobprioritization.html>`__ of all
+jobs within that list. A priority for each job is calculated based on
+job attributes such as job owner, job size, length of time the job has
+been queued, and so forth.
+
+Enforce Configured Throttling Policies
+======================================
+
+Any configured `throttling policies <6.2throttlingpolicies.html>`__ are
+then applied constraining how many jobs, nodes, processors, etc are
+allowed on a per credential basis. Jobs which violate these policies are
+not considered for scheduling.
+
+Determine Resource Availability
+===============================
+
+For each job, Maui attempts to locate the required compute resources
+needed by the job. In order for a match to be made, the node must
+possess all node attributes specified by the job and possess adequate
+available resources to meet the *TasksPerNode* job constraint (Default
+TasksPerNode is 1) Normally, Maui determine a node to have adequate
+resources if the resources are *neither utilized by nor dedicated to*
+another job using the calculation
+
+.. math::
+
+  R.Available = R.Configured - MAX(R.Dedicated,R.Utilized).
+
+The
+`RESOURCEAVAILABILITYPOLICY <a.fparameters.html#resourceavailabilitypolicy>`__
+parameter can be modified to adjust this behavior.
+
+Allocate Resources to Job
+=========================
+
+If adequate resources can be found for a job, the `node allocation
+policy <5.2nodeallocation.html>`__ is then applied to select the best
+set of resources. These allocation policies allow selection criteria
+such as speed of node, type of reservations, or excess node resources to
+be figured into the allocation decision to improve the performance of
+the job and/or maximize the freedom of the scheduler in making future
+scheduling decisions.
+
+Distribute Jobs Tasks Across Allocated Resources
+================================================
+
+With the resources selected, Maui then maps job tasks to the actual
+resources. This distribution of tasks is typically based on simple task
+distribution algorithms such as round-robin or max blocking, but can
+also incorporate parallel language library (i.e., MPI, PVM, etc)
+specific patterns used to minimize interprocess communication overhead.
+
+Launch Job
+==========
+
+With the resources selected and task distribution mapped, the scheduler
+then contacts the resource manager and informs it where and how to
+launch the job. The resource manager then initiates the actual job
+executable.

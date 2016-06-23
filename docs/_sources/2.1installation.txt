@@ -1,0 +1,24 @@
+Maui Installation
+#################
+
+-  Building Maui
+-  Installing Maui (Optional)
+
+   When you are ready to use Maui in production, you may install it into
+   the install directory you have configured using **make install**
+
+   | make install
+
+.. note::
+
+   Until the *install* step is performed, all Maui
+   executables will be placed in **$MAUIHOMEDIR/bin**. (i.e.,
+   maui-3.2.6/bin in the above example)
+
+.. note::
+
+   Maui 3.2 contains a number of static parameter settings
+   which may may need adjustment for *extreme* installations. If the
+   target cluster may fit in this category, see Appendix D, `Adjusting
+   Default Limits <a.ddevelopment.html>`__ and make any needed changes
+   prior to issuing the **make** command.

@@ -1,0 +1,563 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mshow-a">mshow -a</p>
+<p><strong>(Moab Show Available Resources)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">profile</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">T</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="n">where</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">xml</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The mshow -a command allows for querying of available system resources.
+<strong>Arguments</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="54%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>[<a class="reference external" href="#i">-i</a>]</td>
+<td><strong>INTERSECTION</strong></td>
+</tr>
+<tr class="row-even"><td>[<a class="reference external" href="#o">-o</a>]</td>
+<td><strong>NO AGGREGATE</strong></td>
+</tr>
+<tr class="row-odd"><td>[<a class="reference external" href="#p">-p</a>]</td>
+<td><strong>PROFILE</strong></td>
+</tr>
+<tr class="row-even"><td>[<a class="reference external" href="#T">-T</a>]</td>
+<td><strong>TIMELOCK</strong></td>
+</tr>
+<tr class="row-odd"><td>[<a class="reference external" href="#w">-w</a>]</td>
+<td><strong>WHERE</strong></td>
+</tr>
+<tr class="row-even"><td>[<a class="reference external" href="#x">-x</a>]</td>
+<td><strong>EXCLUSIVE</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 1: Argument Format</strong></p>
+<p><strong>&#8211;flags</strong>
+Name:
+<strong>Flags</strong>
+Format:
+&#8211;flags=[ future | policy | tid | timeflex | summary | verbose ]
+Description:
+<strong>future</strong> will return resources available immediately and
+available in the future.
+<strong>policy</strong> will apply charging policies to determine the total
+cost of each reported solution (only enabled for XML responses).
+<strong>summary</strong> will assign all jointly allocated transactions as
+dependencies of the first transaction reported.
+<strong>tid</strong> will associate a transaction id with the reported
+results.
+<strong>timeflex</strong> allows the reservation to move in time (but not
+space) in order to start at an earlier time, if able.
+<strong>verbose</strong> will return diagnostic information.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">user</span><span class="o">=</span><span class="n">john</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span> <span class="o">--</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>Show resources available to john in XML format with a transaction ID.</p>
+<p><strong>&#8211;xml</strong>
+Name:
+<strong>XML</strong>
+Format:
+&#8211;xml
+Description:
+Report results in XML format.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">user</span><span class="o">=</span><span class="n">john</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span> <span class="o">--</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>Show resources available to john in XML format with a transaction ID.</p>
+<p><strong>-i</strong>
+Name:
+<strong>INTERSECTION</strong>
+Format:
+&#8212;
+Description:
+Specifies that an intersection should be performed during an mshow -a
+command with multiple requirements.
+Example:</p>
+<p><strong>-o</strong>
+Name:
+<strong>NO AGGREGATE</strong>
+Format:
+&#8212;
+Description:
+Specifies that the results of the command mshow -a with multiple
+requirements should not be aggregated together.
+Example:</p>
+<p><strong>-p</strong>
+Name:
+<strong>PROFILE</strong>
+Format:
+&lt;VPCPROFILEID&gt;
+Description:
+Specifies which virtual private cluster
+<a class="reference external" href="../20.1vpcprofiles.html">profile</a> should be used to adjust the
+explicit constraints of the request.
+Example:</p>
+<p><strong>-T</strong>
+Name:
+<strong>TIMELOCK</strong>
+Format:
+&#8212;
+Description:
+Specifies that the multiple requirements of an mshow -a command should
+be timelocked.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">linux</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> \
+  <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">aix</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span> \
+  <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span><span class="p">,</span><span class="n">future</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">T</span>
+</pre></div>
+</div>
+<p><strong>-w</strong>
+Name:
+<strong>WHERE</strong>
+Format:
+&lt;ATTR&gt;=&lt;VAL&gt; [,&lt;ATTR&gt;=&lt;VAL&gt;]...</p>
+<p>Attributes are listed below in <a class="reference external" href="#table2">table 2</a>.
+Description:
+Add a &#8220;Where&#8221; clause to the current command (currently supports up to
+six co-allocation clauses).
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">-</span><span class="n">w</span> <span class="n">nodemem</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p><strong>-x</strong>
+Name:
+<strong>EXCLUSIVE</strong>
+Format:
+&#8212;
+Description:
+Specifies that the multiple requirements of an mshow -a command should
+be exclusive (ie. each node may only be allocated to a single
+requirement)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">linux</span> <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">aix</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span> <span class="o">-</span><span class="n">x</span>
+</pre></div>
+</div>
+<p><strong>Table 2: Request Attributes</strong></p>
+<p>Name
+Description
+<strong>account</strong>
+the account credential of the requestor
+<strong>acl</strong>
+ACL to attach to the reservation associated with the VPC
+This ACL must be enclosed in quotation marks. For example:
+<code class="docutils literal"><span class="pre">$</span> <span class="pre">mshow</span> <span class="pre">-a</span> <span class="pre">...</span> <span class="pre">-w</span> <span class="pre">acl=\&quot;user=john\&quot;</span> <span class="pre">...</span></code>
+<strong>arch</strong>
+select only nodes with the specified architecture
+<strong>cal</strong>
+select resources subject to the constraints of the specified global
+calendar
+<strong>class</strong>
+the class credential of the requestor
+<strong>coalloc</strong>
+the <em>co-allocation</em> group of the specific <em>Where</em> request (can be any
+string but must match co-allocation group of at least one other <em>Where</em>
+request)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>The number of tasks requested in each <em>Where</em> request must be equal whether this taskcount is specified via <strong>minprocs</strong>, <strong>mintasks</strong>, or <strong>gres</strong>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>count</strong>
+the number of profiles to apply to the resource request
+<strong>displaymode</strong>
+Possible value is <code class="docutils literal"><span class="pre">future</span></code>. (Example: <code class="docutils literal"><span class="pre">displaymode=future</span></code>).
+Constrains how results are presented; setting <code class="docutils literal"><span class="pre">future</span></code> evaluates which
+resources are available now and which resources will be available in the
+future that match the requested attributes.
+<strong>duration</strong>
+the duration for which the resources will be required in format
+<code class="docutils literal"><span class="pre">[[[DD:]HH:]MM:]SS</span></code>
+<strong>excludehostlist</strong>
+do not select any nodes from the given list
+<strong>gres</strong>
+select only nodes which possess the specified generic resource
+<strong>group</strong>
+the group credential of the requestor
+<strong>hostlist</strong>
+select only the specified resources
+<strong>job</strong>
+use the resource, duration, and credential information for the job
+specified as a resource request template
+<strong>jobfeature</strong>
+select only resources which would allow access to jobs with the
+specified job features
+<strong>jobflags</strong>
+select only resources which would allow access to jobs with the
+specified job flags. The jobflags attribute accepts a colon delimited
+list of multiple flags.
+<strong>label</strong>
+associate the specified label with all results matching this request
+<strong>minnodes</strong>
+return only results with at least the number of nodes specified. &nbsp;If
+used with TID&#8217;s, return only solutions with exactly <em>minnodes</em> nodes
+available
+<strong>minprocs</strong>
+return only results with at least the number of processors specified.
+&nbsp;If used with TID&#8217;s, return only solutions with exactly <em>minprocs</em>
+processors available
+<strong>mintasks</strong>
+<strong>FORMAT</strong>: &lt;TASKCOUNT&gt;[&#64;&lt;RESTYPE&gt;:&lt;COUNT&gt;[+&lt;RESTYPE&gt;:&lt;COUNT&gt;]...] where
+&lt;RESTYPE&gt; is one of <strong>procs</strong>, <strong>mem</strong>, <strong>disk</strong>, or <strong>swap</strong>. &nbsp; Return
+only results with at least the number of tasks specified. &nbsp;If used with
+TID&#8217;s, return only solutions with exactly <em>mintasks</em> available
+<strong>nodedisk</strong>
+select only nodes with at least <em>nodedisk</em> MB of local disk configured
+<strong>nodefeature</strong>
+select only nodes with all specified features present using format
+&lt;feature&gt;[:&lt;feature&gt;]...
+<strong>nodemem</strong>
+select only nodes with at least <em>nodemem</em> MB of memory configured
+<strong>offset</strong>
+select only resources which can be co-allocated with the specified time
+offset where offset is specified in the format [[[DD:]HH:]MM:]SS
+<strong>os</strong>
+select only nodes with have, or can be provisioned to have, the
+specified operating system
+<strong>partition</strong>
+the partition in which the resources must be located
+<strong>policylevel</strong>
+enable policy enforcement at the specified policy constraint level
+<strong>qos</strong>
+the qos credential of the requestor
+<strong>rsvprofile</strong>
+use the specified profile if committing a resulting transaction id
+directly to a reservation
+<strong>starttime</strong>
+constrain the timeframe for the returned results by specifying one or
+more ranges using the format &lt;STIME&gt;[-&lt;ENDTIME&gt;][;&lt;STIME&gt;[-&lt;ENDTIME&gt;]]
+where each <em>time</em> is specified in the format in absolute, relative, or
+epoch time format ([HH[:MM[:SS]]][_MO[/DD[/YY]]] or +[[[DD:]HH:]MM:]SS
+or &lt;EPOCHTIME&gt;).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>The starttime specified is not the exact time at which the returned range must start, but is rather the earliest possible time the range may start.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>taskmem</strong>
+require <em>taskmem</em> MB of memory per task located
+<strong>tpn</strong>
+require exactly <em>tpn</em> tasks per node on all discovered resources
+<strong>user</strong>
+the user credential of the requestor
+<strong>var</strong>
+use associated variables in generating per transaction charging quotes
+<strong>variables</strong>
+takes a string of the format <code class="docutils literal"><span class="pre">variables='var[=attr]'[;'var[=attr]'</span></code>
+and passes the variables onto the reservation when used in conjunction
+with <code class="docutils literal"><span class="pre">--flags=tid</span></code> and <code class="docutils literal"><span class="pre">mrsvctl</span> <span class="pre">-c</span> <span class="pre">-R</span> <span class="pre">&lt;tid&gt;</span></code>.
+<strong>Usage Notes</strong></p>
+<p>The <em>mshow -a</em> command allows for querying of available system
+resources.&nbsp; When combined with the <em>&#8211;flags=tid</em> option these available
+resources can then be placed into a &#8220;packaged&#8221; reservation (using
+<a class="reference external" href="mrsvctl.html">mrsvctl -c -R</a>) or vpc (using <a class="reference external" href="mschedctl.html">mschedctl -c vpc
+-R</a>).&nbsp; This allows system administrators to grab and
+reserve available resources for whatever reason, without conflicting
+with jobs or reservations that may holding certain resources.
+There are a few restrictions on which &lt;ATTR&gt; from the -w command can be
+placed in the same req: <em>minprocs</em>, <em>minnodes</em>, and <em>gres</em> are all
+mutually exclusive, only one may be used per -w request.</p>
+<p>The allocation of available nodes will follow the global
+<a class="reference external" href="../a.fparameters.html#nodeallocationpolicy">NODEALLOCATIONPOLICY</a>.</p>
+<p>When the &#8216;-o&#8217; flag is not used, multi-request results will be
+aggregated.&nbsp; This aggregation will negate the use of offsets and
+request-specific starttimes.</p>
+<p>The config parameter
+<a class="reference external" href="../a.fparameters.html#resourcequerydepth">RESOURCEQUERYDEPTH</a>
+controls the maximum number of options that will be returned in response
+to a resource query.</p>
+<p><strong>Example 1: Basic Compute Node Query and Reservation</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">AIX53</span><span class="p">,</span><span class="n">jobfeature</span><span class="o">=</span><span class="n">shared</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span><span class="p">,</span><span class="n">future</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>      <span class="n">Duration</span>   <span class="n">StartOffset</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">09</span><span class="n">_04</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">4</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">17</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="n">_04</span><span class="o">/</span><span class="mi">28</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">5</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">21</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">27</span><span class="n">_04</span><span class="o">/</span><span class="mi">29</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">6</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">4</span>
+
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">2</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p><strong>Example 2: Mixed Processor and License Query</strong></p>
+<p>Select one node with 4 processors and 1 matlab license where the matlab
+license is only available for the last hour of the reservation. &nbsp;Also,
+select 16 additional processors which are available during the same
+timeframe but which can be located anywhere in the cluster. &nbsp;Group the
+resulting transactions together using transaction dependencies so only
+the first transaction needs to be committed to reserve all associated
+resources.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">w</span> <span class="n">mintasks</span><span class="o">=</span><span class="mi">1</span><span class="nd">@PROCS</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">coalloc</span><span class="o">=</span><span class="n">a</span> \
+                    <span class="o">-</span><span class="n">w</span> <span class="n">gres</span><span class="o">=</span><span class="n">matlab</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="mi">9</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">coalloc</span><span class="o">=</span><span class="n">a</span> \
+                    <span class="o">-</span><span class="n">w</span> <span class="n">minprocs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span><span class="p">,</span><span class="n">future</span><span class="p">,</span><span class="n">summary</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>      <span class="n">Duration</span>   <span class="n">StartOffset</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">09</span><span class="n">_04</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">4</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">17</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="n">_04</span><span class="o">/</span><span class="mi">28</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">5</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">21</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">27</span><span class="n">_04</span><span class="o">/</span><span class="mi">29</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">6</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">4</span>
+
+
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">2</span> <span class="n">created</span>
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">3</span> <span class="n">created</span>
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">4</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p><strong>Example 3: Request for Generic Resources</strong></p>
+<p>Query for a generic resource on a specific host (no processors, only a
+generic resource).</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span><span class="n">w</span> <span class="n">gres</span><span class="o">=</span><span class="n">dvd</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">hostlist</span><span class="o">=</span><span class="n">node03</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span><span class="p">,</span><span class="n">future</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>   <span class="n">StartOffset</span>      <span class="n">Duration</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">33</span><span class="p">:</span><span class="mi">25</span><span class="n">_07</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">16</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">25</span><span class="n">_07</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">17</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">25</span><span class="n">_07</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">18</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">16</span>
+
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">6</span> <span class="n">created</span>
+
+<span class="o">&gt;</span> <span class="n">mdiag</span> <span class="o">-</span><span class="n">r</span> <span class="n">system</span><span class="o">.</span><span class="mi">6</span>
+<span class="n">Diagnosing</span> <span class="n">Reservations</span>
+<span class="n">RsvID</span>                      <span class="n">Type</span> <span class="n">Par</span>   <span class="n">StartTime</span>     <span class="n">EndTime</span>     <span class="n">Duration</span> <span class="n">Node</span> <span class="n">Task</span> <span class="n">Proc</span>
+<span class="o">-----</span>                      <span class="o">----</span> <span class="o">---</span>   <span class="o">---------</span>     <span class="o">-------</span>     <span class="o">--------</span> <span class="o">----</span> <span class="o">----</span> <span class="o">----</span>
+<span class="n">system</span><span class="o">.</span><span class="mi">6</span>                   <span class="n">User</span> <span class="n">loc</span>   <span class="o">-</span><span class="mi">00</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">02</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">35</span>     <span class="mi">00</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">37</span>    <span class="mi">1</span>    <span class="mi">1</span>    <span class="mi">0</span>
+    <span class="n">Flags</span><span class="p">:</span> <span class="n">ISCLOSED</span>
+    <span class="n">ACL</span><span class="p">:</span>   <span class="n">RSV</span><span class="o">==</span><span class="n">system</span><span class="o">.</span><span class="mi">6</span><span class="o">=</span>
+    <span class="n">CL</span><span class="p">:</span>    <span class="n">RSV</span><span class="o">==</span><span class="n">system</span><span class="o">.</span><span class="mi">6</span>
+    <span class="n">Accounting</span> <span class="n">Creds</span><span class="p">:</span>  <span class="n">User</span><span class="p">:</span><span class="n">test</span>
+    <span class="n">Task</span> <span class="n">Resources</span><span class="p">:</span> <span class="n">dvd</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="n">Attributes</span> <span class="p">(</span><span class="n">HostExp</span><span class="o">=</span><span class="s1">&#39;^node03$&#39;</span><span class="p">)</span>
+    <span class="n">Rsv</span><span class="o">-</span><span class="n">Group</span><span class="p">:</span> <span class="n">system</span><span class="o">.</span><span class="mi">6</span>
+</pre></div>
+</div>
+<p><strong>Example 4: Allocation of Shared Resources</strong></p>
+<p>This example walks through a relatively complicated example in which a
+set of resources can be reserved to be allocated for <em>shared</em> requests.
+&nbsp;In the example below, the first <strong>mshow</strong> query looks for resources
+within an existing shared reservation. &nbsp;In the example, this first query
+fails because there is now existing reservation. &nbsp;The second <strong>mshow</strong>
+requests asks for resources outside of a shared reservation and finds
+the desired resources. &nbsp;These resources are then reserved as a <em>shared</em>
+pool. &nbsp;The third <strong>mshow</strong> request again asks for resources inside of a
+<em>shared</em> reservation and this time finds the desired resources.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">AIX53</span><span class="p">,</span><span class="n">jobflags</span><span class="o">=</span><span class="n">ADVRES</span><span class="p">,</span><span class="n">jobfeature</span><span class="o">=</span><span class="n">shared</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>      <span class="n">Duration</span>   <span class="n">StartOffset</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+
+<span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">duration</span><span class="o">=</span><span class="mi">100</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">AIX53</span><span class="p">,</span><span class="n">jobfeature</span><span class="o">=</span><span class="n">shared</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>      <span class="n">Duration</span>   <span class="n">StartOffset</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>     <span class="mi">100</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">23</span><span class="n">_04</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">1</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">1</span>
+
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">1</span> <span class="n">created</span>
+
+<span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">minprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">os</span><span class="o">=</span><span class="n">AIX53</span><span class="p">,</span><span class="n">jobflags</span><span class="o">=</span><span class="n">ADVRES</span><span class="p">,</span><span class="n">jobfeature</span><span class="o">=</span><span class="n">shared</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">tid</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>      <span class="n">Duration</span>   <span class="n">StartOffset</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">1</span>      <span class="mi">1</span>      <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">13</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">36</span><span class="n">_04</span><span class="o">/</span><span class="mi">27</span>  <span class="n">TID</span><span class="o">=</span><span class="mi">2</span>  <span class="n">ReqID</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="o">&gt;</span> <span class="n">mrsvctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">R</span> <span class="mi">2</span>
+
+<span class="n">Note</span><span class="p">:</span>  <span class="n">reservation</span> <span class="n">system</span><span class="o">.</span><span class="mi">2</span> <span class="n">created</span>
+</pre></div>
+</div>
+<p><strong>Example 5: Full Resource Query in XML Format</strong></p>
+<p>The following command will report information on all available resources
+which meet at least the minimum specified processor and walltime
+constraints and which are available to the specified user. &nbsp;The results
+will be reported in XML to allow for easy system processing.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="n">class</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span><span class="n">minprocs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">duration</span><span class="o">=</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">future</span><span class="p">,</span><span class="n">verbose</span>
+
+<span class="o">&lt;</span><span class="n">Data</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span><span class="n">cluster</span><span class="o">&lt;/</span><span class="n">Object</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">job</span> <span class="n">User</span><span class="o">=</span><span class="s2">&quot;john&quot;</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1162407604&quot;</span><span class="o">&gt;&lt;/</span><span class="n">job</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">par</span> <span class="n">Name</span><span class="o">=</span><span class="s2">&quot;template&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;Duration&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;Nodes&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;Procs&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;StartTime&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">par</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">par</span> <span class="n">Name</span><span class="o">=</span><span class="s2">&quot;ALL&quot;</span> <span class="n">feasibleNodeCount</span><span class="o">=</span><span class="s2">&quot;131&quot;</span> <span class="n">feasibleTaskCount</span><span class="o">=</span><span class="s2">&quot;163&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;opt-001:1,opt-024:1,opt-025:1,opt-027:2,opt-041:1,opt-042:1,x86-001:1,P690-001:1,P690-021:1,P690-022:1&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;10&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162407604&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;opt-001:1,opt-024:1,opt-025:1,opt-027:2,opt-039:1,opt-041:1,opt-042:1,x86-001:1,P690-001:1,P690-021:1,P690-022:1&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;11&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span><span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162411204&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;opt-001:1,opt-024:1,opt-025:1,opt-027:2,opt-039:1,opt-041:1,opt-042:1,x86-001:1,x86-002:1,x86-004:1,</span>
+        <span class="n">x86</span><span class="o">-</span><span class="mi">006</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">013</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">014</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">015</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">016</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">037</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">001</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">021</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">022</span><span class="p">:</span><span class="mi">1</span><span class="s2">&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;19&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162425519&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">par</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">par</span> <span class="n">Name</span><span class="o">=</span><span class="s2">&quot;SharedMem&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;P690-001:1,P690-002:1,P690-003:1,P690-004:1,P690-005:1,P690-006:1,P690-007:1,P690-008:1,P690-009:1,</span>
+        <span class="n">P690</span><span class="o">-</span><span class="mi">010</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">011</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">012</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">013</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">014</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">015</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">016</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">017</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">018</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">019</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">020</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">021</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">P690</span><span class="o">-</span><span class="mi">022</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">023</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">024</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">025</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">026</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">027</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">028</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">029</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">030</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">031</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">P690</span><span class="o">-</span><span class="mi">032</span><span class="p">:</span><span class="mi">1</span><span class="s2">&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;32&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1163122507&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">par</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">par</span> <span class="n">Name</span><span class="o">=</span><span class="s2">&quot;64Bit&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;opt-001:1,opt-024:1,opt-025:1,opt-027:2,opt-039:1,opt-041:1,opt-042:1&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;7&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162411204&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;opt-001:1,opt-024:1,opt-025:1,opt-027:2,opt-039:1,opt-041:1,opt-042:1,opt-043:1,opt-044:1,opt-045:1,</span>
+        <span class="n">opt</span><span class="o">-</span><span class="mi">046</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">047</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">048</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">049</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">050</span><span class="p">:</span><span class="mi">1</span><span class="s2">&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;15&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162428996&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;opt-001:1,opt-006:1,opt-007:2,opt-008:2,opt-009:2,opt-010:2,opt-011:2,opt-012:2,opt-013:2,opt-014:2,</span>
+        <span class="n">opt</span><span class="o">-</span><span class="mi">015</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">016</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">017</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">018</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">019</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">020</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">021</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">022</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">023</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">024</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">025</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">027</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">039</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">opt</span><span class="o">-</span><span class="mi">041</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">042</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">043</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">044</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">045</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">046</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">047</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">048</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">049</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">opt</span><span class="o">-</span><span class="mi">050</span><span class="p">:</span><span class="mi">1</span><span class="s2">&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;33&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162876617&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">par</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">par</span> <span class="n">Name</span><span class="o">=</span><span class="s2">&quot;32Bit&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;x86-001:1,x86-002:1,x86-004:1,x86-006:1,x86-013:1,x86-014:1,x86-015:1,x86-016:1,x86-037:1&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;9&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162425519&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;x86-001:1,x86-002:1,x86-004:1,x86-006:1,x86-013:1,x86-014:1,x86-015:1,x86-016:1,x86-037:1,x86-042:1,x86-043:1&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;11&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1162956803&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">range</span> <span class="n">duration</span><span class="o">=</span><span class="s2">&quot;1200&quot;</span> <span class="n">hostlist</span><span class="o">=</span><span class="s2">&quot;x86-001:1,x86-002:1,x86-004:1,x86-006:1,x86-013:1,x86-014:1,x86-015:1,x86-016:1,x86-027:1,x86-028:1,</span>
+        <span class="n">x86</span><span class="o">-</span><span class="mi">029</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">030</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">037</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">041</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">042</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">043</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">046</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">047</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">048</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">x86</span><span class="o">-</span><span class="mi">049</span><span class="p">:</span><span class="mi">1</span><span class="s2">&quot;</span>
+        <span class="n">index</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nodecount</span><span class="o">=</span><span class="s2">&quot;20&quot;</span> <span class="n">proccount</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">reqid</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">starttime</span><span class="o">=</span><span class="s2">&quot;1163053393&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">range</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">par</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">Data</span><span class="o">&gt;</span>
+
+
+
+
+
+
+      <span class="n">This</span> <span class="n">command</span> <span class="n">reports</span> <span class="n">the</span> <span class="n">original</span> <span class="n">query</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">timeframe</span><span class="p">,</span> <span class="n">resource</span> <span class="n">size</span><span class="p">,</span> <span class="ow">and</span> <span class="n">hostlist</span> <span class="n">associated</span> <span class="k">with</span> <span class="n">each</span> <span class="n">possible</span> <span class="n">time</span> <span class="n">slot</span><span class="o">.</span>
+
+
+
+
+<span class="n">Example</span> <span class="mi">6</span><span class="p">:</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">Virtual</span> <span class="n">Private</span> <span class="n">Cluster</span>
+
+<span class="n">Request</span> <span class="n">an</span> <span class="n">exclusive</span> <span class="n">five</span><span class="o">-</span><span class="n">node</span> <span class="n">virtual</span> <span class="n">private</span> <span class="n">cluster</span> <span class="n">using</span> <span class="n">the</span> <span class="n">Apache</span> <span class="n">profile</span><span class="o">.</span>
+
+
+<span class="o">&gt;</span> <span class="n">mshow</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">o</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span><span class="n">tid</span><span class="p">,</span><span class="n">future</span><span class="p">,</span><span class="n">timeflex</span> <span class="o">-</span><span class="n">p</span> <span class="n">apache</span> <span class="o">-</span><span class="n">w</span>
+<span class="o">&gt;</span> <span class="n">duration</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span><span class="n">minnodes</span><span class="o">=</span><span class="mi">5</span>
+
+<span class="n">Partition</span>     <span class="n">Tasks</span>  <span class="n">Nodes</span>   <span class="n">StartOffset</span>      <span class="n">Duration</span>       <span class="n">StartDate</span>
+<span class="o">---------</span>     <span class="o">-----</span>  <span class="o">-----</span>  <span class="o">------------</span>  <span class="o">------------</span>  <span class="o">--------------</span>
+<span class="n">ALL</span>               <span class="mi">5</span>      <span class="mi">5</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">09</span><span class="p">:</span><span class="mi">59</span><span class="p">:</span><span class="mi">07</span><span class="n">_07</span><span class="o">/</span><span class="mi">03</span>
+<span class="n">TID</span><span class="o">=</span><span class="mi">265</span>
+<span class="n">ALL</span>               <span class="mi">5</span>      <span class="mi">5</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">10</span><span class="p">:</span><span class="mi">49</span><span class="p">:</span><span class="mi">07</span><span class="n">_07</span><span class="o">/</span><span class="mi">03</span>
+<span class="n">TID</span><span class="o">=</span><span class="mi">266</span>
+<span class="n">ALL</span>               <span class="mi">5</span>      <span class="mi">5</span>       <span class="mi">1</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>      <span class="mi">00</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">00</span>  <span class="mi">11</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">07</span><span class="n">_07</span><span class="o">/</span><span class="mi">03</span>
+<span class="n">TID</span><span class="o">=</span><span class="mi">267</span>
+
+<span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">vpc</span> <span class="o">-</span><span class="n">a</span> <span class="n">resources</span><span class="o">=</span><span class="mi">265</span>
+
+<span class="n">vpc</span><span class="o">.</span><span class="mi">69</span>
+</pre></div>
+</div>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="mshowhostingusage.html">mshow in a hosting environment</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mshowa.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

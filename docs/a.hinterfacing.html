@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix H: Interfacing to Maui &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="Appendix I: Considerations for Large Clusters" href="a.ilargeclusters.html" />
+    <link rel="prev" title="Appendix G: Commands Overview" href="a.gcommandoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="a.ilargeclusters.html" title="Appendix I: Considerations for Large Clusters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="a.gcommandoverview.html" title="Appendix G: Commands Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appendix-h-interfacing-to-maui">
+<h1>Appendix H: Interfacing to Maui<a class="headerlink" href="#appendix-h-interfacing-to-maui" title="Permalink to this headline">¶</a></h1>
+<p>Maui interfaces to systems providing various services and using various
+protocols. This appendix is designed to assist users who wish to enable
+Maui in new environments using one of the existing interfaces. It does
+not cover the steps required to create a new interface.</p>
+<p class="rubric" id="h-1-utilizing-maui-client-services">H.1 Utilizing Maui Client Services</p>
+<p>The standard Maui distribution provides a scheduler server (maui) and a
+number of user clients (showq, showres, etc). By default, these clients
+communicate with the scheduler using an internal single use, &#8216;byte count
++ secret key&#8217; based TCP connection protocol called simply the
+&#8216;<em>SingleUseTCP</em>&#8216; protocol. This protocol is documented in the Wiki
+&#8216;<a class="reference external" href="wiki/socket.html">Socket Interface</a> &#8216; section with an overview and
+sample code describing how to generate the byte count, timestamp,
+encrypted checksum, etc. This protocol is functional but is not a
+commonly used standard outside of the Maui project. A further issue with
+creating client interfaces is that even though the socket interface is
+well defined, the data flowing through this interface to support client
+requests is not standardized. As of Maui 3.2.5, some clients receive raw
+binary data, others raw text, and still others formatted text ready for
+display. This has resulted from the evolutionary nature of the client
+interface which has not received a much needed design &#8216;refresh&#8217;. The
+good news is that this refresh is now under way.</p>
+<p>As part of the Department of Energy&#8217;s &#8216;Scalable Systems Software&#8217;
+initiative, there have been significant enhancements to the
+scheduler/client protocol. Maui now supports multiple socket level
+protocol standards in communicating with its clients and peer services.
+These including &#8216;SingleUseTCP&#8217;, &#8216;SSS-HALF&#8217;, and &#8216;HTTP&#8217;. The client
+socket protocol can be specified by setting the <strong>MCSOCKETPROTOCOL</strong>
+parameter to <strong>SUTCP</strong> , <strong>SSS-HALF</strong>, or <strong>HTTP</strong>. Further protocols
+are being defined and standardized over time and backwards compatibility
+will be maintained. Documentation on the SSS-HALF implementation can be
+found within the DOE&#8217;s <a class="reference external" href="http://www.scidac.org/ScalableSystems">SSS Project
+Notebooks</a>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>HTTP support is currently (Oct 24, 2002) in active development and is not expected to be in production use until Maui 3.2.6.</td>
+</tr>
+</tbody>
+</table>
+<p>In addition to the socket protocol advances, there has also been work in
+the area of standardizing the format in which the client data is
+actually transmitted. The SSS project has selected XML as the means to
+frame all inter-client data. To date, a number of Maui clients have been
+ported over to enable optional use of XML based data framing. These
+clients include <strong>mshow</strong> (showq), <strong>showstate</strong>, <strong>checknode</strong> ,
+<strong>mjobctl</strong> (runjob, setjobhold, setspri, canceljob), and <strong>mresctl</strong>
+(setres, releaseres).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="97%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>The XML used in these clients is still evolving. It is expected to be finalized for the clients listed by mid December 2002. If there is interest in working with these protocols or defining specifications, please <a class="reference external" href="mailto:help&#37;&#52;&#48;supercluster&#46;org">contact us</a> so we can coordinate any changes and take your needs into account when prioritizing future development.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="h-2-resource-management-interfaces">H.2 Resource Management Interfaces</p>
+<p><a class="reference external" href="/resources/docs/mwm/a.hinterfacing.html">See Moab Workload Manager</a></p>
+<p class="rubric" id="h-3-allocation-management-interfaces">H.3 Allocation Management Interfaces</p>
+<p><a class="reference external" href="/resources/docs/mwm/a.hinterfacing.html">See Moab Workload Manager</a></p>
+<p class="rubric" id="h-4-grid-scheduling-system-interfaces">H.4 Grid Scheduling System Interfaces</p>
+<p><a class="reference external" href="/resources/docs/mwm/a.hinterfacing.html">See Moab Workload Manager</a></p>
+<p class="rubric" id="h-5-information-service-interfaces">H.5 Information Service Interfaces</p>
+<p><a class="reference external" href="/resources/docs/mwm/a.hinterfacing.html">See Moab Workload Manager</a></p>
+<p class="rubric" id="h-6-event-management-services">H.6 Event Management Services</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="/resources/docs/mwm/a.hinterfacing.html">See Moab Workload
+Manager</a></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="a.gcommandoverview.html"
+                        title="previous chapter">Appendix G: Commands Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="a.ilargeclusters.html"
+                        title="next chapter">Appendix I: Considerations for Large Clusters</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/a.hinterfacing.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="a.ilargeclusters.html" title="Appendix I: Considerations for Large Clusters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="a.gcommandoverview.html" title="Appendix G: Commands Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

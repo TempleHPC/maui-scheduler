@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="maui-loadleveler-integration-guide">Maui-Loadleveler Integration Guide</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Overview:</strong></div>
+</div>
+<div class="line-block">
+<div class="line">Maui can be used as an external scheduler for Loadleveler. In this
+configuration, Loadleveler manages the job queue and the compute
+resources while maui queries the Loadleveler negotiator via the
+Loadleveler data API to obtain up to date job and node information.
+Using this information, maui directs Loadleveler to manage jobs in
+accordance with specified maui policies, priorities, and reservations.</div>
+</div>
+<p><strong>Steps:</strong></p>
+<p>Maui drives LL via the Loadleveler scheduling API. To enable this api
+and thus the external scheduler, the following steps must be taken:</p>
+<ul class="simple">
+<li>set &#8216;<strong>SCHEDULER_API=yes</strong>&#8216; in the &#8216;LoadL_config&#8217; file typically</li>
+</ul>
+<p>located in the user &#8216;loadl&#8217; home directory.</p>
+<ul class="simple">
+<li>set the &#8216;<strong>NEGOTIATOR_REMOVE_COMPLETED</strong>&#8216; parameter (also located in</li>
+</ul>
+<p>the &#8216;LoadL_config&#8217; file) to a value of at least 5 minutes, ie
+&#8216;NEGOTIATOR_REMOVE_COMPLETED=300&#8217;. (This allows maui to obtain job
+info from LL required to maintain accurate job statistics)</p>
+<ul class="simple">
+<li>recycle negotiator using the command &#8216;<strong>llctl recycle</strong>&#8216; on the</li>
+</ul>
+<p>central manager node.</p>
+<p><strong>Issues:</strong></p>
+<p>The Loadleveler scheduling API is not event driven so Maui has no way of
+knowing when a new job is submitted. Under these conditions, it will not
+evaluate a newly submitted job until its next scheduling iteration,
+typically within 15 to 30 seconds. This lag can be removed by utilizing
+Loadleveler&#8217;s &#8216;SUBMITFILTER&#8217;. The Maui command &#8216;schedctl -r 2&#8217; can be
+added as the last statement in this filter causing Maui to &#8216;wake-up&#8217; and
+attempt to schedule new jobs immediately. The &#8216;schedctl&#8217; command is a
+administrative command and so may need an suid wrapper in order to allow
+use by non-privileged users. (see <a class="reference external" href="schedctlwrapper.html">example</a>).</p>
+<p>NOTE: You can return to Loadleveler default scheduling at any time by
+setting &#8216;SCHEDULER_API=no&#8217; in the LoadL_config file and re-issuing the
+&#8216;llctl recycle&#8217; command.</p>
+<p>Maui supports interactive job hostlists but these hostlists must
+currently be specified using the network interface Loadleveler utilizes.
+For example, an SP node may have two names, node001e and node001sw
+representing its ethernet and switch interfaces respectively.
+Loadleveler is configured to communicate with the nodes on one of these
+interfaces. (This can be determined by issuing &#8216;llstatus&#8217; and observing
+the name used to specify each node.) Interactive job hostlists must be
+specified using the same interface that Loadleveler is configured to
+use. Efforts are underway to extend Maui interface tracking to remedy
+this.</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/llintegration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

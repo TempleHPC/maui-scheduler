@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.4. Testing New Versions and Configurations &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation" href="9.0evaluatingsystemperformance.html" />
+    <link rel="next" title="9.5. Answering ‘What If?’ Questions with the Simulator" href="9.5whatifquestions.html" />
+    <link rel="prev" title="9.3. Profiling Current and Historical Usage" href="9.3profilingusage.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="9.5whatifquestions.html" title="9.5. Answering ‘What If?’ Questions with the Simulator"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="9.3profilingusage.html" title="9.3. Profiling Current and Historical Usage"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="9.0evaluatingsystemperformance.html" accesskey="U">9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="testing-new-versions-and-configurations">
+<h1>9.4. Testing New Versions and Configurations<a class="headerlink" href="#testing-new-versions-and-configurations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="test-mode">
+<h2>9.4.1. &#8216;TEST&#8217; Mode<a class="headerlink" href="#test-mode" title="Permalink to this headline">¶</a></h2>
+<p>Maui supports a scheduling mode called <strong>TEST</strong>. In this mode, the
+scheduler initializes, contacts the resource manager and other peer
+services, and conducts scheduling cycles exactly as it would if running
+in <strong>NORMAL</strong> or production mode. Job are prioritized, reservations
+created, policies and limits enforced, and admin and end-user commands
+enabled. The key difference is that although <em>live</em> resource management
+information is loaded, <strong>TEST</strong> mode disables Maui&#8217;s ability to start,
+preempt, cancel, or otherwise modify jobs or resources. Maui continues
+to attempt to schedule exactly as it would in <strong>NORMAL</strong> mode but its
+ability to actually impact the system is disabled. Using this mode, a
+site can quickly verify correct resource manager configuration and
+scheduler operation. This mode can also be used to validate new policies
+and constraints. In fact, Maui can be run in <strong>TEST</strong> mode on a
+production system while another scheduler or even another version of
+Maui is running on the same system. This unique ability can allow new
+versions and configurations to be fully tested without any exposure to
+potential failures and with no cluster downtime.</p>
+<p>To run Maui in <strong>TEST</strong> mode, simply set the <strong>MODE</strong> attribute of the
+<strong>SCHEDCFG</strong> parameter to <strong>TEST</strong> and start Maui. Normal scheduler
+commands can be used to evaluate configuration and performance.
+<a class="reference external" href="14.1internaldiagnostics.html">Diagnostic commands</a> can be used to
+look for any potential issues. Further, the Maui log file can be used to
+determine which jobs Maui attempted to start, and which resources Maui
+attempted to allocate.</p>
+<p>If another instance of Maui is running in production and a site wishes
+to evaluate an alternate configuration or new version, this is easily
+done but care should be taken to avoid conflicts with the primary
+scheduler. Potential conflicts include statistics files, logs,
+checkpoint files, and user interface ports. One of the easiest ways to
+avoid these conflicts is to create a new &#8216;test&#8217; directory with its own
+log and stats subdirectories. The new <strong>maui.cfg</strong> file can be created
+from scratch or based on the existing maui.cfg file already in use. In
+either case, make certain that the <strong>PORT</strong> attribute of the
+<strong>SCHEDCFG</strong> parameter differs from that used by the production
+scheduler by at least two ports. If testing with the production binary
+executable, the <strong>MAUIHOMEDIR</strong> environment variable should be set to
+point to the new test directory in order to prevent Maui from loading
+the production maui.cfg file.</p>
+</div>
+<div class="section" id="interactive-mode">
+<h2>9.4.2. &#8216;INTERACTIVE&#8217; Mode<a class="headerlink" href="#interactive-mode" title="Permalink to this headline">¶</a></h2>
+<p><strong>INTERACTIVE</strong> mode allows for evaluation of new versions and
+configurations in a manner different from <strong>TEST</strong> mode. Instead of
+disabling all resource and job control functions, Maui sends the desired
+change request to the screen and <em>asks</em> for permission to complete it.
+For example, before starting a job, Maui may print something like the
+following to the screen</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Command:  start job 1139.ncsa.edu on node list test013,test017,test018,test021
+Accept:  (y/n) [default: n]?
+</pre></div>
+</div>
+<p>The administrator must specifically accept each command request after
+verifying it correctly meets desired site policies. Maui will then
+execute the specified command. This mode is highly useful in validating
+scheduler behavior and can be used until configuration is appropriately
+tuned and all parties are comfortable with the scheduler&#8217;s performance.
+In most cases, sites will want to set the scheduling mode to <strong>NORMAL</strong>
+after verifying correct behavior.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">9.4. Testing New Versions and Configurations</a><ul>
+<li><a class="reference internal" href="#test-mode">9.4.1. &#8216;TEST&#8217; Mode</a></li>
+<li><a class="reference internal" href="#interactive-mode">9.4.2. &#8216;INTERACTIVE&#8217; Mode</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="9.3profilingusage.html"
+                        title="previous chapter">9.3. Profiling Current and Historical Usage</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="9.5whatifquestions.html"
+                        title="next chapter">9.5. Answering &#8216;What If?&#8217; Questions with the Simulator</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/9.4testingnewversionsconfigs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="9.5whatifquestions.html" title="9.5. Answering ‘What If?’ Questions with the Simulator"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="9.3profilingusage.html" title="9.3. Profiling Current and Historical Usage"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="9.0evaluatingsystemperformance.html" >9. Evaluating System Performance - Statistics, Profiling, Testing, and Simulation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

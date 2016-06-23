@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showstate">showstate</p>
+<p><strong>(Show State)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showstate</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>This command provides a summary of the state of the system. It displays
+a list of all active jobs and a text-based map of the status of all
+nodes and the jobs they are servicing. Basic diagnostic tests are also
+performed and any problems found are reported.
+<strong>Access</strong></p>
+<p>By default, this command can be run by any Moab Administrator.
+<strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showstate</span>
+
+<span class="n">cluster</span> <span class="n">state</span> <span class="n">summary</span> <span class="k">for</span> <span class="n">Wed</span> <span class="n">Nov</span> <span class="mi">23</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">21</span>
+
+    <span class="n">JobID</span>              <span class="n">S</span>      <span class="n">User</span>    <span class="n">Group</span> <span class="n">Procs</span>   <span class="n">Remaining</span>            <span class="n">StartTime</span>
+    <span class="o">------------------</span> <span class="o">-</span> <span class="o">---------</span> <span class="o">--------</span> <span class="o">-----</span> <span class="o">-----------</span>  <span class="o">-------------------</span>
+
+<span class="p">(</span><span class="n">A</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">R</span>     <span class="n">johns</span>    <span class="n">staff</span>    <span class="mi">16</span>    <span class="mi">13</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">15</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">21</span>
+<span class="p">(</span><span class="n">B</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">S</span>     <span class="n">johns</span>    <span class="n">staff</span>    <span class="mi">32</span>    <span class="mi">13</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">11</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">21</span>
+<span class="p">(</span><span class="n">C</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">R</span>     <span class="n">johns</span>    <span class="n">staff</span>     <span class="mi">8</span>    <span class="mi">11</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="mi">25</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">21</span>
+<span class="p">(</span><span class="n">D</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">S</span>     <span class="n">johns</span>    <span class="n">staff</span>     <span class="mi">8</span>    <span class="mi">10</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">43</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">21</span>
+<span class="p">(</span><span class="n">E</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">S</span>     <span class="n">johns</span>    <span class="n">staff</span>     <span class="mi">8</span>     <span class="mi">9</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">25</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">21</span>
+<span class="p">(</span><span class="n">F</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">R</span>     <span class="n">johns</span>    <span class="n">staff</span>     <span class="mi">8</span>     <span class="mi">9</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">16</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">21</span>
+<span class="p">(</span><span class="n">G</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">R</span>     <span class="n">johns</span>    <span class="n">staff</span>     <span class="mi">1</span>     <span class="mi">7</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">25</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">22</span>
+<span class="p">(</span><span class="n">H</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">R</span>     <span class="n">johns</span>    <span class="n">staff</span>     <span class="mi">1</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">17</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">04</span><span class="p">:</span><span class="mi">22</span>
+<span class="p">(</span><span class="n">I</span><span class="p">)</span>      <span class="n">fr17n11</span><span class="o">.</span><span class="mf">942.0</span> <span class="n">S</span>     <span class="n">johns</span>    <span class="n">staff</span>    <span class="mi">24</span>     <span class="mi">0</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">38</span>      <span class="n">Nov</span> <span class="mi">22</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">22</span>
+
+<span class="n">Usage</span> <span class="n">Summary</span><span class="p">:</span>  <span class="mi">9</span> <span class="n">Active</span> <span class="n">Jobs</span>  <span class="mi">106</span> <span class="n">Active</span> <span class="n">Nodes</span>
+
+              <span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+              <span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">6</span><span class="p">][</span><span class="mi">7</span><span class="p">][</span><span class="mi">8</span><span class="p">][</span><span class="mi">9</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">6</span><span class="p">]</span>
+
+<span class="n">Frame</span>      <span class="mi">2</span><span class="p">:</span> <span class="n">XXXXXXXXXXXXXXXXXXXXXXXX</span><span class="p">[</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">C</span><span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">C</span><span class="p">][</span><span class="n">C</span><span class="p">][</span><span class="n">A</span><span class="p">]</span>
+<span class="n">Frame</span>      <span class="mi">3</span><span class="p">:</span> <span class="p">[</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">]</span>
+<span class="n">Frame</span>      <span class="mi">4</span><span class="p">:</span> <span class="p">[</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">E</span><span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span><span class="n">E</span><span class="p">]</span>
+<span class="n">Frame</span>      <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="n">F</span><span class="p">][</span> <span class="p">][</span><span class="n">E</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">F</span><span class="p">][</span><span class="n">F</span><span class="p">][</span><span class="n">F</span><span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">E</span><span class="p">][</span> <span class="p">][</span><span class="n">E</span><span class="p">][</span><span class="n">E</span><span class="p">]</span>
+<span class="n">Frame</span>      <span class="mi">6</span><span class="p">:</span> <span class="p">[</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">E</span><span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">F</span><span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">F</span><span class="p">]</span>
+<span class="n">Frame</span>      <span class="mi">7</span><span class="p">:</span> <span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="c1">#]XXX</span>
+<span class="n">Frame</span>      <span class="mi">9</span><span class="p">:</span> <span class="p">[</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">E</span><span class="p">][</span> <span class="p">]</span>
+<span class="n">Frame</span>     <span class="mi">11</span><span class="p">:</span> <span class="p">[</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">I</span><span class="p">][</span><span class="n">F</span><span class="p">][</span><span class="o">@</span><span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">I</span><span class="p">][</span> <span class="p">][</span><span class="n">F</span><span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">]</span>
+<span class="n">Frame</span>     <span class="mi">12</span><span class="p">:</span> <span class="p">[</span><span class="n">A</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span><span class="n">C</span><span class="p">][</span><span class="n">A</span><span class="p">][</span> <span class="p">][</span><span class="n">C</span><span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">A</span><span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">]</span>
+<span class="n">Frame</span>     <span class="mi">13</span><span class="p">:</span> <span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">14</span><span class="p">:</span> <span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">H</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">I</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">15</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">16</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">17</span><span class="p">:</span> <span class="p">[</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">][</span> <span class="p">]</span>
+<span class="n">Frame</span>     <span class="mi">21</span><span class="p">:</span> <span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">22</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">27</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">28</span><span class="p">:</span> <span class="p">[</span><span class="n">G</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span><span class="n">D</span><span class="p">]</span><span class="n">XXX</span><span class="p">[</span> <span class="p">]</span><span class="n">XXX</span>
+<span class="n">Frame</span>     <span class="mi">29</span><span class="p">:</span> <span class="p">[</span><span class="n">A</span><span class="p">][</span><span class="n">C</span><span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">C</span><span class="p">][</span> <span class="p">][</span><span class="n">A</span><span class="p">][</span><span class="n">C</span><span class="p">]</span><span class="n">XXXXXXXXXXXXXXXXXXXXXXXX</span>
+
+<span class="n">Key</span><span class="p">:</span>  <span class="n">XXX</span><span class="p">:</span><span class="n">Unknown</span> <span class="p">[</span><span class="o">*</span><span class="p">]:</span><span class="n">Down</span> <span class="n">w</span><span class="o">/</span><span class="n">Job</span> <span class="p">[</span><span class="c1">#]:Down [&#39;]:Idle w/Job [ ]:Idle [@]:Busy w/No Job [!]:Drained</span>
+<span class="n">Key</span><span class="p">:</span>  <span class="p">[</span><span class="n">a</span><span class="p">]:(</span><span class="n">Any</span> <span class="n">lower</span> <span class="n">case</span> <span class="n">letter</span> <span class="n">indicates</span> <span class="n">an</span> <span class="n">idle</span> <span class="n">node</span> <span class="n">that</span> <span class="ow">is</span> <span class="n">assigned</span> <span class="n">to</span> <span class="n">a</span> <span class="n">job</span><span class="p">)</span>
+
+<span class="n">Check</span> <span class="n">Memory</span> <span class="n">on</span> <span class="n">Node</span> <span class="n">fr3n07</span>
+<span class="n">Check</span> <span class="n">Memory</span> <span class="n">on</span> <span class="n">Node</span> <span class="n">fr4n06</span>
+<span class="n">Check</span> <span class="n">Memory</span> <span class="n">on</span> <span class="n">Node</span> <span class="n">fr4n09</span>
+</pre></div>
+</div>
+<p>In this example, nine active jobs are running on the system. Each job
+listed in the top of the output is associated with a letter. For
+example, job fr17n11.942.0 is associated with the letter &#8220;A&#8221;. This
+letter can now be used to determine where the job is currently running.
+By looking at the system &#8220;map,&#8221; it can be found that job fr17n11.942.0
+(job &#8220;A&#8221;) is running on nodes fr2n10, fr2n13, fr2n16, fr3n06 ...</p>
+<p>The key at the bottom of the system map can be used to determine unusual
+node states. For example, fr7n15 is currently in the state down.</p>
+<p>After the key, a series of warning messages may be displayed indicating
+possible system problems. In this case, warning message indicate that
+there are memory problems on three nodes, fr3n07, fr4n06, and fr4n09.
+Also, warning messages indicate that job fr15n09.1097.0 is having
+difficulty starting. Node fr11n08 is in state BUSY but has no job
+assigned to it (it possibly has a runaway job running on it).</p>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="../12.1nodelocation.html#racks">Specifying Node Rack/Slot
+Location</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showstate.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

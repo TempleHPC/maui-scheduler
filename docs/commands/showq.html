@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showq">showq</p>
+<p><strong>(Show Queue)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showq</span> <span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="o">|-</span><span class="n">i</span><span class="o">|-</span><span class="n">r</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span> <span class="n">partition</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">R</span> <span class="n">rsvid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="o">&lt;</span><span class="n">CONSTRAINT</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>Displays information about active, eligible, blocked, and/or recently
+completed jobs.&nbsp; Since the resource manager is not actually scheduling
+jobs, the job ordering it displays is not valid. The <strong>showq</strong> command
+displays the actual job ordering under the Moab Workload Manager.&nbsp; When
+used without flags, this command displays all jobs in active, idle, and
+non-queued states.
+<strong>Access</strong></p>
+<p>By default, this command can be run by any user.&nbsp; However, the <code class="docutils literal"><span class="pre">-c</span></code>,
+<code class="docutils literal"><span class="pre">-i</span></code>, and <code class="docutils literal"><span class="pre">-r</span></code> flags can only be used by level 1, 2, or 3 Moab
+administrators.
+<strong>Flags</strong></p>
+<p>Flag
+Description
+<a href="#id11"><span class="problematic" id="id12">`**-b** &lt;&gt;`__</span></a>
+display blocked jobs only
+<a href="#id11"><span class="problematic" id="id13">`**-c** &lt;&gt;`__</span></a>
+display details about recently
+<a class="reference external" href="../3.2environment.html#jobstates">completed</a> jobs (see
+<a class="reference external" href="#completedexample">example</a>,
+<a class="reference external" href="../a.fparameters.html#jobcpurgetime">JOBCPURGETIME</a>).
+<a href="#id11"><span class="problematic" id="id14">`**-g** &lt;&gt;`__</span></a>
+display grid job and system id&#8217;s for all jobs.
+<a href="#id11"><span class="problematic" id="id15">`**-i** &lt;&gt;`__</span></a>
+display extended details about idle jobs. (see
+<a class="reference external" href="#idleexample">example</a>)
+<a href="#id11"><span class="problematic" id="id16">`**-l** &lt;&gt;`__</span></a>
+display local/remote view. For use in a
+<a class="reference external" href="../17.0peertopeer.html">Grid</a> environment, displays job usage of
+both local and remote compute resources.
+<a href="#id11"><span class="problematic" id="id17">`**-p** &lt;&gt;`__</span></a>
+display only jobs assigned to the specified partition.
+<a href="#id11"><span class="problematic" id="id18">`**-r** &lt;&gt;`__</span></a>
+display extended details about active (running) jobs. (see
+<a class="reference external" href="#activeexample">example</a>)
+<a href="#id11"><span class="problematic" id="id19">`**-R** &lt;&gt;`__</span></a>
+display only jobs which overlap the specified reservation.
+<a href="#id11"><span class="problematic" id="id20">`**-v** &lt;&gt;`__</span></a>
+Display local and full resource manager job IDs as well as partitions.
+If specified with the &#8216;<strong>-i</strong>&#8216; option, will display job reservation
+time. .
+<a href="#id11"><span class="problematic" id="id21">`**-w** &lt;&gt;`__</span></a>
+display only jobs associated with the specified constraint. Valid
+constraints include <strong>user</strong>, <strong>group</strong>, <strong>acct</strong>, <strong>class</strong>, and
+<strong>qos</strong>. (see <a class="reference external" href="#whereexample">showq -w</a> example.)
+<strong>Details</strong></p>
+<p>&nbsp;&nbsp; Beyond job information, the <strong>showq</strong> command will also report if the
+scheduler is stopped or paused or if a system reservation is in place.
+Further, the showq command will also report public system messages.
+<strong>Examples</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="#defaultexample">Example 1</a>: Default Report</li>
+<li><a class="reference external" href="#activeexample">Example 2</a>: Detailed Active/Running Job Report</li>
+<li><a class="reference external" href="#idleexample">Example 3</a>: Detailed Eligible/Idle Job Report</li>
+<li><a class="reference external" href="#completedexample">Example 4</a>: Detailed Completed Job Report</li>
+<li><a class="reference external" href="#whereexample">Example 5</a>: Filtered Job Report</li>
+</ul>
+<p><strong>Example 1: Default Report</strong></p>
+<p>&nbsp;&nbsp; The output of this command is divided into three parts,
+<a class="reference external" href="#active">Active</a> Jobs, <a class="reference external" href="#eligible">Eligible</a> Jobs, and
+<a class="reference external" href="#blocked">Blocked</a> Jobs.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showq</span>
+
+<span class="n">active</span> <span class="n">jobs</span><span class="o">------------------------</span>
+<span class="n">JOBID</span>              <span class="n">USERNAME</span>      <span class="n">STATE</span>  <span class="n">PROC</span>   <span class="n">REMAINING</span>            <span class="n">STARTTIME</span>
+
+<span class="mi">12941</span>               <span class="n">sartois</span>    <span class="n">Running</span>    <span class="mi">25</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">11</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12954</span>                <span class="n">tgates</span>    <span class="n">Running</span>     <span class="mi">4</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">57</span><span class="p">:</span><span class="mi">33</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12944</span>                 <span class="n">eval1</span>    <span class="n">Running</span>    <span class="mi">16</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">37</span><span class="p">:</span><span class="mi">31</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12946</span>                <span class="n">tgates</span>    <span class="n">Running</span>     <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">57</span><span class="p">:</span><span class="mi">31</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+
+<span class="mi">4</span> <span class="n">active</span> <span class="n">jobs</span>             <span class="mi">47</span> <span class="n">of</span> <span class="mi">48</span> <span class="n">processors</span> <span class="n">active</span> <span class="p">(</span><span class="mf">97.92</span><span class="o">%</span><span class="p">)</span>
+                          <span class="mi">32</span> <span class="n">of</span> <span class="mi">32</span> <span class="n">nodes</span> <span class="n">active</span>      <span class="p">(</span><span class="mf">100.00</span><span class="o">%</span><span class="p">)</span>
+
+<span class="n">eligible</span> <span class="n">jobs</span><span class="o">----------------------</span>
+<span class="n">JOBID</span>              <span class="n">USERNAME</span>      <span class="n">STATE</span>  <span class="n">PROC</span>     <span class="n">WCLIMIT</span>            <span class="n">QUEUETIME</span>
+
+<span class="mi">12956</span>              <span class="n">cfosdyke</span>       <span class="n">Idle</span>    <span class="mi">32</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12969</span>              <span class="n">cfosdyke</span>       <span class="n">Idle</span>     <span class="mi">4</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">23</span>
+<span class="mi">12939</span>                 <span class="n">eval1</span>       <span class="n">Idle</span>    <span class="mi">16</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12940</span>               <span class="n">mwillis</span>       <span class="n">Idle</span>     <span class="mi">2</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12947</span>               <span class="n">mwillis</span>       <span class="n">Idle</span>     <span class="mi">2</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12949</span>                 <span class="n">eval1</span>       <span class="n">Idle</span>     <span class="mi">2</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12953</span>                <span class="n">tgates</span>       <span class="n">Idle</span>    <span class="mi">10</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12955</span>                 <span class="n">eval1</span>       <span class="n">Idle</span>     <span class="mi">2</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12957</span>                <span class="n">tgates</span>       <span class="n">Idle</span>    <span class="mi">16</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12963</span>                 <span class="n">eval1</span>       <span class="n">Idle</span>    <span class="mi">16</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12964</span>                <span class="n">tgates</span>       <span class="n">Idle</span>    <span class="mi">16</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12937</span>               <span class="n">allendr</span>       <span class="n">Idle</span>     <span class="mi">9</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12962</span>                <span class="n">aacker</span>       <span class="n">Idle</span>     <span class="mi">6</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12968</span>               <span class="n">tamaker</span>       <span class="n">Idle</span>     <span class="mi">1</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+
+<span class="mi">14</span> <span class="n">eligible</span> <span class="n">jobs</span>
+
+<span class="n">blocked</span> <span class="n">jobs</span><span class="o">-----------------------</span>
+<span class="n">JOBID</span>              <span class="n">USERNAME</span>      <span class="n">STATE</span>  <span class="n">PROC</span>     <span class="n">WCLIMIT</span>            <span class="n">QUEUETIME</span>
+
+
+<span class="mi">0</span> <span class="n">blocked</span> <span class="n">jobs</span>
+
+<span class="n">Total</span> <span class="n">jobs</span><span class="p">:</span>  <span class="mi">18</span>
+</pre></div>
+</div>
+<p>The fields are as follows:</p>
+<p><strong>Active Jobs</strong></p>
+<p>Active jobs are those that are
+<a class="reference external" href="../3.2environment.html#jobstates">Running</a> or
+<a class="reference external" href="../3.2environment.html#jobstates">Starting</a> and consuming resources.
+Displayed are the job id*, the job&#8217;s owner, and the job state.&nbsp; Also
+displayed are the number of processors allocated to the job, the amount
+of time remaining until the job completes (given in HH:MM:SS notation),
+and the time the job started. All active jobs are sorted in &#8220;Earliest
+Completion Time First&#8221; order.</p>
+<p><a href="#id1"><span class="problematic" id="id2">|Note|</span></a>
+*Job id&#8217;s may be marked with a single character to to specify the
+following conditions:</p>
+<p>Character
+Description
+_ (underbar)
+job violates usage limit
+* (asterisk)
+job is backfilled AND is preemptible
++ (plus)
+job is backfilled AND is NOT preemptible
+- (hyphen)
+job is NOT backfilled AND is preemptible</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>Detailed active job information can be obtained using the &#8216;<a class="reference external" href="#r">-r</a>&#8216; flag.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Eligible Jobs</strong></p>
+<p>Eligible Jobs are those that are queued and eligible to be scheduled.
+They are all in the Idle job state and do not violate any fairness
+policies or have any job holds in place. The jobs in the Idle section
+display the same information as the Active Jobs section except that the
+wall clock CPULIMIT is specified rather than job time REMAINING, and job
+QUEUETIME is displayed rather than job STARTTIME. The jobs in this
+section are ordered by job priority. Jobs in this queue are considered
+eligible for both scheduling and backfilling.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id5"><span class="problematic" id="id6">|Note|</span></a></td>
+<td>Detailed eligible job information can be obtained using the &#8216;<a class="reference external" href="#i">-i</a>&#8216; flag.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Blocked Jobs</strong></p>
+<p>Blocked jobs are those that are ineligible to be run or queued. Jobs
+listed here could be in a number of states for the following reasons:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="93%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">State</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Idle</strong></td>
+<td>Job violates a fairness policy. Use <code class="docutils literal"><span class="pre">diagnose</span> <span class="pre">-q</span></code> for more information.</td>
+</tr>
+<tr class="row-odd"><td><strong>UserHold</strong></td>
+<td>A <em>user</em> hold is in place.</td>
+</tr>
+<tr class="row-even"><td><strong>SystemHold</strong></td>
+<td>An administrative or <em>system</em> hold is in place.</td>
+</tr>
+<tr class="row-odd"><td><strong>BatchHold</strong></td>
+<td>A scheduler <em>batch</em> hold is in place (used when the job cannot be run because the requested resources are not available in the system or because the resource manager has repeatedly failed in attempts to start the job).</td>
+</tr>
+<tr class="row-even"><td><strong>Deferred</strong></td>
+<td>A scheduler <em>defer</em> hold is in place (a temporary hold used when a job has been unable to start after a specified number of attempts. This hold is automatically removed after a short period of time).</td>
+</tr>
+<tr class="row-odd"><td><strong>NotQueued</strong></td>
+<td>Job is in the resource manager state NQ (indicating the job&#8217;s controlling scheduling daemon in unavailable).</td>
+</tr>
+</tbody>
+</table>
+<p>A summary of the job queue&#8217;s status is provided at the end of the
+output.</p>
+<p><strong>Example 2: Detailed Active/Running Job Report</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showq</span> <span class="o">-</span><span class="n">r</span>
+
+<span class="n">active</span> <span class="n">jobs</span><span class="o">------------------------</span>
+<span class="n">JOBID</span>               <span class="n">S</span> <span class="n">CCODE</span> <span class="n">PAR</span>  <span class="n">EFFIC</span>  <span class="n">XFACTOR</span>  <span class="n">Q</span>      <span class="n">USER</span>    <span class="n">GROUP</span>        <span class="n">MHOST</span> <span class="n">PROCS</span>   <span class="n">REMAINING</span>            <span class="n">STARTTIME</span>
+
+<span class="mi">12941</span>               <span class="n">R</span>     <span class="o">-</span>   <span class="mi">3</span> <span class="mf">100.00</span>      <span class="mf">1.0</span>  <span class="o">-</span>   <span class="n">sartois</span>   <span class="n">Arches</span>       <span class="n">G5</span><span class="o">-</span><span class="mi">014</span> <span class="mi">25</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">31</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12954</span>               <span class="n">R</span>     <span class="o">-</span>   <span class="mi">3</span> <span class="mf">100.00</span>      <span class="mf">1.0</span> <span class="n">Hi</span>    <span class="n">tgates</span>   <span class="n">Arches</span>       <span class="n">G5</span><span class="o">-</span><span class="mi">016</span>  <span class="mi">4</span>     <span class="mi">2</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">54</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12944</span>               <span class="n">R</span>     <span class="o">-</span>   <span class="mi">2</span> <span class="mf">100.00</span>      <span class="mf">1.0</span> <span class="n">De</span>     <span class="n">eval1</span>  <span class="n">RedRock</span>     <span class="n">P690</span><span class="o">-</span><span class="mi">016</span> <span class="mi">16</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">36</span><span class="p">:</span><span class="mi">51</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12946</span>               <span class="n">R</span>     <span class="o">-</span>   <span class="mi">3</span> <span class="mf">100.00</span>      <span class="mf">1.0</span>  <span class="o">-</span>    <span class="n">tgates</span>   <span class="n">Arches</span>       <span class="n">G5</span><span class="o">-</span><span class="mi">001</span>  <span class="mi">2</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">51</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+
+<span class="mi">4</span> <span class="n">active</span> <span class="n">jobs</span>             <span class="mi">47</span> <span class="n">of</span> <span class="mi">48</span> <span class="n">processors</span> <span class="n">active</span> <span class="p">(</span><span class="mf">97.92</span><span class="o">%</span><span class="p">)</span>
+                          <span class="mi">32</span> <span class="n">of</span> <span class="mi">32</span> <span class="n">nodes</span> <span class="n">active</span>      <span class="p">(</span><span class="mf">100.00</span><span class="o">%</span><span class="p">)</span>
+
+<span class="n">Total</span> <span class="n">jobs</span><span class="p">:</span>  <span class="mi">4</span>
+</pre></div>
+</div>
+<p>The fields are as follows:</p>
+<div class="line-block">
+<div class="line">After displaying the running jobs, a summary is provided indicating
+the number of jobs, the number of allocated processors, and the system
+utilization.</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>JobName</strong></td>
+<td>Name of active job.</td>
+</tr>
+<tr class="row-odd"><td><strong>S</strong></td>
+<td>Job State. Either &#8220;R&#8221; for Running or &#8220;S&#8221; for Starting.</td>
+</tr>
+<tr class="row-even"><td><strong>CCode</strong></td>
+<td>Completion Code. The return/completion code given when a job completes. (Only applicable to completed jobs.)</td>
+</tr>
+<tr class="row-odd"><td><strong>Par</strong></td>
+<td>Partition in which job is running.</td>
+</tr>
+<tr class="row-even"><td><strong>Effic</strong></td>
+<td>CPU efficiency of job.</td>
+</tr>
+<tr class="row-odd"><td><strong>XFactor</strong></td>
+<td>Current expansion factor of job, where XFactor = (QueueTime + WallClockLimit) / WallClockLimit</td>
+</tr>
+<tr class="row-even"><td><strong>Q</strong></td>
+<td>Quality Of Service specified for job.</td>
+</tr>
+<tr class="row-odd"><td><strong>User</strong></td>
+<td>User owning job.</td>
+</tr>
+<tr class="row-even"><td><strong>Group</strong></td>
+<td>Primary group of job owner.</td>
+</tr>
+<tr class="row-odd"><td><strong>Nodes</strong></td>
+<td>Number of processors being used by the job.</td>
+</tr>
+<tr class="row-even"><td><strong>Remaining</strong></td>
+<td>Time the job has until it has reached its wall clock limit. Time specified in HH:MM:SS notation.</td>
+</tr>
+<tr class="row-odd"><td><strong>StartTime</strong></td>
+<td>Time job started running.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showq</span> <span class="o">-</span><span class="n">i</span>
+
+<span class="n">eligible</span> <span class="n">jobs</span><span class="o">----------------------</span>
+<span class="n">JOBID</span>                 <span class="n">PRIORITY</span>  <span class="n">XFACTOR</span>  <span class="n">Q</span>      <span class="n">USER</span>    <span class="n">GROUP</span>  <span class="n">PROCS</span>     <span class="n">WCLIMIT</span>     <span class="n">CLASS</span>      <span class="n">SYSTEMQUEUETIME</span>
+
+<span class="mi">12956</span><span class="o">*</span>                      <span class="mi">20</span>      <span class="mf">1.0</span>  <span class="o">-</span>  <span class="n">cfosdyke</span>  <span class="n">RedRock</span>     <span class="mi">32</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12969</span><span class="o">*</span>                      <span class="mi">19</span>      <span class="mf">1.0</span>  <span class="o">-</span>  <span class="n">cfosdyke</span>  <span class="n">RedRock</span>      <span class="mi">4</span>     <span class="mi">6</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">23</span>
+<span class="mi">12939</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>     <span class="n">eval1</span>  <span class="n">RedRock</span>     <span class="mi">16</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12940</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>   <span class="n">mwillis</span>   <span class="n">Arches</span>      <span class="mi">2</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12947</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>   <span class="n">mwillis</span>   <span class="n">Arches</span>      <span class="mi">2</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12949</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>     <span class="n">eval1</span>  <span class="n">RedRock</span>      <span class="mi">2</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12953</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>    <span class="n">tgates</span>   <span class="n">Arches</span>     <span class="mi">10</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12955</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>     <span class="n">eval1</span>  <span class="n">RedRock</span>      <span class="mi">2</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12957</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>    <span class="n">tgates</span>   <span class="n">Arches</span>     <span class="mi">16</span>     <span class="mi">3</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12963</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>     <span class="n">eval1</span>  <span class="n">RedRock</span>     <span class="mi">16</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12964</span>                       <span class="mi">16</span>      <span class="mf">1.0</span>  <span class="o">-</span>    <span class="n">tgates</span>   <span class="n">Arches</span>     <span class="mi">16</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">12937</span>                        <span class="mi">1</span>      <span class="mf">1.0</span>  <span class="o">-</span>   <span class="n">allendr</span>  <span class="n">RedRock</span>      <span class="mi">9</span>  <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12962</span>                        <span class="mi">1</span>      <span class="mf">1.2</span>  <span class="o">-</span>    <span class="n">aacker</span>  <span class="n">RedRock</span>      <span class="mi">6</span>    <span class="mi">00</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">12968</span>                        <span class="mi">1</span>      <span class="mf">1.0</span>  <span class="o">-</span>   <span class="n">tamaker</span>  <span class="n">RedRock</span>      <span class="mi">1</span>     <span class="mi">4</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">40</span>     <span class="n">batch</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+
+<span class="mi">14</span> <span class="n">eligible</span> <span class="n">jobs</span>
+
+<span class="n">Total</span> <span class="n">jobs</span><span class="p">:</span>  <span class="mi">14</span>
+</pre></div>
+</div>
+<p>The fields are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>JOBID</strong></td>
+<td>Name of job.</td>
+</tr>
+<tr class="row-odd"><td><strong>PRIORITY</strong></td>
+<td>Calculated job priority.</td>
+</tr>
+<tr class="row-even"><td><strong>XFACTOR</strong></td>
+<td>Current expansion factor of job, where XFactor = (QueueTime + WallClockLimit) / WallClockLimit</td>
+</tr>
+<tr class="row-odd"><td><strong>Q</strong></td>
+<td>Quality Of Service specified for job.</td>
+</tr>
+<tr class="row-even"><td><strong>USER</strong></td>
+<td><a class="reference external" href="../3.5credoverview.html#user">User</a> owning job.</td>
+</tr>
+<tr class="row-odd"><td><strong>GROUP</strong></td>
+<td>Primary <a class="reference external" href="../3.5credoverview.html#group">group</a> of job owner.</td>
+</tr>
+<tr class="row-even"><td><strong>PROCS</strong></td>
+<td>Minimum number of processors required to run job.</td>
+</tr>
+<tr class="row-odd"><td><strong>WCLIMIT</strong></td>
+<td>Wall clock limit specified for job. Time specified in HH:MM:SS notation.</td>
+</tr>
+<tr class="row-even"><td><strong>CLASS</strong></td>
+<td><a class="reference external" href="../3.5credoverview.html#class">Class</a> requested by job.</td>
+</tr>
+<tr class="row-odd"><td><strong>SYSTEMQUEUETIME</strong></td>
+<td>Time job was admitted into the system queue.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id7"><span class="problematic" id="id8">|Note|</span></a></td>
+<td>An asterisk at the end of a job (job 12956* in this example) indicates that the job has a job <a class="reference external" href="7.1advancereservations.html">reservation</a> created for it. The details of this reservation can be displayed using the <a class="reference external" href="checkjob.html">checkjob</a> command.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 4: Detailed Completed Job Report</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showq</span> <span class="o">-</span><span class="n">c</span>
+
+<span class="n">completed</span> <span class="n">jobs</span><span class="o">------------------------</span>
+<span class="n">JOBID</span>               <span class="n">S</span> <span class="n">CCODE</span>  <span class="n">PAR</span>  <span class="n">EFFIC</span>  <span class="n">XFACTOR</span>  <span class="n">Q</span>  <span class="n">USERNAME</span>    <span class="n">GROUP</span>        <span class="n">MHOST</span> <span class="n">PROC</span>    <span class="n">WALLTIME</span>            <span class="n">STARTTIME</span>
+
+<span class="mi">13098</span>               <span class="n">C</span>     <span class="mi">0</span>  <span class="n">bas</span>  <span class="mf">93.17</span>      <span class="mf">1.0</span>  <span class="o">-</span>   <span class="n">sartois</span>   <span class="n">Arches</span>       <span class="n">G5</span><span class="o">-</span><span class="mi">014</span>    <span class="mi">25</span>    <span class="mi">2</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">31</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">13102</span>               <span class="n">C</span>     <span class="mi">0</span>  <span class="n">bas</span>  <span class="mf">99.55</span>      <span class="mf">2.2</span> <span class="n">Hi</span>    <span class="n">tgates</span>   <span class="n">Arches</span>       <span class="n">G5</span><span class="o">-</span><span class="mi">016</span>     <span class="mi">4</span>    <span class="mi">2</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">54</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">52</span>
+<span class="mi">13103</span>               <span class="n">C</span>     <span class="mi">2</span>  <span class="n">tes</span>  <span class="mf">99.30</span>      <span class="mf">2.9</span> <span class="n">De</span>     <span class="n">eval1</span>  <span class="n">RedRock</span>     <span class="n">P690</span><span class="o">-</span><span class="mi">016</span>    <span class="mi">16</span>    <span class="mi">6</span><span class="p">:</span><span class="mi">36</span><span class="p">:</span><span class="mi">51</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+<span class="mi">13115</span>               <span class="n">C</span>     <span class="mi">0</span>  <span class="n">tes</span>  <span class="mf">97.04</span>      <span class="mf">1.0</span>  <span class="o">-</span>    <span class="n">tgates</span>   <span class="n">Arches</span>       <span class="n">G5</span><span class="o">-</span><span class="mi">001</span>     <span class="mi">2</span> <span class="mi">1</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">51</span>  <span class="n">Thu</span> <span class="n">Sep</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">50</span>
+
+<span class="mi">3</span> <span class="n">completed</span> <span class="n">jobs</span>
+</pre></div>
+</div>
+<p>The fields are as follows:</p>
+<p>After displaying the active jobs, a summary is provided indicating the
+number of jobs, the number of allocated processors, and the system
+utilization.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id9"><span class="problematic" id="id10">|Note|</span></a></td>
+<td>If the <a class="reference external" href="../a.fparameters.html#displayflags">DISPLAYFLAGS</a> parameter is set to <strong>ACCOUNTCENTRIC</strong>, job group information will be replaced with job account information.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 5: Filtered Job Report</strong></p>
+<p>&nbsp;&nbsp; Show only jobs associated with user <code class="docutils literal"><span class="pre">john</span></code> and class <code class="docutils literal"><span class="pre">benchmark</span></code></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showq</span> <span class="o">-</span><span class="n">w</span> <span class="n">class</span><span class="o">=</span><span class="n">benchmark</span> <span class="o">-</span><span class="n">w</span> <span class="n">user</span><span class="o">=</span><span class="n">john</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p><strong>See Also</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="showbf.html">showbf</a> - command to display resource availability.</li>
+<li><a class="reference external" href="mdiag.html">mdiag -j</a> - command to display detailed job
+diagnostics.</li>
+<li><a class="reference external" href="checkjob.html">checkjob</a> - command to check the status of a
+particular job.</li>
+<li><a class="reference external" href="../a.fparameters.html#jobcpurgetime">JOBCPURGETIME</a> - parameter
+to adjust the duration of time Moab preserves information about
+completed jobs</li>
+<li><a class="reference external" href="../a.fparameters.html#displayflags">DISPLAYFLAGS</a> - parameter to
+control what job information is displayed</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showq.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

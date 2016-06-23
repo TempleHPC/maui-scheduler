@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="6.1. Fairness Overview" href="6.1fairnessoverview.html" />
+    <link rel="prev" title="5.5. Task Distribution Policies" href="5.5taskdistribution.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="6.1fairnessoverview.html" title="6.1. Fairness Overview"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="5.5taskdistribution.html" title="5.5. Task Distribution Policies"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="managing-fairness-throttling-policies-fairshare-and-allocation-management">
+<h1>6. Managing Fairness - Throttling Policies, Fairshare, and Allocation Management<a class="headerlink" href="#managing-fairness-throttling-policies-fairshare-and-allocation-management" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="6.1fairnessoverview.html">6.1. Fairness Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6.2throttlingpolicies.html">6.2. Throttling Policies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6.2throttlingpolicies.html#fairness-via-throttling-policies">6.2.1. Fairness via Throttling Policies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6.2throttlingpolicies.html#basic-fairness-policies">6.2.1.1. Basic Fairness Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.2throttlingpolicies.html#multi-dimension-fairness-policies">6.2.1.2. Multi-Dimension Fairness Policies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6.2throttlingpolicies.html#override-limits">6.2.2. Override Limits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.2throttlingpolicies.html#idle-job-limits">6.2.3. Idle Job Limits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.2throttlingpolicies.html#hard-and-soft-limits">6.2.4. Hard and Soft Limits</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6.3fairshare.html">6.3. Fairshare</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6.3fairshare.html#overview">6.3.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.3fairshare.html#fairshare-parameters">6.3.2. Fairshare Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6.3fairshare.html#metric-of-consumption">6.3.2.1. Metric of Consumption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.3fairshare.html#specifying-fairshare-timeframe">6.3.2.2. Specifying Fairshare Timeframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.3fairshare.html#managing-fairshare-data">6.3.2.3. Managing Fairshare Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6.3fairshare.html#using-fairshare-information">6.3.3. Using Fairshare Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6.3fairshare.html#priority-based-fairshare">6.3.3.1. Priority Based Fairshare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.3fairshare.html#feasibility-based-fairshare">6.3.3.2. Feasibility Based Fairshare</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6.4allocationmanagement.html">6.4. Allocation Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6.4allocationmanagement.html#allocation-management-overview">6.4.1. Allocation Management Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.4allocationmanagement.html#configuring-the-allocation-manager-interface">6.4.2. Configuring the Allocation Manager Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.4allocationmanagement.html#allocation-management-policies">6.4.3. Allocation Management Policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.4allocationmanagement.html#allocation-manager-details">6.4.4. Allocation Manager Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6.4allocationmanagement.html#qbank-allocation-manager">6.4.4.1. QBank Allocation Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.4allocationmanagement.html#res-allocation-manager">6.4.4.2. Res Allocation Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.4allocationmanagement.html#file-allocation-manager">6.4.4.3. File Allocation Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6.4allocationmanagement.html#gold-allocation-manager">6.4.4.4. Gold Allocation Manager</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="5.5taskdistribution.html"
+                        title="previous chapter">5.5. Task Distribution Policies</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="6.1fairnessoverview.html"
+                        title="next chapter">6.1. Fairness Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/6.0managingfairness.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="6.1fairnessoverview.html" title="6.1. Fairness Overview"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="5.5taskdistribution.html" title="5.5. Task Distribution Policies"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

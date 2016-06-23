@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="8.1. Optimization Overview" href="8.1optimizationoverview.html" />
+    <link rel="prev" title="7.3. Quality of Service (QoS) Facilities" href="7.3qos.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="8.1optimizationoverview.html" title="8.1. Optimization Overview"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="7.3qos.html" title="7.3. Quality of Service (QoS) Facilities"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="optimizing-scheduling-behavior-backfill-node-sets-and-preemption">
+<h1>8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption<a class="headerlink" href="#optimizing-scheduling-behavior-backfill-node-sets-and-preemption" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="8.1optimizationoverview.html">8.1. Optimization Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8.2backfill.html">8.2. Backfill</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="8.2backfill.html#backfill-overview">8.2.1. Backfill Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8.2backfill.html#backfill-algorithm">8.2.2. Backfill Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="8.2backfill.html#configuring-backfill">8.2.3. Configuring Backfill</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="8.2backfill.html#backfill-policies">8.2.3.1. Backfill Policies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="8.3nodesetoverview.html">8.3. Node Set Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8.4preemption.html">8.4. Preemption Policies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="8.4preemption.html#preemption-triggers">8.4.1. Preemption Triggers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#admin-preemption-commands">8.4.1.1. Admin Preemption Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#qos-based-preemption">8.4.1.2. QOS Based Preemption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#preemption-based-backfill">8.4.1.3. Preemption Based Backfill</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="8.4preemption.html#types-of-preemption">8.4.2. Types of Preemption</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#job-requeue">8.4.2.1. Job Requeue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#job-suspend">8.4.2.2. Job Suspend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#job-checkpoint">8.4.2.3. Job Checkpoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="8.4preemption.html#rm-preemption-constraints">8.4.2.4. RM Preemption Constraints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="7.3qos.html"
+                        title="previous chapter">7.3. Quality of Service (QoS) Facilities</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="8.1optimizationoverview.html"
+                        title="next chapter">8.1. Optimization Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/8.0optimizingschedulingbehavior.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="8.1optimizationoverview.html" title="8.1. Optimization Overview"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="7.3qos.html" title="7.3. Quality of Service (QoS) Facilities"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

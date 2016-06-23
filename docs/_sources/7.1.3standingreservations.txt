@@ -1,0 +1,30 @@
+Standing Reservations
+#####################
+
+Standing reservations build upon the capabilities of advance
+reservations to enable a site to enforce advanced usage policies in an
+efficient manner. Standing reservations provide a superset of the
+capabilities typically found in a batch queuing system's class or queue
+architecture. For example, queues can be used to allow only particular
+types of jobs access to certain compute resources. Also, some batch
+systems allow these queues to configured so that they only allow this
+access during certain times of the day or week. Standing reservations
+allow these same capabilities but with greater flexibility and
+efficiency than is typically found in a normal queue management system.
+
+Standing Reservations provide a mechanism by which a site can dedicate a
+particular block of resources for a special use on a regular daily or
+weekly basis. For example, node X could be dedicated to running jobs
+only from users in the accounting group every Friday from 4 to 10 PM.
+See the `Reservation Overview <7.1.1resoverview.html>`__ for more
+information about the use of reservations. The `Managing
+Reservations <7.1.5managingreservations.html>`__ section provides a
+detailed explanation of the concepts and steps involved in the creation
+and configuration of standing reservations.
+
+| A standing reservation is a powerful means of
+| Controlling Access to Resources
+| Controlling Turnaround
+
+see the following parameters for more information:
+`SRNAME <a.fparameters.html#SRNAME>`__\ `SRRESOURCES <a.fparameters.html#SRRESOURCES>`__\ `SRDAYS <a.fparameters.html#SRDAYS>`__\ `SRFLAGS <a.fparameters.html#SRFLAGS>`__\ `SRSTARTTIME <a.fparameters.html#SRSTARTTIME>`__\ `SRENDTIME <a.fparameters.html#SRENDTIME>`__\ `SRWSTARTTIME <a.fparameters.html#SRWSTARTTIME>`__\ `SRWENDTIME <a.fparameters.html#SRWENDTIME>`__\ `SRDEPTH <a.fparameters.html#SRDEPTH>`__\ `SRTASKCOUNT <a.fparameters.html#SRTASKCOUNT>`__\ `SRHOSTLIST <a.fparameters.html#SRHOSTLIST>`__\ `SRTPN <a.fparameters.html#SRTPN>`__\ `SRUSERLIST <a.fparameters.html#SRUSERLIST>`__\ `SRGROUPLIST <a.fparameters.html#SRGROUPLIST>`__\ `SRACCOUNTLIST <a.fparameters.html#SRACCOUNTLIST>`__\ `SRQOSLIST <a.fparameters.html#SRQOSLIST>`__\ `SRCLASSLIST <a.fparameters.html#SRCLASSLIST>`__\ `SRMAXTIME <a.fparameters.html#SRMAXTIME>`__\ `SRTIMELOGIC <a.fparameters.html#SRTIMELOGIC>`__\ `SRPARTITION <a.fparameters.html#SRPARTITION>`__\ `SRACCESS <a.fparameters.html#SRACCESS>`__

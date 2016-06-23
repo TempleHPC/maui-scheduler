@@ -1,0 +1,486 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.2. Node Allocation &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="5. Prioritizing Jobs and Allocating Resources" href="5.0prioritization.html" />
+    <link rel="next" title="5.3. Node Access Policies" href="5.3nodeaccess.html" />
+    <link rel="prev" title="5.1.5. Manual Job Priority Adjustment" href="5.1.5prioritymanagement.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="5.3nodeaccess.html" title="5.3. Node Access Policies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="5.1.5prioritymanagement.html" title="5.1.5. Manual Job Priority Adjustment"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" accesskey="U">5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="node-allocation">
+<h1>5.2. Node Allocation<a class="headerlink" href="#node-allocation" title="Permalink to this headline">¶</a></h1>
+<p>While job prioritization allows a site to determine which job to run,
+node allocation policies allow a site to specify how available resources
+should be allocated to each job. The algorithm used is specified by the
+parameter
+<a class="reference external" href="a.fparameters.html#nodeallocationpolicy">NODEALLOCATIONPOLICY</a> .
+There are multiple node allocation policies to choose from allowing
+selection based on reservation constraints, node configuration,
+available resource constraints, and other issues. These policies can be
+specified with a system wide default value and on a per job override
+basis. The following algorithms are available and described in detail
+below: <a class="reference external" href="#FIRSTAVAILABLE">FIRSTAVAILABLE</a> ,
+<a class="reference external" href="#LASTAVAILABLE">LASTAVAILABLE</a> , <a class="reference external" href="#PRIORITY">PRIORITY</a> ,
+<a class="reference external" href="#CPULOAD">CPULOAD</a> , <a class="reference external" href="#MINRESOURCE">MINRESOURCE</a> ,
+<a class="reference external" href="#CONTIGUOUS">CONTIGUOUS</a> , <a class="reference external" href="#MAXBALANCE">MAXBALANCE</a> ,
+<a class="reference external" href="#FASTEST">FASTEST</a> , and <a class="reference external" href="#LOCAL">LOCAL</a>.</p>
+<ul class="simple">
+<li><a class="reference external" href="#node">5.2.1 Node Allocation Overview</a></li>
+<li><a class="reference external" href="#resource">5.2.2 Resource Based Algorithms</a><ul>
+<li><a class="reference external" href="#CPULOAD">5.2.2.1 CPULOAD</a></li>
+<li><a class="reference external" href="#FIRSTAVAILABLE">5.2.2.2 FIRSTAVAILABLE</a></li>
+<li><a class="reference external" href="#LASTAVAILABLE">5.2.2.3 LASTAVAILABLE</a></li>
+<li><a class="reference external" href="#PRIORITY">5.2.2.4 PRIORITY</a></li>
+<li><a class="reference external" href="#MINRESOURCE">5.2.2.5 MINRESOURCE</a></li>
+<li><a class="reference external" href="#CONTIGUOUS">5.2.2.6 CONTIGUOUS</a></li>
+<li><a class="reference external" href="#MAXBALANCE">5.2.2.7 MAXBALANCE</a></li>
+<li><a class="reference external" href="#FASTEST">5.2.2.8 FASTEST</a></li>
+<li><a class="reference external" href="#LOCAL">5.2.2.9 LOCAL</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#time">5.2.3 Time Based Algorithms</a></li>
+<li><a class="reference external" href="#LOCAL">5.2.4 Locally Defined Algorithms</a></li>
+<li><a class="reference external" href="#pref">5.2.5 Specifying &#8216;Per Job&#8217; Resource Preferences</a></li>
+</ul>
+<div class="section" id="node-allocation-overview">
+<h2>5.2.1. Node Allocation Overview<a class="headerlink" href="#node-allocation-overview" title="Permalink to this headline">¶</a></h2>
+<p>Node allocation is the process of selecting the best resources to
+allocate to a job from a list of available resources. Making this
+decision intelligently is important in an environment which possesses
+one or more of the following attributes:</p>
+<ul class="simple">
+<li>heterogeneous resources (resources which vary from node to node in</li>
+</ul>
+<p>terms of quantity or quality)</p>
+<ul class="simple">
+<li>shared nodes (nodes may be utilized by more than one job)</li>
+</ul>
+<div class="line-block">
+<div class="line">- reservations or service guarantees</div>
+</div>
+<ul class="simple">
+<li>non-flat network (a network in which a perceptible performance</li>
+</ul>
+<p>degradation may potentially exist depending on workload placement)</p>
+<div class="section" id="heterogeneous-resources">
+<h3>5.2.1.1. Heterogeneous Resources<a class="headerlink" href="#heterogeneous-resources" title="Permalink to this headline">¶</a></h3>
+<p>If the available compute resources have differing configurations, and a
+subset of the submitted jobs cannot run on all of the nodes, then
+allocation decisions can significantly affect scheduling performance.
+For example, a system may be comprised of two nodes, A and B, which are
+identical in all respects except for RAM, possessing 256MB and 1GB of
+RAM respectively. Two single processor jobs, X and Y, are submitted, one
+requesting at least 512 MB of RAM, the other, at least 128 MB. The
+scheduler could run job X on node A in which case job Y would be blocked
+until job X completes. A more intelligent approach may be to allocate
+node B to job X because it has the fewest available resources yet still
+meets the constraints. This is somewhat of a &#8216;bestfit&#8217; approach in the
+configured resource dimension and is essentially what is done by the
+&#8216;MINRESOURCE&#8217; algorithm.</p>
+</div>
+<div class="section" id="shared-nodes">
+<h3>5.2.1.2. Shared Nodes<a class="headerlink" href="#shared-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Shared node systems are most often involve SMP nodes although this is
+not mandatory. Regardless, when sharing the resources of a given node
+amongst tasks from more than one job, resource contention and
+fragmentation issues arise.</p>
+<p>Most current systems still do not do a very good job of logically
+partitioning the resources (i.e., CPU, Memory, network bandwidth, etc.)
+available on a given node. Consequently contention often arises between
+tasks of independent jobs on the node. This can result in a slowdown for
+all jobs involved which can have significant ramifications if large way
+parallel jobs are involved.</p>
+<p>On large way SMP systems (i.e., &gt; 32 processors/node), job packing can
+result in intra-node fragmentation. For example, again take two nodes, A
+and B each with 64 processors. Assume they are currently loaded with
+various jobs and have 24 and 12 processors free respectively. Two jobs
+are submitted, Job X requesting 10 processors, and job Y requesting 20
+processors. Job X can start on either node but starting it on node A
+will prevent job Y from running. An algorithm to handle intra-node
+fragmentation is pretty straightforward for a single resource case, but
+what happens when jobs request a combination of processors, memory, and
+local disk. Determining the correct node suddenly gets significantly
+more complex</p>
+</div>
+<div class="section" id="reservations-or-service-guarantees">
+<h3>5.2.1.3. Reservations or Service Guarantees<a class="headerlink" href="#reservations-or-service-guarantees" title="Permalink to this headline">¶</a></h3>
+<p>A reservation based system adds the time dimension into the node
+allocation decision. With reservations, node resources must be viewed in
+a type of two dimension &#8216;node-time&#8217; space. Allocating nodes to jobs
+fragments this node-time space and makes it more difficult to schedule
+jobs in the remaining, more constrained node-time slots. Allocation
+decisions should be made in such a way as top minimize this
+fragmentation and maximize the schedulers ability to continue to start
+jobs in existing slots. See the figure to hopefully remove a small
+amount of the incoherency contained in the above sentences. In this
+figure, Job A and job B are already running. A reservation, X, has been
+created some time in the future. Assume that job A is 2 hours long and
+job B is 3 hours long. Again, two new single processor jobs are
+submitted, C and D; job C requires 3 hours of compute time while job D
+requires 5 hours. Either job will just fit in the free space located
+above Job A or in the free space located below job B. If job C is placed
+above Job A, job D, requiring 5 hours of time will be prevented from
+running by the presence of reservation X. However, if job C is placed
+below job B, job D can still start immediately above Job A.<a href="#id1"><span class="problematic" id="id2">|image5|</span></a>
+Hopefully, this canned example demonstrates the importance of time based
+reservation information in making node allocation decisions, both at the
+time of starting jobs, and at the time of creating reservations. The
+impact of time based issues grows significantly with the number of
+reservations in place on a given system. The LASTAVAILABLE algorithm
+works on this premise, locating resources which have the smallest space
+between the end of a job under consideration and the start of a future
+reservation.</p>
+</div>
+<div class="section" id="non-flat-network">
+<h3>5.2.1.4. Non-flat Network<a class="headerlink" href="#non-flat-network" title="Permalink to this headline">¶</a></h3>
+<p>On systems where network connections do not resemble a flat &#8216;all-to-all&#8217;
+topology, the placement of tasks may present a significant impact on the
+performance of communication intensive parallel jobs. If latencies and
+bandwidth of the network between any two nodes vary significantly, the
+node allocation algorithm should attempt to pack tasks of a given job as
+close to each other as possible to minimize the impact of these
+bandwidth and latency differences.</p>
+</div>
+</div>
+<div class="section" id="resource-based-algorithms">
+<h2>5.2.2. Resource Based Algorithms<a class="headerlink" href="#resource-based-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>Maui contains a number of allocation algorithms which address some of
+the needs described above. Additional &#8216;homegrown&#8217; allocation algorithms
+may also be created and interfaced into the Maui scheduling system. The
+current suite of algorithms is described below.</p>
+<div class="section" id="cpuload">
+<h3>5.2.2.1. CPULOAD<a class="headerlink" href="#cpuload" title="Permalink to this headline">¶</a></h3>
+<p>Nodes are selected which have the maximum amount of available, unused
+cpu power, i.e. &lt;#of CPU&#8217;s&gt; - &lt;CPU load&gt;. Good algorithm for
+timesharing node systems. This algorithm is only applied to jobs
+starting immediately. For the purpose of future reservations, the
+MINRESOURCE algorithm is used.</p>
+</div>
+<div class="section" id="firstavailable">
+<h3>5.2.2.2. FIRSTAVAILABLE<a class="headerlink" href="#firstavailable" title="Permalink to this headline">¶</a></h3>
+<p>Simple first come, first server algorithm where nodes are
+allocated in the order they are presented by the resource manager.
+This is a very simple, and very fast algorithm.</p>
+</div>
+<div class="section" id="lastavailable">
+<h3>5.2.2.3. LASTAVAILABLE<a class="headerlink" href="#lastavailable" title="Permalink to this headline">¶</a></h3>
+<p>Algorithm which selects resources so as to minimize the amount of
+time after the job and before the the trailing reservation. This
+algorithm is a &#8216;best fit in time&#8217; algorithm which minimizes the impact
+of reservation based node-time fragmentation. It is useful in systems
+where a large number of reservations (job, standing, or
+administrative) are in place.</p>
+</div>
+<div class="section" id="priority">
+<h3>5.2.2.4. PRIORITY<a class="headerlink" href="#priority" title="Permalink to this headline">¶</a></h3>
+<p>This algorithm allows a site to specify the priority of various
+static and dynamic aspects of compute nodes and allocate them
+accordingly. It is highly flexible allowing node attribute and usage
+information to be combined with reservation affinity. Using node
+allocation priority, the following priority components can be
+specified:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Component Name</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td><strong>ADISK</strong></td>
+<td>local disk currently available to batch jobs</td>
+</tr>
+<tr class="row-odd"><td><strong>AMEM</strong></td>
+<td>real memory currently available to batch jobs</td>
+</tr>
+<tr class="row-even"><td><strong>APROCS</strong></td>
+<td>processors currently available to batch jobs (configured procs - dedicated procs)</td>
+</tr>
+<tr class="row-odd"><td><strong>ASWAP</strong></td>
+<td>virtual memory currently available to batch jobs</td>
+</tr>
+<tr class="row-even"><td><strong>CDISK</strong></td>
+<td>total local disk allocated for use by batch jobs</td>
+</tr>
+<tr class="row-odd"><td><strong>CMEM</strong></td>
+<td>total real memory on node</td>
+</tr>
+<tr class="row-even"><td><strong>CPROCS</strong></td>
+<td>total processors on node</td>
+</tr>
+<tr class="row-odd"><td><strong>CSWAP</strong></td>
+<td>total virtually memory configured on node</td>
+</tr>
+<tr class="row-even"><td><strong>JOBCOUNT</strong></td>
+<td>number of jobs currently running on node</td>
+</tr>
+<tr class="row-odd"><td><strong>LOAD</strong></td>
+<td>current 1 minute load average</td>
+</tr>
+<tr class="row-even"><td><strong>PREF</strong></td>
+<td>node meets job specific resource preferences</td>
+</tr>
+<tr class="row-odd"><td><strong>PRIORITY</strong></td>
+<td>admin specified node priority</td>
+</tr>
+<tr class="row-even"><td><strong>RESAFFINITY</strong></td>
+<td>reservation affinity for job being evaluated</td>
+</tr>
+<tr class="row-odd"><td><strong>SPEED</strong></td>
+<td>if set, node &#8216;procspeed&#8217;. otherwise, relative node &#8216;speed&#8217;</td>
+</tr>
+<tr class="row-even"><td><strong>USAGE</strong></td>
+<td>percentage of time node has been running batch jobs since the last statistics initialization</td>
+</tr>
+</tbody>
+</table>
+<p>The node allocation priority function can be specified on a node by node
+or cluster wide basis. In both cases, the recommended approach is to
+specify the <strong>PRIORITYF</strong> attribute with the
+<strong>`NODECFG &lt;a.fparameters.html#nodecfg&gt;`__</strong> parameter. A few examples
+follow.</p>
+<p>Example 1: Favor the fastest nodes with the most available memory which
+are running the fewest jobs.</p>
+<p><code class="docutils literal"><span class="pre">NODEALLOCATIONPOLICY</span> <span class="pre">PRIORITY</span> <span class="pre">NODECFG[DEFAULT]</span> <span class="pre">PRIORITYF='SPEED+</span> <span class="pre">.01</span> <span class="pre">*</span> <span class="pre">AMEM</span> <span class="pre">-</span> <span class="pre">10</span> <span class="pre">*</span> <span class="pre">JOBCOUNT'</span></code></p>
+<p>Example 2: A site has a batch system consisting of two dedicated
+&#8216;batchX&#8217; nodes, as well as numerous desktop systems. The allocation
+function should favor batch nodes first, followed by desktop systems
+which are the least loaded and have received the least historical usage.</p>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">NODEALLOCATIONPOLICY</span> <span class="pre">PRIORITY</span> <span class="pre">NODECFG[DEFAULT]</span> <span class="pre">PRIORITYF='-LOAD</span> <span class="pre">-</span> <span class="pre">5*USAGE'</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[batch1]</span> <span class="pre">PRIORITY=1000</span> <span class="pre">PRIORITYF='PRIORITY</span> <span class="pre">+</span> <span class="pre">APROCS'</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[batch2]</span> <span class="pre">PRIORITY=1000</span> <span class="pre">PRIORITYF='PRIORITY</span> <span class="pre">+</span> <span class="pre">APROCS'</span></code></div>
+</div>
+<p>Example 3: Pack tasks onto loaded nodes first.</p>
+<p><code class="docutils literal"><span class="pre">NODEALLOCATIONPOLICY</span> <span class="pre">PRIORITY</span> <span class="pre">NODECFG[DEFAULT]</span> <span class="pre">PRIORITYF=JOBCOUNT</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As in the example above, if spaces are placed within the priority function for readability, the priority function
+value will need to be quoted to allow proper parsing.</p>
+</div>
+</div>
+<div class="section" id="minresource">
+<h3>5.2.2.5. MINRESOURCE<a class="headerlink" href="#minresource" title="Permalink to this headline">¶</a></h3>
+<p>This algorithm priorities nodes according to the configured resources
+on each node. Those nodes with the fewest configured resources which
+still meet the job&#8217;s resource constraints are selected.</p>
+</div>
+<div class="section" id="contiguous">
+<h3>5.2.2.6. CONTIGUOUS<a class="headerlink" href="#contiguous" title="Permalink to this headline">¶</a></h3>
+<p>This algorithm will allocate nodes in contiguous (linear) blocks
+as required by the Compaq RMS system.</p>
+</div>
+<div class="section" id="maxbalance">
+<h3>5.2.2.7. MAXBALANCE<a class="headerlink" href="#maxbalance" title="Permalink to this headline">¶</a></h3>
+<p>This algorithm will attempt to allocate the most &#8216;balanced&#8217; set of
+nodes possible to a job. In most cases, but not all, the metric for
+balance of the nodes is node speed. Thus, if possible, nodes with
+identical speeds will be allocated to the job. If identical speed
+nodes cannot be found, the algorithm will allocate the set of nodes
+with the minimum node speed &#8216;span&#8217; or range.</p>
+</div>
+<div class="section" id="fastest">
+<h3>5.2.2.8. FASTEST<a class="headerlink" href="#fastest" title="Permalink to this headline">¶</a></h3>
+<p>This algorithm will select nodes in &#8216;fastest node first&#8217; order. Nodes
+will be selected by node <em>speed</em> if specified. If node speed is not
+specified, nodes will be selected by processor speed. If neither is
+specified, nodes will be selected in a random order.</p>
+</div>
+<div class="section" id="local">
+<h3>5.2.2.9. LOCAL<a class="headerlink" href="#local" title="Permalink to this headline">¶</a></h3>
+<p>This will call the locally created &#8216;contrib&#8217; node allocation algorithm.</p>
+<p><strong>See also</strong></p>
+</div>
+</div>
+<div class="section" id="time-based-algorithms">
+<h2>5.2.3. Time Based Algorithms<a class="headerlink" href="#time-based-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>Under Construction</p>
+</div>
+<div class="section" id="locally-defined-algorithms">
+<h2>5.2.4. Locally Defined Algorithms<a class="headerlink" href="#locally-defined-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>Under Construction</p>
+</div>
+<div class="section" id="specifying-per-job-resource-preferences">
+<h2>5.2.5. Specifying &#8216;Per Job&#8217; Resource Preferences<a class="headerlink" href="#specifying-per-job-resource-preferences" title="Permalink to this headline">¶</a></h2>
+<p>While the resource based node allocation algorithms can make a good
+guess at what compute resources would best satisfy a job, sites often
+possess a subset of jobs which benefit from more explicit resource
+allocation specification. For example one job may perform best on a
+particular subset of nodes due to direct access to a tape drive, another
+may be very memory intensive. Resource preferences are distinct from
+node requirements. While the former describes what a job needs to run at
+all, the latter describes what the job needs to run well. In general, a
+scheduler must satisfy a job&#8217;s node requirement specification, and then,
+as best possible, should satisfy the job&#8217;s resource preferences.</p>
+<div class="section" id="specifying-resource-preferences">
+<h3>5.2.5.1. Specifying Resource Preferences<a class="headerlink" href="#specifying-resource-preferences" title="Permalink to this headline">¶</a></h3>
+<p>A number of resources managers natively support the concept of
+resource preferences (ie, Loadleveler). When using these systems, the
+language specific preferences keywords may be used. For systems which
+do not support resource preferences natively, Maui provides a resource
+manager extension keyword, &#8216;<strong>PREF</strong>&#8216; which may be utilized to specify
+desired resources. This extension allows specification of node
+features, memory, swap, and disk space conditions which define whether
+or not the node is considered to be &#8216;preferred. (NOTE: Maui 3.2.5 only
+supports feature based preferences)</p>
+</div>
+<div class="section" id="selecting-preferred-resources">
+<h3>5.2.5.2. Selecting &#8216;Preferred&#8217; Resources<a class="headerlink" href="#selecting-preferred-resources" title="Permalink to this headline">¶</a></h3>
+<p>Enforcing resource preferences is not completely straightforward. A site
+may have a number of potentially conflicting desires which the scheduler
+is asked to simultaneously satisfy. For example, a scheduler may be
+asked to maximize the proximity of the allocated nodes at the same time
+it is supposed to satisfy resource preferences and minimize node
+overcommitment. To allow site specific &#8216;weighting&#8217; of these varying
+desires, Maui allows resources preferences to be enabled through the
+&#8216;<a class="reference external" href="#PRIORITY">Priority</a> &#8216; node allocation algorithm. For example, to
+utilize resource preferences together with node load, the following
+configuration might be used:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEALLOCATIONPOLICY</span> <span class="n">PRIORITY</span>
+<span class="n">NODECFG</span><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>     <span class="n">PRIORITYF</span><span class="o">=</span><span class="s1">&#39;5 * PREF - LOAD&#39;</span>
+</pre></div>
+</div>
+<p>To request specific resource preferences, a user could then submit a job
+indicating those preferences. In the case of a PBS job, the following
+might work:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">qsub</span> <span class="o">-</span><span class="n">l</span> <span class="n">nodes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">walltime</span><span class="o">=</span><span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">-</span><span class="n">W</span> <span class="n">x</span><span class="o">=</span><span class="n">PREF</span><span class="p">(</span><span class="n">FEATURE</span><span class="p">:</span><span class="n">FAST</span><span class="p">,</span><span class="n">FEATURE</span><span class="p">:</span><span class="n">TAPE</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.2. Node Allocation</a><ul>
+<li><a class="reference internal" href="#node-allocation-overview">5.2.1. Node Allocation Overview</a><ul>
+<li><a class="reference internal" href="#heterogeneous-resources">5.2.1.1. Heterogeneous Resources</a></li>
+<li><a class="reference internal" href="#shared-nodes">5.2.1.2. Shared Nodes</a></li>
+<li><a class="reference internal" href="#reservations-or-service-guarantees">5.2.1.3. Reservations or Service Guarantees</a></li>
+<li><a class="reference internal" href="#non-flat-network">5.2.1.4. Non-flat Network</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resource-based-algorithms">5.2.2. Resource Based Algorithms</a><ul>
+<li><a class="reference internal" href="#cpuload">5.2.2.1. CPULOAD</a></li>
+<li><a class="reference internal" href="#firstavailable">5.2.2.2. FIRSTAVAILABLE</a></li>
+<li><a class="reference internal" href="#lastavailable">5.2.2.3. LASTAVAILABLE</a></li>
+<li><a class="reference internal" href="#priority">5.2.2.4. PRIORITY</a></li>
+<li><a class="reference internal" href="#minresource">5.2.2.5. MINRESOURCE</a></li>
+<li><a class="reference internal" href="#contiguous">5.2.2.6. CONTIGUOUS</a></li>
+<li><a class="reference internal" href="#maxbalance">5.2.2.7. MAXBALANCE</a></li>
+<li><a class="reference internal" href="#fastest">5.2.2.8. FASTEST</a></li>
+<li><a class="reference internal" href="#local">5.2.2.9. LOCAL</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#time-based-algorithms">5.2.3. Time Based Algorithms</a></li>
+<li><a class="reference internal" href="#locally-defined-algorithms">5.2.4. Locally Defined Algorithms</a></li>
+<li><a class="reference internal" href="#specifying-per-job-resource-preferences">5.2.5. Specifying &#8216;Per Job&#8217; Resource Preferences</a><ul>
+<li><a class="reference internal" href="#specifying-resource-preferences">5.2.5.1. Specifying Resource Preferences</a></li>
+<li><a class="reference internal" href="#selecting-preferred-resources">5.2.5.2. Selecting &#8216;Preferred&#8217; Resources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="5.1.5prioritymanagement.html"
+                        title="previous chapter">5.1.5. Manual Job Priority Adjustment</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="5.3nodeaccess.html"
+                        title="next chapter">5.3. Node Access Policies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/5.2nodeallocation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="5.3nodeaccess.html" title="5.3. Node Access Policies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="5.1.5prioritymanagement.html" title="5.1.5. Manual Job Priority Adjustment"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

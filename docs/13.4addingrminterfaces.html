@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.4. Adding New Resource Manager Interfaces &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="13. Resource Managers and Interfaces" href="13.0rmandinterfaces.html" />
+    <link rel="next" title="14. Trouble Shooting and System Maintenance" href="14.0troubleshootingandsysmaintenance.html" />
+    <link rel="prev" title="13.3. Resource Manager Extensions" href="13.3rmextensions.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="14.0troubleshootingandsysmaintenance.html" title="14. Trouble Shooting and System Maintenance"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="13.3rmextensions.html" title="13.3. Resource Manager Extensions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" accesskey="U">13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="adding-new-resource-manager-interfaces">
+<h1>13.4. Adding New Resource Manager Interfaces<a class="headerlink" href="#adding-new-resource-manager-interfaces" title="Permalink to this headline">¶</a></h1>
+<p>Maui interfaces with numerous resource management systems. Some of these
+interact through a resource manager specific interface (i.e.,
+OpenPBS/PBSPro, Loadleveler, SGE) while others interact through
+generalized interfaces such as SSS or Wiki. (see the <a class="reference external" href="wiki">Wiki
+Overview</a>). For most resource managers, either route is
+possible depending on where it is easiest to focus development effort.
+Use of Wiki generally requires modifications on the resource manager
+side while creation of a new resource manager specific Maui interface
+would require more changes to Maui modules. If a scheduling API already
+exists within the resource manager, creation of a resource manager
+specific scheduler interface is often selected.</p>
+<p>Regardless of the interface approach selected, adding support for a new
+resource manager is typically a straight forward process for about 95%
+of all supported features. The final 5% of features usually requires a
+bit more effort as each resource manager has a number of distinct
+concepts which must be addressed.</p>
+<div class="section" id="resource-manager-specific-interfaces">
+<h2>13.4.1. Resource Manager Specific Interfaces<a class="headerlink" href="#resource-manager-specific-interfaces" title="Permalink to this headline">¶</a></h2>
+<p>If the resource manger specific interface is desired, then typically a
+scheduling API library/header file combo is required. (i.e., for PBS,
+libpbs.a + pbs_ifl.h, etc.) This resource manager provided API provides
+calls which can be linked into Maui to obtain the <em>raw</em> resource manager
+data including both jobs and compute nodes. Additionally, this API
+should provide policy information about the resource manager
+configuration if it is desired that such policies be specified via the
+resource manager rather than the scheduler and that Maui know of and
+respect these policies. The new &#8216;M&lt;X&gt;I.c&#8217; module would be responsible
+for loading information from the resource manager, translating this
+information, and then populating the appropriate scheduler data
+structures. The existing <strong>MLLI.c</strong>, <strong>MPBSI.c</strong> and <strong>MWikiI.c</strong>
+modules provide templates indicating how to do this.</p>
+<p>The first step in this process is defining the new resource manager
+type. This is accomplished by modifying <strong>moab.h</strong> and <strong>MConst.c</strong>
+files to define the new <a class="reference external" href="a.fparameters.html#rmtype">RMTYPE</a> parameter
+value. With this defined, the MRMI.c module must be modified to call the
+appropriate resource manager specific calls which will eventually be
+created within the &#8216;M&lt;X&gt;I.c&#8217; module. This process is straightforward and
+involves extending existing resource manager specific case statements
+within the general resource manager calls.</p>
+<p>The vast majority of the development effort is entailed in creating the
+resource manager specific data collection and job management calls.
+These calls populate Maui data structures, and are responsible for
+passing Maui scheduling commands on to the resource manager. The base
+commands are GetJobs, GetNodes, StartJob, and CancelJob but if the
+resource manager support is available, extended functionality can be
+enabled by creating commands to suspend/resume jobs, checkpoint/restart
+jobs, and/or allow support of dynamic jobs.</p>
+<p>If the resource manager provides a form of event driven scheduling
+interface, this will also need to be enabled. The <strong>MPBSI.c</strong> module
+provides a template for enabling such an interface within the
+MPBSProcessEvent() call.</p>
+</div>
+<div class="section" id="wiki-interface">
+<h2>13.4.2. Wiki Interface<a class="headerlink" href="#wiki-interface" title="Permalink to this headline">¶</a></h2>
+<p>The Wiki interface is a good alternative if the resource manager does
+not already support some form of existing scheduling API. For the most
+part, use of this API requires the same amount of effort as creating a
+resource manager specific interface but development effort focused
+within the resource manager. Since Wiki is already defined as a resource
+manager type, no modifications are required within Maui. Additionally,
+no resource manager specific library or header file is required.
+However, within the resource manager, internal job and node objects and
+attributes must be manipulated and placed within Wiki based interface
+concepts as defined in the <a class="reference external" href="wiki">Wiki Overview</a>. Additionally,
+resource manager parameters must be created to allow a site to configure
+this interface appropriately.</p>
+</div>
+<div class="section" id="sss-interface">
+<h2>13.4.3. SSS Interface<a class="headerlink" href="#sss-interface" title="Permalink to this headline">¶</a></h2>
+<p>The SSS interface is a new XML based generalized resource manager
+interface. It provides an extensible, scalable, and secure method of
+querying and modifying general workload and resource information.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">13.4. Adding New Resource Manager Interfaces</a><ul>
+<li><a class="reference internal" href="#resource-manager-specific-interfaces">13.4.1. Resource Manager Specific Interfaces</a></li>
+<li><a class="reference internal" href="#wiki-interface">13.4.2. Wiki Interface</a></li>
+<li><a class="reference internal" href="#sss-interface">13.4.3. SSS Interface</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="13.3rmextensions.html"
+                        title="previous chapter">13.3. Resource Manager Extensions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="14.0troubleshootingandsysmaintenance.html"
+                        title="next chapter">14. Trouble Shooting and System Maintenance</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/13.4addingrminterfaces.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="14.0troubleshootingandsysmaintenance.html" title="14. Trouble Shooting and System Maintenance"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="13.3rmextensions.html" title="13.3. Resource Manager Extensions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" >13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

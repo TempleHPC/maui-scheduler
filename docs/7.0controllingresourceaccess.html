@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="7.1. Advance Reservations" href="7.1advancereservations.html" />
+    <link rel="prev" title="6.4. Allocation Management" href="6.4allocationmanagement.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="7.1advancereservations.html" title="7.1. Advance Reservations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="6.4allocationmanagement.html" title="6.4. Allocation Management"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="controlling-resource-access-reservations-partitions-and-qos-facilities">
+<h1>7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities<a class="headerlink" href="#controlling-resource-access-reservations-partitions-and-qos-facilities" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="7.1advancereservations.html">7.1. Advance Reservations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7.1.1resoverview.html">7.1.1. Reservation Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#resources">7.1.1.1. Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#timeframe">7.1.1.2. TimeFrame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#access-control-list">7.1.1.3. Access Control List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#job-to-reservation-mapping">7.1.1.4. Job to Reservation Mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#reservation-specification">7.1.1.5. Reservation Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#reservation-behavior">7.1.1.6. Reservation Behavior</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.1.1resoverview.html#other-reservation-attributes">7.1.1.7. Other Reservation Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="7.1.2adminreservations.html">7.1.2. Administrative Reservations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.1.3standingreservations.html">7.1.3. Standing Reservations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.1.4reservationpolicies.html">7.1.4. Reservation Policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.1.5managingreservations.html">7.1.5. Configuring and Managing Reservations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="7.1.5managingreservations.html#reservation-attributes">7.1.5.1. Reservation Attributes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="7.1.5managingreservations.html#start-end-time">7.1.5.1.1. Start/End Time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="7.1.5managingreservations.html#access-control-list-acl">7.1.5.1.2. Access Control List (ACL)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="7.1.5managingreservations.html#resources">7.1.5.1.3. Resources</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="7.1.5managingreservations.html#task-description">7.1.5.1.3.1. Task Description</a></li>
+<li class="toctree-l5"><a class="reference internal" href="7.1.5managingreservations.html#taskcount">7.1.5.1.3.2. Taskcount</a></li>
+<li class="toctree-l5"><a class="reference internal" href="7.1.5managingreservations.html#hostlist">7.1.5.1.3.3. Hostlist</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="7.1.5managingreservations.html#flags">7.1.5.1.4. Flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="7.1.5managingreservations.html#configuring-standing-reservations">7.1.5.1.5. Configuring Standing Reservations</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="7.1.5managingreservations.html#standing-reservation-overview">7.1.5.1.5.1. Standing Reservation Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="7.1.5managingreservations.html#specifying-reservation-resources">7.1.5.1.5.2. Specifying Reservation Resources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7.2partitions.html">7.2. Partitions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7.2partitions.html#defining-partitions">7.2.1. Defining Partitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.2partitions.html#managing-partition-access">7.2.2. Managing Partition Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.2partitions.html#requesting-partitions">7.2.3. Requesting Partitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.2partitions.html#miscellaneous-partition-issues">7.2.4. Miscellaneous Partition Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7.3qos.html">7.3. Quality of Service (QoS) Facilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7.3qos.html#qos-overview">7.3.1. QoS Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.3qos.html#qos-enabled-privileges">7.3.2. QoS Enabled Privileges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="7.3qos.html#special-prioritization">7.3.2.1. Special Prioritization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.3qos.html#service-access-and-constraints">7.3.2.2. Service Access and Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="7.3qos.html#policy-exemptions">7.3.2.3. Policy Exemptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="7.3qos.html#managing-qos-access">7.3.3. Managing QoS Access</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="6.4allocationmanagement.html"
+                        title="previous chapter">6.4. Allocation Management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="7.1advancereservations.html"
+                        title="next chapter">7.1. Advance Reservations</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/7.0controllingresourceaccess.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="7.1advancereservations.html" title="7.1. Advance Reservations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="6.4allocationmanagement.html" title="6.4. Allocation Management"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

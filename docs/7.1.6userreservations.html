@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="7.1. Advance Reservations" href="7.1advancereservations.html" />
+    <link rel="next" title="7.2. Partitions" href="7.2partitions.html" />
+    <link rel="prev" title="7.1.5. Configuring and Managing Reservations" href="7.1.5managingreservations.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="7.2partitions.html" title="7.2. Partitions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="7.1.5managingreservations.html" title="7.1.5. Configuring and Managing Reservations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="7.0controllingresourceaccess.html" >7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="7.1advancereservations.html" accesskey="U">7.1. Advance Reservations</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="sright"><div class="sub-content-head"><p>Maui Scheduler</p>
+</div><div id="sub-content-rpt" class="sub-content-rpt"><div id="tab-container" class="tab-container docs"><div class="topNav"><div class="docsSearch"></div><div class="navIcons topIcons"><p><a class="reference external" href="index.html"><img alt="Home" src="resources/docs/images/home.png" /></a> <a class="reference external" href="7.1advancereservations.html"><img alt="Up" src="resources/docs/images/upArrow.png" /></a> <a class="reference external" href="7.1.5managingreservations.html"><img alt="Previous" src="resources/docs/images/prevArrow.png" /></a> <a class="reference external" href="7.2partitions.html"><img alt="Next" src="resources/docs/images/nextArrow.png" /></a></p>
+</div><p class="rubric" id="enabling-reservations-for-end-users">7.1.6 Enabling Reservations for End Users</p>
+<p>By default, the power of advance reservations is only available to
+scheduler administrators. While admins may create and manage
+reservations to provide resource access to end users, end users cannot
+create, modify, or destroy these reservations. Maui 3.2 extends the
+ability to manage reservations to end users and provides control
+facilities to keep this feature manageable.</p>
+<p class="rubric" id="enabling-user-reservation-management">7.1.6.1 Enabling User Reservation Management</p>
+<p>The parameter <strong>RESCTLPOLICY</strong> controls who is allowed to administer
+reservations using the <strong>mresctl</strong>, <strong>setres</strong>, and <strong>releaseres</strong>
+commands. Valid settings are <strong>ADMINONLY</strong> and <strong>ANY</strong> which, as would
+be expected, allows only scheduler administrators or any valid user to
+manage reservations respectively. While scheduler administrators are
+allowed to manage any reservation, users are only allowed to manage
+their own reservations. This parameter defaults to <strong>ADMINONLY</strong>.</p>
+<p>To allow general batch users to create and manage their own
+reservations, the following parameter must be specified in the maui.cfg
+file:</p>
+<div class="line-block">
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">RESCTLPOLICY</span>&nbsp; <span class="pre">ANY</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p class="rubric" id="reservation-accountability">7.1.6.2 Reservation Accountability</p>
+<p>Reservations can be optionally configured with a set of <em>accountable</em>
+credentials. These credentials indicate the user, group, account, etc
+which is responsible for the resources dedicated by the reservation. If
+resources are dedicated by a reservation but not consumed by a job,
+these resources can be charged against the specified accountable
+credentials. Administrators are allowed to create reservations and
+specify the accountable credentials of that reservation. While end users
+can also be allowed to create and otherwise modify an advance
+reservation, they are not allowed to specify or modify the reservation&#8217;s
+accountable credentials. Anytime a user creates a reservation, the
+credentials of the requestor are associated with the reservation.
+Currently, this accountablility only applies to throttling policies and
+allocation management system chargeability. Support for fairshare and
+other forms of accountability will be incorporated over time.</p>
+<p class="rubric" id="reservation-limits">7.1.6.3 Reservation Limits</p>
+<p>Allowing end users the ability to create advance reservations can lead
+to potentially unfair and unproductive resource usage. This results from
+the fact that by default, there is nothing to prevent a user from
+reserving all resources in a given system or reserving resources during
+time slots in such a way so to greatly impede the scheduler&#8217;s ability to
+schedule jobs efficiently. To address this, Maui provides the ability to
+impose scheduler throttling policies onto reservations. With this
+capability, a site may constrain the total amount of resources reserved
+by any particular user, group, or account at any given time. This
+facility tracks resources and enforces limits based on resources
+dedicated to both jobs and user reservations.</p>
+<p>Reservation limits are disabled by default but may be enabled by setting
+the <strong>RESLIMITPOLICY</strong> parameter. This parameter specifies the level of
+throttling policy to be be enforced. For example, to limit user
+reservations by hard throttling policy limits, the following may be
+specified:</p>
+<div class="line-block">
+<div class="line">&#8212;-</div>
+<div class="line"><code class="docutils literal"><span class="pre">RESLIMITPOLICY</span>&nbsp; <span class="pre">HARD</span></code></div>
+<div class="line">&#8212;-</div>
+</div>
+<p>While time spanning throttling policies are a significant step in the
+direction of end user advance reservation management, it is important to
+track actual site usage of the advance reservation facility. It is still
+likely that further usage policies will be required at each site to
+prevent reservation misuse and provide an optimally useful system.</p>
+<div class="navIcons bottomIcons"><p><a class="reference external" href="index.html"><img alt="Home" src="resources/docs/images/home.png" /></a> <a class="reference external" href="7.1advancereservations.html"><img alt="Up" src="resources/docs/images/upArrow.png" /></a> <a class="reference external" href="7.1.5managingreservations.html"><img alt="Previous" src="resources/docs/images/prevArrow.png" /></a> <a class="reference external" href="7.2partitions.html"><img alt="Next" src="resources/docs/images/nextArrow.png" /></a></p>
+</div></div></div></div><div class="sub-content-btm"></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="7.1.5managingreservations.html"
+                        title="previous chapter">7.1.5. Configuring and Managing Reservations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="7.2partitions.html"
+                        title="next chapter">7.2. Partitions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/7.1.6userreservations.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="7.2partitions.html" title="7.2. Partitions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="7.1.5managingreservations.html" title="7.1.5. Configuring and Managing Reservations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="7.0controllingresourceaccess.html" >7. 7.0 Controlling Resource Access - Reservations, Partitions, and QoS Facilities</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="7.1advancereservations.html" >7.1. Advance Reservations</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

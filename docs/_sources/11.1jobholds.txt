@@ -1,0 +1,147 @@
+Job Holds
+#########
+
+
+Holds and Deferred Jobs
+***********************
+
+A job *hold* is a mechanism by which a job is placed in a state where it
+is not eligible to be run. Maui supports job holds applied by users,
+admins, and even resource managers. These holds can be seen in the
+output of the showq and checkjob commands. A job with a hold placed on
+it cannot be run until the hold is removed. If a hold is placed on a job
+via the resource manager, this hold must be released by the resource
+manager provided command (i.e., llhold for Loadleveler, or qhold for
+PBS).
+
+Maui supports two other types of holds. The first is a temporary hold
+known as a 'defer'. A job is deferred if the scheduler determines that
+it cannot run. This can be because it asks for resources which do not
+currently exist, does not have allocations to run, is rejected by the
+resource manager, repeatedly fails after start up, etc. Each time a job
+gets deferred, it will stay that way, unable to run for a period of time
+specified by the `DEFERTIME <a.fparameters.html#defertime>`__ parameter.
+If a job appears with a state of deferred, it indicates one of the
+previously mentioned failures has occurred. Details regarding the
+failure are available by issuing the
+'`checkjob <commands/checkjob.html>`__ <JOBID>' command. Once the time
+specified by DEFERTIME has elapsed, the job is automatically released
+and the scheduler again attempts to schedule it. The 'defer' mechanism
+can be disabled by setting DEFERTIME to '0'. To release a job from the
+defer state, issue '`releasehold <commands/releasehold.html>`__ -a
+<JOBID>'.
+
+The second 'Maui-specific' type of hold is known as a 'batch' hold. A
+batch hold is only applied by the scheduler and is only applied after a
+serious or repeated job failure. If a job has been deferred and released
+DEFERCOUNT times, Maui will place it in a batch hold. It will remain in
+this hold until a scheduler admin examines it and takes appropriate
+action. Like the defer state, the causes of a batch hold can be
+determined via `checkjob <commands/checkjob.html>`__ and the hold can be
+released via `releasehold <commands/releasehold.html>`__.
+
+Like most schedulers, Maui supports the concept of a job hold. Actually,
+Maui supports four distinct types of holds, *user* holds, *system*
+holds, *batch* holds, and *defer* holds. Each of these holds effectively
+block a job, preventing it from running, until the hold is removed.
+
+User Holds
+**********
+
+User holds are very straightforward. Many, if not most, resource
+managers provide interfaces by which users can place a hold on their own
+job which basically tells the scheduler not to run the job while the
+hold is in place. The user may utilize this capability because the job's
+data is not yet ready, or he wants to be present when the job runs so as
+to monitor results. Such user holds are created by, and under the
+control of a non-privileged and may be removed at any time by that user.
+As would be expected, users can only place holds on their jobs. Jobs
+with a user hold in place will have a Maui state of **Hold** or
+**UserHold** depending on the resource manager being used.
+
+System Holds
+************
+
+The second category of hold is the system hold. This hold is put in
+place by a system administrator either manually or by way of an
+automated tool. As with all holds, the job is not allowed to run so long
+as this hold is in place. A batch administrator can place and release
+system holds on any job regardless of job ownership. However, unlike a
+user hold, a normal user cannot release a system hold even on his own
+jobs. System holds are often used during system maintenance and to
+prevent particular jobs from running in accordance with current system
+needs. Jobs with a system hold in place will have a Maui state of
+**Hold** or **SystemHold** depending on the resource manager being used.
+
+Batch Holds
+***********
+
+Batch holds constitute the third category of job holds. These holds are
+placed on a job by the scheduler itself when it determines that a job
+cannot run. The reasons for this vary but can be displayed by issuing
+the '**`checkjob <commands/checkjob.html>`__ <JOBID>**' command. Some of
+the possible reasons are listed below:
+
+| No Resources - the job requests resources of a type or amount that do
+  not exist on the system
+| System Limits - the job is larger or longer than what is allowed by
+  the specified system policies
+| Bank Failure - the allocations bank is experiencing failures
+| No Allocations - the job requests use of an account which is out of
+  allocations and no fallback account has been specified
+| RM Reject - the resource manager refuses to start the job
+| RM Failure - the resource manager is experiencing failures
+| Policy Violation - the job violates certain throttling policies
+  preventing it from running now and in the future
+| No QOS Access - the job does not have access to the QOS level it
+  requests
+
+Jobs which are placed in a batch hold will show up within Maui in the
+state **BatchHold**.
+
+Job Defer
+*********
+
+In most cases, a job violating these policies will not be placed into a
+batch hold immediately. Rather, it will be deferred. The parameter
+`DEFERTIME <a.fparameters.html#defertime>`__ indicates how long it will
+be deferred. At this time, it will be allowed back into the idle queue
+and again considered for scheduling. If it again is unable to run at
+that time or at any time in the future, it is again deferred for the
+timeframe specified by DEFERTIME. A job will be released and deferred up
+to `DEFERCOUNT <a.fparameters.html#defercount>`__ times at which point
+the scheduler places a batch hold on the job and waits for a system
+administrator to determine the correct course of action. Deferred jobs
+will have a Maui state of **Deferred**. As with jobs in the BatchHold
+state, the reason the job was deferred can be determined by use of the
+**checkjob** command.
+
+At any time, a job can be released from any hold or deferred state using
+the '`releasehold <commands/releasehold.html>`__' command. The Maui logs
+should provide detailed information about the cause of any batch hold or
+job deferral.
+
+.. note::
+
+   As of Maui 3.0.7, the reason a job is deferred or placed in a batch hold is stored in memory
+   but is not checkpointed. Thus this info is available only until Maui is recycled at which point
+   the checkjob command will no longer display this 'reason' info.
+
+--------------
+
+(under construction)
+
+| Controlling Backfill Reservation Behavior
+| Reservation Thresholds
+| Reservation Depth
+| Resource Allocation Method
+| First Available
+| Min Resource
+| Last Available
+| WallClock Limit
+| Allowing jobs to exceed wallclock limit
+| MAXJOBOVERRUN
+| Using Machine Speed for WallClock limit scaling
+| USEMACHINESPEED
+| Controlling Node Access
+| NODEACCESSPOLICY

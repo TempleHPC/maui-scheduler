@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="releasehold">releasehold</p>
+<p><strong>(Release Hold)</strong>
+<strong>Caution</strong>: This command is deprecated. Use <a class="reference external" href="mjobctl.html#unhold">mjobctl
+-u</a> instead.</p>
+<p class="rubric" id="synopsis">Synopsis</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">releasehold</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span><span class="o">|-</span><span class="n">b</span><span class="p">]</span> <span class="n">jobexp</span>
+</pre></div>
+</div>
+<p class="rubric" id="overview">Overview</p>
+<p>Release hold on specified job(s).
+This command allows you to release batch holds or all holds (system,
+user, and batch) on specified jobs. Any number of jobs may be released
+with this command.</p>
+<p class="rubric" id="access">Access</p>
+<p>By default, this command can be run by any Moab Scheduler Administrator.
+<strong>Parameters</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>JOBEXP</td>
+<td>Job expression of job(s) to release.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Flags</strong></p>
+<p class="rubric" id="example-1">Example 1</p>
+<p>releasehold -b</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">releasehold</span> <span class="o">-</span><span class="n">b</span> <span class="mi">6443</span>
+
+<span class="n">batch</span> <span class="n">hold</span> <span class="n">released</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">6443</span>
+</pre></div>
+</div>
+<p>&nbsp;&nbsp; In this example, a batch hold was released from this one job.</p>
+<p class="rubric" id="example-2">Example 2</p>
+<p>releasehold -a</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">releasehold</span> <span class="o">-</span><span class="n">a</span> <span class="s2">&quot;81[1-6]&quot;</span>
+
+<span class="n">holds</span> <span class="n">modified</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">811</span>
+<span class="n">holds</span> <span class="n">modified</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">812</span>
+<span class="n">holds</span> <span class="n">modified</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">813</span>
+<span class="n">holds</span> <span class="n">modified</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">814</span>
+<span class="n">holds</span> <span class="n">modified</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">815</span>
+<span class="n">holds</span> <span class="n">modified</span> <span class="k">for</span> <span class="n">job</span> <span class="mi">816</span>
+</pre></div>
+</div>
+<p>&nbsp;&nbsp; In this example, all holds were released from the specified jobs.</p>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="sethold.html">sethold</a></li>
+<li><a class="reference external" href="mjobctl.html">mjobctl</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/releasehold.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

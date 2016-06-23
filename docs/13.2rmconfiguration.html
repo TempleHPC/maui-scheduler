@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13.2. Resource Manager Configuration &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="13. Resource Managers and Interfaces" href="13.0rmandinterfaces.html" />
+    <link rel="next" title="13.3. Resource Manager Extensions" href="13.3rmextensions.html" />
+    <link rel="prev" title="13.1. Resource Manager Overview" href="13.1rmoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="13.3rmextensions.html" title="13.3. Resource Manager Extensions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="13.1rmoverview.html" title="13.1. Resource Manager Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" accesskey="U">13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="resource-manager-configuration">
+<h1>13.2. Resource Manager Configuration<a class="headerlink" href="#resource-manager-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configurable-resource-manager-attributes">
+<h2>13.2.1. Configurable Resource Manager Attributes<a class="headerlink" href="#configurable-resource-manager-attributes" title="Permalink to this headline">¶</a></h2>
+<p>The scheduler&#8217;s resource manager interface(s) are defined using the
+<a class="reference external" href="a.fparameters.html#rmcfg">RMCFG</a> parameter. This parameter allows
+specification of key aspects of the interface as shown in the table
+below.</p>
+<p><strong>Attribute</strong>
+<strong>Format</strong>
+<strong>Default</strong>
+<strong>Description</strong>
+<strong>Example</strong>
+<strong>ASYNCJOBSTART</strong>
+&lt;BOOLEAN&gt;
+<strong>FALSE</strong>
+Enables Maui to start jobs asynchronously. <strong>NOTE</strong>: Only enabled for
+PBS.
+<code class="docutils literal"><span class="pre">RMCFG[pbs]</span> <span class="pre">ASYNCJOBSTART=TRUE</span> <span class="pre">``</span>
+<span class="pre">**AUTHTYPE**</span>
+<span class="pre">one</span> <span class="pre">of</span> <span class="pre">**CHECKSUM**,</span> <span class="pre">**PKI**,</span> <span class="pre">or</span> <span class="pre">**SECUREPORT**</span>
+<span class="pre">**CHECKSUM**</span>
+<span class="pre">specifies</span> <span class="pre">the</span> <span class="pre">security</span> <span class="pre">protocol</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">used</span> <span class="pre">in</span> <span class="pre">scheduler-resource</span> <span class="pre">manager</span>
+<span class="pre">communication.</span> <span class="pre">**NOTE**:</span> <span class="pre">Only</span> <span class="pre">valid</span> <span class="pre">with</span> <span class="pre">WIKI</span> <span class="pre">based</span> <span class="pre">interfaces.</span>
+<span class="pre">``RMCFG[base]</span> <span class="pre">AUTHTYPE=CHECKSUM</span></code>
+(The scheduler will require a secret key based checksum associated with
+each resource manager message)</p>
+<p><strong>CONFIGFILE</strong>
+&lt;STRING&gt;
+<strong>N/A</strong>
+specifies the resource manager specific configuration file which must be
+used to enable correct API communication. <strong>NOTE</strong>: Only valid with LL
+based interfaces.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">TYPE=LL</span> <span class="pre">CONFIGFILE=/home/loadl/loadl_config</span></code>
+(The scheduler will utilize the specified file when establishing the
+resource manager/scheduler interface connection)</p>
+<p><strong>EPORT</strong>
+&lt;INTEGER&gt;
+<strong>N/A</strong>
+specifies the event port to use to receive resource manager based
+scheduling events.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">EPORT=15017</span></code>
+(The scheduler will look for scheduling events from the resource manager
+host at port 15017)</p>
+<p><strong>MINETIME</strong>
+&lt;INTEGER&gt;
+<strong>1</strong>
+specifies the minimum time in seconds between processing subsequent
+scheduling events.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">MINETIME=5</span></code>
+(The scheduler will batch-process scheduling events which occur less
+than 5 seconds apart.)</p>
+<p><strong>NMPORT</strong>
+&lt;INTEGER&gt;
+(any valid port number)
+specifies a non-default RM node manager through which extended node
+attribute information may be obtained
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">NMPORT=13001</span></code>
+(The scheduler will contact the node manager located on each compute
+node at port 13001)</p>
+<p><strong>PORT</strong>
+&lt;INTEGER&gt;
+0
+specifies the port on which the scheduler should contact the associated
+resource manager. The value &#8216;0&#8217; specifies that the resource manager
+default port should be used.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">TYPE=PBS</span> <span class="pre">HOST=cws</span> <span class="pre">PORT=20001</span></code>
+(The scheduler will attempt to contact the PBS server daemon on host
+cws, port 20001)</p>
+<p><strong>SERVER</strong>
+&lt;URL&gt;
+N/A
+specifies the resource management service to use. If not specified, the
+scheduler will locate the resource manager via built-in defaults or, if
+available, with an information service. <strong>NOTE</strong>: only available in Maui
+3.2.7 and higher.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">server=ll://supercluster.org:9705</span></code>
+(The scheduler will attempt to utilize the Loadleveler scheduling API at
+the specified location.)</p>
+<p><strong>SUBMITCMD</strong>
+&lt;STRING&gt;
+<strong>N/A</strong>
+specifies the full pathname to the resource manager job submission
+client.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">SUBMITCMD=/usr/local/bin/qsub</span></code>
+(The scheduler will use the specified submit command when launching
+jobs.)</p>
+<p><strong>TIMEOUT</strong>
+&lt;INTEGER&gt;
+15
+time (in seconds) the scheduler will wait for a response from the
+resource manager.
+<code class="docutils literal"><span class="pre">RMCFG[base]</span> <span class="pre">TIMEOUT=30</span></code>
+(The scheduler will wait 30 seconds to receive a response from the
+resource manager before timing out and giving up. The scheduler will try
+again on the next iteration.)</p>
+<p><strong>TYPE</strong>
+&lt;RMTYPE&gt;[:&lt;RMSUBTYPE&gt;] where &lt;RMTYPE&gt; is one of the following: <strong>LL</strong>,
+<strong>LSF</strong>, <strong>PBS</strong>, <strong>RMS</strong>, <strong>SGE</strong>, <strong>SSS</strong>, or <strong>WIKI</strong> and the
+optional &lt;RMSUBTYPE&gt; value is one of <strong>RMS</strong>
+PBS
+specifies type of resource manager to be contacted by the scheduler.
+NOTE: for <strong>TYPE</strong> <strong>WIKI</strong>, <strong>AUTHTYPE</strong> must be set to <strong>CHECKSUM</strong>
+The &lt;RMSUBTYPE&gt; option is currently only used to support Compaq&#8217;s RMS
+resource manager in conjunction with PBS. In this case, the value
+<code class="docutils literal"><span class="pre">PBS:RMS</span></code> should be specified. <strong>NOTE</strong>: deprecated in Maui 3.2.7 and
+higher - use <strong>server</strong> attribute.
+<code class="docutils literal"><span class="pre">RMCFG[clusterA]</span> <span class="pre">TYPE=PBS</span> <span class="pre">HOST=clusterA</span> <span class="pre">PORT=15003</span></code>
+<code class="docutils literal"><span class="pre">RMCFG[clusterB]</span> <span class="pre">TYPE=PBS</span> <span class="pre">HOST=clusterB</span> <span class="pre">PORT=15005</span></code>
+(The scheduler will interface to two different PBS resource managers,
+one located on server clusterA at port 15003 and one located on server
+clusterB at port 15004)</p>
+</div>
+<div class="section" id="resource-manager-configuration-details">
+<h2>13.2.2. Resource Manager Configuration Details<a class="headerlink" href="#resource-manager-configuration-details" title="Permalink to this headline">¶</a></h2>
+<p>As with all scheduler parameters, <strong>RMCFG</strong> follows the syntax described
+within the <a class="reference external" href="3.4configure.html">Parameters Overview</a>.</p>
+<div class="section" id="resource-manager-types">
+<h3>13.2.2.1. Resource Manager Types<a class="headerlink" href="#resource-manager-types" title="Permalink to this headline">¶</a></h3>
+<p>The parameter <strong>RMCFG</strong> allows the scheduler to interface to multiple
+types of resource managers using the <strong>TYPE</strong> or <strong>SERVER</strong> attributes.
+Specifying these attributes, any of the resource managers listed below
+may be supported. To further assist in configuration, <em>Integration
+Guides</em> are provided for <a class="reference external" href="pbsintegration.html">PBS</a>,
+<a class="reference external" href="sgeintegration.html">SGE</a>, and <a class="reference external" href="llintegration.html">Loadleveler</a>
+systems.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>TYPE</strong>
+<strong>Resource Managers</strong>
+<strong>Details</strong></td>
+</tr>
+<tr class="row-even"><td>LL
+Loadleveler version 2.x and 3.x
+N/A</td>
+</tr>
+<tr class="row-odd"><td>LSF
+Platform&#8217;s Load Sharing Facility, version 5.1 and higher
+N/A</td>
+</tr>
+<tr class="row-even"><td>PBS
+OpenPBS (all versions), TORQUE (all versions), PBSPro (all versions)
+N/A</td>
+</tr>
+<tr class="row-odd"><td>RMS
+RMS (for Quadrics based systems)
+for development use only - not production quality</td>
+</tr>
+<tr class="row-even"><td>SGE
+Sun Grid Engine version 5.3 and higher
+N/A</td>
+</tr>
+<tr class="row-odd"><td>SSS
+Scalable Systems Software Project version 0.5 and 2.0 and higher
+N/A</td>
+</tr>
+<tr class="row-even"><td>WIKI
+<a class="reference external" href="wiki">Wiki</a> interface specification version 1.0 and higher
+used for LRM, YRM, ClubMASK, BProc, and others</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="resource-manager-name">
+<h3>13.2.2.2. Resource Manager Name<a class="headerlink" href="#resource-manager-name" title="Permalink to this headline">¶</a></h3>
+<p>Maui can support more than one resource manager simultaneously.
+Consequently, the <strong>RMCFG</strong> parameter takes an index value, i.e.,
+<code class="docutils literal"><span class="pre">RMCFG[clusterA]</span> <span class="pre">TYPE=PBS</span></code>. This index value essentially <em>names</em> the
+resource manager (as done by the deprecated parameter <strong>RMNAME</strong>. The
+resource manager name is used by the scheduler in diagnostic displays,
+logging, and in reporting resource consumption to the allocation
+manager. For most environments, the selection of the resource manager
+<em>name</em> can be arbitrary.</p>
+</div>
+<div class="section" id="resource-manager-location">
+<h3>13.2.2.3. Resource Manager Location<a class="headerlink" href="#resource-manager-location" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>HOST</strong>, <strong>PORT</strong>, and <strong>SERVER</strong> attributes can be used to specify
+how the resource manager should be contacted. For many resource managers
+(i.e., OpenPBS, PBSPro, Loadleveler, SGE, LSF, etc) the interface
+correctly establishes contact using default values. These parameters
+need only to be specified for resource managers such as the WIKI
+interface (which do not include defaults) or with resources managers
+which can be configured to run at non-standard locations (such as PBS).
+In all other cases, the resource manager is automatically located.</p>
+</div>
+<div class="section" id="other-attribute">
+<h3>13.2.2.4. Other Attribute<a class="headerlink" href="#other-attribute" title="Permalink to this headline">¶</a></h3>
+<p>The maximum amount of time Maui will wait on a resource manager call can
+be controlled by the <strong>`TIMEOUT &lt;a.fparameters.html#rmcfg&gt;`__</strong>
+parameter which defaults to 30 seconds. Only rarely will this parameter
+need to be changed. The <strong>AUTHTYPE</strong> attribute allows specification of
+how security over the scheduler/resource manager interface is to be
+handled. Currently, only the WIKI interface is affected by this
+parameter.</p>
+<p>Another <strong>RMCFG</strong> attribute is
+<strong>`CONFIGFILE &lt;a.fparameters.html#rmcfg&gt;`__</strong>, which specifies the
+location of the resource manager&#8217;s primary config file and is used when
+detailed resource manager information not available via the scheduling
+interface is required. It is currently only used with the Loadleveler
+interface and needs to only be specified when using Maui grid-scheduling
+capabilities.</p>
+<p>Finally, the <a class="reference external" href="a.fparameters.html#rmcfg">NMPORT</a> attribute allows
+specification of the resource manager&#8217;s node manager port and is only
+required when this port has been set to a non-default value. It is
+currently only used within PBS to allow MOM specific information to be
+gathered and utilized by Maui.</p>
+</div>
+</div>
+<div class="section" id="scheduler-resource-manager-interactions">
+<h2>13.2.3. Scheduler/Resource Manager Interactions<a class="headerlink" href="#scheduler-resource-manager-interactions" title="Permalink to this headline">¶</a></h2>
+<p>In the simplest configuration, Maui interacts with the resource manager
+using the four primary functions listed below:</p>
+<p><strong>GETJOBINFO</strong></p>
+<p>Collect detailed state and requirement information about idle, running,
+and recently completed jobs.</p>
+<p><strong>GETNODEINFO</strong></p>
+<p>Collect detailed state information about idle, busy, and defined nodes.</p>
+<p><strong>STARTJOB</strong></p>
+<p>Immediately start a specific job on a particular set of nodes.</p>
+<p><strong>CANCELJOB</strong></p>
+<p>Immediately cancel a specific job regardless of job state.</p>
+<p>Using these four simple commands, Maui enables nearly its entire suite
+of scheduling functions. More detailed information about resource
+manager specific requirements and semantics for each of these commands
+can be found in the specific resource manager overviews. (LL, PBS, or
+<a class="reference external" href="wiki">WIKI</a>).</p>
+<p>In addition to these base commands, other commands are required to
+support advanced features such a dynamic job support, suspend/resume,
+gang scheduling, and scheduler initiated checkpoint restart. More
+information about these commands will be forthcoming.</p>
+<p>Information on creation a new scheduler resource manager interface can
+be found in the <a class="reference external" href="13.4addingrminterfaces.html">Adding New Resource Manager
+Interfaces</a> section.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">13.2. Resource Manager Configuration</a><ul>
+<li><a class="reference internal" href="#configurable-resource-manager-attributes">13.2.1. Configurable Resource Manager Attributes</a></li>
+<li><a class="reference internal" href="#resource-manager-configuration-details">13.2.2. Resource Manager Configuration Details</a><ul>
+<li><a class="reference internal" href="#resource-manager-types">13.2.2.1. Resource Manager Types</a></li>
+<li><a class="reference internal" href="#resource-manager-name">13.2.2.2. Resource Manager Name</a></li>
+<li><a class="reference internal" href="#resource-manager-location">13.2.2.3. Resource Manager Location</a></li>
+<li><a class="reference internal" href="#other-attribute">13.2.2.4. Other Attribute</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scheduler-resource-manager-interactions">13.2.3. Scheduler/Resource Manager Interactions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="13.1rmoverview.html"
+                        title="previous chapter">13.1. Resource Manager Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="13.3rmextensions.html"
+                        title="next chapter">13.3. Resource Manager Extensions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/13.2rmconfiguration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="13.3rmextensions.html" title="13.3. Resource Manager Extensions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="13.1rmoverview.html" title="13.1. Resource Manager Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="13.0rmandinterfaces.html" >13. Resource Managers and Interfaces</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mschedctl">mschedctl</p>
+<p><strong>(Moab Scheduler Control)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">A</span> <span class="s1">&#39;&lt;MESSAGE&gt;&#39;</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">message</span> <span class="n">messagestring</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="nb">type</span><span class="p">:</span><span class="n">val</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">trigger</span> <span class="n">triggerid</span> <span class="o">-</span><span class="n">o</span> <span class="nb">type</span><span class="p">:</span><span class="n">val</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">trigger</span> <span class="n">triggerid</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">vpc</span><span class="p">:</span><span class="n">vpcid</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">message</span><span class="p">:</span><span class="n">index</span>
+
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">f</span> <span class="p">{</span><span class="nb">all</span><span class="o">|</span><span class="n">estimates</span><span class="o">|</span><span class="n">fairshare</span><span class="o">|</span><span class="n">usage</span><span class="p">}</span>
+
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">k</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="p">{</span><span class="n">config</span><span class="o">|</span><span class="n">message</span><span class="o">|</span><span class="n">trigger</span><span class="o">|</span><span class="n">trans</span><span class="o">|</span><span class="n">vpc</span><span class="o">|</span><span class="n">vpcprofile</span><span class="p">}</span> <span class="p">[</span><span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">verbose</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">xml</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">L</span> <span class="p">[</span><span class="n">LOGLEVEL</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">config</span> <span class="n">string</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">persistent</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">trigger</span> <span class="n">triggerid</span> <span class="n">attr</span><span class="o">=</span><span class="n">val</span><span class="p">[,</span><span class="n">attr</span><span class="o">=</span><span class="n">val</span><span class="o">...</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">vpc</span> <span class="n">vpcid</span> <span class="n">attr</span><span class="o">=</span><span class="n">val</span><span class="p">[,</span><span class="n">attr</span><span class="o">=</span><span class="n">val</span><span class="o">...</span><span class="p">]</span>
+
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">n</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">p</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">r</span> <span class="p">[</span><span class="n">resumetime</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">R</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">s</span> <span class="p">[</span><span class="n">STOPITERATION</span><span class="p">]</span>
+<span class="n">mschedctl</span> <span class="o">-</span><span class="n">S</span> <span class="p">[</span><span class="n">STEPITERATION</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The <strong>mschedctl</strong> command controls various aspects of scheduling
+behavior. It is used to manage scheduling activity, shutdown the
+scheduler, and create resource trace files.&nbsp; It can also evaluate,
+modify, and create parameters, triggers, and messages.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>With many flags, the &#8216;&#8211;msg=&lt;MSG&gt;&#8217; option can be specified to annotate the action in the <a class="reference external" href="../14.2logging.html#logevent">event log</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Format</strong></p>
+<p>-A — <strong>ANNOTATE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+&#8212;
+Description:
+Report the specified parameter modification to the event log and
+annotate it with the specified message.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">pers</span> <span class="o">-</span><span class="n">A</span> <span class="s1">&#39;increase logging&#39;</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;LOGLEVEL 6&#39;</span>
+</pre></div>
+</div>
+<p>Adjust the LOGLEVEL parameter and record an associated message.</p>
+<p>-c — <strong>CREATE</strong>
+Format:
+One of:</p>
+<ul>
+<li><p class="first">&nbsp;<strong>message</strong> &lt;STRING&gt; [-o &lt;TYPE&gt;:&lt;VAL&gt;]</p>
+</li>
+<li><p class="first">&nbsp;<strong>trigger</strong> <a class="reference external" href="../19.1triggers.html">&lt;TRIGSPEC&gt;</a> -o
+&lt;OBJECTTYPE&gt;:&lt;OBJECTID&gt;</p>
+</li>
+<li><p class="first">&nbsp;<strong>vpc</strong> [-a &lt;ATTR&gt;=&lt;VAL&gt;]...</p>
+<p>where &lt;ATTR&gt; is one of <strong>account</strong>, <strong>duration</strong>, <strong>messages</strong>,
+<strong>profile</strong>, <strong>reqresources</strong>, <strong>resources</strong>, <strong>rsvprofile</strong>,
+<strong>starttime</strong>, <strong>user</strong>, or <strong>variables</strong></p>
+</li>
+</ul>
+<p>Default:
+&#8212;
+Description:
+Create a message or trigger and attach it to the specified object, or
+create a Virtual Private Cluster (VPC). To create a trigger on a default
+object, use the Moab configuration file (moab.cfg) rather than the
+<strong>mschedctl</strong> command.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">message</span> <span class="n">tell</span> <span class="n">the</span> <span class="n">admin</span> <span class="n">to</span> <span class="n">be</span> <span class="n">nice</span>
+</pre></div>
+</div>
+<p>Create a message on the system table.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">trigger</span> <span class="n">EType</span><span class="o">=</span><span class="n">start</span><span class="p">,</span><span class="n">AType</span><span class="o">=</span><span class="n">exec</span><span class="p">,</span><span class="n">Action</span><span class="o">=</span><span class="s2">&quot;/tmp/email $OWNER $TIME&quot;</span> <span class="o">-</span><span class="n">o</span> <span class="n">rsv</span><span class="p">:</span><span class="n">system</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Create a trigger linked to system.1</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>Creating triggers on default objects via <code class="docutils literal"><span class="pre">mschedctl</span> <span class="pre">-c</span> <span class="pre">trigger</span></code> does not propagate the triggers to individual objects. To propagate triggers to all objects, the triggers must be created within the moab.cfg file; for example: <code class="docutils literal"><span class="pre">NODECFG[DEFAULT]&nbsp;TRIGGER</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">vpc</span> <span class="o">-</span><span class="n">a</span> <span class="n">resources</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span> <span class="o">-</span><span class="n">a</span> <span class="n">profile</span><span class="o">=</span><span class="n">packageA</span>
+</pre></div>
+</div>
+<p>Create a vpc using TID&#8217;s 6, 7, and 8 and based on profile packageA</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id5"><span class="problematic" id="id6">|Note|</span></a></td>
+<td>VPC commands (such as mschedctl -c vpc) are only enabled on hosting center builds.</td>
+</tr>
+</tbody>
+</table>
+<p>Additional VPC attributes: <a class="reference external" href="#example2">-a</a></p>
+<p>-d — <strong>DESTROY</strong>
+Format:
+One of:</p>
+<ul class="simple">
+<li><strong>trigger</strong>&nbsp;&lt;TRIGID&gt;</li>
+<li><strong>message:&lt;INDEX&gt;</strong></li>
+<li><strong>vpc:&lt;VPCID&gt;</strong></li>
+</ul>
+<p>Default:
+&#8212;
+Description:
+Delete a trigger, message, or VPC.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">trigger</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>Delete trigger 3.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">message</span><span class="p">:</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Delete message with index 5.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">vpc</span><span class="p">:</span><span class="n">vpc</span><span class="o">.</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Delete vpc.5.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">d</span> <span class="n">vpc</span><span class="p">:</span><span class="n">ALL</span>
+</pre></div>
+</div>
+<p>Delete all VPCs.</p>
+<p>-f — <strong>FLUSH</strong>
+Format:
+{all|estimates|fairshare|usage}
+Default:
+&#8212;
+Description:
+Flush (clear out) specified statistics
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">f</span> <span class="n">usage</span>
+</pre></div>
+</div>
+<p>Flush usage statistics.</p>
+<p>-k — <strong>KILL</strong>
+Format:
+&#8212;
+Default:
+&#8212;
+Description:
+Stop scheduling and exit the scheduler
+Example:</p>
+<p>mschedctl -k</p>
+<p>Kill the scheduler.</p>
+<p>-l — <strong>LIST</strong>
+Format:
+{<strong>config</strong> | <strong>gres</strong> | <strong>message</strong> | <strong>trans</strong> | <strong>trigger</strong> |
+<strong>vpc</strong> | <strong>vpcprofile</strong>} [&#8211;flags=verbose] [&#8211;xml]
++&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+
+| <a href="#id7"><span class="problematic" id="id8">|Note|</span></a>   | Using the <code class="docutils literal"><span class="pre">--xml</span></code> argument with the <strong>trans</strong> option returns XML that states if the queuried TID is valid or not.   |
++&#8212;&#8212;&#8212;-+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;+</p>
+<p>Default:
+<strong>config</strong>
+Description:
+List the generic resources, scheduler configuration, system messages,
+triggers, transactions, <a class="reference external" href="../20.0vpc.html">virtual private clusters</a>
+or VPC profiles.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">config</span>
+</pre></div>
+</div>
+<p>List system parameters.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">gres</span>
+</pre></div>
+</div>
+<p>List all configured generic resources.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">trans</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>List transaction id 1.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">trigger</span>
+</pre></div>
+</div>
+<p>List triggers.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">vpc</span>
+</pre></div>
+</div>
+<p>List VPCs.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mschedctl</span> <span class="o">-</span><span class="n">l</span> <span class="n">vpc</span><span class="p">:</span><span class="n">vpc</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>List VPC vpc.1.</p>
+<p>-L — <strong>LOG</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+<strong>7</strong>
+Description:
+Create a temporary log file with the specified loglevel.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">L</span> <span class="mi">7</span>
+</pre></div>
+</div>
+<p>Create temporary log file with naming convention
+&#8216;&lt;logfile&gt;.YYYYMMDDHHMMSS&#8217;.</p>
+<p>-m — <strong>MODIFY</strong>
+Format:
+One of:</p>
+<ul>
+<li><p class="first"><strong>config</strong> [&lt;STRING&gt;]
+[-e]
+[&#8211;flags=pers]
+&lt;STRING&gt; is any string which would be acceptable in moab.cfg&gt;</p>
+<ul class="simple">
+<li>If no string is specified, &lt;STRING&gt; is read from STDIN.</li>
+<li>If &#8216;-e&#8217; is specified, the configuration string will be evaluated
+for correctness but no configuration changes will take place. &nbsp;Any
+issues with the provided string will be reported to STDERR.</li>
+<li>If <strong>&#8211;flags=persistent</strong> is specified, changes will be made
+persistent by changing in memory configuration and modifying
+moab.cfg.</li>
+</ul>
+</li>
+<li><p class="first"><strong>trigger</strong>:&lt;TRIGID&gt; &lt;ATTR&gt;=&lt;VAL&gt;</p>
+<p>where &lt;ATTR&gt; is one of <strong>action</strong>, <strong>atype</strong>, <strong>etype</strong>,
+<strong>iscomplete</strong>, <strong>oid</strong>, <strong>otype</strong>, <strong>offset</strong>, or <strong>threshold</strong></p>
+</li>
+<li><p class="first"><strong>vpc</strong>:&lt;VPCID&gt; &lt;ATTR&gt;=&lt;VAL&gt;</p>
+<p>where &lt;ATTR&gt; is one of <strong>variables</strong>, or
+&lt;<strong>user</strong>|<strong>group</strong>|<strong>owner</strong>|<strong>qos</strong>|<strong>account</strong>&gt;</p>
+</li>
+</ul>
+<p>Default:
+&#8212;
+Description:
+Modify a system parameter, trigger, or VPC.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">config</span> <span class="n">LOGLEVEL</span> <span class="mi">9</span>
+</pre></div>
+</div>
+<p>Change the system loglevel to 9.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">trigger</span><span class="p">:</span><span class="mi">2</span> <span class="n">AType</span><span class="o">=</span><span class="n">exec</span><span class="p">,</span><span class="n">Offset</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">OID</span><span class="o">=</span><span class="n">system</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Change aspects of trigger 2.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">vpc</span><span class="p">:</span><span class="n">packageA</span><span class="o">.</span><span class="mi">1</span> <span class="n">variables</span><span class="o">=</span><span class="n">blue</span><span class="o">=</span><span class="n">dog</span>
+</pre></div>
+</div>
+<p>Change aspects of vpc packageA.1.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">vpc</span><span class="p">:</span><span class="n">vpc</span><span class="o">.</span><span class="mi">10</span> <span class="n">user</span><span class="o">=</span><span class="n">craig</span>
+
+<span class="n">vpc</span> <span class="n">USER</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">craig</span>
+</pre></div>
+</div>
+<p>Changes the user of vpc.10 to &#8216;craig&#8217;</p>
+<p>-n — <strong>NODE TRACE</strong>
+Format:
+&#8212;
+Default:
+&#8212;
+Description:
+Output a <a class="reference external" href="../16.3.2resourcetrace.html">Resource Trace File</a> to
+STDOUT.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">n</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">node</span><span class="o">.</span><span class="n">trace</span>
+</pre></div>
+</div>
+<p>-p — <strong>PAUSE</strong>
+Format:
+&#8212;
+Default:
+&#8212;
+Description:
+Disable scheduling but allow the scheduler to update its cluster and
+workload state information.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+</div>
+<p>-R — <strong>RECYCLE</strong>
+Format:
+&#8212;
+Default:
+&#8212;
+Description:
+Recycle scheduler immediately (shut it down and restart it using the
+original execution environment and command line arguments).
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">R</span>
+</pre></div>
+</div>
+<p>Recycle scheduler immediately.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id9"><span class="problematic" id="id10">|Note|</span></a></td>
+<td>To restart Moab with its last known scheduler state, use:
+<code class="docutils literal"><span class="pre">mschedctl</span> <span class="pre">-R</span> <span class="pre">savestate</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>-r — <strong>RESUME</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Description:
+Resume scheduling at the specified time (or immediately if none is
+specified).
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">r</span>
+</pre></div>
+</div>
+<p>Resume scheduling immediately.</p>
+<p>-s — <strong>STOP</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Description:
+Suspend/stop scheduling at specified iteration (or at the end of the
+current iteration if none is specified). If the letter &#8216;I&#8217; follows
+&lt;ITERATION&gt;, Moab till not process client requests until this iteration
+is reached.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">s</span> <span class="mi">100</span><span class="n">I</span>
+</pre></div>
+</div>
+<p>Stop scheduling at iteration 100 and ignore all client requests until
+then.</p>
+<p>-S — <strong>STEP</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Description:
+Step the specified number of iterations (or to the next iteration if
+none is specified) and suspend scheduling If the letter &#8216;I&#8217; follows
+&lt;ITERATION&gt;, Moab will not process client requests until this iteration
+is reached.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">S</span>
+</pre></div>
+</div>
+<p>Step to the next iteration and stop scheduling.
+<strong>Example 1</strong></p>
+<p>Shutting down the Scheduler:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">k</span>
+
+<span class="n">scheduler</span> <span class="n">will</span> <span class="n">be</span> <span class="n">shutdown</span> <span class="n">immediately</span>
+</pre></div>
+</div>
+<p><strong>Example 2</strong></p>
+<p>Creating a <a class="reference external" href="../20.2vpccommands.html#creating">virtual private
+cluster</a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mschedctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">vpc</span> <span class="o">-</span><span class="n">a</span> <span class="n">resources</span><span class="o">=</span><span class="mi">14332</span> <span class="o">-</span><span class="n">a</span> <span class="n">variables</span><span class="o">=</span><span class="n">os</span><span class="o">=</span><span class="n">rhel3</span>
+
+<span class="n">vpc</span><span class="o">.</span><span class="mi">98</span>
+</pre></div>
+</div>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mschedctl.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

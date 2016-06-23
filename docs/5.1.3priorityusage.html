@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.1.3. Common Priority Usage &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="5.1. Job Prioritization" href="5.1jobprioritization.html" />
+    <link rel="next" title="5.1.4. Prioritization Strategies" href="5.1.4prioritystrategies.html" />
+    <link rel="prev" title="5.1.2. Job Priority Factors" href="5.1.2priorityfactors.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="5.1.4prioritystrategies.html" title="5.1.4. Prioritization Strategies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="5.1.2priorityfactors.html" title="5.1.2. Job Priority Factors"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="5.1jobprioritization.html" accesskey="U">5.1. Job Prioritization</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="common-priority-usage">
+<h1>5.1.3. Common Priority Usage<a class="headerlink" href="#common-priority-usage" title="Permalink to this headline">¶</a></h1>
+<p>Sites vary wildly in the preferred manner of prioritizing jobs. Maui&#8217;s
+scheduling hierarchy allows sites to meet their job control needs
+without requiring them to adjust dozens of parameters. Some sites may
+choose to utilize numerous subcomponents, others a few, and still others
+are completely happy with the default FIFO behavior. Any subcomponent
+which is not of interest may be safely ignored.</p>
+<p>To help clarify the use of priority weights, a brief example may help.
+Suppose a site wished to maintain the FIFO behavior but also incorporate
+some credential based prioritization to favor a special user.
+Particularly, the site would like the userjohn to receive a higher
+initial priority than all other users. Configuring this behavior would
+require two steps. First, the user credential subcomponent would need to
+be enabled and second, john would need to have his relative priority
+specified. Take a look at the example maui.cfg:</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">USERWEIGHT</span> <span class="pre">1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[john]</span> <span class="pre">PRIORITY=300</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<p><strong>|image4|</strong> The &#8216;USER&#8217; priority subcomponent was enabled by setting the
+<strong>USERWEIGHT</strong> parameter. In fact, the parameters used to specify the
+weights of all components and subcomponents follow this same
+&#8216;<strong>*WEIGHT</strong>&#8216; naming convention (i.e., <strong>RESWEIGHT</strong>,
+<strong>TARGETQUEUETIMEWEIGHT</strong>, etc.).</p>
+<p>The second part of the example involved specifying the actual user
+priority for the user john. This was accomplished using the
+<a class="reference external" href="a.fparameters.html#usercfg">USERCFG</a> parameter. Why was the priority
+300 selected and not some other value? Is this value arbitrary? As in
+any priority system, actual priority values are meaningless, only
+relative values are important. In this case, we are required to balance
+user priorities with the default queue time based priorities. Since
+queuetime priority is measured in minutes queued (see table above), the
+user priority of 300 will make a job by user john on par with a job
+submitted 5 minutes earlier by another user.</p>
+<p>Is this what the site wants? Maybe, maybe not. The honest truth is that
+most sites are not completely certain what they want in prioritization
+at the onset. Most often, prioritization is a tuning process where an
+<em>initial stab</em> is made and adjustments are then made over time. Unless
+you are an exceptionally stable site, prioritization is also not a
+matter of getting it right. Cluster resources evolve, the workload
+evolves, and even site policies evolve, resulting in changing priority
+needs over time. Anecdotal evidence indicates that most sites establish
+a relatively stable priority policy within a few iterations and make
+only occasional adjustments to priority weights from that point on.</p>
+<p>Lets look at one more example. A site wants to do the following:</p>
+<div class="line-block">
+<div class="line">- favor jobs in the low, medium, and high QOS&#8217;s so they will run in
+QOS order</div>
+<div class="line">- balance job expansion factor</div>
+<div class="line">- use job queue time to prevent jobs from starving</div>
+</div>
+<p>The sample <strong>maui.cfg</strong> is listed below:</p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">QOSWEIGHT</span> <span class="pre">1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">XFACTORWEIGHT</span> <span class="pre">1</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">QUEUETIMEWEIGHT</span> <span class="pre">10</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">TARGETQUEUETIMEWEIGHT</span> <span class="pre">1</span></code><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">``</span></a></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">QOSCFG[low]</span> <span class="pre">PRIORITY=1000</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">QOSCFG[medium]</span> <span class="pre">PRIORITY=10000</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">QOSCFG[high]</span> <span class="pre">PRIORITY=10000</span></code></div>
+<div class="line"><code class="docutils literal"><span class="pre">USERCFG[DEFAULT]</span> <span class="pre">QTTARGET=4:00:00</span></code></div>
+<div class="line">&#8212;</div>
+</div>
+<p>This example is a bit more complicated but is more typical of the needs
+of many sites. The desired QOS weightings are established by enabling
+the QOS subfactor using the <strong>QOSWEIGHT</strong> parameter while the various
+QOS priorities are specified using
+<a class="reference external" href="a.fparameters.html#qoscfg">QOSCFG</a>. <strong>XFACTORWEIGHT</strong> is then set as
+this subcomponent tends to establish a balanced distribution of
+expansion factors across all jobs. Next, the queuetime component is used
+to gradually raise the priority of all jobs based on the length of time
+they have been queued. Note that in this case, <strong>QUEUETIMEWEIGHT</strong> was
+explicitly set to 10, overriding its default value of 1. Finally, the
+<strong>TARGETQUEUETIMEWEIGHT</strong> parameter is used in conjunction with the
+<strong>USERCFG</strong> line to specify a queue time target of 4 hours.</p>
+<p>Assume now that the site decided that it liked this priority mix but
+they had a problem with users &#8216;cheating&#8217; by submitting large numbers
+very short jobs. They would do this because very short jobs would tend
+to have rapidly growing xfactor values and would consequently quickly
+jump to the head of the queue. In this case, a &#8216;factor cap&#8217; would be
+appropriate. These caps allow a site to say I would like this priority
+factor to contribute to a job&#8217;s priority but only within a defined
+range. This prevents certain priority factors from swamping others. Caps
+can be applied to either priority components or subcomponents and are
+specified using the &#8216;&lt;COMPONENTNAME&gt;CAP&#8217; parameter (i.e.,
+<strong>QUEUETIMECAP</strong>, <strong>RESCAP</strong>, <strong>SERVCAP</strong>, etc.) Note that both
+component and subcomponent caps apply to the &#8216;pre-weighted&#8217; value as in
+the following equation:</p>
+<div class="line-block">
+<div class="line">`` Priority =``</div>
+<div class="line">`` C1WEIGHT * MIN(C1CAP,SUM(``</div>
+<div class="line">`` S11WEIGHT * MIN(S11CAP,S11S) +``</div>
+<div class="line">`` S12WEIGHT * MIN(S12CAP,S12S) +``</div>
+<div class="line">`` ...)) +``</div>
+<div class="line">`` C2WEIGHT * MIN(C2CAP,SUM(``</div>
+<div class="line">`` S21WEIGHT * MIN(S21CAP,S21S) +``</div>
+<div class="line">`` S22WEIGHT * MIN(S22CAP,S22S) +``</div>
+<div class="line">`` ...)) +``</div>
+<div class="line">`` ...``</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="5.1.2priorityfactors.html"
+                        title="previous chapter">5.1.2. Job Priority Factors</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="5.1.4prioritystrategies.html"
+                        title="next chapter">5.1.4. Prioritization Strategies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/5.1.3priorityusage.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="5.1.4prioritystrategies.html" title="5.1.4. Prioritization Strategies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="5.1.2priorityfactors.html" title="5.1.2. Job Priority Factors"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="5.0prioritization.html" >5. Prioritizing Jobs and Allocating Resources</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="5.1jobprioritization.html" >5.1. Job Prioritization</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

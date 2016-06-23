@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag-p">mdiag -p</p>
+<p><strong>(Moab Priority Diagnostics)</strong>
+.. rubric:: Synopsis</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">synopsis</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">p</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+</pre></div>
+</div>
+<p class="rubric" id="overview">Overview</p>
+<p>&nbsp;&nbsp; The &#8216;<strong>mdiag -p</strong>&#8216; command is used to display <em>at a glance</em>
+information about the job priority configuration and its effects on the
+current eligible jobs.&nbsp; The information presented by this command
+includes priority weights, priority components, and the percentage
+contribution of each component to the total job priority.
+&nbsp;&nbsp; The command hides information about priority components which have
+been deactivated (ie, by setting the corresponding component priority
+weight to 0).&nbsp; For each displayed priority component, this command gives
+a small amount of context sensitive information.&nbsp; The following table
+documents this information.&nbsp; In all cases, the output is of the form
+&lt;PERCENT&gt;(&lt;CONTEXT INFO&gt;) where &lt;PERCENT&gt; is the percentage contribution
+of the associated priority component to the job&#8217;s total priority.</p>
+<p><strong>Note</strong>: By default, this command only shows information for jobs which
+are eligible for immediate execution. &nbsp;Jobs which violate soft or hard
+policies, or have holds, job dependencies, or other job constraints in
+place will not be displayed. &nbsp;If priority information is needed for any
+of these jobs, use the &#8216;<a class="reference external" href="#verbose">-v</a> flag or the
+<a class="reference external" href="checkjob.html">checkjob</a> command.</p>
+<p class="rubric" id="format">Format</p>
+<p class="rubric" id="output">Output</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="28%" />
+<col width="56%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Priority Component</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>Target</td>
+<td>&lt;PERCENT&gt;()</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>QOS</td>
+<td>&lt;PERCENT&gt;(&lt;QOS&gt;:&lt;QOSPRI&gt;)</td>
+<td>QOS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; QOS associated with job
+QOSPRI:&nbsp; Priority assigned to the QOS</td>
+</tr>
+<tr class="row-even"><td>FairShare</td>
+<td>&lt;PERCENT&gt;(&lt;USR&gt;:&lt;GRP&gt;:&lt;ACC&gt;:&lt;QOS&gt;:&lt;CLS&gt;)</td>
+<td>USR:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user fs usage - user fs target
+GRP:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; group fs usage - group fs target
+ACC:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; account fs usage - account fs target
+QOS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; QOS fs usage - QOS fs target
+CLS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class fs usage - class fs target</td>
+</tr>
+<tr class="row-odd"><td>Service</td>
+<td>&lt;PERCENT&gt;(&lt;QT&gt;:&lt;XF&gt;:&lt;Byp&gt;)</td>
+<td>QTime:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; job queue time which is applicable towards priority (in minutes)
+XF:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; current theoretical minimum XFactor is job were to start immediately
+Byp:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; number of times job was bypassed by lower priority jobs via backfill</td>
+</tr>
+<tr class="row-even"><td>Resource</td>
+<td>&lt;PERCENT&gt;(&lt;NDE&gt;:&lt;PE&gt;:&lt;PRC&gt;:&lt;MEM&gt;)</td>
+<td>NDE:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nodes requested by job
+PE:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Processor Equivalents as calculated by all resources requested by job
+PRC:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; processors requested by job
+MEM:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; real memory requested by job</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="example-1">Example 1</p>
+<p>mdiag -p</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">diagnosing</span> <span class="n">job</span> <span class="n">priority</span> <span class="n">information</span> <span class="p">(</span><span class="n">partition</span><span class="p">:</span> <span class="n">ALL</span><span class="p">)</span>
+
+<span class="n">Job</span>                    <span class="n">PRIORITY</span><span class="o">*</span>   <span class="n">Cred</span><span class="p">(</span>  <span class="n">QOS</span><span class="p">)</span>    <span class="n">FS</span><span class="p">(</span><span class="n">Accnt</span><span class="p">)</span>  <span class="n">Serv</span><span class="p">(</span><span class="n">QTime</span><span class="p">)</span>
+             <span class="n">Weights</span>   <span class="o">--------</span>       <span class="mi">1</span><span class="p">(</span>    <span class="mi">1</span><span class="p">)</span>     <span class="mi">1</span><span class="p">(</span>    <span class="mi">1</span><span class="p">)</span>     <span class="mi">1</span><span class="p">(</span>    <span class="mi">1</span><span class="p">)</span>
+
+<span class="mi">13678</span>                      <span class="mi">1321</span><span class="o">*</span>    <span class="mf">7.6</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span>   <span class="mf">0.2</span><span class="p">(</span>  <span class="mf">2.7</span><span class="p">)</span>  <span class="mf">92.2</span><span class="p">(</span><span class="mf">1218.</span><span class="p">)</span>
+<span class="mi">13698</span>                       <span class="mi">235</span><span class="o">*</span>   <span class="mf">42.6</span><span class="p">(</span><span class="mf">100.0</span><span class="p">)</span>   <span class="mf">1.1</span><span class="p">(</span>  <span class="mf">2.7</span><span class="p">)</span>  <span class="mf">56.3</span><span class="p">(</span><span class="mf">132.3</span><span class="p">)</span>
+<span class="mi">13019</span>                      <span class="mi">8699</span>     <span class="mf">0.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>   <span class="mf">0.3</span><span class="p">(</span> <span class="mf">25.4</span><span class="p">)</span>  <span class="mf">99.1</span><span class="p">(</span><span class="mf">8674.</span><span class="p">)</span>
+<span class="mi">13030</span>                      <span class="mi">8699</span>     <span class="mf">0.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>   <span class="mf">0.3</span><span class="p">(</span> <span class="mf">25.4</span><span class="p">)</span>  <span class="mf">99.1</span><span class="p">(</span><span class="mf">8674.</span><span class="p">)</span>
+<span class="mi">13099</span>                      <span class="mi">8537</span>     <span class="mf">0.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>   <span class="mf">0.3</span><span class="p">(</span> <span class="mf">25.4</span><span class="p">)</span>  <span class="mf">99.1</span><span class="p">(</span><span class="mf">8512.</span><span class="p">)</span>
+<span class="mi">13141</span>                      <span class="mi">8438</span>     <span class="mf">0.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>   <span class="mf">0.2</span><span class="p">(</span> <span class="mf">17.6</span><span class="p">)</span>  <span class="mf">99.2</span><span class="p">(</span><span class="mf">8370.</span><span class="p">)</span>
+<span class="mi">13146</span>                      <span class="mi">8428</span>     <span class="mf">0.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>   <span class="mf">0.2</span><span class="p">(</span> <span class="mf">17.6</span><span class="p">)</span>  <span class="mf">99.2</span><span class="p">(</span><span class="mf">8360.</span><span class="p">)</span>
+<span class="mi">13153</span>                      <span class="mi">8360</span>     <span class="mf">0.0</span><span class="p">(</span>  <span class="mf">1.0</span><span class="p">)</span>   <span class="mf">0.1</span><span class="p">(</span> <span class="mf">11.6</span><span class="p">)</span>  <span class="mf">99.8</span><span class="p">(</span><span class="mf">8347.</span><span class="p">)</span>
+<span class="mi">13177</span>                      <span class="mi">8216</span>     <span class="mf">0.0</span><span class="p">(</span>  <span class="mf">1.0</span><span class="p">)</span>   <span class="mf">0.1</span><span class="p">(</span> <span class="mf">11.6</span><span class="p">)</span>  <span class="mf">99.8</span><span class="p">(</span><span class="mf">8203.</span><span class="p">)</span>
+<span class="mi">13203</span>                      <span class="mi">8127</span>     <span class="mf">0.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>   <span class="mf">0.3</span><span class="p">(</span> <span class="mf">25.4</span><span class="p">)</span>  <span class="mf">99.1</span><span class="p">(</span><span class="mf">8102.</span><span class="p">)</span>
+<span class="mi">13211</span>                      <span class="mi">8098</span>     <span class="mf">0.0</span><span class="p">(</span>  <span class="mf">1.0</span><span class="p">)</span>   <span class="mf">0.1</span><span class="p">(</span> <span class="mf">11.6</span><span class="p">)</span>  <span class="mf">99.8</span><span class="p">(</span><span class="mf">8085.</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="mi">13703</span>                       <span class="mi">137</span>    <span class="mf">36.6</span><span class="p">(</span> <span class="mf">50.0</span><span class="p">)</span>  <span class="mf">12.8</span><span class="p">(</span> <span class="mf">17.6</span><span class="p">)</span>  <span class="mf">50.6</span><span class="p">(</span> <span class="mf">69.2</span><span class="p">)</span>
+<span class="mi">13702</span>                        <span class="mi">79</span>     <span class="mf">1.3</span><span class="p">(</span>  <span class="mf">1.0</span><span class="p">)</span>   <span class="mf">5.7</span><span class="p">(</span>  <span class="mf">4.5</span><span class="p">)</span>  <span class="mf">93.0</span><span class="p">(</span> <span class="mf">73.4</span><span class="p">)</span>
+
+<span class="n">Percent</span> <span class="n">Contribution</span>   <span class="o">--------</span>     <span class="mf">0.9</span><span class="p">(</span>  <span class="mf">0.9</span><span class="p">)</span>   <span class="mf">0.4</span><span class="p">(</span>  <span class="mf">0.4</span><span class="p">)</span>  <span class="mf">98.7</span><span class="p">(</span> <span class="mf">98.7</span><span class="p">)</span>
+
+<span class="o">*</span> <span class="n">indicates</span> <span class="n">system</span> <span class="n">prio</span> <span class="nb">set</span> <span class="n">on</span> <span class="n">job</span>
+</pre></div>
+</div>
+<p>&nbsp;&nbsp; The <strong>mdiag -p</strong> command only displays information for priority
+components actually utilized.&nbsp; In the above example, QOS, Account
+Fairshare, and QueueTime components are utilized in determining a job&#8217;s
+priority.&nbsp; Other components, such as Service Targets, and Bypass are not
+used and thus are not displayed.&nbsp; (See the &#8216;<a class="reference external" href="../5.1.1priorityoverview.html">Priority
+Overview</a>&#8216; for more information)&nbsp; The
+output consists of a header, a job by job analysis of jobs, and a
+summary section.</p>
+<p>&nbsp;&nbsp; The header provides column labeling and provides configured priority
+component and subcomponent weights.&nbsp; In the above example, QOSWEIGHT is
+set to 1000 and FSWEIGHT is set to 100.&nbsp; When configuring fairshare, a
+site also has the option of weighting the individual components of a
+job&#8217;s overall fairshare, including its user, group, and account
+fairshare components.&nbsp; In this output, the user, group, and account
+fairshare weights are set to 5, 1, and 1 respectively.</p>
+<p>&nbsp;&nbsp; The job by job analysis displays a job&#8217;s total priority and the
+percentage contribution to that priority of each of the priority
+components.&nbsp; In this example, job <code class="docutils literal"><span class="pre">13019</span></code> has a total priority of
+8699.&nbsp; Both QOS and Fairshare contribute to the job&#8217;s total priority
+although these factors are quite small, contributing 0.6% and 0.3%
+respectively with the fairshare factor being contributed by an account
+fairshare target. &nbsp;For this job, the dominant factor is the <em>service</em>
+subcomponent <em>qtime</em> which is contributing 99.1% of the total priority
+since the job has been in the queue for approximately 8600 minutes.</p>
+<p>&nbsp;&nbsp; At the end of the job by job description, a &#8216;Totals&#8217; line is
+displayed which documents the average percentage contributions of each
+priority component to the current idle jobs.&nbsp; In this example, the QOS,
+Fairshare, and Service components contributed an average of 0.9%, 0.4%,
+and 98.7% to the jobs&#8217; total priorities.</p>
+<p class="rubric" id="see-also">See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../5.1jobprioritization.html">Job Priority Overview</a></li>
+<li><a class="reference external" href="http://www.adaptivecomputing.com/mcm">Moab Cluster Manager - Priority
+Manager</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag-priority.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

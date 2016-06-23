@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.2. Backfill &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption" href="8.0optimizingschedulingbehavior.html" />
+    <link rel="next" title="8.3. Node Set Overview" href="8.3nodesetoverview.html" />
+    <link rel="prev" title="8.1. Optimization Overview" href="8.1optimizationoverview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="8.3nodesetoverview.html" title="8.3. Node Set Overview"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="8.1optimizationoverview.html" title="8.1. Optimization Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="8.0optimizingschedulingbehavior.html" accesskey="U">8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="backfill">
+<h1>8.2. Backfill<a class="headerlink" href="#backfill" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="backfill-overview">
+<h2>8.2.1. Backfill Overview<a class="headerlink" href="#backfill-overview" title="Permalink to this headline">¶</a></h2>
+<p>Backfill is a scheduling optimization which allows a scheduler to make
+better use of available resources by running jobs out of order. When
+Maui schedules, it prioritizes the jobs in the queue according to a
+number of factors and then orders the jobs into a &#8216;highest priority
+first&#8217; sorted list. It starts the jobs one by one stepping through the
+priority list until it reaches a job which it cannot start. Because all
+jobs and reservations possess a start time and a wallclock limit, Maui
+can determine the completion time of all jobs in the queue.
+Consequently, Maui can also determine the earliest the needed resources
+will become available for the highest priority job to start.</p>
+<p>Backfill operates based on this &#8216;earliest job start&#8217; information.
+Because Maui knows the earliest the highest priority job can start, and
+which resources it will need at that time, it can also determine which
+jobs can be started without delaying this job. Enabling backfill allows
+the scheduler to start other, lower-priority jobs so long as they do not
+delay the highest priority job. If Backfill is enabled, Maui, &#8216;protects&#8217;
+the highest priority job&#8217;s start time by creating a job reservation to
+reserve the needed resources at the appropriate time. Maui then can any
+job which not not interfere with this reservation.</p>
+<p>Backfill offers significant scheduler performance improvement. In a
+typical large system, enabling backfill will increase system utilization
+by around 20% and improve turnaround time by an even greater amount.
+Because of the way it works, essentially filling in holes in node space,
+backfill tends to favor smaller and shorter running jobs more than
+larger and longer running ones. It is common to see over 90% of these
+small and short jobs backfilled. Consequently, sites will see marked
+improvement in the level of service delivered to the small, short jobs
+and only moderate to no improvement for the larger, long ones.</p>
+<p>The question arises, is backfill a purely good feature. Doesn&#8217;t there
+have to be a trade-off some where? Doesn&#8217;t there have to be a dark side?
+Well, there are a few drawbacks to using backfill but they are fairly
+minor. First of all, because backfill locates jobs to run scattered
+throughout the idle job queue, it tends to diminish the influence of the
+job prioritization a site has chosen and thus may negate any desired
+workload steering attempts through this prioritization. Secondly,
+although the start time of the highest priority job is protected by a
+reservation, what is to prevent the third priority job from starting
+early and possibly delaying the start of the second priority job? Ahh, a
+problem. Actually, one that is easily handled as will be described
+later.</p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>** The third problem is actually a little more subtle. Consider the
+following scenario involving the 2 processor cluster shown in figure 1.
+Job A has a 4 hour wallclock limit and requires 1 processor. It started
+1 hour ago and will reach its wallclock limit in 3 more hours. Job B is
+the highest priority idle job and requires 2 processors for 1 hour. Job
+C is the next highest priority job and requires 1 processor for 2 hours.
+Maui examines the jobs and correctly determines that job A must finish
+in 2 hours and thus, the earliest job B can start is in 2 hours. Maui
+also determines that job C can start and finish in less than this amount
+of time. Consequently, Maui starts job C on the idle processor. One hour
+later, job A completes early. Apparently, the user overestimated the
+amount of time his job would need by a few hours. Since job B is now the
+highest priority job, it should be able to run. However, job C, a lower
+priority job was started an hour ago and the resources needed for job B
+are not available. Maui re-evaluates job B&#8217;s reservation and determines
+that it can be slid forward an hour. At time 3, job B starts.</p>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>** Ok, now the post-game show. Job A is happy because it ran to
+completion. Job C is happy because it got to start immediately. Job B is
+sort of happy because it got to run 1 hour sooner than it originally was
+told it could. However, if backfill was not enabled, job B would have
+been able to run 2 hours earlier. Not a big deal, usually. However, the
+scenario described above actually occurs fairly frequently. This is
+because the user estimates for how long their jobs will take is
+generally very bad. Job wallclock estimate accuracy, or wallclock
+accuracy, is defined as the ratio of wall time required to actually run
+the job divided by the wall time requested for the job. Wallclock
+accuracy varies from site to site but the site average is rarely better
+than 40%. Because the quality of the walltime estimate provided by the
+user is so low, job reservations for high priority jobs are often later
+than they need to be.</p>
+<p>Although there do exist some minor drawbacks with backfill, its net
+performance impact on a site&#8217;s workload is very positive. Although a few
+of the highest priority jobs may get temporarily delayed, they probably
+got to their position as highest priority as soon as they did because
+jobs in front of them got to run earlier due to backfill. Studies have
+shown that only a very small fraction of jobs are truly delayed and when
+they are, it is only by a fraction of their total queue time. At the
+same time, many jobs are started significantly earlier than would have
+occurred without backfill.</p>
+</div>
+<div class="section" id="backfill-algorithm">
+<h2>8.2.2. Backfill Algorithm<a class="headerlink" href="#backfill-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The algorithm behind Maui backfill scheduling is mostly straightforward
+although there are a number of issues and parameters of which you should
+be aware. First of all, Maui makes two backfill scheduling passes. For
+each pass, Maui selects a list of jobs which are eligible for backfill.
+On the first pass, only those jobs which meet the constraints of the
+&#8216;soft&#8217; fairness throttling policies are considered and scheduled. The
+second pass expands this list of jobs to include those which meet the
+&#8216;hard&#8217; (less constrained) fairness throttling policies.</p>
+<p>The second important concept regarding Maui backfill is the concept of
+backfill windows. The figure below shows a simple batch environment
+containing two running jobs and a reservation for a third job. The
+present time is represented by the leftmost end of the box with the
+future moving to the right. The light grey boxes represent currently
+idle nodes which are eligible for backfill. For this example, lets
+assume that the space represented covers 8 nodes and a 2 hour timeframe.
+To determine backfill windows, Maui analyzes the idle nodes essentially
+looking for &#8216;largest node-time rectangles&#8217;. It determines that there are
+two backfill windows. The first window, Window 1, consists of 4 nodes
+which are available for only one hour (because some of the nodes are
+blocked by the reservation for job C). The second window contains only
+one node but has no time limit because this node is not blocked by the
+reservation for job C. It is important to note that these backfill
+windows overlap.<a class="reference internal" href="bfwindows.png"><img alt="Backfill Windows" src="bfwindows.png" style="width: 383px; height: 502px;" /></a></p>
+<p><a href="#id5"><span class="problematic" id="id6">**</span></a>** Once the backfill windows have been determined, Maui begins to
+traverse them. The current behavior is to traverse these windows &#8216;widest
+window first&#8217; (i.e., most nodes to fewest nodes) As each backfill window
+is evaluated, Maui applies the backfill algorithm specified by the
+<a class="reference external" href="a.fparameters.html#backfillpolicy">BACKFILLPOLICY</a> parameter, be it
+<strong>FIRSTFIT</strong>, <strong>BESTFIT</strong>, etc.</p>
+<p>Assuming the <strong>BESTFIT</strong> algorithm is applied, the following steps are
+taken.</p>
+<div class="line-block">
+<div class="line">1) The list of feasible backfill jobs is filtered, selecting only
+those which will actually fit in the current backfill window.</div>
+<div class="line">2) The &#8216;degree of fit&#8217; of each job is determined based on the
+<a class="reference external" href="a.fparameters.html#schedulingcriteria">SCHEDULINGCRITERIA</a>
+parameter (ie, processors, seconds, processor-seconds, etc)</div>
+<div class="line">(ie, if processors is selected, the job which requests the most
+processors will have the best fit)</div>
+<div class="line">3) The job with the best fit is started.</div>
+<div class="line">4) While backfill jobs and idle resources remain, repeat step 1.</div>
+</div>
+<p>Other backfill policies behave in a generally similar manner. The
+parameters documentation can provide further details.</p>
+<p>One final important note. By default, Maui reserves only the highest
+priority job resulting in a very &#8216;liberal&#8217; and aggressive backfill. This
+reservation guarantees that backfilled jobs will not delay the highest
+priority job, although they may delay the second highest priority job!
+(Actually, due to wallclock inaccuracies, it is possible the the highest
+priority job may actually get slightly delayed as well but we won&#8217;t go
+into that!) The parameter
+<a class="reference external" href="a.fparameters.html#reservationdepth">RESERVATIONDEPTH</a> controls how
+conservative/liberal the backfill policy is. This parameter controls how
+deep down the priority queue to make reservations. While increasing this
+parameter will improve guarantees that priority jobs will not be
+bypassed, it reduces the freedom of the scheduler to backfill resulting
+in somewhat lower system utilization. The value of the trade-offs often
+need to be determined on a site by site basis.</p>
+</div>
+<div class="section" id="configuring-backfill">
+<h2>8.2.3. Configuring Backfill<a class="headerlink" href="#configuring-backfill" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="backfill-policies">
+<h3>8.2.3.1. Backfill Policies<a class="headerlink" href="#backfill-policies" title="Permalink to this headline">¶</a></h3>
+<p>Backfill is enabled in Maui by specifying the
+<a class="reference external" href="a.fparameters.html#backfillpolicy">BACKFILLPOLICY</a> parameter. By
+default, backfill is enabled in Maui using the <strong>FIRSTFIT</strong> algorithm.
+However, this parameter can also be set to <strong>BESTFIT</strong>, <strong>GREEDY</strong>, or
+<strong>NONE</strong> (disabled).
+.. rubric:: Reservations</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">reservations</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The number of reservations which <em>protect</em> the resources required by
+priority jobs can be controlled using
+<a class="reference external" href="a.fparameters.html#reservationdepth">RESERVATIONDEPTH</a>[&lt;X&gt;]. This
+depth can be distributed across job QOS levels using
+<a class="reference external" href="a.fparameters.html#reservationqoslist">RESERVATIONQOSLIST</a>[&lt;X&gt;].
+.. rubric:: Backfill Chunking</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">backfill-chunking</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>In a batch environment saturated with serial jobs, serial jobs will,
+over time, dominate the resources available for backfill at the expense
+of other jobs. This is due to the <em>time-dimension fragmentation</em>
+associated with running serial jobs. For example, given an environment
+with an abundance of serial jobs, if a multi-processor job completes
+freeing processors, one of three things will happen.</p>
+<ol class="arabic simple">
+<li>The freed resources are allocated to another job requiring the same
+number of processors</li>
+<li>Additional jobs may complete at the same time allowing a larger job
+to allocate the aggregate resources</li>
+<li>The freed resources are allocated to one or more smaller jobs</li>
+</ol>
+<p>In environments where the scheduling iteration is much higher than the
+average time between completing jobs, case 3 occurs far more often than
+case 2 leading to smaller and smaller jobs populating the system over
+time.
+To address this issue, the scheduler incorporates the concept of
+backfill <em>chunking</em>. Chunking allows the scheduler to favor case 2
+maintaining a more controlled balance between large and small jobs. The
+idea of chunking involves establishing a time-based threshold during
+which resources available for backfill will be aggregated. This
+threshold is set using the parameter
+<a class="reference external" href="a.fparameters.html#bfchunkduration">BFCHUNKDURATION</a>. When resources
+are freed, they are made available only to jobs of a certain size (set
+using the parameter <a class="reference external" href="a.fparameters.html#bfchunksize">BFCHUNKSIZE</a>) or
+larger. These resources remain <em>protected</em> from smaller jobs until
+either additional resources are freed up and a larger job can use the
+aggregate resources, or until the <strong>BFCHUNKDURATION</strong> threshold time is
+expired. <strong>NOTE</strong>: backfill chunking is only <em>activated</em> when a job of
+size <strong>BFCHUNKSIZE</strong> or larger is blocked in backfill due to lack of
+resources.</p>
+<p>It is important to note that the optimal settings for these parameters
+is very site specific and will depend on the workload, (including the
+average job turnaround time, job size, and mix of large to small jobs)
+cluster resources, and other scheduling environmental factors. Setting
+values which are too restrictive will needlessly reduce utilization
+while settings which are too relaxed will not allow the desired
+aggregation to occur. CAVEAT EMPTOR. (<strong>NOTE</strong>: backfill chunking is
+only enabled in conjunction with the <strong>FIRSTFIT</strong> backfill policy.)</p>
+<p><strong>See also:</strong></p>
+<div class="line-block">
+<div class="line"><a href="#id7"><span class="problematic" id="id8">**</span></a>** Parameters
+<strong>`BACKFILLDEPTH &lt;a.fparameters.html#backfilldepth&gt;`__</strong>and
+<strong>`BACKFILLMETRIC &lt;a.fparameters.html#backfillmetric&gt;`__</strong></div>
+<div class="line"><strong>`Reservation Policy Overview &lt;7.1.4reservationpolicies.html&gt;`__.</strong></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">8.2. Backfill</a><ul>
+<li><a class="reference internal" href="#backfill-overview">8.2.1. Backfill Overview</a></li>
+<li><a class="reference internal" href="#backfill-algorithm">8.2.2. Backfill Algorithm</a></li>
+<li><a class="reference internal" href="#configuring-backfill">8.2.3. Configuring Backfill</a><ul>
+<li><a class="reference internal" href="#backfill-policies">8.2.3.1. Backfill Policies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="8.1optimizationoverview.html"
+                        title="previous chapter">8.1. Optimization Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="8.3nodesetoverview.html"
+                        title="next chapter">8.3. Node Set Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/8.2backfill.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="8.3nodesetoverview.html" title="8.3. Node Set Overview"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="8.1optimizationoverview.html" title="8.1. Optimization Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="8.0optimizingschedulingbehavior.html" >8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

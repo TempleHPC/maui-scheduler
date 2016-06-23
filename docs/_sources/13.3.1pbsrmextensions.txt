@@ -1,0 +1,99 @@
+PBS RM Extensions
+#################
+
+RM extensions within PBS are utilized by using the '**-W**' flag. To
+enable this flag, some versions of PBS must be rebuilt.(NOTE:
+`TORQUE <../../torque>`__ and recent OSCAR distributions come with the
+flag enabled by default. Most other versions do not.)
+The required steps are documented below.
+**> qterm -t quick #shutdown PBS server** (cd to the directory from
+which you executed the PBS 'configure' at install time) **make
+distclean** **./configure <WITH OPTIONS>**
+
+| **create `addparam <#addparam>`__ script**
+| (chmod +x addparam)
+
+| **addparam x S**
+
+.. note::
+
+   In Maui 3.2.x, only the '**x**' parameter needs to be added.
+
+**make**
+
+(backup current $PBS\_HOMEDIR directory contents, NOTE: $PBS\_HOMEDIR
+defaults to /usr/spool/PBS)
+
+**> make install**
+
+(restore old $PBS\_HOMEDIR directory contents)
+
+**> pbs\_server # restart PBS server**
+
+| A job's QOS level can then be specified using qsub's '-W' flag, i.e.,
+  qsub -W x=iQOS:hi -l nodes=4 ...
+
+| (` <>`__\ addparam script follows)
+| ------
+| #!/bin/sh
+| #script: addparam
+| #usage: addparam $Parameter [S\|L]
+
+| NewParameter=$1
+| ParameterType=x$2
+
+| if [ ! -d src/include ]; then
+| echo "error: \`basename $0\` src/include doesn't exist, run configure"
+  1>&2
+| exit 1
+| fi
+
+| # run make in this directory to pull over the template files
+| cd src/include
+| if make
+| then
+
+| if grep -q "\\"$NewParameter\\"" site\_\*.h 2>/dev/null; then
+| echo "parameter $NewParameter previously added"
+| exit 0
+| fi
+| fi
+
+| chmod +w site\_job\_attr\_enum.h
+| echo "
+| JOB\_SITE\_ATR\_$1,
+| " >> site\_job\_attr\_enum.h
+
+chmod +w site\_job\_attr\_def.h
+
+if [ $ParameterType = "xS" ]
+then
+echo "
+{ \\"$NewParameter\\",
+decode\_str,
+encode\_str,
+set\_str,
+comp\_str,
+free\_str,
+NULL\_FUNC,
+READ\_WRITE,
+ATR\_TYPE\_STR,
+PARENT\_TYPE\_JOB
+},
+" >> site\_job\_attr\_def.h
+else
+echo "
+{ \\"$NewParameter\\",
+decode\_l,
+encode\_l,
+set\_l,
+comp\_l,
+free\_null,
+NULL\_FUNC,
+READ\_WRITE,
+ATR\_TYPE\_LONG,
+PARENT\_TYPE\_JOB
+},
+" >> site\_job\_attr\_def.h
+fi
+exit 0

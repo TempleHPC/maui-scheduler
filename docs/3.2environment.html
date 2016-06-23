@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.2. Scheduling Environment &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="3. Scheduler Basics" href="3.0basics.html" />
+    <link rel="next" title="3.3. Scheduling Iterations and Job Flow" href="3.3jobflow.html" />
+    <link rel="prev" title="3.1. File Layout" href="3.1layout.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="3.3jobflow.html" title="3.3. Scheduling Iterations and Job Flow"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="3.1layout.html" title="3.1. File Layout"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="3.0basics.html" accesskey="U">3. Scheduler Basics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scheduling-environment">
+<h1>3.2. Scheduling Environment<a class="headerlink" href="#scheduling-environment" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="scheduling-objects">
+<h2>3.2.1. Scheduling Objects<a class="headerlink" href="#scheduling-objects" title="Permalink to this headline">¶</a></h2>
+<p>Maui functions by manipulating five primary, elementary objects. These
+are jobs, nodes, reservations, QOS structures, and policies. In addition
+to these, multiple minor elementary objects and composite objects are
+also utilized. These objects are also defined in the <a class="reference external" href="3.2.1dictionary.html">scheduling
+dictionary</a>.</p>
+<div class="section" id="jobs">
+<h3>3.2.1.1. Jobs<a class="headerlink" href="#jobs" title="Permalink to this headline">¶</a></h3>
+<p>Job information is provided to the Maui scheduler from a resource
+manager such as Loadleveler, PBS, Wiki, or LSF. Job attributes include
+ownership of the job, job state, amount and type of resources required
+by the job, and a wallclock limit, indicating how long the resources are
+required. A job consists of one or more
+<a class="reference external" href="#reqdefinition">requirements</a> each of which requests a number of
+resources of a given type. For example, a job may consist of two
+requirements, the first asking for &#8216;1 IBM SP node with at least 512 MB
+of RAM&#8217; and the second asking for &#8216;24 IBM SP nodes with at least 128 MB
+of RAM&#8217;. Each requirements consists of one or more
+<a class="reference external" href="#taskdefinition">tasks</a> where a task is defined as the minimal
+independent unit of resources. By default, each task is equivalent to
+one processor. In SMP environments, however, users may wish to tie one
+or more processors together with a certain amount of memory and/or other
+resources.</p>
+<div class="section" id="requirement-or-req">
+<h4>3.2.1.1.1. Requirement (or Req)<a class="headerlink" href="#requirement-or-req" title="Permalink to this headline">¶</a></h4>
+<p>A job <em>requirement</em> (or req) consists of a request for a single type of
+resources. Each requirement consists of the following components:</p>
+<ul class="simple">
+<li><strong>Task Definition</strong></li>
+</ul>
+<p>A specification of the elementary resources which compose an individual
+task.</p>
+<ul class="simple">
+<li><strong>Resource Constraints</strong></li>
+</ul>
+<p>A specification of conditions which must be met in order for resource
+<em>matching</em> to occur. Only resources from nodes which meet <strong>all</strong>
+resource constraints may be allocated to the job req.</p>
+<ul class="simple">
+<li><strong>Task Count</strong></li>
+</ul>
+<p>The number of task instances required by the req.</p>
+<ul class="simple">
+<li><strong>Task List</strong></li>
+</ul>
+<p>The list of nodes on which the task instances have been located.</p>
+<ul class="simple">
+<li><strong>Req Statistics</strong></li>
+</ul>
+<div class="line-block">
+<div class="line">Statistics tracking resource utilization</div>
+</div>
+</div>
+</div>
+<div class="section" id="nodes">
+<h3>3.2.1.2. Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h3>
+<p>As far as Maui is concerned, a node is a collection of resources with a
+particular set of associated attributes. In most cases, it fits nicely
+with the canonical world view of a node such as a PC cluster node or an
+SP node. In these cases, a node is defined as one or more CPU&#8217;s, memory,
+and possibly other compute resources such as local disk, swap, network
+adapters, software licenses, etc. Additionally, this node will described
+by various attributes such as an architecture type or operating system.
+Nodes range in size from small uniprocessor PC&#8217;s to large SMP systems
+where a single node may consist of hundreds of CPU&#8217;s and massive amounts
+of memory.</p>
+<p>Information about nodes is provided to the scheduler chiefly by the
+resource manager. Attributes include node state, configured and
+available resources (i.e., processors, memory, swap, etc.), run classes
+supported, etc.</p>
+</div>
+<div class="section" id="advance-reservations">
+<h3>3.2.1.3. Advance Reservations<a class="headerlink" href="#advance-reservations" title="Permalink to this headline">¶</a></h3>
+<p>An advance reservation is an object which dedicates a block of specific
+resources for a particular use. Each reservation consists of a list of
+resources, an access control list, and a time range for which this
+access control list will be enforced. The reservation prevents the
+listed resources from being used in a way not described by the access
+control list during the time range specified. For example, a reservation
+could reserve 20 processors and 10 GB of memory for users Bob and John
+from Friday 6:00 AM to Saturday 10:00 PM&#8217;. Maui uses advance
+reservations extensively to manage backfill, guarantee resource
+availability for active jobs, allow service guarantees, support
+deadlines, and enable metascheduling. Maui also supports both regularly
+recurring reservations and the creation of dynamic one time reservations
+for special needs. Advance reservations are described in detail in the
+advance reservation overview.</p>
+</div>
+<div class="section" id="policies">
+<h3>3.2.1.4. Policies<a class="headerlink" href="#policies" title="Permalink to this headline">¶</a></h3>
+<p>Policies are generally specified via a config file and serve to control
+how and when jobs start. Policies include job prioritization, fairness
+policies, fairshare configuration policies, and scheduling policies.</p>
+</div>
+<div class="section" id="resources">
+<h3>3.2.1.5. Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h3>
+<p>Jobs, nodes, and reservations all deal with the abstract concept of a
+resource. A resource in the Maui world is one of the following:</p>
+<p><strong>processors</strong></p>
+<p>Processors are specified with a simple count value.</p>
+<p><strong>memory</strong></p>
+<p>Real memory or &#8216;RAM&#8217; is specified in megabytes (MB).</p>
+<p><strong>swap</strong></p>
+<p>Virtual memory or &#8216;swap&#8217; is specified in megabytes (MB).</p>
+<p><strong>disk</strong></p>
+<p>Local disk is specified in megabytes (MB).</p>
+<p>In addition to these elementary resource types, there are two higher
+level resource concepts used within Maui. These are the <em>task</em> and the
+<em>processor equivalent</em>, or PE.</p>
+</div>
+<div class="section" id="task">
+<h3>3.2.1.6. Task<a class="headerlink" href="#task" title="Permalink to this headline">¶</a></h3>
+<p>A task is a <em>collection</em> of elementary resources which must be allocated
+together within a single <a class="reference external" href="#nodedefinition">node</a>. For example, a task
+may consist of one processor, 512MB or memory, and 2 GB of local disk. A
+key aspect of a task is that the resources associated with the task must
+be allocated as an <em>atomic</em> unit, without spanning node boundaries. A
+task requesting 2 processors cannot be satisfied by allocating 2
+uniprocessor nodes, nor can a task requesting 1 processor and 1 GB of
+memory be satisfied by allocating 1 processor on one node and memory on
+another.</p>
+<p>In Maui, when jobs or reservations request resources, they do so in
+terms of tasks typically using a task <em>count</em> and a task <em>definition</em>.
+By default, a task maps directly to a single processor within a job and
+maps to a full node within reservations. In all cases, this default
+definition can be overridden by specifying a new task definition.</p>
+<p>Within both jobs and reservations, depending on task definition, it is
+possible to have multiple tasks from the same job mapped to the same
+node. For example, a job requesting 4 tasks using the default task
+definition of 1 processor per task, can be satisfied by two dual
+processor nodes.</p>
+</div>
+<div class="section" id="pe">
+<h3>3.2.1.7. PE<a class="headerlink" href="#pe" title="Permalink to this headline">¶</a></h3>
+<p>The concept of the processor equivalent, or PE, arose out of the need to
+translate multi-resource consumption requests into a scalar value. It is
+not an elementary resource, but rather, a derived resource metric. It is
+a measure of the actual <em>impact</em> of a set of requested resources by a
+job on the total resources available system wide. It is calculated as:</p>
+<div class="line-block">
+<div class="line">`` PE = MAX(ProcsRequestedByJob / TotalConfiguredProcs,``</div>
+<div class="line">`` MemoryRequestedByJob / TotalConfiguredMemory,``</div>
+<div class="line">`` DiskRequestedByJob / TotalConfiguredDisk,``</div>
+<div class="line">`` SwapRequestedByJob / TotalConfiguredSwap) * TotalConfiguredProcs``</div>
+</div>
+<p>For example, say a job requested 20% of the total processors and 50% of
+the total memory of a 128 processor MPP system. Only two such jobs could
+be supported by this system. The job is essentially using 50% of all
+available resources since the system can only be scheduled to its most
+constrained resource, in this case memory. The processor equivalents for
+this job should be 50% of the processors, or PE = 64.</p>
+<p>Let&#8217;s make the calculation concrete with one further example. Assume a
+homogeneous 100 node system with 4 processors and 1 GB of memory per
+node. A job is submitted requesting 2 processors and 768 MB of memory.
+The PE for this job would be calculated as:</p>
+<p>`` PE = MAX(2/(100*4), 768/(100*1024)) * (100*4) = 3.``</p>
+<p>This result makes sense since the job would be consuming 3/4 of the
+memory on a 4 processor node.</p>
+<p>The calculation works equally well on homogeneous or heterogeneous
+systems, uniprocessor or large way SMP systems.</p>
+</div>
+<div class="section" id="class-or-queue">
+<h3>3.2.1.8. Class (or Queue)<a class="headerlink" href="#class-or-queue" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">A class (or queue) is a logical container object which can be used to
+implicitly or explicitly apply policies to jobs. In most cases, a
+class is defined and configured within the resource manager and
+associated with one or more of the following attributes or
+constraints:</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Attribute</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>Default Job Attributes</td>
+<td>A queue may be associated with a default job duration, default size, or default resource requirements</td>
+</tr>
+<tr class="row-odd"><td>Host Constraints</td>
+<td>A queue may constrain job execution to a particular set of hosts</td>
+</tr>
+<tr class="row-even"><td>Job Constraints</td>
+<td>A queue may constrain the attributes of jobs which may submitted including setting limits such as max wallclock time, minimum number of processors, etc.</td>
+</tr>
+<tr class="row-odd"><td>Access List</td>
+<td>A queue may constrain who may submit jobs into it based on user lists, group lists, etc.</td>
+</tr>
+<tr class="row-even"><td>Special Access</td>
+<td>A queue may associate special privileges with jobs including adjusted job priority.</td>
+</tr>
+</tbody>
+</table>
+<p>As stated previously, most resource managers allow full class
+configuration within the resource manager. Where additional class
+configuration is required, the
+<a class="reference external" href="a.fparameters.html#classcfg">CLASSCFG</a> parameter may be used.</p>
+<p>Maui tracks class usage as a consumable resource allowing sites to limit
+the number of jobs using a particular class. This is done by monitoring
+<em>class initiators</em> which may be considered to be a ticket to run in a
+particular class. Any compute node may simultaneously support several
+types of classes and any number of initiators of each type. By default,
+nodes will have a one-to-one mapping between class initiators and
+configured processors. For every job <em>task</em> run on the node, one class
+initiator of the appropriate type is consumed. For example, a 3
+processor job submitted to the class batch will consume three batch
+class initiators on the nodes where it is run.</p>
+<p>Using queues as consumable resources allows sites to specify various
+policies by adjusting the class initiator to node mapping. For example,
+a site running serial jobs may want to allow a particular 8 processor
+node to run any combination of batch and special jobs subject to the
+following constraints:</p>
+<div class="line-block">
+<div class="line">- only 8 jobs of any type allowed simultaneously</div>
+<div class="line">- no more than 4 special jobs allowed simultaneously</div>
+</div>
+<p>To enable this policy, the site may set the node&#8217;s <strong>MAXJOB</strong> policy to
+8 and configure the node with 4 special class initiators and 8 batch
+class initiators.</p>
+<p>Note that in virtually all cases jobs have a one-to-one correspondence
+between processors requested and class initiators required. However,
+this is not a requirement and, with special configuration sites may
+choose to associate job tasks with arbitrary combinations of class
+initiator requirements.</p>
+<p>In displaying class initiator status, Maui signifies the type and number
+of class initiators available using the format
+[&lt;CLASSNAME&gt;:&lt;CLASSCOUNT&gt;]. This is most commonly seen in the output of
+node status commands indicating the number of configured and available
+class initiators, or in job status commands when displaying class
+initiator requirements.</p>
+<p><strong>Arbitrary Resource</strong></p>
+<p>Node can also be configured to support various &#8216;arbitrary resources&#8217;.
+Information about such resources can be specified using the
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> parameter. For example, a node
+may be configured to have &#8216;256 MB RAM, 4 processors, 1 GB Swap, and 2
+tape drives&#8217;.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.2. Scheduling Environment</a><ul>
+<li><a class="reference internal" href="#scheduling-objects">3.2.1. Scheduling Objects</a><ul>
+<li><a class="reference internal" href="#jobs">3.2.1.1. Jobs</a><ul>
+<li><a class="reference internal" href="#requirement-or-req">3.2.1.1.1. Requirement (or Req)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nodes">3.2.1.2. Nodes</a></li>
+<li><a class="reference internal" href="#advance-reservations">3.2.1.3. Advance Reservations</a></li>
+<li><a class="reference internal" href="#policies">3.2.1.4. Policies</a></li>
+<li><a class="reference internal" href="#resources">3.2.1.5. Resources</a></li>
+<li><a class="reference internal" href="#task">3.2.1.6. Task</a></li>
+<li><a class="reference internal" href="#pe">3.2.1.7. PE</a></li>
+<li><a class="reference internal" href="#class-or-queue">3.2.1.8. Class (or Queue)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="3.1layout.html"
+                        title="previous chapter">3.1. File Layout</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="3.3jobflow.html"
+                        title="next chapter">3.3. Scheduling Iterations and Job Flow</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/3.2environment.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="3.3jobflow.html" title="3.3. Scheduling Iterations and Job Flow"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="3.1layout.html" title="3.1. File Layout"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="3.0basics.html" >3. Scheduler Basics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

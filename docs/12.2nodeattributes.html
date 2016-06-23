@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12.2. Node Attributes &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="12. General Node Administration" href="12.0generalnodeadmin.html" />
+    <link rel="next" title="12.3. Node Specific Policies" href="12.3nodepolicies.html" />
+    <link rel="prev" title="12.1. Node Location" href="12.1nodelocation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="12.3nodepolicies.html" title="12.3. Node Specific Policies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="12.1nodelocation.html" title="12.1. Node Location"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="12.0generalnodeadmin.html" accesskey="U">12. General Node Administration</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="node-attributes">
+<h1>12.2. Node Attributes<a class="headerlink" href="#node-attributes" title="Permalink to this headline">¶</a></h1>
+<p>Nodes can possess a large number of attributes describing their
+configuration. The majority of these attributes such as operating system
+or configured network interfaces can only be specified by the direct
+resource manager interface. However, the number and detail of node
+attributes varies widely from resource manager to resource manager.
+Sites often have interest in making scheduling decisions based on
+scheduling attributes not directly supplied by the resource manager.
+Configurable node attributes are listed below.</p>
+<p><strong>NODETYPE</strong></p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>** The <strong>NODETYPE</strong> attribute is most commonly used in conjunction
+with an allocation management system such as QBank. In these cases, each
+node is assigned a node type and within the allocation management
+system, each node type is assigned a charge rate. For example, a site
+may wish to charge users more for using large memory nodes and may
+assign a node type of &#8216;BIGMEM&#8217; to these nodes. The allocation management
+system would then charge a premium rate for jobs using BIGMEM nodes.
+(See the <a class="reference external" href="6.4allocationmanagement.html">Allocation Manager Overview</a>
+for more information.)</p>
+<p>Node types are specified as simple strings. If no node type is
+explicitly set, the node will possess the default node type of
+&#8216;[DEFAULT]&#8217;. Node type information can be specified directly using
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> or through use of the
+<a class="reference external" href="a.fparameters.html#featurenodetypeheader">FEATURENODETYPEHEADER</a>
+parameter.</p>
+<p><strong>Example:</strong></p>
+<div class="line-block">
+<div class="line">&#8212;</div>
+<div class="line"><code class="docutils literal"><span class="pre">#</span> <span class="pre">maui.cfg</span></code></div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal"><span class="pre">NODECFG[node024]</span> <span class="pre">NODETYPE=BIGMEM</span></code></div>
+<div class="line">...</div>
+<div class="line">&#8212;</div>
+</div>
+<p><strong>PROCSPEED</strong></p>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>** Knowing a node&#8217;s processor speed can help the scheduler improve
+intra-job efficiencies by allocating nodes of similar speeds together.
+This helps reduce losses due to poor internal job load balancing. Maui&#8217;s
+<a class="reference external" href="8.3nodesetoverview.html">Node Set</a> scheduling policies allow a site
+to control processor speed based allocation behavior.</p>
+<div class="line-block">
+<div class="line">Processor speed information is specified in MHz and can be indicated
+directly using <a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> or through use
+of the
+<a class="reference external" href="a.fparameters.html#featureprocspeedheader">FEATUREPROCSPEEDHEADER</a>
+parameter.</div>
+</div>
+<p><strong>SPEED</strong></p>
+<p>A node&#8217;s speed is very similar to its procspeed but is specified as a
+relative value. In general use, the speed of a base node is determined
+and assigned a speed of 1.0. A node that is 50% faster would be assigned
+a value of 1.5 while a slower node may receive a value which is
+proportionally less than 1.0. Node speeds do not have to be directly
+proportional to processor speeds and may take into account factors such
+as memory size or networking interface. Generally, node speed
+information is used to determine proper wallclock limit and CPU time
+scaling adjustments.</p>
+<p>Node speed information is specified as a unitless floating point ratio
+and can be specified through the resource manager or with the
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> parameter.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <strong>SPEED</strong> specification must be in the range of 0.01 to 100.0.</p>
+</div>
+<p><strong>FEATURES</strong></p>
+<p>Not all resource managers allow specification of opaque node
+features. For these systems, the
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> parameter can be used to
+directly assign a list of node features to individual nodes.</p>
+<p><strong>NETWORK</strong></p>
+<p>The ability to specify which networks are available to a given node
+is limited to only a few resource manager. Using the <strong>NETWORK</strong>
+attribute, administrators can establish this node to network connection
+directly through the scheduler. The
+<a class="reference external" href="a.fparameters.html#nodecfg">NODECFG</a> parameter allows this list to
+be specified in a comma delimited list.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="12.1nodelocation.html"
+                        title="previous chapter">12.1. Node Location</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="12.3nodepolicies.html"
+                        title="next chapter">12.3. Node Specific Policies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/12.2nodeattributes.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="12.3nodepolicies.html" title="12.3. Node Specific Policies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="12.1nodelocation.html" title="12.1. Node Location"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="12.0generalnodeadmin.html" >12. General Node Administration</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

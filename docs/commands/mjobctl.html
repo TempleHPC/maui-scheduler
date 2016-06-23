@@ -1,0 +1,839 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mjobctl">mjobctl</p>
+<p><strong>(Moab Job Control)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mjobctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">w</span> <span class="n">attr</span><span class="o">=</span><span class="n">val</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">C</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">h</span> <span class="p">[</span><span class="n">User</span><span class="o">|</span><span class="n">System</span><span class="o">|</span><span class="n">Batch</span><span class="o">|</span><span class="n">Defer</span><span class="o">|</span><span class="n">All</span><span class="p">]</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">attr</span><span class="p">{</span><span class="o">+=|=|-=</span><span class="p">}</span><span class="n">val</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">N</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">SIGNO</span><span class="o">&gt;</span><span class="p">]</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">JOBNAME</span><span class="o">&gt;</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">p</span> <span class="o">&lt;</span><span class="n">PRIORITY</span><span class="o">&gt;</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">q</span> <span class="p">{</span><span class="n">diag</span><span class="o">|</span><span class="n">starttime</span><span class="o">|</span><span class="n">hostlist</span><span class="p">}</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">r</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">R</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">s</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">u</span> <span class="p">[</span><span class="n">User</span><span class="o">|</span><span class="n">System</span><span class="o">|</span><span class="n">Batch</span><span class="o">|</span><span class="n">Defer</span><span class="o">|</span><span class="n">All</span><span class="p">]</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">w</span> <span class="n">attr</span><span class="p">{</span><span class="o">+=|=|-=</span><span class="p">}</span><span class="n">val</span> <span class="n">jobexp</span>
+<span class="n">mjobctl</span> <span class="o">-</span><span class="n">x</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="n">flags</span><span class="o">=</span><span class="n">val</span><span class="p">]</span> <span class="n">jobexp</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The <strong>mjobctl</strong> command controls various aspects of jobs. It is used to
+submit, cancel, execute, and checkpoint jobs. It can also display
+diagnostic information about each job. The <strong>mjobctl</strong> command enables
+the Moab administrator to control almost all aspects of job behavior.
+See <a class="reference external" href="../11.0generaljobadmin.html">11.0 General Job Administration</a>
+for more details on jobs and their attributes.
+<strong>Format</strong></p>
+<p>-c — <strong>Cancel</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Cancel a job.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="97%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>Use <a class="reference external" href="http://www.adaptivecomputing.com/resources/docs/mwm/commands/mjobctl.html#cancelwhere">-w (following a -c flag)</a> to specify job cancellation according to given credentials or job attributes. See <a class="reference external" href="http://www.adaptivecomputing.com/resources/docs/mwm/commands/mjobctl.html#cancelwhere">-c -w</a> for more information.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">c</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Cancel job job1045.</p>
+<p>-c -w — <strong>Cancel Where</strong>
+Format:
+&lt;ATTR&gt;=&lt;VALUE&gt;
+where &lt;ATTR&gt;=[ <strong>user</strong> | <strong>account</strong> | <strong>qos</strong> | <strong>class</strong> |
+<strong>reqreservation</strong> (RsvName) | <strong>state</strong> (JobState) | <strong>jobname</strong>
+(JobName, not job ID)] | <strong>partition</strong>
+Default:
+&#8212;
+Description:
+Cancel a job based on a given credential or job attribute.
+Use -w following a
+<a class="reference external" href="http://www.adaptivecomputing.com/resources/docs/mwm/commands/mjobctl.html#cancel">-c</a>
+flag to specify job cancellation according to credentials or job
+attributes. (See examples.)
+Also, you can cancel jobs from given partitions using -w
+partition=&lt;PAR1&gt;[&lt;PAR2&gt;...]]; however, you must also either use another
+-w flag to specify a job or use the standard job expression.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">w</span> <span class="n">state</span><span class="o">=</span><span class="n">USERHOLD</span>
+</pre></div>
+</div>
+<p>Cancels all jobs that currently have a USERHOLD on them.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">w</span> <span class="n">user</span><span class="o">=</span><span class="n">user1</span> <span class="o">-</span><span class="n">w</span> <span class="n">acct</span><span class="o">=</span><span class="n">acct1</span>
+</pre></div>
+</div>
+<p>Cancels all jobs assigned to <code class="docutils literal"><span class="pre">user1</span></code> or <code class="docutils literal"><span class="pre">acct1</span></code>.</p>
+<p>-C — <strong>Checkpoint</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Checkpoint a job
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">C</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Checkpoint job job1045.</p>
+<p>-h — <strong>Hold</strong>
+Format:
+&lt;HOLDTYPE&gt; &lt;JOBEXP&gt;</p>
+<p>&lt;HOLDTYPE&gt; = { <strong>user</strong> | <strong>batch</strong> | <strong>system</strong> | <strong>defer</strong> |
+<strong>ALL</strong> }
+Default:
+<strong>user</strong>
+Description:
+Set or release a job hold
+See <a class="reference external" href="http://www.adaptivecomputing.com/resources/docs/mwm/11.1jobholds.html">Section 11.1, Job
+Holds</a>
+for more information
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">h</span> <span class="n">user</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Set a user hold on job job1045.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">u</span> <span class="nb">all</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Unset all holds on job job1045.</p>
+<p>-m — <strong>Modify</strong>
+Format:
+&lt;ATTR&gt;{ <strong>+=</strong> | <strong>=</strong> | <strong>-=</strong> } &lt;VAL&gt;
+&nbsp;&nbsp;&lt;ATTR&gt;={ <strong>account</strong> | <strong>awduration</strong> | <strong>class</strong> | <strong>deadline</strong> |
+<strong>depend</strong> | <strong>eeduration</strong> | <strong>env</strong> | <strong>features</strong> | <strong>feature</strong>
+| <strong>flags</strong> | <strong>gres</strong> | <strong>group</strong> | <strong>hold</strong> | <strong>hostlist</strong> |
+<strong>jobdisk</strong> | <strong>jobmem</strong> | <strong>jobname</strong> | <strong>jobswap</strong> | <strong>loglevel</strong>
+| <strong>messages</strong> | <strong>minstarttime</strong> | <strong>nodecount</strong> |
+<strong>notificationaddress</strong> | <strong>partition</strong> | <strong>priority</strong> |
+<strong>proccount</strong> | <strong>queue</strong> | <strong>qos</strong> | <strong>reqreservation</strong> |
+<strong>rmxstring</strong> | <strong>reqawduration</strong> | <strong>sysprio</strong> | <strong>trig</strong> |
+<strong>trigvar</strong> | <strong>userprio</strong> | <strong>var</strong> | <strong>wclimit</strong> }
+Default:
+&#8212;
+Description:
+Modify a specific job attribute.
+For priority, use the &#8216;<a class="reference external" href="#p">-p</a>&#8216; flag.
+Modification of the job dependency is also communicated to the resource
+manager in the case of SLURM and PBS/Torque.
+To define values for <strong>awduration</strong>, <strong>eeduration</strong>, <strong>minstarttime</strong>,
+<strong>reqawduration</strong>, and <strong>wclimit</strong>, use the <a class="reference external" href="../timespec.html">time
+spec</a> format.
+A non-active job&#8217;s partition list can be modified by adding or
+subtracting partitions. Note, though, that when adding or subtracting
+multiple partitions, each partition must have its own
+<code class="docutils literal"><span class="pre">-m</span> <span class="pre">partition{+=</span> <span class="pre">|</span> <span class="pre">=</span> <span class="pre">|</span> <span class="pre">-=}name</span></code> on the command line. (See example for
+adding multiple partitions.)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">reqawduration</span><span class="o">+=</span><span class="mi">600</span> <span class="mi">1664</span>
+</pre></div>
+</div>
+<p>Add 10 minutes to the job walltime.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">eeduration</span><span class="o">=-</span><span class="mi">1</span> <span class="mi">1664</span>
+</pre></div>
+</div>
+<p>Reset job&#8217;s effective queue time.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">var</span><span class="o">=</span><span class="n">Flag1</span><span class="o">=</span><span class="n">TRUE</span> <span class="mi">1664</span>
+</pre></div>
+</div>
+<p>Set the job variable <code class="docutils literal"><span class="pre">Flag1</span></code> to <code class="docutils literal"><span class="pre">TRUE.</span></code></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">notificationaddress</span><span class="o">=</span><span class="s2">&quot;name@server.com&quot;</span>
+</pre></div>
+</div>
+<p>Sets the notification e-mail address associated with a job to
+<a class="reference external" href="mailto:name&#37;&#52;&#48;server&#46;com">name<span>&#64;</span>server<span>&#46;</span>com</a>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">partition</span><span class="o">+=</span><span class="n">p3</span> <span class="o">-</span><span class="n">m</span> <span class="n">partition</span><span class="o">+=</span><span class="n">p4</span> <span class="n">Moab</span><span class="o">.</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Adds multiple partitions (p3 and p4) to job <code class="docutils literal"><span class="pre">Moab.5</span></code>.</p>
+<p>-N — <strong>Notify</strong>
+Format:
+[signal=]&lt;SIGID&gt; &lt;JOBID&gt;
+Default:
+&#8212;
+Description:
+Send a signal to all jobs matching the job expression.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">N</span> <span class="n">INT</span> <span class="mi">1664</span>
+</pre></div>
+</div>
+<p>Send an <code class="docutils literal"><span class="pre">interrupt</span></code> signal to job 1664.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">N</span> <span class="mi">47</span> <span class="mi">1664</span>
+</pre></div>
+</div>
+<p>Send signal 47 to job 1664.</p>
+<p>-n — <strong>Name</strong>
+Format:</p>
+<p>Default:
+&#8212;
+Description:
+Select jobs by job name.
+Example:</p>
+<p>-p — <strong>Priority</strong>
+Format:</p>
+<p>Default:
+&#8212;
+Description:
+Modify a job&#8217;s <a class="reference external" href="setspri.html#priority">system priority</a>.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">p</span> <span class="o">+</span><span class="mi">1000</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Adds 1000 points to the max <a class="reference external" href="setspri.html#priority">system priority</a>,
+ensuring that this job will be higher priority than all normal jobs. The
+new priority of job1045 is 1000001000.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">p</span> <span class="mi">1000</span> <span class="n">job1045</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">relative</span>
+</pre></div>
+</div>
+<p>Adds 1000 points to what the <a class="reference external" href="setspri.html#priority">priority</a> of the
+job would be from normal calculation. The new priority for job1045 is
+1250.</p>
+<p>-q — <strong>Query</strong>
+Format:
+[ <strong>diag</strong> | <strong>hostlist</strong> | <strong>starttime</strong> ] &lt;JOBEXP&gt;
+Default:
+&#8212;
+Description:
+Query a job.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">q</span> <span class="n">diag</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Query job job1045.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">q</span> <span class="n">starttime</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Query starttime of job job1045.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>&#8211;flags=completed will only work with the <strong>diag</strong> option.</td>
+</tr>
+</tbody>
+</table>
+<p>-r — <strong>Resume</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Resume a job.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">r</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Resume job job1045.</p>
+<p>-R — <strong>Requeue</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Requeue a job.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">R</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Requeue job job1045.</p>
+<p>-s — <strong>Suspend</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Suspend a job.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">s</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Suspend job job1045.</p>
+<p>-S — <strong>Submit</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Submit a job.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">S</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Submit job job1045.</p>
+<p>-u — <strong>Unhold</strong>
+Format:
+[&lt;TYPE&gt;[,&lt;TYPE&gt;]] &lt;JOBEXP&gt;</p>
+<p>&lt;TYPE&gt; = [ <strong>user</strong> | <strong>system</strong> | <strong>batch</strong> | <strong>defer</strong> | <strong>ALL</strong> ]
+Default:
+ALL
+Description:
+Release a hold on a job
+See <a class="reference external" href="http://www.adaptivecomputing.com/resources/docs/mwm/11.1jobholds.html">Section 11.1, Job
+Holds</a>
+for more information.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">u</span> <span class="n">user</span><span class="p">,</span><span class="n">system</span> <span class="n">scrib</span><span class="o">.</span><span class="mi">1045</span>
+</pre></div>
+</div>
+<p>Release user and system holds on job scrib.1045.</p>
+<p>-w — <strong>Where</strong>
+Format:
+[<strong>CompletionTime</strong> | <strong>StartTime</strong>][<strong>&lt;=</strong> | <strong>=</strong> |
+<strong>&gt;=</strong>]&lt;EPOCH_TIME&gt;
+Default:
+&#8212;
+Description:
+Add a <em>where</em> constraint clause to the current command. As it pertains
+to <strong>CompletionTime</strong> | <strong>StartTime</strong>, the <em>where</em> constraint only
+works for completed jobs. CompletionTime filters according to the
+completed jobs&#8217; completion times; StartTime filters according to the
+completed jobs&#8217; start times.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">q</span> <span class="n">diag</span> <span class="n">ALL</span> <span class="o">--</span><span class="n">flags</span><span class="o">=</span><span class="n">COMPLETED</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span>
+
+<span class="o">-</span><span class="n">w</span> <span class="n">CompletionTime</span><span class="o">&gt;=</span><span class="mi">1246428000</span> <span class="o">-</span><span class="n">w</span> <span class="n">CompletionTime</span><span class="o">&lt;=</span><span class="mi">1254376800</span>
+</pre></div>
+</div>
+<p>Prints all completed jobs still in memory that completed between July 1,
+2009 and October 1, 2009.</p>
+<p>-x — <strong>Execute</strong>
+Format:
+JOBID
+Default:
+&#8212;
+Description:
+Execute a job. The -w option allows flags to be set for the job.
+Allowable flags are, <strong>ignorepolicies</strong>, <strong>ignorenodestate</strong>, and
+<strong>ignorersv</strong>.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">x</span> <span class="n">job1045</span>
+</pre></div>
+</div>
+<p>Execute job job1045.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">w</span> <span class="n">flags</span><span class="o">=</span><span class="n">ignorepolicies</span> <span class="n">job1046</span>
+</pre></div>
+</div>
+<p>Execute job job1046 and ignore policies, such as MaxJobPerUser.
+<strong>Parameters</strong></p>
+<p><strong>JOB EXPRESSION</strong>
+Format:
+&lt;STRING&gt;
+Default:
+&#8212;
+Description:
+The name of a job or a regular expression for several jobs.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="98%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id5"><span class="problematic" id="id6">|Note|</span></a></td>
+<td>Moab uses regular expressions conforming to the POSIX 1003.2 standard. This standard is somewhat different than the regular expressions commonly used for filename matching in Unix® environments (see &#8216;man 7 regex&#8217;). To interpret a job expression as a regular expression, either specify the expression using a designated expression or wildcard character (one of &#8216;[]*?^$&#8217;) or in the Moab configuration file (moab.cfg), set the parameter <strong>USEJOBREGEX</strong> to <strong>TRUE</strong> (and take note of the following caution).</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="97%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><img alt="Caution" src="resources/docs/images/caution.png" /></td>
+<td>If you set <strong>USEJOBREGEX</strong> to <strong>TRUE</strong>, treat all <strong>mjobctl</strong> job expressions as regular expressions regardless of whether wildcards are specified. This should be used with extreme caution since there is high potential for unintended consequences. For example, specifying <code class="docutils literal"><span class="pre">canceljob</span> <span class="pre">m.1</span></code> will not only cancel <code class="docutils literal"><span class="pre">m.1</span></code>, but also <code class="docutils literal"><span class="pre">m.11</span></code>,<code class="docutils literal"><span class="pre">m.12</span></code>,<code class="docutils literal"><span class="pre">m13</span></code>, and so on.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id7"><span class="problematic" id="id8">|Note|</span></a></td>
+<td>In most cases, it is necessary to <em>quote</em> the job expression (i.e. &#8220;job13[5-9]&#8221;) to prevent the shell from intercepting and interpreting the special characters.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id9"><span class="problematic" id="id10">|Note|</span></a></td>
+<td>The <strong>mjobctl</strong> command accepts a comma delimited list of job expressions. Example usage might be <code class="docutils literal"><span class="pre">mjobctl</span> <span class="pre">-c</span> <span class="pre">job[1-2],job4</span></code> or <code class="docutils literal"><span class="pre">mjobctl</span> <span class="pre">-c</span> <span class="pre">job1,job2,job4</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;80.*&quot;</span>
+
+<span class="n">job</span> <span class="s1">&#39;802&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;803&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;804&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;805&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;806&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;807&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;808&#39;</span> <span class="n">cancelled</span>
+<span class="n">job</span> <span class="s1">&#39;809&#39;</span> <span class="n">cancelled</span>
+</pre></div>
+</div>
+<p>Cancel all jobs starting with &#8216;80&#8217;.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">m</span> <span class="n">priority</span><span class="o">+=</span><span class="mi">200</span> <span class="s2">&quot;74[3-5]&quot;</span>
+
+<span class="n">job</span> <span class="s1">&#39;743&#39;</span> <span class="n">system</span> <span class="n">priority</span> <span class="n">modified</span>
+<span class="n">job</span> <span class="s1">&#39;744&#39;</span> <span class="n">system</span> <span class="n">priority</span> <span class="n">modified</span>
+<span class="n">job</span> <span class="s1">&#39;745&#39;</span> <span class="n">system</span> <span class="n">priority</span> <span class="n">modified</span>
+</pre></div>
+</div>
+<p><strong>XML Output</strong></p>
+<p><strong>mjobctl</strong> information can be reported as XML as well. This is done
+with the command &#8220;mjobctl -q diag &lt;JOB_ID&gt;&#8221;. In addition to the
+attributes listed below, mjobctl&#8217;s XML children describe a job&#8217;s
+requirements (<a class="reference external" href="../xml/req.html">req</a> XML element) and messages
+(<a class="reference external" href="../xml/Messages.html">Messages</a> XML element).
+<strong>XML Attributes</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Account</td>
+<td>the account assigned to the job</td>
+</tr>
+<tr class="row-odd"><td>AllocNodeList</td>
+<td>the nodes allocated to the job</td>
+</tr>
+<tr class="row-even"><td>Args</td>
+<td>the job&#8217;s executable arguments</td>
+</tr>
+<tr class="row-odd"><td>AWDuration</td>
+<td>the active wall time consumed</td>
+</tr>
+<tr class="row-even"><td>BlockReason</td>
+<td>the block message index for the reason the job is not eligible</td>
+</tr>
+<tr class="row-odd"><td>Bypass</td>
+<td>Number of times the job has been bypassed by other jobs</td>
+</tr>
+<tr class="row-even"><td>Calendar</td>
+<td>the job&#8217;s timeframe constraint calendar</td>
+</tr>
+<tr class="row-odd"><td>Class</td>
+<td>the class assigned to the job</td>
+</tr>
+<tr class="row-even"><td>CmdFile</td>
+<td>the command file path</td>
+</tr>
+<tr class="row-odd"><td>CompletionCode</td>
+<td>the return code of the job as extracted from the RM</td>
+</tr>
+<tr class="row-even"><td>CompletionTime</td>
+<td>the time of the job&#8217;s completion</td>
+</tr>
+<tr class="row-odd"><td>Cost</td>
+<td>the cost of executing the job relative to an allocation manager</td>
+</tr>
+<tr class="row-even"><td>CPULimit</td>
+<td>the CPU limit for the job</td>
+</tr>
+<tr class="row-odd"><td>Depend</td>
+<td>any dependencies on the status of other jobs</td>
+</tr>
+<tr class="row-even"><td>DRM</td>
+<td>the master destination RM</td>
+</tr>
+<tr class="row-odd"><td>DRMJID</td>
+<td>the master destination RM job ID</td>
+</tr>
+<tr class="row-even"><td>EEDuration</td>
+<td>the duration of time the job has been eligible for scheduling</td>
+</tr>
+<tr class="row-odd"><td>EFile</td>
+<td>the stderr file</td>
+</tr>
+<tr class="row-even"><td>Env</td>
+<td>the job&#8217;s environment variables set for execution</td>
+</tr>
+<tr class="row-odd"><td>EnvOverride</td>
+<td>the job&#8217;s overriding environment variables set for execution</td>
+</tr>
+<tr class="row-even"><td>EState</td>
+<td>the expected state of the job</td>
+</tr>
+<tr class="row-odd"><td>EstHistStartTime</td>
+<td>the estimated historical start time</td>
+</tr>
+<tr class="row-even"><td>EstPrioStartTime</td>
+<td>the estimated priority start time</td>
+</tr>
+<tr class="row-odd"><td>EstRsvStartTime</td>
+<td>the estimated reservation start time</td>
+</tr>
+<tr class="row-even"><td>EstWCTime</td>
+<td>the estimated walltime the job will execute</td>
+</tr>
+<tr class="row-odd"><td>ExcHList</td>
+<td>the excluded host list</td>
+</tr>
+<tr class="row-even"><td>Flags</td>
+<td>Command delimited list of Moab flags on the jo</td>
+</tr>
+<tr class="row-odd"><td>GAttr</td>
+<td>the requested generic attributes</td>
+</tr>
+<tr class="row-even"><td>GJID</td>
+<td>the global job ID</td>
+</tr>
+<tr class="row-odd"><td>Group</td>
+<td>the group assigned to the job</td>
+</tr>
+<tr class="row-even"><td>Hold</td>
+<td>the hold list</td>
+</tr>
+<tr class="row-odd"><td>Holdtime</td>
+<td>the time the job was put on hold</td>
+</tr>
+<tr class="row-even"><td>HopCount</td>
+<td>the hop count between the job&#8217;s peers</td>
+</tr>
+<tr class="row-odd"><td>HostList</td>
+<td>the requested host list</td>
+</tr>
+<tr class="row-even"><td>IFlags</td>
+<td>the internal flags for the job</td>
+</tr>
+<tr class="row-odd"><td>IsInteractive</td>
+<td>if set, the job is interactive</td>
+</tr>
+<tr class="row-even"><td>IsRestartable</td>
+<td>if set, the job is restartable</td>
+</tr>
+<tr class="row-odd"><td>IsSuspendable</td>
+<td>if set, the job is suspendable</td>
+</tr>
+<tr class="row-even"><td>IWD</td>
+<td>the directory where the job is executed</td>
+</tr>
+<tr class="row-odd"><td>JobID</td>
+<td>the job&#8217;s batch ID.</td>
+</tr>
+<tr class="row-even"><td>JobName</td>
+<td>the user-specifed name for the job</td>
+</tr>
+<tr class="row-odd"><td>JobGroup</td>
+<td>the job ID relative to its group</td>
+</tr>
+<tr class="row-even"><td>LogLevel</td>
+<td>the individual log level for the job</td>
+</tr>
+<tr class="row-odd"><td>MasterHost</td>
+<td>the specified host to run primary tasks on</td>
+</tr>
+<tr class="row-even"><td>Messages</td>
+<td>any messages reported by Moab regarding the job</td>
+</tr>
+<tr class="row-odd"><td>MinPreemptTime</td>
+<td>the minimum amount of time the job must run before being eligible for preemption</td>
+</tr>
+<tr class="row-even"><td>Notification</td>
+<td>any events generated to notify the job&#8217;s user</td>
+</tr>
+<tr class="row-odd"><td>OFile</td>
+<td>the stdout file</td>
+</tr>
+<tr class="row-even"><td>OldMessages</td>
+<td>any messages reported by Moab in the old message style regarding the job</td>
+</tr>
+<tr class="row-odd"><td>OWCLimit</td>
+<td>the original wallclock limit</td>
+</tr>
+<tr class="row-even"><td>PAL</td>
+<td>the partition access list relative to the job</td>
+</tr>
+<tr class="row-odd"><td>QueueStatus</td>
+<td>the job&#8217;s queue status as generated this iteration</td>
+</tr>
+<tr class="row-even"><td>QOS</td>
+<td>the QOS assigned to the job</td>
+</tr>
+<tr class="row-odd"><td>QOSReq</td>
+<td>the requested QOS for the job</td>
+</tr>
+<tr class="row-even"><td>ReqAWDuration</td>
+<td>the requested active walltime duration</td>
+</tr>
+<tr class="row-odd"><td>ReqCMaxTime</td>
+<td>the requested latest allowed completion time</td>
+</tr>
+<tr class="row-even"><td>ReqMem</td>
+<td>the total memory requested/dedicated to the job</td>
+</tr>
+<tr class="row-odd"><td>ReqNodes</td>
+<td>the number of requested nodes for the job</td>
+</tr>
+<tr class="row-even"><td>ReqProcs</td>
+<td>the number of requested procs for the job</td>
+</tr>
+<tr class="row-odd"><td>ReqReservation</td>
+<td>the required reservation for the job</td>
+</tr>
+<tr class="row-even"><td>ReqRMType</td>
+<td>the required RM type</td>
+</tr>
+<tr class="row-odd"><td>ReqSMinTime</td>
+<td>the requested earliest start time</td>
+</tr>
+<tr class="row-even"><td>RM</td>
+<td>the master source resource manager</td>
+</tr>
+<tr class="row-odd"><td>RMXString</td>
+<td>the resource manager extension string</td>
+</tr>
+<tr class="row-even"><td>RsvAccess</td>
+<td>the list of reservations accessible by the job</td>
+</tr>
+<tr class="row-odd"><td>RsvStartTime</td>
+<td>the reservation start time</td>
+</tr>
+<tr class="row-even"><td>RunPriority</td>
+<td>the effective job priority</td>
+</tr>
+<tr class="row-odd"><td>Shell</td>
+<td>the execution shell&#8217;s output</td>
+</tr>
+<tr class="row-even"><td>SID</td>
+<td>the job&#8217;s system ID (parent cluster)</td>
+</tr>
+<tr class="row-odd"><td>Size</td>
+<td>the job&#8217;s computational size</td>
+</tr>
+<tr class="row-even"><td>STotCPU</td>
+<td>the average CPU load tracked across all nodes</td>
+</tr>
+<tr class="row-odd"><td>SMaxCPU</td>
+<td>the max CPU load tracked across all nodes</td>
+</tr>
+<tr class="row-even"><td>STotMem</td>
+<td>the average memory usage tracked across all nodes</td>
+</tr>
+<tr class="row-odd"><td>SMaxMem</td>
+<td>the max memory usage tracked across all nodes</td>
+</tr>
+<tr class="row-even"><td>SRMJID</td>
+<td>the source RM&#8217;s ID for the job</td>
+</tr>
+<tr class="row-odd"><td>StartCount</td>
+<td>the number of the times the job has tried to start</td>
+</tr>
+<tr class="row-even"><td>StartPriority</td>
+<td>the effective job priority</td>
+</tr>
+<tr class="row-odd"><td>StartTime</td>
+<td>the most recent time the job started executing</td>
+</tr>
+<tr class="row-even"><td>State</td>
+<td>the state of the job as reported by Moab</td>
+</tr>
+<tr class="row-odd"><td>StatMSUtl</td>
+<td>the total number of memory seconds utilized</td>
+</tr>
+<tr class="row-even"><td>StatPSDed</td>
+<td>the total number of processor seconds dedicated to the job</td>
+</tr>
+<tr class="row-odd"><td>StatPSUtl</td>
+<td>the total number of processor seconds utilized by the job</td>
+</tr>
+<tr class="row-even"><td>StdErr</td>
+<td>the path to the stderr file</td>
+</tr>
+<tr class="row-odd"><td>StdIn</td>
+<td>the path to the stdin file</td>
+</tr>
+<tr class="row-even"><td>StdOut</td>
+<td>the path to the stdout file</td>
+</tr>
+<tr class="row-odd"><td>StepID</td>
+<td>StepID of the job (used with LoadLeveler systems)</td>
+</tr>
+<tr class="row-even"><td>SubmitHost</td>
+<td>the host where the job was submitted</td>
+</tr>
+<tr class="row-odd"><td>SubmitLanguage</td>
+<td>the RM langauge that the submission request was performed</td>
+</tr>
+<tr class="row-even"><td>SubmitString</td>
+<td>the string containing the entire submission request</td>
+</tr>
+<tr class="row-odd"><td>SubmissionTime</td>
+<td>the time the job was submitted</td>
+</tr>
+<tr class="row-even"><td>SuspendDuration</td>
+<td>the amount of time the job has been suspended</td>
+</tr>
+<tr class="row-odd"><td>SysPrio</td>
+<td>the admin specified job priority</td>
+</tr>
+<tr class="row-even"><td>SysSMinTime</td>
+<td>the system specified min. start time</td>
+</tr>
+<tr class="row-odd"><td>TaskMap</td>
+<td>the allocation taskmap for the job</td>
+</tr>
+<tr class="row-even"><td>TermTime</td>
+<td>the time the job was terminated</td>
+</tr>
+<tr class="row-odd"><td>User</td>
+<td>the user assigned to the job</td>
+</tr>
+<tr class="row-even"><td>UserPrio</td>
+<td>the user specified job priority</td>
+</tr>
+<tr class="row-odd"><td>UtlMem</td>
+<td>the utilized memory of the job</td>
+</tr>
+<tr class="row-even"><td>UtlProcs</td>
+<td>the number of utilized processors by the job</td>
+</tr>
+<tr class="row-odd"><td>Variable</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>VWCTime</td>
+<td>the virtual wallclock limit</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example 1</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mjobctl</span> <span class="o">-</span><span class="n">q</span> <span class="n">diag</span> <span class="n">ALL</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span>
+
+<span class="o">&lt;</span><span class="n">Data</span><span class="o">&gt;&lt;</span><span class="n">job</span> <span class="n">AWDuration</span><span class="o">=</span><span class="s2">&quot;346&quot;</span> <span class="n">Class</span><span class="o">=</span><span class="s2">&quot;batch&quot;</span> <span class="n">CmdFile</span><span class="o">=</span><span class="s2">&quot;jobsleep.sh&quot;</span> <span class="n">EEDuration</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+<span class="n">EState</span><span class="o">=</span><span class="s2">&quot;Running&quot;</span> <span class="n">Flags</span><span class="o">=</span><span class="s2">&quot;RESTARTABLE&quot;</span> <span class="n">Group</span><span class="o">=</span><span class="s2">&quot;test&quot;</span> <span class="n">IWD</span><span class="o">=</span><span class="s2">&quot;/home/test&quot;</span> <span class="n">JobID</span><span class="o">=</span><span class="s2">&quot;11578&quot;</span> <span class="n">QOS</span><span class="o">=</span><span class="s2">&quot;high&quot;</span>
+<span class="n">RMJID</span><span class="o">=</span><span class="s2">&quot;11578.lolo.icluster.org&quot;</span> <span class="n">ReqAWDuration</span><span class="o">=</span><span class="s2">&quot;00:10:00&quot;</span> <span class="n">ReqNodes</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">ReqProcs</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">StartCount</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+<span class="n">StartPriority</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">StartTime</span><span class="o">=</span><span class="s2">&quot;1083861225&quot;</span> <span class="n">StatMSUtl</span><span class="o">=</span><span class="s2">&quot;903.570&quot;</span> <span class="n">StatPSDed</span><span class="o">=</span><span class="s2">&quot;364.610&quot;</span> <span class="n">StatPSUtl</span><span class="o">=</span><span class="s2">&quot;364.610&quot;</span>
+<span class="n">State</span><span class="o">=</span><span class="s2">&quot;Running&quot;</span> <span class="n">SubmissionTime</span><span class="o">=</span><span class="s2">&quot;1083861225&quot;</span> <span class="n">SuspendDuration</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">SysPrio</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">SysSMinTime</span><span class="o">=</span><span class="s2">&quot;00:00:00&quot;</span>
+<span class="n">User</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="o">&gt;&lt;</span><span class="n">req</span> <span class="n">AllocNodeList</span><span class="o">=</span><span class="s2">&quot;hana&quot;</span> <span class="n">AllocPartition</span><span class="o">=</span><span class="s2">&quot;access&quot;</span> <span class="n">ReqNodeFeature</span><span class="o">=</span><span class="s2">&quot;[NONE]&quot;</span>
+<span class="n">ReqPartition</span><span class="o">=</span><span class="s2">&quot;access&quot;</span><span class="o">&gt;&lt;/</span><span class="n">req</span><span class="o">&gt;&lt;/</span><span class="n">job</span><span class="o">&gt;&lt;</span><span class="n">job</span> <span class="n">AWDuration</span><span class="o">=</span><span class="s2">&quot;346&quot;</span> <span class="n">Class</span><span class="o">=</span><span class="s2">&quot;batch&quot;</span> <span class="n">CmdFile</span><span class="o">=</span><span class="s2">&quot;jobsleep.sh&quot;</span>
+<span class="n">EEDuration</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">EState</span><span class="o">=</span><span class="s2">&quot;Running&quot;</span> <span class="n">Flags</span><span class="o">=</span><span class="s2">&quot;RESTARTABLE&quot;</span> <span class="n">Group</span><span class="o">=</span><span class="s2">&quot;test&quot;</span> <span class="n">IWD</span><span class="o">=</span><span class="s2">&quot;/home/test&quot;</span> <span class="n">JobID</span><span class="o">=</span><span class="s2">&quot;11579&quot;</span>
+<span class="n">QOS</span><span class="o">=</span><span class="s2">&quot;high&quot;</span> <span class="n">RMJID</span><span class="o">=</span><span class="s2">&quot;11579.lolo.icluster.org&quot;</span> <span class="n">ReqAWDuration</span><span class="o">=</span><span class="s2">&quot;00:10:00&quot;</span> <span class="n">ReqNodes</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">ReqProcs</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+<span class="n">StartCount</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">StartPriority</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">StartTime</span><span class="o">=</span><span class="s2">&quot;1083861225&quot;</span> <span class="n">StatMSUtl</span><span class="o">=</span><span class="s2">&quot;602.380&quot;</span> <span class="n">StatPSDed</span><span class="o">=</span><span class="s2">&quot;364.610&quot;</span>
+<span class="n">StatPSUtl</span><span class="o">=</span><span class="s2">&quot;364.610&quot;</span> <span class="n">State</span><span class="o">=</span><span class="s2">&quot;Running&quot;</span> <span class="n">SubmissionTime</span><span class="o">=</span><span class="s2">&quot;1083861225&quot;</span> <span class="n">SuspendDuration</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">SysPrio</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
+<span class="n">SysSMinTime</span><span class="o">=</span><span class="s2">&quot;00:00:00&quot;</span> <span class="n">User</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="o">&gt;&lt;</span><span class="n">req</span> <span class="n">AllocNodeList</span><span class="o">=</span><span class="s2">&quot;lolo&quot;</span> <span class="n">AllocPartition</span><span class="o">=</span><span class="s2">&quot;access&quot;</span>
+<span class="n">ReqNodeFeature</span><span class="o">=</span><span class="s2">&quot;[NONE]&quot;</span> <span class="n">ReqPartition</span><span class="o">=</span><span class="s2">&quot;access&quot;</span><span class="o">&gt;&lt;/</span><span class="n">req</span><span class="o">&gt;&lt;/</span><span class="n">job</span><span class="o">&gt;&lt;/</span><span class="n">Data</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>See Also</p>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="setspri.html">setspri</a></li>
+<li><a class="reference external" href="canceljob.html">canceljob</a></li>
+<li><a class="reference external" href="runjob.html">runjob</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mjobctl.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

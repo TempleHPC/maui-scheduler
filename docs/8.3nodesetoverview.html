@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8.3. Node Set Overview &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption" href="8.0optimizingschedulingbehavior.html" />
+    <link rel="next" title="8.4. Preemption Policies" href="8.4preemption.html" />
+    <link rel="prev" title="8.2. Backfill" href="8.2backfill.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="8.4preemption.html" title="8.4. Preemption Policies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="8.2backfill.html" title="8.2. Backfill"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="8.0optimizingschedulingbehavior.html" accesskey="U">8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="node-set-overview">
+<h1>8.3. Node Set Overview<a class="headerlink" href="#node-set-overview" title="Permalink to this headline">¶</a></h1>
+<p>While backfill improves the scheduler&#8217;s performance, this is only half
+the battle. The efficiency of a cluster, in terms of actual work
+accomplished, is a function of both scheduling performance and
+individual job efficiency. In many clusters, job efficiency can vary
+from node to node as well as with the node mix allocated. Most parallel
+jobs written in popular languages such as MPI or PVM do not internally
+load balance their workload and thus run only as fast as the slowest
+node allocated. Consequently, these jobs run most effectively on
+homogeneous sets of nodes. However, while many clusters start out as
+homogeneous, they quickly evolve as new generations of compute nodes are
+integrated into the system. Research has shown that this integration,
+while improving scheduling performance due to increased scheduler
+selection, can actually decrease average job efficiency.</p>
+<p>A feature called node sets allows jobs to request sets of common
+resources without specifying exactly what resources are required. Node
+set policy can be specified globally or on a per-job basis and can be
+based on node processor speed, memory, network interfaces, or locally
+defined node attributes. In addition to their use in forcing jobs onto
+homogeneous nodes, these policies may also be used to guide jobs to one
+or more types of nodes on which a particular job performs best, similar
+to job preferences available in other systems. For example, an I/O
+intensive job may run best on a certain range of processor speeds,
+running slower on slower nodes, while wasting cycles on faster nodes. A
+job may specify ANYOF:PROCSPEED:450,500,650 to request nodes in the
+range of 450 to 650 MHz. Alternatively, if a simple
+procspeed-homogeneous node set is desired, ONEOF:PROCSPEED may be
+specified. On the other hand, a communication sensitive job may request
+a network based node set with the configuration
+ONEOF:NETWORK:via,myrinet,ethernet, in which case Maui will first
+attempt to locate adequate nodes where all nodes contain via network
+interfaces. If such a set cannot be found, Maui will look for sets of
+nodes containing the other specified network interfaces. In highly
+heterogeneous clusters, the use of node sets have been found to improve
+job throughput by 10 to 15%.</p>
+<p>Node sets can be requested on a system wide or per job basis. System
+wide configuration is accomplished via the &#8216;<strong>NODESET*</strong>&#8216; parameters
+while per job specification occurs via the <a class="reference external" href="13.3rmextensions.html">resource manager
+extensions</a>. In all cases, node sets are a
+dynamic construct, created on a per job basis and built only of nodes
+which meet all of the jobs requirements.</p>
+<p>As an example, let&#8217;s assume a large site possessed a Myrinet based
+interconnect and wished to, whenever possible, allocate nodes within
+Myrinet switch boundaries. To accomplish this, they could assign node
+attributes to each node indicating which switch it was associated with
+(ie, switchA, switchB, etc) and then use the following system wide node
+set configuration:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETPOLICY</span> <span class="n">ONEOF</span>
+<span class="n">NODESETATTRIBUTE</span> <span class="n">FEATURE</span>
+<span class="n">NODESETDELAY</span> <span class="mi">0</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">NODESETLIST</span> <span class="n">switchA</span> <span class="n">switchB</span> <span class="n">switchC</span> <span class="n">switchD</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="a.fparameters.html#nodesetpolicy">NODESETPOLICY</a> parameter tells
+Maui to allocate nodes within a single attribute set. Setting
+<a class="reference external" href="a.fparameters.html#nodesetattribute">NODESETATTRIBUTE</a> to
+<strong>FEATURE</strong> specifies that the node sets are to be constructed along
+node feature boundaries. The next parameter,
+<a class="reference external" href="a.fparameters.html#nodesetdelay">NODESETDELAY</a>, indicates that Maui
+should not delay the start time of a job if the desired node set is not
+available but adequate idle resources exist outside of the set. Setting
+this parameter to zero basically tells Maui to attempt to use a node set
+if it is available, but if not, run the job as soon as possible anyway.
+(<strong>NOTE</strong>: In Maui 3.2, any non-zero value of <strong>NODESETDELAY</strong> will
+force the job to always run in a complete nodeset regardless of the
+delay time.) Finally, the
+<a class="reference external" href="a.fparameters.html#nodesetlist">NODESETLIST</a> value of &#8216;switchA
+switchB...&#8217; tells Maui to only use node sets based on the listed feature
+values. This is necessary since sites will often use node features for
+many purposes and the resulting node sets would be of little use for
+switch proximity if they were generated based on irrelevant node
+features indicating things such as processor speed or node architecture.</p>
+<p>On occasion, sites may wish to allow a less strict interpretation of
+nodes sets. In particular, many sites seek to enforce a more liberal
+<strong>PROCSPEED</strong> based node set policy, where <em>almost balanced</em> node
+allocations are allowed but wildly varying node allocations are not. In
+such cases, the parameter
+<a class="reference external" href="a.fparameters.html#nodesettolerance">NODESETTOLERANCE</a> may be used.
+This parameter allows specification of the percentage difference between
+the fastest and slowest node which can be within a nodeset using the
+following calculation:</p>
+<div class="math">
+\[(Speed.Max - Speed.Min) / Speed.Min &lt;= \mathbf{NODESETTOLERANCE}\]</div>
+<p>Thus setting <strong>NODESETTOLERANCE</strong> to 0.5 would allow the fastest node in
+a particular node set to be up to 50% faster than the slowest node in
+that set. With a 0.5 setting, a job may allocate a mix of 500 and 750
+MHz nodes but not a mix of 500 and 900 MHz nodes. Currently, tolerances
+are only supported when the <strong>NODESETATTRIBUTE</strong> parameter is set to
+<strong>PROCSPEED</strong>. The <a class="reference external" href="5.2nodeallocation.html#MAXBALANCE">MAXBALANCE</a>
+node allocation algorithm is often used in conjunction with tolerance
+based node sets.</p>
+<div class="line-block">
+<div class="line">When resources are available in more than one resource set, the
+<a class="reference external" href="a.fparameters.html#nodesetprioritytype">NODESETPRIORITYTYPE</a>
+parameter allows control over how the &#8216;best&#8217; resource set is selected.
+Legal values for this parameter are described in the table below.</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="45%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Priority Type</strong></td>
+<td><strong>Description</strong></td>
+<td><strong>Details</strong></td>
+</tr>
+<tr class="row-even"><td>BESTFIT</td>
+<td>select the smallest resource set possible</td>
+<td>minimizes fragmentation of larger resource sets.</td>
+</tr>
+<tr class="row-odd"><td>BESTRESOURCE</td>
+<td>select the resource set with the &#8216;best&#8217; nodes</td>
+<td>only supported when <code class="docutils literal"><span class="pre">NODESETATTRIBUTE</span></code> is set to <code class="docutils literal"><span class="pre">PROCSPEED</span></code>. Selects the fastest possible nodes for the job.</td>
+</tr>
+<tr class="row-even"><td>MINLOSS</td>
+<td>select the resource set which will result in the minimal wasted resources assuming no internal job load balancing is available. (assumes parallel jobs only run as fast as the slowest allocated node)</td>
+<td>Only supported when <code class="docutils literal"><span class="pre">NODESETATTRIBUTE</span></code> is set to <code class="docutils literal"><span class="pre">PROCSPEED</span></code> and <code class="docutils literal"><span class="pre">NODESETTOLERANCE</span></code> is &gt; 0. This algorithm is highly useful in environments with mixed speed compute nodes and a non load-balancing parallel workload.</td>
+</tr>
+<tr class="row-odd"><td>WORSTFIT</td>
+<td>select the largest resource set possible</td>
+<td>minimizes the creation of small resource set fragments but fragments larger resource sets.</td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>** On a per job basis, each user can specify the equivalent of all
+parameters except <strong>NODESETDELAY</strong>. As mentioned previously, this is
+accomplished using the <a class="reference external" href="13.3rmextensions.html">resource manager
+extensions</a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="8.2backfill.html"
+                        title="previous chapter">8.2. Backfill</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="8.4preemption.html"
+                        title="next chapter">8.4. Preemption Policies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/8.3nodesetoverview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="8.4preemption.html" title="8.4. Preemption Policies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="8.2backfill.html" title="8.2. Backfill"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="8.0optimizingschedulingbehavior.html" >8. Optimizing Scheduling Behavior - Backfill, Node Sets, and Preemption</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

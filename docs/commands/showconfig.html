@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="showconfig">showconfig</p>
+<p><strong>(Show Configuration)</strong>
+<strong>Caution</strong>: This command is deprecated. Use <a class="reference external" href="mschedctl.html#LIST">mschedctl
+-l</a> instead.</p>
+<p class="rubric" id="synopsis">Synopsis</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">showconfig</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+</pre></div>
+</div>
+<p class="rubric" id="overview">Overview</p>
+<p>View the current configurable parameters of the Moab Scheduler.
+&nbsp;&nbsp; The showconfig command shows the current scheduler version and the
+settings of all &#8216;in memory&#8217; parameters.&nbsp; These parameters are set via
+internal defaults, command line arguments, environment variable
+settings, parameters in the moab.cfg file, and via the <a class="reference external" href="mschedctl.html">mschedctl
+-m</a> command.&nbsp; Because of the many sources of
+configuration settings, the output may differ from the contents of the
+moab.cfg file.&nbsp; The output is such that it can be saved and used as the
+contents of the moab.cfg file if desired.</p>
+<p class="rubric" id="access">Access</p>
+<p>This command can be run by a level 1, 2, or 3 Moab administrator.
+<strong>Flags</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="98%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>-h</td>
+<td>Help for this command.</td>
+</tr>
+<tr class="row-even"><td>-v</td>
+<td>This optional flag turns on verbose mode, which shows all possible Moab Scheduler parameters and their current settings. If this flag is not used, this command operates in context-sensitive terse mode, which shows only relevant parameter settings.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="example-1">Example 1</p>
+<p>showconfig</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">showconfig</span>
+
+<span class="c1"># moab scheduler version 4.2.4 (PID: 11080)</span>
+
+<span class="n">BACKFILLPOLICY</span>                  <span class="n">FIRSTFIT</span>
+<span class="n">BACKFILLMETRIC</span>                  <span class="n">NODES</span>
+
+<span class="n">ALLOCATIONPOLICY</span>                <span class="n">MINRESOURCE</span>
+<span class="n">RESERVATIONPOLICY</span>               <span class="n">CURRENTHIGHEST</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p><strong>IMPORTANT Note</strong>:&nbsp; The showconfig flag without the &#8216;-v&#8217; flag does not
+show the settings of all parameters.&nbsp; It does show all major parameters
+and all parameters which are in effect and have been set to non-default
+values.&nbsp; However, it hides other rarely used parameters and those which
+currently have no effect or are set to default values.&nbsp; To show the
+settings of all parameters, use the &#8216;-v&#8217; (verbose) flag.&nbsp; This will
+provide an extended output.&nbsp; This output is often best used in
+conjunction with the &#8216;grep&#8217; command as the output can be voluminous.</p>
+<p class="rubric" id="see-also">See Also:</p>
+<ul class="simple">
+<li>Use the <code class="docutils literal"><span class="pre">mschedctl</span> <span class="pre">-m</span></code> command to change the various Moab Scheduler
+parameters.</li>
+<li>See the <a class="reference external" href="../a.fparameters.html">Parameters</a> document for details
+about configurable parameters.</li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/showconfig.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,3034 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appendix F: Maui Parameters &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="Appendix G: Commands Overview" href="a.gcommandoverview.html" />
+    <link rel="prev" title="Appendix E: Security" href="a.esecurity.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="a.gcommandoverview.html" title="Appendix G: Commands Overview"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="a.esecurity.html" title="Appendix E: Security"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="appendix-f-maui-parameters">
+<h1>Appendix F: Maui Parameters<a class="headerlink" href="#appendix-f-maui-parameters" title="Permalink to this headline">¶</a></h1>
+<p>See the <a class="reference external" href="3.4configure.html">Parameters Overview</a> in the Maui Admin
+Manual for further information about specifying parameters.
+<strong>ACCOUNTCFG[&lt;ACCOUNTID&gt;]</strong>
+Format:
+list of zero or more space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt;
+is one of the following:
+<strong>PRIORITY</strong>, <strong>FSTARGET</strong>, <strong>QLIST</strong>, <strong>QDEF</strong>, <strong>PLIST</strong> , <strong>PDEF</strong>,
+<strong>FLAGS</strong>, or a <a class="reference external" href="6.2throttlingpolicies.html">fairness policy</a>
+specification.
+Default:
+[NONE]
+Details:
+specifies account specific attributes. See the <a class="reference external" href="jobflagoverview.html">flag
+overview</a> for a description of legal flag
+values.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ACCOUNTCFG</span><span class="p">[</span><span class="n">projectX</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">50</span> <span class="n">QDEF</span><span class="o">=</span><span class="n">highprio</span>
+</pre></div>
+</div>
+<p>(up to 50 jobs submitted under the account ID <code class="docutils literal"><span class="pre">projectX</span></code> will be
+allowed to execute simultaneously and will be assigned the QOS
+`` highprio`` by default.)</p>
+<p><strong>AFSWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight to be applied to the account fairshare
+factor. (See <a class="reference external" href="6.3fairshare.html">Fairshare Priority Factor</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AFSWEIGHT</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><strong>ACCOUNTWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight to be applied to the specified account
+priority. (See <a class="reference external" href="5.1.2priorityfactors.html#cred">Credential Priority
+Factor</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ACCOUNTWEIGHT</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p><strong>ADMIN1</strong>
+Format:
+space delimited list of user names
+Default:
+root
+Details:
+users listed under the parameter ADMIN1 are allowed to perform any
+scheduling function. They have full control over the scheduler and
+access to all data. The first user listed in the ADMIN1 user list is
+considered to be the &#8216;primary admin&#8217; and is the ID under which maui must
+be started and run. Valid values include user names or the keyword
+&#8216;ALL&#8217;.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ADMIN1</span> <span class="n">mauiuser</span> <span class="n">steve</span> <span class="n">scott</span> <span class="n">jenny</span>
+</pre></div>
+</div>
+<p>(all users listed have full access to maui control commands and maui
+data. Maui must be started by and run under the &#8216;mauiuser&#8217; user id since
+mauiuser is the primary admin.</p>
+<p><strong>ADMIN2</strong>
+Format:
+space delimited list of user names
+Default:
+[NONE]
+Details:
+users listed under the parameter ADMIN2 are allowed to change all job
+attributes and are granted access to all informational Maui commands.
+Valid values include user names or the keyword &#8216;ALL&#8217;.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ADMIN2</span> <span class="n">jack</span> <span class="n">karen</span>
+</pre></div>
+</div>
+<p>(jack and karen can modify jobs, i.e., &#8216;canceljob, setqos, setspri,
+etc.) and can run all Maui information commands).</p>
+<p><strong>ADMIN3</strong>
+Format:
+space delimited list of user names
+Default:
+[NONE]
+Details:
+users listed under the parameter ADMIN3 are allowed access to all
+informational maui commands. They cannot change scheduler or job
+attributes. Valid values include user names or the keyword &#8216;ALL&#8217;.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ADMIN3</span> <span class="n">ops</span>
+</pre></div>
+</div>
+<p>(user <code class="docutils literal"><span class="pre">ops</span></code> can run all informational command such as &#8216;checkjob&#8217; or
+checknode&#8217;)</p>
+<p><strong>AMCFG</strong>
+Format:
+one or more <strong>key-value</strong> pairs as described in the <a class="reference external" href="6.4allocationmanagement.html#config">Allocation Manager
+Configuration Overview</a>
+Default:
+N/A
+Details:
+specifies the interface and policy configuration for the
+scheduler-allocation manager interface. Described in detail in the
+<a class="reference external" href="6.4allocationmanagement.html#config">Allocation Manager Configuration
+Overview</a>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">AMCFG</span><span class="p">[</span><span class="n">bank</span><span class="p">]</span> <span class="n">TYPE</span><span class="o">=</span><span class="n">QBANK</span> <span class="n">HOST</span><span class="o">=</span><span class="n">supercluster</span><span class="o">.</span><span class="n">org</span> <span class="n">PORT</span><span class="o">=</span><span class="mi">7111</span> <span class="n">DEFERJOBONFAILURE</span><span class="o">=</span><span class="n">FALSE</span>
+</pre></div>
+</div>
+<p>(the QBank server will be contacted at port 7111 on host
+supercluster.org)</p>
+<p><strong>BACKFILLDEPTH</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (no limit)
+Details:
+specifies the number idle jobs to evaluate for backfill. The backfill
+algorithm will evaluate the top &lt;X&gt; priority jobs for scheduling. By
+default, all jobs are evaluated.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BACKFILLDEPTH</span> <span class="mi">128</span>
+</pre></div>
+</div>
+<p>(evaluate only the top 128 highest priority idle jobs for consideration
+for backfill)</p>
+<p><strong>BACKFILLMETRIC</strong>
+Format:
+one of the following <strong>PROCS</strong>, <strong>PROCSECONDS</strong>, <strong>SECONDS</strong> , <strong>PE</strong>,
+or <strong>PESECONDS</strong>
+Default:
+<strong>PROCS</strong>
+Details:
+specifies the criteria used by the backfill algorithm to determine the
+&#8216;best&#8217; jobs to backfill. Only applicable when using BESTFIT or GREEDY
+backfill algorithms
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BACKFILLMETRIC</span> <span class="n">PROCSECONDS</span>
+</pre></div>
+</div>
+<p><strong>BACKFILLPOLICY</strong>
+Format:
+one of the following: <strong>FIRSTFIT</strong>, <strong>BESTFIT</strong>, <strong>GREEDY</strong> , or
+<strong>NONE</strong>
+Default:
+<strong>FIRSTFIT</strong>
+Details:
+specifies what backfill algorithm will be used
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BACKFILLPOLICY</span> <span class="n">BESTFIT</span>
+</pre></div>
+</div>
+<p><strong>BFCHUNKDURATION</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0 (chunking disabled)
+Details:
+specifies the duration during which freed resources will be aggregated
+for use by larger jobs. Used in conjunction with <strong>BFCHUNKSIZE</strong>. See
+<a class="reference external" href="8.2backfill.html#config">Configuring Backfill</a> for more information.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BFCHUNKDURATION</span> <span class="mi">00</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">BFCHUNKSIZE</span>     <span class="mi">4</span>
+</pre></div>
+</div>
+<p>(aggregate backfillable resources for up to 5 minutes, making resources
+available only to jobs of size 4 or larger)</p>
+<p><strong>BFCHUNKSIZE</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (chunking disabled)
+Details:
+specifies the minimum job size which can utilize <em>chunked</em> resources.
+Used in conjunction with <strong>BFCHUNKDURATION</strong>. See <a class="reference external" href="8.2backfill.html#config">Configuring
+Backfill</a> for more information
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BFCHUNKDURATION</span> <span class="mi">00</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span>
+<span class="n">BFCHUNKSIZE</span>     <span class="mi">4</span>
+</pre></div>
+</div>
+<p>(aggregate backfillable resources for up to 5 minutes, making resources
+available only to jobs of size 4 or larger)</p>
+<p><strong>BFPRIORITYPOLICY</strong>
+Format:
+one of <strong>RANDOM</strong>, <strong>DURATION</strong>, or <strong>HWDURATION</strong>
+Default:
+NONE
+Details:
+specifies policy to use when prioritizing backfill jobs for preemption
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BFPRIORITYPOLICY</span>  <span class="n">DURATION</span>
+</pre></div>
+</div>
+<p>(use length of job in determining which backfill job to preempt)</p>
+<p><strong>BYPASSWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight to be applied to a job&#8217;s backfill bypass count when
+determining a job&#8217;s priority
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BYPASSWEIGHT</span> <span class="mi">5000</span>
+</pre></div>
+</div>
+<p><strong>CHECKPOINTEXPIRATIONTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+INFINITY
+Details:
+specifies how &#8216;stale&#8217; checkpoint data can be before it is ignored and
+purged.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CHECKPOINTEXPIRATIONTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Expire checkpoint data which has been stale for over one day)</p>
+<p><strong>CHECKPOINTFILE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+maui.ck
+Details:
+name (absolute or relative) of the Maui checkpoint file.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CHECKPOINTFILE</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">adm</span><span class="o">/</span><span class="n">maui</span><span class="o">/</span><span class="n">maui</span><span class="o">.</span><span class="n">ck</span>
+</pre></div>
+</div>
+<p>(Maintain the Maui checkpoint file in the file specified)</p>
+<p><strong>CHECKPOINTINTERVAL</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+00:05:00
+Details:
+time between automatic Maui checkpoints
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CHECKPOINTINTERVAL</span> <span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui should checkpoint state information every 15 minutes)</p>
+<p><strong>CLASSCFG[&lt;CLASSID&gt;]</strong>
+Format:
+list of zero or more space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt;
+is one of the following: <strong>PRIORITY</strong>, <strong>FSTARGET</strong>, <strong>QLIST</strong>,
+<strong>QDEF</strong>, <strong>PLIST</strong> , <strong>PDEF</strong>, <strong>FLAGS</strong>, or a <a class="reference external" href="6.2throttlingpolicies.html">fairness
+policy</a> specification.
+Default:
+[NONE]
+Details:
+specifies class specific attributes. See the <a class="reference external" href="jobflagoverview.html">flag
+overview</a> for a description of legal flag
+values.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CLASSCFG</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">50</span> <span class="n">QDEF</span><span class="o">=</span><span class="n">highprio</span>
+</pre></div>
+</div>
+<p>(up to 50 jobs submitted to the class <code class="docutils literal"><span class="pre">batch</span></code> will be allowed to
+execute simultaneously and will be assigned the QOS <code class="docutils literal"><span class="pre">highprio</span></code> by
+default.)</p>
+<p><strong>CLASSWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight to be applied to the class priority of each job
+(See <a class="reference external" href="5.1.2priorityfactors.html#cred">Cred Factor</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CLASSWEIGHT</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><strong>CLIENTCFG[&lt;X&gt;]</strong>
+Format:
+one or more of the following: <strong>CSALGO</strong> or <strong>CSKEY</strong>
+Default:
+[NONE]
+Details:
+specifies the shared secret key and encryption algorithm which Maui will
+use to communicate with the named peer daemon. <strong>NOTE:</strong> this parameter
+may only be specified in the <strong>maui-private.cfg</strong> config file)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CLIENTCFG</span><span class="p">[</span><span class="n">silverB</span><span class="p">]</span> <span class="n">CSKEY</span><span class="o">=</span><span class="n">apple7</span>
+</pre></div>
+</div>
+<p>(Maui will use the session key <code class="docutils literal"><span class="pre">apple7</span></code> for encrypting and decrypting
+messages sent from <code class="docutils literal"><span class="pre">silverB</span></code>)</p>
+<p><strong>CLIENTTIMEOUT</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+00:00:30
+Details:
+time which Maui client commands will wait for a response from the Maui
+server (NOTE: may also be specified as an environment variable)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CLIENTTIMEOUT</span> <span class="mi">00</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui clients will wait up to 15 minutes for a response from the server
+before timing out)</p>
+<p><strong>CREDWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+1
+Details:
+specifies the <a class="reference external" href="5.1.2priorityfactors.html#cred">credential component</a>
+weight
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CREDWEIGHT</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p><strong>DEFAULTCLASSLIST</strong>
+Format:
+space delimited list of one or more &lt;STRING&gt;&#8217;s
+Default:
+[NONE]
+Details:
+specifies the default classes supported on each node for RM systems
+which do not provide this information
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DEFAULTCLASSLIST</span> <span class="n">serial</span> <span class="n">parallel</span>
+</pre></div>
+</div>
+<p><strong>DEFERCOUNT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+24
+Details:
+specifies the number of times a job can be deferred before it will be
+placed in batch hold.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DEFERCOUNT</span> <span class="mi">12</span>
+</pre></div>
+</div>
+<p><strong>DEFERSTARTCOUNT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+1
+Details:
+specifies number of time a job will be allowed to fail in its start
+attempts before being deferred.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DEFERSTARTCOUNT</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p><strong>DEFERTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+1:00:00
+Details:
+specifies amount of time a job will be held in the deferred state before
+being released back to the Idle job queue
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DEFERTIME</span> <span class="mi">0</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p><strong>DISKWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight to be applied to the amount of dedicated
+disk space required per task by a job (in MB)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESWEIGHT</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>DISKWEIGHT 100</p>
+<p>(if a job requires 12 tasks and 512 MB per task of dedicated local disk
+space, Maui will increase the job&#8217;s priority by 10 * 100 * 12 * 512)</p>
+<p><strong>DISPLAYFLAGS</strong>
+Format:
+one or more of the following values (space delimited)
+NODECENTRIC</p>
+<p>Default:
+[NONE]
+Details:
+specifies flags which control how maui client commands will display
+various information
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DISPLAYFLAGS</span> <span class="n">NODECENTRIC</span>
+</pre></div>
+</div>
+<p><strong>DOWNNODEDELAYTIME*</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+24:00:00
+Details:
+default time an unavailable node (Down or Drain) is marked unavailable
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DOWNNODEDELAYTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will assume &#8216;down&#8217; nodes will be available 1 hour after they go
+down unless a system reservation is placed on the node)</p>
+<p><strong>ENABLEMULTINODEJOBS</strong>
+Format:
+&lt;BOOLEAN&gt;
+Default:
+TRUE
+Details:
+specifies whether or not the scheduler will allow jobs to span more than
+one node
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ENABLEMULTINODEJOBS</span> <span class="n">FALSE</span>
+</pre></div>
+</div>
+<p><strong>ENABLEMULTIREQJOBS</strong>
+Format:
+&lt;BOOLEAN&gt;
+Default:
+FALSE
+Details:
+specifies whether or not the scheduler will allow jobs to specify
+multiple independent resource requests (i.e., pbs jobs with resource
+specifications such as &#8216;-l nodes=3:fast+1:io&#8217;)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ENABLEMULTIREQJOBS</span> <span class="n">TRUE</span>
+</pre></div>
+</div>
+<p><strong>ENABLENEGJOBPRIORITY[X]</strong>
+Format:
+&lt;BOOLEAN&gt;
+Default:
+FALSE
+Details:
+if set to TRUE, the scheduler will allow job priority value to range
+from -INFINITY to MMAX_PRIO, otherwise, job priority values are given a
+lower bound of &#8216;1&#8217;. (see <a class="reference external" href="#rejectnegpriojobs">REJECTNEGPRIOJOBS</a>)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ENABLENEGJOBPRIORITY</span> <span class="n">TRUE</span>
+</pre></div>
+</div>
+<p>(Job priority may range from -INFINITY to MMAX_PRIO.)</p>
+<p><strong>FEATURENODETYPEHEADER</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the header used to specify node type via node features (ie, LL
+features or PBS node attributes).
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FEATURENODETYPEHEADER</span> <span class="n">xnt</span>
+</pre></div>
+</div>
+<p>(Maui will interpret all node features with the leading string `` xnt``
+as a nodetype specification - as used by QBank and other allocation
+managers, and assign the associated value to the node. i.e., xntFast)</p>
+<p><strong>FEATUREPARTITIONHEADER</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the header used to specify node partition via node features
+(ie, LL features or PBS node attributes).
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FEATUREPARTITIONHEADER</span> <span class="n">xpt</span>
+</pre></div>
+</div>
+<p>(Maui will interpret all node features with the leading string `` xpt``
+as a partition specification and assign the associated value to the
+node. i.e., xptGold)</p>
+<p><strong>FEATUREPROCSPEEDHEADER</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the header used to extract node processor speed via node
+features (i.e., LL features or PBS node attributes). NOTE: Adding a
+trailing &#8216;$&#8217; character will specifies that only features with a trailing
+number be interpreted. For example, the header &#8216;sp$&#8217; will match &#8216;sp450&#8217;
+but not &#8216;sport&#8217;
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FEATUREPROCSPEEDHEADER</span> <span class="n">xps</span>
+</pre></div>
+</div>
+<p>(Maui will interpret all node features with the leading string `` xps``
+as a processor speed specification and assign the associated value to
+the node. i.e., xps950)</p>
+<p><strong>FEEDBACKPROGRAM</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the name of the program to be run at the completion of each
+job. If not fully qualified, Maui will attempt to locate this program in
+the &#8216;tools&#8217; subdirectory.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FEEDBACKPROGRAM</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">maui</span><span class="o">/</span><span class="n">fb</span><span class="o">.</span><span class="n">pl</span>
+</pre></div>
+</div>
+<p>(Maui will run the specified program at the completion of each job.)</p>
+<p><strong>FSACCOUNTWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight assigned to the account subcomponent of the
+fairshare component of priority
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSACCOUNTWEIGHT</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><strong>FSCAP</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+0 (NO CAP)
+Details:
+specifies the maximum allowed value for a job&#8217;s total pre-weighted
+fairshare component
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSCAP</span> <span class="mf">10.0</span>
+</pre></div>
+</div>
+<p>(Maui will not allow a job&#8217;s pre-weighted fairshare component to exceed
+10.0,</p>
+<p>ie, Priority = FSWEIGHT * MIN(FSCAP,FSFACTOR) + ...)</p>
+<p><strong>FSCONFIGFILE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+fs.cfg
+Details:
+Example:</p>
+<p><strong>FSDECAY</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+1.0
+Details:
+Example:</p>
+<p><strong>FSDEPTH</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+7
+Details:
+NOTE: The number of available fairshare windows is bounded by the
+<strong>MAX_FSDEPTH</strong> value (24 in Maui 3.2.6 and earlier, 32 in Maui 3.2.7
+and later)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSDEPTH</span> <span class="mi">12</span>
+</pre></div>
+</div>
+<p><strong>FSGROUPWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSGROUPWEIGHT</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p><strong>FSINTERVAL</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+24:00:00
+Details:
+specifies the length of each fairshare &#8216;<a class="reference external" href="6.3fairshare.html">window</a> &#8216;
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSINTERVAL</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(track fairshare usage in 12 hour blocks)</p>
+<p><strong>FSPOLICY</strong>
+Format:
+one of the following: <strong>DEDICATEDPS</strong>, <strong>DEDICATEDPES</strong>
+Format:
+[NONE]
+Details:
+specifies the unit of tracking fairshare usage. <strong>DEDICATEDPS</strong> tracks
+dedicated processor seconds. <strong>DEDICATEDPES</strong> tracks dedicated
+processor-equivalent seconds
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSPOLICY</span> <span class="n">DEDICATEDPES</span>
+</pre></div>
+</div>
+<p>(Maui will track fairshare usage by dedicated process-equivalent
+seconds)</p>
+<p><strong>FSQOSWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight assigned to the QOS fairshare subcomponent
+Example:</p>
+<p><strong>FSUSERWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight assigned to the user fairshare subfactor.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSUSERWEIGHT</span> <span class="mi">8</span>
+</pre></div>
+</div>
+<p><strong>FSWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight assigned to the summation of the fairshare
+subfactors
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">FSWEIGHT</span> <span class="mi">500</span>
+</pre></div>
+</div>
+<p><strong>GROUPCFG[&lt;GROUPID&gt;]</strong>
+Format:
+list of zero or more space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt;
+is one of the following:
+<strong>PRIORITY</strong>, <strong>FSTARGET</strong>, <strong>QLIST</strong>, <strong>QDEF</strong>, <strong>PLIST</strong> , <strong>PDEF</strong>,
+<strong>FLAGS</strong>, or a <a class="reference external" href="6.2throttlingpolicies.html">fairness policy</a>
+specification.
+Example:
+[NONE]
+Details:
+specifies group specific attributes. See the <a class="reference external" href="jobflagoverview.html">flag
+overview</a> for a description of legal flag
+values.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">GROUPCFG</span><span class="p">[</span><span class="n">staff</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">50</span> <span class="n">QDEF</span><span class="o">=</span><span class="n">highprio</span>
+</pre></div>
+</div>
+<p>(up to 50 jobs submitted by members of the group <code class="docutils literal"><span class="pre">staff</span></code> will be
+allowed to execute simultaneously and will be assigned the QOS
+`` highprio`` by default.)</p>
+<p><strong>GROUPWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight assigned to the specified group priority
+(See <a class="reference external" href="5.1.2priorityfactors.html#cred">Cred Factor</a>)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">GROUPWEIGHT</span> <span class="mi">20</span>
+</pre></div>
+</div>
+<p><strong>JOBAGGREGATIONTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0
+Details:
+specifies the minimum amount of time the scheduler should wait after
+receiving a job event until it should process that event. This parameter
+allows sites with <em>bursty</em> job submissions to process job events in
+groups decreasing total job scheduling cycles and allowing the scheduler
+to make more intelligent choices by aggregating job submissions and
+choosing between the jobs. (See <a class="reference external" href="a.ilargeclusters.html">Considerations for Large
+Clusters</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JOBAGGREGATIONTIME</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">04</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMPOLLINTERVAL</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">30</span>
+</pre></div>
+</div>
+<p>The scheduler will wait 4 seconds between scheduling cycles when job
+events have been received and will wait 30 seconds between scheduling
+cycles otherwise</p>
+<p><strong>JOBMAXSTARTTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+-1 (NO LIMIT)
+Details:
+length of time a job is allowed to remain in a &#8216;starting&#8217; state. If a
+&#8216;started&#8217; job does not transition to a running state within this amount
+of time, the scheduler will cancel the job, believing a system failure
+has occurred.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JOBMAXSTARTTIME</span> <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(jobs may attempt to start for up to 2 hours before being cancelled by
+the scheduler)</p>
+<p><strong>JOBMAXOVERRUN</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0
+Details:
+amount of time Maui will allow a job to exceed its wallclock limit
+before it is terminated
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JOBMAXOVERRUN</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(allow jobs to exceed their wallclock limit by up to 1 hour)</p>
+<p><strong>JOBNODEMATCHPOLICY</strong>
+Format:
+zero or more of the following: <strong>EXACTNODE</strong> or <strong>EXACTPROC</strong>
+Format:
+[NONE]
+Details:
+specifies additional constraints on how compute nodes are to be
+selected. <strong>EXACTNODE</strong> indicates that Maui should select as many nodes
+as requested even if it could pack multiple tasks onto the same node.
+<strong>EXACTPROC</strong> indicates that Maui should select only nodes with exactly
+the number of processors configured as are requested per node even if
+nodes with excess processors are available.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JOBNODEMATCHPOLICY</span> <span class="n">EXACTNODE</span>
+</pre></div>
+</div>
+<p>(In a PBS job with resource specification &#8216;nodes=&lt;x&gt;:ppn=&lt;y&gt;&#8217;, Maui will
+allocate exactly &lt;y&gt; task on each of &lt;x&gt; distinct nodes.)</p>
+<p><strong>JOBPRIOACCRUALPOLICY</strong>
+Format:
+one of the following: <strong>ALWAYS</strong>, <strong>FULLPOLICY</strong>, <strong>QUEUEPOLICY</strong>
+Default:
+<strong>QUEUEPOLICY</strong>
+Details:
+specifies how the dynamic aspects of a job&#8217;s priority will be adjusted.
+<strong>ALWAYS</strong> indicates that the job will accrue queuetime based priority
+from the time it is submitted. <strong>FULLPOLICY</strong> indicates that it will
+accrue priority only when it meets all queue AND run policies.
+<strong>QUEUEPOLICY</strong> indicates that it will accrue priority so long as it
+satisfies various queue policies, i.e. MAXJOBQUEUED.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JOBPRIOACCRUALPOLICY</span> <span class="n">QUEUEPOLICY</span>
+</pre></div>
+</div>
+<p>(Maui will adjust the job&#8217;s dynamic priority subcomponents, i.e.,
+QUEUETIME, XFACTOR, and TARGETQUEUETIME, etc. each iteration that the
+job satisfies the associated &#8216;QUEUE&#8217; policies such as MAXJOBQUEUED.)</p>
+<p><strong>JOBSIZEPOLICY</strong>
+Format:
+&lt;N/A&gt;
+Default:
+[NONE]
+Details:
+&lt;N/A&gt;
+Example:
+&lt;N/A&gt;</p>
+<p><strong>JOBSYNCTIME</strong>
+Format:
+[[[DD:]HH:]MM:]:SS
+Default:
+00:10:00
+Details:
+specifies the length of time after which Maui will sync up a job&#8217;s
+expected state with an unexpected reported state. IMPORTANT NOTE: Maui
+will not allow a job to run as long as its expected state does not match
+the state reported by the resource manager. NOTE: this parameter is
+named JOBSYNCDEADLINE in Maui 3.0.5 and earlier
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JOBSYNCTIME</span> <span class="mi">00</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p><strong>LOGDIR</strong>
+Format:
+&lt;STRING&gt;
+Default:
+log
+Details:
+specifies the directory in which log files will be maintained. If
+specified as a relative path, LOGDIR will be relative to $(MAUIHOMEDIR)
+(see <a class="reference external" href="14.2logging.html">Logging Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LOGDIR</span> <span class="o">/</span><span class="n">tmp</span>
+</pre></div>
+</div>
+<p>(Maui will record its log files directly into the <code class="docutils literal"><span class="pre">/tmp</span></code> directory)</p>
+<p><strong>LOGFACILITY</strong>
+Format:
+colon delimited list of one or more of the following: <strong>fCORE</strong>,
+<strong>fSCHED</strong>, <strong>fSOCK</strong>, <strong>fUI</strong>, <strong>fLL</strong>, <strong>fSDR</strong> , <strong>fCONFIG</strong>,
+<strong>fSTAT</strong>, <strong>fSIM</strong>, <strong>fSTRUCT</strong>, <strong>fFS</strong>, <strong>fCKPT</strong>, <strong>fBANK</strong>,
+<strong>fRM</strong>, <strong>fPBS</strong>, <strong>fWIKI</strong>, <strong>fALL</strong>
+Default:
+<strong>fALL</strong>
+Details:
+specifies which types of events to log (see <a class="reference external" href="14.2logging.html">Logging
+Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LOGFACILITY</span> <span class="n">fRM</span><span class="p">:</span><span class="n">fPBS</span>
+</pre></div>
+</div>
+<p>(Maui will log only events involving general resource manager or PBS
+interface activities.)</p>
+<p><strong>LOGFILE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+maui.log
+Details:
+name of the maui log file. This file is maintained in the directory
+pointed to by &lt;LOGDIR&gt; unless &lt;LOGFILE&gt; is an absolute path (see
+<a class="reference external" href="14.2logging.html">Logging Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LOGFILE</span> <span class="n">maui</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>(Log information will be written to the file <code class="docutils literal"><span class="pre">maui.test.log</span></code> located
+in the directory pointed to by the <a class="reference external" href="#logdir">LOGDIR</a> parameter)</p>
+<p><strong>LOGFILEMAXSIZE</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+10000000
+Details:
+maximum allowed size (in bytes) the log file before it will be &#8216;rolled&#8217;
+(see <a class="reference external" href="14.2logging.html">Logging Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LOGFILEMAXSIZE</span> <span class="mi">50000000</span>
+</pre></div>
+</div>
+<p>(Log files will be rolled when they reach 50 MB in size)</p>
+<p><strong>LOGFILEROLLDEPTH</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+2
+Details:
+number of old log files to maintain (i.e., when full, maui.log will be
+renamed maui.log.1, maui.log.1 will be renamed maui.log.2, ... (see
+<a class="reference external" href="14.2logging.html">Logging Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LOGFILEROLLDEPTH</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(Maui will maintain the last 5 log files.)</p>
+<p><strong>LOGLEVEL</strong>
+Format:
+&lt;INTEGER&gt; (0-9)
+Default:
+0
+Details:
+specifies the verbosity of Maui logging where 9 is the most verbose
+(NOTE: each logging level is approximately an order of magnitude more
+verbose than the previous level) (see <a class="reference external" href="14.2logging.html">Logging
+Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LOGLEVEL</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p>(Maui will write all Maui log messages with a threshold of 4 or lower to
+the &#8216;maui.log&#8217; file)</p>
+<p><strong>MAXJOBPERUSERCOUNT</strong>
+Format:
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]
+Default:
+0 (No Limit)
+Details:
+maximum number of active jobs allowed at any given time. (NOTE: This
+parameter is deprecated, see <a class="reference external" href="policynote-3.0.html">note</a>).
+Example:</p>
+<p><strong>MAXJOBQUEUEDPERUSERCOUNT</strong>
+Format:
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]
+Default:
+0 (No Limit)
+Details:
+maximum number of idle jobs which can be considered for scheduling and
+which can acquire &#8216;system queue time&#8217; for increasing job priority.
+(NOTE: This parameter is deprecated, see
+<a class="reference external" href="policynote-3.0.html">note</a>).
+Example:</p>
+<p><strong>MAXNODEPERUSERCOUNT</strong>
+Format:
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]
+Default:
+0 (No Limit)
+Details:
+maximum allowed total PE count which can be dedicated at any given time.
+(NOTE: This parameter is deprecated, see
+<a class="reference external" href="policynote-3.0.html">note</a>).
+Example:</p>
+<p><strong>MAXPEPERUSERCOUNT</strong>
+Format:
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]
+Default:
+0 (No Limit)
+Details:
+maximum allowed total PE count which can be dedicated at any given time.
+(NOTE: This parameter is deprecated, see
+<a class="reference external" href="policynote-3.0.html">note</a>).
+Example:</p>
+<p><strong>MAXPROCPERUSERCOUNT</strong>
+Format:
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]
+Default:
+0 (No Limit)
+Details:
+maximum allowed total processors which can be dedicated at any give
+time. (NOTE: This parameter is deprecated, see
+<a class="reference external" href="policynote-3.0.html">note</a>).
+Example:</p>
+<p><strong>MAXPSPERUSER</strong>
+Format:
+&lt;INTEGER&gt;[,&lt;INTEGER&gt;]
+Default:
+0 (No Limit)
+Details:
+maximum allowed sum of outstanding dedicated processor-second
+obligations of all active jobs. (NOTE: This parameter is deprecated, see
+<a class="reference external" href="policynote-3.0.html">note</a>).
+Example:</p>
+<p><strong>MAXWCPERUSER</strong>
+Format:
+[[[DD:]HH:]MM:]SS[,[[[DD:]HH:]MM:]SS]
+Default:
+0 (No Limit)
+Details:
+maximum allowed sum of outstanding walltime limits of all active jobs.
+NOTE: only available in Maui 3.2 and higher.
+Example:</p>
+<p><strong>MEMWEIGHT</strong>[X]
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the coefficient to be multiplied by a job&#8217;s MEM (dedicated
+memory in MB) factor
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MEMWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>(each job&#8217;s priority will be increased by 10 * 1000 * its MEM factor)</p>
+<p><strong>NODEACCESSPOLICY</strong>
+Format:
+one of the following:<strong>SHARED</strong>, <strong>SINGLEJOB</strong>, <strong>SINGLETASK</strong> , or
+<strong>SINGLEUSER</strong>
+Default:
+<strong>SHARED</strong>
+Details:
+specifies how node resources will be shared by various tasks (See the
+&#8216;<a class="reference external" href="5.3nodeaccess.html">Node Access Overview</a> &#8216; for more information)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEACCESSPOLICY</span> <span class="n">SINGLEUSER</span>
+</pre></div>
+</div>
+<p>(Maui will allow resources on a node to be used by more than one job
+provided that the job&#8217;s are all owned by the same user)</p>
+<p><strong>NODEALLOCATIONPOLICY</strong>
+Format:
+one of the following: <strong>FIRSTAVAILABLE</strong>, <strong>LASTAVAILABLE</strong>,
+<strong>MINRESOURCE</strong>, <strong>CPULOAD</strong>, <strong>PRIORITY, LOCAL, CONTIGUOUS, MAXBALANCE,
+or FASTEST</strong>
+Default:
+<strong>LASTAVAILABLE</strong>
+Details:
+specifies how Maui should allocate available resources to jobs. (See the
+<a class="reference external" href="5.2nodeallocation.html">Node Allocation</a> section of the Admin manual
+for more information)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEALLOCATIONPOLICY</span> <span class="n">MINRESOURCE</span>
+</pre></div>
+</div>
+<p>(Maui will apply the node allocation policy &#8216;MINRESOURCE&#8217; to all jobs by
+default)</p>
+<p><strong>NODEAVAILABILITYPOLICY</strong>
+Format:
+&lt;POLICY&gt;[:&lt;RESOURCETPYE&gt;] ...
+where &lt;POLICY&gt; is one of <strong>COMBINED</strong>, <strong>DEDICATED</strong>, or <strong>UTILIZED</strong>
+and &lt;RESOURCETYPE&gt; is one of <strong>PROC</strong>, <strong>MEM</strong>, <strong>SWAP</strong>, or <strong>DISK</strong></p>
+<p>Default:
+<strong>COMBINED</strong>
+Details:
+specifies how Maui will evaluate node availability on a per resource
+basis. (See the <a class="reference external" href="5.4nodeavailability.html">Node Availability</a> section
+of the Admin manual for more information)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEAVAILABILITYPOLICY</span> <span class="n">DEDICATED</span><span class="p">:</span><span class="n">PROCS</span> <span class="n">COMBINED</span><span class="p">:</span><span class="n">MEM</span>
+</pre></div>
+</div>
+<p>(Maui will ignore resource utilization information in locating available
+processors for jobs but will use both dedicated and utilized memory
+information in determining memory availability)</p>
+<p><strong>NODECFG[X]</strong>
+Format:
+list of space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt; is one of the
+following: <strong>ACCESS, MAXJOB</strong>, <strong>MAXJOBPERUSER</strong>, <strong>MAXLOAD</strong>, <strong>FRAME</strong>
+, <strong>SLOT</strong>, <strong>SPEED</strong>, <strong>PROCSPEED</strong>, <strong>PARTITION</strong>, <strong>NODETYPE</strong> ,
+<strong>FEATURES</strong>
+Default:
+[NONE]
+Details:
+specifies node-specific attributes for the node indicated in the array
+field. See the <a class="reference external" href="5.2nodeallocation.html">Node Configuration Overview</a>
+for more information.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODECFG</span><span class="p">[</span><span class="n">nodeA</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">2</span> <span class="n">SPEED</span><span class="o">=</span><span class="mf">1.2</span>
+</pre></div>
+</div>
+<p>(Maui will only only two simultaneous jobs to run on node &#8216;<code class="docutils literal"><span class="pre">nodeA</span></code> &#8216;
+and will assign a relative machine speed of 1.2 to this node.)</p>
+<p><strong>NODEDOWNSTATEDELAYTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0:00:00
+Details:
+length of time Maui will assume down, drained (offline), or corrupt
+nodes will remain unavailable for scheduling if a system reservation is
+not explicitly created for the node. <strong>NOTE</strong>: This parameter is enabled
+in Maui 3.0.7 and higher.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEDOWNSTATEDELAYTIME</span> <span class="mi">0</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will assume down, drained, and corrupt nodes are not available for
+scheduling for at least 30 minutes from the current time. Thus, these
+nodes will never be allocated to starting jobs. Also, these nodes will
+only be available for reservations starting more than 30 minutes in the
+future.)</p>
+<p><strong>NODELOADPOLICY</strong>
+Format:
+one of the following: <strong>ADJUSTSTATE</strong> or <strong>ADJUSTPROCS</strong>
+Default:
+<strong>ADJUSTSTATE</strong>
+Details:
+specifies if a node&#8217;s load affects its state or its available
+processors. ADJUSTSTATE tells Maui to mark the node busy when MAXLOAD is
+reached. ADJUSTPROCS causes the node&#8217;s available procs to be equivalent
+to MIN(ConfiguredProcs - DedicatedProcs,MaxLoad - CurrentLoad) NOTE:
+NODELOADPOLICY only affects a node if MAXLOAD has been set.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODELOADPOLICY</span> <span class="n">ADJUSTSTATE</span>
+</pre></div>
+</div>
+<p>(Maui will mark a node busy if its measured load exceeds its MAXLOAD
+setting)</p>
+<p><strong>NODEMAXLOAD</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+0.0
+Details:
+specifies that maximum load on a idle of running node. If the node&#8217;s
+load reaches or exceeds this value, Maui will mark the node &#8216;busy&#8217;
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEMAXLOAD</span> <span class="mf">0.75</span>
+</pre></div>
+</div>
+<p>(Maui will adjust the state of all Idle and Running nodes with a load &gt;=
+.75 to the state &#8216;Busy&#8217;)</p>
+<p><strong>NODEPOLLFREQUENCY</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (Poll Always)
+Details:
+specifies the number of scheduling iterations between scheduler
+initiated node manager queries.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEPOLLFREQUENCY</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(Maui will update node manager based information every 5 scheduling
+iterations)</p>
+<p><strong>NODESETATTRIBUTE</strong>
+Format:
+one of <strong>FEATURE</strong>, <strong>MEMORY</strong>, or <strong>PROCSPEED</strong>
+Default:
+[NONE]
+Details:
+specifies the type of node attribute by which node set boundaries will
+be established. <strong>NOTE</strong>: enabled in Maui 3.0.7 and higher. (See <a class="reference external" href="8.3nodesetoverview.html">Node
+Set Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETATTRIBUTE</span> <span class="n">PROCSPEED</span>
+</pre></div>
+</div>
+<p>(Maui will create node sets containing nodes with common processor
+speeds)</p>
+<p><strong>NODESETDELAY</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0:00:00
+Details:
+specifies the length of time Maui will delay a job if adequate idle
+resources are available but not adequate resources within node set
+constraints. <strong>NOTE</strong>: in Maui 3.2 and higher, setting NODESETDELAY to
+any non-zero value will force Maui to always use nodesets. A value of
+zero will cause Maui to use nodesets on a best effort basis. (See <a class="reference external" href="8.3nodesetoverview.html">Node
+Set Overview</a>)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETDELAY</span> <span class="mi">0</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will create node sets containing nodes with common processor
+speeds)</p>
+<p><strong>NODESETLIST</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the list of node attribute values which will be considered for
+establishing node sets. <strong>NOTE</strong>: enabled in Maui 3.0.7 and higher. (See
+<a class="reference external" href="8.3nodesetoverview.html">Node Set Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETPOLICY</span> <span class="n">ONEOF</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETATTRIBUTE</span> <span class="n">FEATURE</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETLIST</span> <span class="n">switchA</span> <span class="n">switchB</span>
+</pre></div>
+</div>
+<p>(Maui will allocate nodes to jobs either using only nodes with the
+&#8216;switchA&#8217; feature or using only nodes with the &#8216;switchB&#8217; feature.)</p>
+<p><strong>NODESETPOLICY</strong>
+Format:
+one of <strong>ONEOF</strong>, <strong>FIRSTOF</strong>, or <strong>ANYOF</strong>
+Format:
+[NONE]
+Details:
+specifies how nodes will be allocated to the job from the various node
+set generated. <strong>NOTE</strong>: enabled in Maui 3.0.7 and higher. (See <a class="reference external" href="8.3nodesetoverview.html">Node
+Set Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETPOLICY</span> <span class="n">ONEOF</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETATTRIBUTE</span> <span class="n">NETWORK</span>
+</pre></div>
+</div>
+<p>(Maui will create node sets containing nodes with common network
+interfaces)</p>
+<p><strong>NODESETPRIORITYTYPE</strong>
+Format:
+one of <strong>BESTFIT</strong>, <strong>WORSTFIT</strong>, <strong>BESTRESOURCE</strong>, or <strong>MINLOSS</strong>
+Default:
+MINLOSS
+Details:
+specifies how resource sets will be selected when more than one feasible
+resource can can be found. <strong>NOTE</strong>: This parameter is available in Maui
+3.0.7 and higher. (See <a class="reference external" href="8.3nodesetoverview.html">Node Set Overview</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETPRIORITYTYPE</span> <span class="n">BESTRESOURCE</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETATTRIBUTE</span> <span class="n">PROCSPEED</span>
+</pre></div>
+</div>
+<p>(Maui will select the resource set containing the fastest nodes
+available)</p>
+<p><strong>NODESETTOLERANCE</strong>
+Format:
+&lt;FLOAT&gt;
+Default:
+0.0 (Exact match only)
+Details:
+specifies the tolerance for selection of mixed processor speed nodes. A
+tolerance of <strong>X</strong> allows a range of processors to be selected subject
+to the constraint
+(Speed.Max - Speed.Min) / Speed.Min &lt;= X</p>
+<div class="line-block">
+<div class="line"><strong>NOTE</strong>: Tolerances are only applicable when NODESETFEATURE is set to
+PROCSPEED. This parameter is available in Maui 3.0.7 and higher.</div>
+<div class="line">(See <a class="reference external" href="8.3nodesetoverview.html">Node Set Overview</a> )</div>
+</div>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETATTRIBUTE</span> <span class="n">PROCSPEED</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESETTOLERANCE</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+<p>(Maui will only allocate nodes with up to a 50% procspeed difference.)</p>
+<p><strong>NODESYNCTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+00:10:00
+Details:
+specifies the length of time after which Maui will sync up a node&#8217;s
+expected state with an unexpected reported state. IMPORTANT NOTE: Maui
+will not start new jobs on a node with an expected state which does not
+match the state reported by the resource manager. NOTE: this parameter
+is named <strong>NODESYNCDEADLINE</strong> in Maui 3.0.5 and earlier.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODESYNCTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p><strong>NODEWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight which will be applied to a job&#8217;s requested node
+count before this value is added to the job&#8217;s cumulative priority.
+<strong>NOTE</strong> : this weight currently only applies when a nodecount is
+specified by the user job. If the job only specifies tasks or
+processors, no node factor will be applied to the job&#8217;s total priority.
+(This will be rectified in future versions.)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NODEWEIGHT</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p><strong>NOTIFICATIONPROGRAM</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the name of the program to handle all notification call-outs
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">NOTIFICATIONPROGRAM</span> <span class="n">tools</span><span class="o">/</span><span class="n">notifyme</span><span class="o">.</span><span class="n">pl</span>
+</pre></div>
+</div>
+<p><strong>PEWEIGHT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the coefficient to be multiplied by a job&#8217;s PE (processor
+equivalent) priority factor
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PEWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p>(each job&#8217;s priority will be increased by 10 * 100 * its PE factor)</p>
+<p><strong>PLOTMAXPROC</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+512
+Details:
+specifies the maximum number of processors requested by jobs to be
+displayed in matrix outputs (as displayed by the
+<a class="reference external" href="commands/showgrid.html">showgrid</a> or
+<a class="reference external" href="commands/profiler.html">profiler</a> commands)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMINPROC</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMAXPROC</span> <span class="mi">1024</span>
+</pre></div>
+</div>
+<p>(each matrix output will display data in rows for jobs requesting
+between 1 and 1024 processors)</p>
+<p><strong>PLOTMAXTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+68:00:00
+Details:
+specifies the maximum duration of jobs to be displayed in matrix outputs
+(as displayed by the <a class="reference external" href="commands/showgrid.html">showgrid</a> or
+<a class="reference external" href="commands/profiler.html">profiler</a> commands)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMINTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMAXTIME</span> <span class="mi">64</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(each matrix output will display data in columns for jobs requesting
+between 1 and 64 hours of run time)</p>
+<p><strong>PLOTMINPROC</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+1
+Details:
+specifies the minimum number of processors requested by jobs to be
+displayed in matrix outputs (as displayed by the
+<a class="reference external" href="commands/showgrid.html">showgrid</a> or
+<a class="reference external" href="commands/profiler.html">profiler</a> commands)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMINPROC</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMAXPROC</span> <span class="mi">1024</span>
+</pre></div>
+</div>
+<p>(each matrix output will display data in rows for jobs requesting
+between 1 and 1024 processors)</p>
+<p><strong>PLOTMINTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+00:02:00
+Details:
+specifies the minimum duration of jobs to be displayed in matrix outputs
+(as displayed by the <a class="reference external" href="commands/showgrid.html">showgrid</a> or
+<a class="reference external" href="commands/profiler.html">profiler</a> commands)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMINTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMAXTIME</span> <span class="mi">64</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(each matrix output will display data in columns for jobs requesting
+between 1 and 64 hours of run time)</p>
+<p><strong>PLOTPROCSCALE</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+9
+Details:
+specifies the number of rows into which the range of processors
+requested per job will be divided when displayed in matrix outputs (as
+displayed by the <a class="reference external" href="commands/showgrid.html">showgrid</a> or
+<a class="reference external" href="commands/profiler.html">profiler</a> commands)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMINPROC</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMAXPROC</span> <span class="mi">1024</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTPROCSCALE</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>(each matrix output will display job data divided into 10 rows which are
+evenly spaced geometrically covering the range of jobs requesting
+between 1 and 1024 processors)</p>
+<p><strong>PLOTTIMESCALE</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+11
+Details:
+specifies the number of columns into which the range of job durations
+will be divided when displayed in matrix outputs (as displayed by the
+<a class="reference external" href="commands/showgrid.html">showgrid</a> or
+<a class="reference external" href="commands/profiler.html">profiler</a> commands)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMINTIME</span> <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTMAXTIME</span> <span class="mi">32</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PLOTTIMESCALE</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(each matrix output will display job data divided into 5 columns which
+are evenly spaced geometrically covering the range of jobs requesting
+between 2 and 32 hours, i.e., display columns for 2, 4, 8, 16, and 32
+hours of walltime)</p>
+<p><strong>PREEMPTPOLICY</strong>
+Format:
+one of the following:
+<strong>REQUEUE</strong>, <strong>SUSPEND</strong>, <strong>CHECKPOINT</strong>
+Format:
+<strong>REQUEUE</strong>
+Details:
+specifies how preemptible jobs will be preempted (Available in Maui
+3.2.2 and higher)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PREEMPTPOLICY</span> <span class="n">CHECKPOINT</span>
+</pre></div>
+</div>
+<p>(jobs that are to be preempted will be checkpointed and restarted at a
+later time)</p>
+<p><strong>PROCWEIGHT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the coefficient to be multiplied by a job&#8217;s requested
+processor count priority factor
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PROCWEIGHT</span> <span class="mi">2500</span>
+</pre></div>
+</div>
+<p><strong>PURGETIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0
+Details:
+The amount of time Maui will keep a job or node record for an object no
+longer reported by the resource manager. Useful when using a resource
+manager which &#8216;drops&#8217; information about a node or job due to internal
+failures. <strong>NOTE</strong>: In Maui 3.2.0 an higher, this parameter is
+superseded by <strong>JOBPURGETIME</strong> and <strong>NODEPURGETIME</strong>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PURGETIME</span> <span class="mi">00</span><span class="p">:</span><span class="mi">05</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will maintain a job or node record for 5 minutes after the last
+update regarding that object received from the resource manager.)</p>
+<p><strong>QOSCFG[&lt;QOSID&gt;]</strong>
+Format:
+list of zero or more space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt;
+is one of the following: <strong>PRIORITY</strong>, <strong>FSTARGET</strong>, <strong>QTWEIGHT</strong>,
+<strong>QTTARGET</strong>, <strong>XFWEIGHT</strong>, <strong>XFTARGET</strong>, <strong>PLIST</strong>, <strong>PDEF</strong>,
+<strong>QFLAGS</strong>, or a <a class="reference external" href="6.2throttlingpolicies.html">fairness policy</a>
+specification.
+Default:
+[NONE]
+Details:
+specifies QOS specific attributes. See the <a class="reference external" href="jobflagoverview.html">flag
+overview</a> for a description of legal flag
+values. <strong>NOTE:</strong> Available in Maui 3.0.6 and higher. <strong>QOSCFG</strong>
+supersedes <strong>QOSNAME</strong>, <strong>QOSPRIORITY</strong>, <strong>QOSFLAGS</strong>, and other
+&#8216;<strong>QOS*</strong>&#8216; parameters.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSCFG</span><span class="p">[</span><span class="n">commercial</span><span class="p">]</span> <span class="n">PRIORITY</span><span class="o">=</span><span class="mi">1000</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">4</span> <span class="n">MAXPROCS</span><span class="o">=</span><span class="mi">80</span>
+</pre></div>
+</div>
+<p>(The scheduler will increase the priority of jobs using QOS commercial,
+and will allow up to 4 simultaneous QOS commercial jobs with up to 80
+total allocated processors.)</p>
+<p><strong>QOSFEATURES[X]</strong>
+Format:
+one or more node feature values or [ANY]
+Default:
+[ANY]
+Details:
+specifies which node features must be present on resources allocated to
+jobs of the associated QOS. This parameter takes a QOS name as an array
+index.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSFEATURES</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">wide</span> <span class="n">interactive</span>
+</pre></div>
+</div>
+<p>(jobs with a QOS value of 2 may only run on nodes with the feature
+&#8216;wide&#8217; AND the feature &#8216;interactive&#8217; set)</p>
+<p><strong>QOSFLAGS[X]</strong>
+Format:
+one or more of the following (space delimited)
+IGNJOBPERUSER, IGNPROCPERUSER, IGNNODEPERUSER, IGNPSPERUSER,
+IGNJOBQUEUEDPERUSER, IGNJOBPERGROUP, IGNPROCPERGROUP, IGNPSPERGROUP,
+IGNJOBQUEUEDPERGROUP, IGNJOBPERACCOUNT, IGNPROCPERACCOUNT,
+IGNPSPERACCOUNT, IGNJOBQUEUEDPERACCOUNT, IGNSYSMAXPROC, IGNSYSMAXTIME,
+IGNSYSMAXPS, IGNSRMAXTIME, IGNUSER, IGNGROUP, IGNACCOUNT, IGNSYSTEM,
+IGNALL, PREEMPT, DEDICATED, RESERVEALWAYS, USERESERVED, NOBF,
+NORESERVATION, RESTARTPREEMPT
+Default:
+[NONE]
+Details:
+specifies the attributes of the corresponding QOS value See the Admin
+Manual <a class="reference external" href="7.3qos.html">QOS Overview</a> section for details (NOTE: some
+flags are only supported under Maui 3.1 and later)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSFLAGS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">ADVRES</span> <span class="n">IGNMAXJOBPERUSER</span>
+</pre></div>
+</div>
+<p>(jobs with a QOS value of 1 must run in an advance reservation and can
+ignore the MAXJOBPERUSER policy)</p>
+<p><strong>QOSPRIORITY[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority associated with this QOS (NOTE: only used in Maui
+3.0.x)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSPRIORITY</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>(set the priority of QOS 2 to 1000)</p>
+<p><strong>QOSQTTARGET[X]</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+[NONE]
+Details:
+specifies the target job queuetime associated with this QOS
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSQTTARGET</span> <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p><strong>QOSQTWEIGHT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the &#8216;per QOS&#8217; queue time priority weight
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSQTWEIGHT</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p><strong>QOSXFTARGET[X]</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+[NONE]
+Details:
+specifies the expansion factor target used in a job&#8217;s &#8216;Target Factor&#8217;
+priority calculation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSWEIGHT</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSXFTARGET</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="mf">5.0</span>
+</pre></div>
+</div>
+<p>(jobs requesting a QOS of 3 will have their priority grow exponentially
+as the job&#8217;s minimum expansion factor approaches 5.0)</p>
+<p><strong>QOSXFWEIGHT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight which will be added to the base XFWEIGHT for all
+jobs using QOS &#8216;X&#8217;
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">XFACTORWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QOSXFWEIGHT</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>(jobs using QOS &#8216;2&#8217; will have an effective XFACTORWEIGHT of 1100 while
+jobs using other QOS&#8217;s will have an XFACTORWEIGHT of 100)</p>
+<p><strong>QUEUETIMECAP[X]</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+0 (NO CAP)
+Details:
+specifies the maximum allowed pre-weighted queuetime priority factor.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QUEUETIMECAP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QUEUETIMEWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>(a job that has been queued for 40 minutes will have its queuetime
+priority factor calculated as &#8216;Priority = QUEUETIMEWEIGHT *
+MIN(10000,40)&#8217;)</p>
+<p><strong>QUEUETIMEWEIGHT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+1
+Details:
+specifies multiplier applied to a job&#8217;s queue time (in minutes) to
+determine the job&#8217;s queuetime priority factor
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QUEUETIMEWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">20</span>
+</pre></div>
+</div>
+<p>(a job that has been queued for 4:20:00 will have a queuetime priority
+factor of 20 * 260)</p>
+<p><strong>REJECTNEGPRIOJOBS[X]</strong>
+Format:
+&lt;BOOLEAN&gt;
+Default:
+TRUE
+Details:
+if enabled, the scheduler will refuse to start any job with a negative
+priority. (see <a class="reference external" href="#enablenegjobpriority">ENABLENEGJOBPRIORITY</a>)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ENABLENEGJOBPRIORITY</span> <span class="n">TRUE</span>
+<span class="n">REJECTNEGPRIOJOBS</span>    <span class="n">TRUE</span>
+</pre></div>
+</div>
+<p>(Any job with a priority less than 0 will be rejected)</p>
+<p><strong>RESCTLPOLICY</strong>
+Format:
+one of the following:
+<strong>ADMINONLY</strong>, <strong>ANY</strong>
+Format:
+<strong>ADMINONLY</strong>
+Details:
+specifies who can create admin reservations (Available in Maui 3.2 and
+higher)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESCTLPOLICY</span> <span class="n">ANY</span>
+</pre></div>
+</div>
+<p>(any valid user can create an arbitrary admin reservation)</p>
+<p><strong>RESDEPTH</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+24
+Details:
+specifies the maximum number of reservations which can be on any single
+node. IMPORTANT NOTE: on large way SMP systems, this value often must be
+increased. To be on the safe side, this value should be approximately
+twice the average sum of admin, standing, and job reservations present.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESDEPTH</span> <span class="mi">64</span>
+</pre></div>
+</div>
+<p><strong>RESERVATIONDEPTH[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+1
+Details:
+specifies how many priority reservations are allowed in the associated
+reservation stack
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESERVATIONDEPTH</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESERVATIONQOSLIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">1</span> <span class="mi">3</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(jobs with QOS values of 1, 3, or 5 can have a cumulative total of up to
+4 priority reservations)</p>
+<p><strong>RESERVATIONPOLICY</strong>
+Format:
+one of the following: <strong>CURRENTHIGHEST</strong>, <strong>HIGHEST</strong>, <strong>NEVER</strong>
+Default:
+<strong>CURRENTHIGHEST</strong>
+Details:
+specifies how Maui reservations will be handled. (See also
+<a class="reference external" href="#reservationdepth">RESERVATIONDEPTH</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESERVATIONPOLICY</span> <span class="n">CURRENTHIGHEST</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESERVATIONDEPTH</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>(Maui will maintain reservations for only the two currently highest
+priority jobs)</p>
+<p><strong>RESERVATIONQOSLIST[X]</strong>
+Format:
+one or more QOS values or [ALL]
+Default:
+[ALL]
+Details:
+specifies which QOS levels have access to the associated reservation
+stack
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESERVATIONDEPTH</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESERVATIONQOSLIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">1</span> <span class="mi">3</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(jobs with QOS values of 1, 3, or 5 can have a cumulative total of up to
+4 priority reservations)</p>
+<p><strong>RESERVATIONRETRYTIME[X]</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0
+Details:
+Period of time Maui will continue to attempt to start a job in a
+reservation when job start failures are detected due to resource manager
+corruption
+Example:</p>
+<p><strong>RESCAP[X]</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+0 (NO CAP)
+Details:
+specifies the maximum allowed pre-weighted job resource priority factor
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESCAP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>(The total resource priority factor component of a job&#8217;s priority will
+not be allowed to exceed 1000, i.e., &#8216;Priority = RESWEIGHT *
+MIN(RESCAP,&lt;RESOURCEFACTOR&gt;) + ...)</p>
+<p><strong>RESOURCELIMITPOLICY</strong>
+Format:
+&lt;RESOURCE&gt;:&lt;POLICY&gt;:&lt;ACTION&gt; [:&lt;VIOLATIONTIME&gt;]...
+where <strong>RESOURCE</strong> is one of <strong>PROC</strong>, <strong>DISK</strong>, <strong>SWAP</strong>, or <strong>MEM</strong>,
+where <strong>POLICY</strong> is one of <strong>ALWAYS</strong> or <strong>EXTENDEDVIOLATION</strong> and where
+<strong>ACTION</strong> is one of <strong>CANCEL</strong>, <strong>REQUEUE</strong>, or <strong>SUSPEND</strong></p>
+<p>Default:
+no limit enforcement
+Details:
+specifies how the scheduler should handle jobs which utilize more
+resources than they request. <strong>NOTE</strong>: Only available in Maui 3.2 and
+higher.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESOURCELIMITPOLICY</span> <span class="n">MEM</span><span class="p">:</span><span class="n">ALWAYS</span><span class="p">:</span><span class="n">CANCEL</span>
+</pre></div>
+</div>
+<p>(Maui will cancel all jobs which exceed their requested memory limits.)</p>
+<p><strong>RESWEIGHT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+all resource priority components are multiplied by this value before
+being added to the total job priority.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MEMORYWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PROCWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SWAPWEIGHT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RESCAP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">2000</span>
+</pre></div>
+</div>
+<p>(the job priority resource factor will be calculated as MIN(2000,5 *
+(10 * JobMemory + 100 * JobProc)))</p>
+<p><strong>RMAUTHTYPE[X]</strong>
+Format:
+one of <strong>CHECKSUM</strong>, <strong>PKI</strong>, or <strong>SECUREPORT</strong>
+Default:
+<strong>CHECKSUM</strong>
+Details:
+specifies the security protocol to be used in scheduler-resource manager
+communication. NOTE: deprecated in Maui 3.2 - use <strong>RMCFG</strong>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMAUTHTYPE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">CHECKSUM</span>
+</pre></div>
+</div>
+<p>(The scheduler will require a secure checksum associated with each
+resource manager message)</p>
+<p><strong>RMCFG</strong>
+Format:
+one or more <strong>key-value</strong> pairs as described in the <a class="reference external" href="13.2rmconfiguration.html">Resource Manager
+Configuration Overview</a>
+Default:
+N/A
+Details:
+specifies the interface and policy configuration for the
+scheduler-resource manager interface. Described in detail in the
+<a class="reference external" href="13.2rmconfiguration.html">Resource Manager Configuration Overview</a>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMCFG</span><span class="p">[</span><span class="n">bank</span><span class="p">]</span> <span class="n">TYPE</span><span class="o">=</span><span class="n">PBS</span>
+</pre></div>
+</div>
+<p>(the PBS server will be used for resource management)</p>
+<p><strong>RMNMPORT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+(any valid port number)
+Details:
+specifies a non-default RM node manager through which extended node
+attribute information may be obtained. NOTE: deprecated in Maui 3.2 -
+use <strong>RMCFG</strong>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMNMPORT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">13001</span>
+</pre></div>
+</div>
+<p>(Maui will contact the node manager located on each compute node at port
+13001)</p>
+<p><strong>RMPOLLINTERVAL</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+00:01:00
+Details:
+specifies interval between RM polls
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMPOLLINTERVAL</span> <span class="mi">60</span>
+</pre></div>
+</div>
+<p>(Maui will refresh its resource manager information every 60 seconds.
+NOTE: this parameter specifies the global poll interval for all resource
+managers)</p>
+<p><strong>RMPORT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the port on which Maui should contact the associated resource
+manager. The value &#8216;0&#8217; specifies to use the appropriate default port for
+the resource manager type selected. NOTE: deprecated in Maui 3.2 - use
+<strong>RMCFG</strong>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMTYPE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">PBS</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMHOST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">cws</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMPORT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">20001</span>
+</pre></div>
+</div>
+<p>(Maui will attempt to contact the PBS server daemon on host cws, port
+20001)</p>
+<p><strong>RMSERVER[X]</strong>
+Format:
+&lt;HOSTNAME&gt;
+Default:
+[NONE]
+Details:
+specifies the host on which Maui should contact the associated resource
+manager. An empty value specifies to use the default hostname for the
+resource manager selected. NOTE: this parameter is renamed <strong>RMHOST</strong> in
+Maui 3.0.6 and higher. NOTE: deprecated in Maui 3.2 - use <strong>RMCFG</strong>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMTYPE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">LL2</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMHOST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMPORT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>(Maui will attempt to contact the Loadleveler version 2 Negotiator
+daemon on the default host and port, as specified in the LL config
+files)</p>
+<p><strong>RMTIMEOUT[X]</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+15
+Details:
+seconds maui will wait for a response from the associated resource
+manager. NOTE: deprecated in Maui 3.2 - use <strong>RMCFG</strong>
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMTIMEOUT</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">30</span>
+</pre></div>
+</div>
+<p>(The scheduler will wait 30 seconds to receive a response from resource
+manager &#8216;1&#8217; before timing out and giving up. The scheduler will try
+again on the next iteration.)</p>
+<p><strong>RMTYPE[X]</strong>
+Format:
+&lt;RMTYPE&gt;[:&lt;RMSUBTYPE&gt;] where &lt;RMTYPE is one of the following: <strong>LL</strong>,
+<strong>PBS</strong>, or <strong>WIKI</strong> and &lt;RMSUBTYPE&gt; is one of <strong>RMS</strong>
+Default:
+LL
+Details:
+specifies type of resource manager to be contacted by Maui. NOTE: for
+<strong>RMTYPE</strong> <strong>WIKI</strong>, <strong>RMAUTHTYPE</strong> must be set to <strong>CHECKSUM</strong>. NOTE:
+deprecated in Maui 3.2 - use <strong>RMCFG</strong>.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMTYPE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">PBS</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMHOST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">cluster1</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMPORT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="mi">15003</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMTYPE</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">PBS</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMHOST</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">cluster2</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">RMPORT</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">15004</span>
+</pre></div>
+</div>
+<p>(Maui will interface to two different PBS resource managers, one located
+on server cluster1 at port 15003 and one located on server cluster2 at
+port 15004)</p>
+<p><strong>SERVERHOST</strong>
+Format:
+&lt;HOSTNAME&gt;
+Default:
+[NONE]
+Details:
+hostname of machine on which maui will run. NOTE: this parameter MUST be
+specified.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SERVERHOST</span> <span class="n">geronimo</span><span class="o">.</span><span class="n">scc</span><span class="o">.</span><span class="n">edu</span>
+</pre></div>
+</div>
+<p>(Maui will execute on the host <code class="docutils literal"><span class="pre">geronimo.scc.edu</span></code>)</p>
+<p><strong>SERVERMODE</strong>
+Format:
+one of the following:
+<strong>NORMAL</strong>, <strong>TEST</strong>, or <strong>SIMULATION</strong>
+Default:
+NORMAL
+Details:
+specifies how Maui interacts with the outside world. See &lt;Testing&gt; for
+more information
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SERVERMODE</span> <span class="n">SIMULATION</span>
+</pre></div>
+</div>
+<p><strong>SERVERNAME</strong>
+Format:
+&lt;STRING&gt;
+Default:
+&lt;SERVERHOST&gt;
+Details:
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SERVERNAME</span> <span class="n">mauiA</span>
+</pre></div>
+</div>
+<p><strong>SERVERPORT</strong>
+Format:
+&lt;INTEGER&gt; (range: 1-64000)
+Default:
+40559
+Details:
+port on which maui will open its user interface socket
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SERVERPORT</span> <span class="mi">30003</span>
+</pre></div>
+</div>
+<p>(Maui will listen for client socket connections on port 30003)</p>
+<p><strong>SIMAUTOSHUTDOWN</strong>
+Format:
+&lt;BOOLEAN&gt;
+Default:
+<strong>TRUE</strong>
+Details:
+if TRUE, the scheduler will end simulations when the active queue and
+idle queue become empty
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMAUTOSHUTDOWN</span> <span class="n">ON</span>
+</pre></div>
+</div>
+<p>(The scheduler simulation will end as soon as there are no jobs running
+and no idle jobs which could run)</p>
+<p><strong>SIMCPUSCALINGPERCENT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+100 (no scaling)
+Details:
+specifies whether to increase or decrease the runtime and wallclock
+limit of each job in the workload trace file.
+Example:</p>
+<p><strong>SIMDEFAULTJOBFLAGS</strong>
+Format:
+zero or more of the following:
+<strong>ADVRES</strong>, <strong>HOSTLIST</strong>, <strong>RESTARTABLE</strong>, <strong>PREEMPTEE</strong> ,
+<strong>DEDICATED</strong>, <strong>PREEMPTOR</strong>
+Default:
+[NONE]
+Details:
+cause Maui to force the specified job flags on all jobs supplied in the
+workload trace file
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMDEFAULTJOBFLAGS</span> <span class="n">DEDICATED</span>
+</pre></div>
+</div>
+<p>(Maui will set the &#8216;DEDICATED&#8217; job flag on all jobs loaded from the
+workload trace file)</p>
+<p><strong>SIMEXITITERATION</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (no exit iteration)
+Details:
+iteration on which a Maui simulation will create a simulation summary
+and exit.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMEXITITERATION</span> <span class="mi">36000</span>
+</pre></div>
+</div>
+<p><strong>SIMFLAGS</strong>
+Format:
+zero or more of the following:
+<strong>IGNHOSTLIST</strong>, <strong>IGNCLASS</strong>, <strong>IGNQOS</strong>, <strong>IGNMODE</strong>, <strong>IGNFEATURES</strong>
+Default:
+[NONE]
+Details:
+controls how Maui handles trace based information
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMFLAGS</span> <span class="n">IGNHOSTLIST</span>
+</pre></div>
+</div>
+<p>(Maui will ignore hostlist information specified in the workload trace
+file)</p>
+<p><strong>SIMIGNOREJOBFLAGS</strong>
+Format:
+zero or more of the following:
+<strong>ADVRES</strong>, <strong>HOSTLIST</strong>, <strong>RESTARTABLE</strong>, <strong>PREEMPTEE</strong> ,
+<strong>DEDICATED</strong>, <strong>PREEMPTOR</strong>
+Format:
+[NONE]
+Details:
+cause Maui to ignore specified job flags if supplied in the workload
+trace file
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMIGNOREJOBFLAGS</span> <span class="n">DEDICATED</span>
+</pre></div>
+</div>
+<p>(Maui will ignore the &#8216;DEDICATED&#8217; job flag if specified in any job
+trace)</p>
+<p><strong>SIMINITIALQUEUEDEPTH</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+16
+Details:
+specifies how many jobs the simulator will initially place in the idle
+job queue
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMINITIALQUEUEDEPTH</span> <span class="mi">64</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMJOBSUBMISSIONPOLICY</span> <span class="n">CONSTANTJOBDEPTH</span>
+</pre></div>
+</div>
+<p>(Maui will initially place 64 idle jobs in the queue and, because of the
+specified queue policy, will attempt to maintain this many jobs in the
+idle queue throughout the duration of the simulation)</p>
+<p><strong>SIMJOBSUBMISSIONPOLICY</strong>
+Format:
+one of the following: <strong>NORMAL</strong>, <strong>CONSTANTJOBDEPTH</strong>, or
+<strong>CONSTANTPSDEPTH</strong>
+Default:
+<strong>CONSTANTJOBDEPTH</strong>
+Details:
+specifies how the simulator will submit new jobs into the idle queue.
+(NORMAL mode causes jobs to be submitted at the time recorded in the
+workload trace file, <strong>CONSTANTJOBDEPTH</strong> and <strong>CONSTANTPSDEPTH</strong>
+attempt to maintain an idle queue of &lt;SIMINITIALQUEUEDEPTH&gt; jobs and
+procseconds respectively)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMJOBSUBMISSIONPOLICY</span> <span class="n">NORMAL</span>
+</pre></div>
+</div>
+<p>(Maui will submit jobs with the relative time distribution specified in
+the workload trace file.)</p>
+<p><strong>SIMNODECONFIGURATION</strong>
+Format:
+one of the following:
+<strong>UNIFORM</strong> or <strong>NORMAL</strong>
+Default:
+<strong>NORMAL</strong>
+Details:
+specifies whether or not maui will filter nodes based on resource
+configuration while running a simulation
+Example:</p>
+<p><strong>SIMNODECOUNT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (no limit)
+Details:
+specifies the maximum number of nodes maui will load from the simulation
+resource file
+Example:</p>
+<p><strong>SIMRESOURCETRACEFILE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+traces/resource.trace
+Details:
+specifies the file from which maui will obtain node information when
+running in simulation mode. Maui will attempt to locate the file
+relative to &lt;MAUIHOMEDIR&gt; unless specified as an absolute path
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMRESOURCETRACEFILE</span> <span class="n">traces</span><span class="o">/</span><span class="n">nodes</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>(Maui will obtain node traces when running in simulation mode from the
+&lt;MAUIHOMEDIR&gt;``/traces/nodes.1`` file)</p>
+<p><strong>SIMRMRANDOMDELAY</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the random delay added to the RM command base delay
+accumulated when making any resource manager call in simulation mode
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMRMRANDOMDELAY</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(Maui will add a random delay of between 0 and 5 seconds to the
+simulated time delay of all RM calls)</p>
+<p><strong>SIMSTOPITERATION</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (no stop iteration)
+Details:
+specifies on which scheduling iteration a maui simulation will stop and
+was for a command to resume scheduling
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMSTOPITERATION</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>(Maui should stop after the first iteration of simulated scheduling and
+wait for admin commands)</p>
+<p><strong>SIMTIMERATIO</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (no time ratio)
+Details:
+determines wall time speedup. Simulated Maui time will advance
+&lt;SIMTIMERATIO&gt; * faster than real wall time.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMTIMERATIO</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>(Maui simulation time will advance 10 times faster than real world wall
+time. For example, in 1 hour, Maui will process 10 hours of simulated
+workload)</p>
+<p><strong>SIMWORKLOADTRACEFILE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+traces/workload.trace
+Details:
+specifies the file from which maui will obtain job information when
+running in simulation mode. Maui will attempt to locate the file
+relative to &lt;MAUIHOMEDIR&gt; unless specified as an absolute path
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SIMWORKLOADTRACEFILE</span> <span class="n">traces</span><span class="o">/</span><span class="n">jobs</span><span class="o">.</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>(Maui will obtain job traces when running in simulation mode from the
+&lt;MAUIHOMEDIR&gt;/traces/jobs.2 file)</p>
+<p><strong>SRACCESS[X]</strong>
+Deprecated in Maui 3.2 and higher
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+DEDICATED or SHARED
+Default:
+DEDICATED
+Details:
+If set to SHARED, allows a standing reservation to utilize resources
+already allocated to other non-job reservations. Otherwise, these other
+reservations will block resource access. (See <a class="reference external" href="7.1.5managingreservations.html">Managing
+Reservations</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRACCESS</span><span class="p">[</span><span class="n">test</span><span class="p">]</span> <span class="n">SHARED</span>
+</pre></div>
+</div>
+<p>(Standing reservation &#8216;test&#8217; may access resources allocated to existing
+standing and administrative reservations)</p>
+<p><strong>SRACCOUNTLIST[X]</strong>
+Deprecated in Maui 3.2 and higher
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+list of valid account names
+Default:
+[NONE]
+Details:
+specifies that jobs with the associated accounts may use the resources
+contained within this reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRACCOUNTLIST</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">ops</span> <span class="n">staff</span>
+</pre></div>
+</div>
+<p>(jobs using the account <code class="docutils literal"><span class="pre">ops</span></code> or <code class="docutils literal"><span class="pre">staff</span></code> are granted access to the
+resources in standing reservation &#8216;1&#8217;)</p>
+<p><strong>SRCHARGEACCOUNT[X]</strong>
+Deprecated in Maui 3.2 and higher
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+any valid accountname
+Default:
+[NONE]
+Details:
+specifies the account to which maui will charge all idle cycles within
+the reservation (via the allocation bank)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRCHARGEACCOUNT</span><span class="p">[</span><span class="n">test</span><span class="p">]</span> <span class="n">steve</span>
+</pre></div>
+</div>
+<p>(The scheduler will charge all idle cycles within reservations
+supporting standing reservation test to user &#8216;steve&#8217;)</p>
+<p><strong>SRCFG[X]</strong>
+Format:
+one or more of the following &lt;ATTR&gt;=&lt;VALUE&gt; pairs
+<strong>ACCESS</strong>
+<strong>ACCOUNTLIST</strong>
+<strong>CHARGEACCOUNT</strong>
+<strong>CLASSLIST</strong>
+<strong>DAYS</strong>
+<strong>DEPTH</strong>
+<strong>ENDTIME</strong>
+<strong>FLAGS</strong>
+<strong>GROUPLIST</strong>
+<strong>HOSTLIST</strong>
+<strong>JOBATTRLIST</strong>
+<strong>NODEFEATURES</strong>
+<strong>OWNER</strong>
+<strong>PARTITION</strong>
+<strong>PERIOD</strong>
+<strong>PRIORITY</strong>
+<strong>QOSLIST</strong>
+<strong>RESOURCES</strong>
+<strong>STARTTIME</strong>
+<strong>TASKCOUNT</strong>
+<strong>TIMELIMIT</strong>
+<strong>TPN</strong>
+<strong>TRIGGER</strong>
+<strong>USERLIST</strong>
+NOTE: <strong>HOSTLIST</strong> and <em>ACL</em> list values must be comma delimited. (i.e.,
+HOSTLIST=nodeA,nodeB)
+Default:
+[NONE]
+Details:
+specifies attributes of a standing reservation. Available in Maui 3.2
+and higher. See <a class="reference external" href="7.1.5managingreservations.html">Managing
+Reservations</a> for details.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRCFG</span><span class="p">[</span><span class="n">fast</span><span class="p">]</span> <span class="n">STARTTIME</span><span class="o">=</span><span class="mi">9</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="n">ENDTIME</span><span class="o">=</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span>SRCFG[fast] HOSTLIST=node0[1-4]$
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRCFG</span><span class="p">[</span><span class="n">fast</span><span class="p">]</span> <span class="n">QOSLIST</span><span class="o">=</span><span class="n">high</span><span class="p">:</span><span class="n">low</span>
+</pre></div>
+</div>
+<p>(Maui will create a standing reservation running from 9:00 AM to 3:00 PM
+on nodes 1 through 4 accessible by jobs with QOS high or low.)</p>
+<p><strong>SRCLASSLIST[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+list of valid class names
+Default:
+[NONE]
+Details:
+specifies that jobs requiring any of these classes may use the resources
+contained within this reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRCLASSLIST</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">interactive</span>
+</pre></div>
+</div>
+<p>(maui will allow all jobs requiring any of the classes listed access to
+the resources reserved by standing reservation &#8216;2&#8217;)</p>
+<p><strong>SRDAYS[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+one or more of the following (space delimited)
+<strong>Mon,</strong> <strong>Tue,</strong> <strong>Wed</strong>, <strong>Thu,</strong> <strong>Fri,</strong> <strong>Sat,</strong> <strong>Sun</strong>, or
+<strong>[ALL]</strong>
+Default:
+<strong>[ALL]</strong>
+Details:
+specifies which days of the week the standing reservation will be active
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRDAYS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">Mon</span> <span class="n">Tue</span> <span class="n">Wed</span> <span class="n">Thu</span> <span class="n">Fri</span>
+</pre></div>
+</div>
+<p>(standing reservation &#8216;1&#8217; will be active on Monday thru Friday)</p>
+<p><strong>SRDEPTH[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+&lt;INTEGER&gt;
+Default:
+2
+Details:
+specifies the number of standing reservations which will be created (one
+per day)
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRDEPTH</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">7</span>
+</pre></div>
+</div>
+<p>(specifies that standing reservations will be created for standing
+reservation &#8216;1&#8217; for today, and the next 6 days)</p>
+<p><strong>SRENDTIME[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+[[HH:]MM:]SS
+Default:
+24:00:00
+Details:
+specifies the time of day the standing reservation becomes inactive
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRSTARTTIME</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="mi">8</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRENDTIME</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(standing reservation &#8216;2&#8217; is active from 8:00 AM until 5:00 PM)</p>
+<p><strong>SRFEATURES[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Replaced with <a class="reference external" href="7.1.5managingreservations.html">NODEFEATURES</a>
+Format:
+space delimited list of node features
+Default:
+[NONE]
+Details:
+specifies the required node features for nodes which will be part of the
+standing reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRFEATURES</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">wide</span> <span class="n">fddi</span>
+</pre></div>
+</div>
+<p>(all nodes used in the standing reservation must have both the &#8216;wide&#8217;
+and &#8216;fddi&#8217; node attributes)</p>
+<p><strong>SRFLAGS</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+colon delimited list of zero or more of the following flags:
+<strong>SINGLEUSE</strong>*
+<strong>BYNAME</strong>
+<strong>PREEMPTEE</strong>*
+<strong>TIMEFLEX</strong>*
+<strong>FORCE</strong></p>
+<p>Default:
+[NONE]
+Details:
+specifies special reservation attributes. See <a class="reference external" href="7.1.5managingreservations.html">Managing
+Reservations</a> for details.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRFLAGS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">BYNAME</span>
+</pre></div>
+</div>
+<p>(Jobs may only access the resources within this reservation if they
+explicitly request the reservation &#8216;by name&#8217;</p>
+<p><strong>SRGROUPLIST[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+one or more space delimited group names
+Default:
+[ALL]
+Details:
+specifies the groups which will be allowed access to this standing
+reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRGROUPLIST</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">staff</span> <span class="n">ops</span> <span class="n">special</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRCLASSLIST</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">interactive</span>
+</pre></div>
+</div>
+<p>(Maui will allow jobs with the listed group ID&#8217;s or which request the
+job class &#8216;interactive&#8217; to use the resources covered by standing
+reservation 1.)</p>
+<p><strong>SRHOSTLIST[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+one or more space delimited host names
+Default:
+[ALL]
+Details:
+specifies the set of host from which Maui can search for resources to
+satisfy the reservation. If SRTASKCOUNT is also specified, only
+&lt;SRTASKCOUNT&gt; tasks will be reserved. Otherwise, all hosts listed will
+be reserved.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRHOSTLIST</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">node001</span> <span class="n">node002</span> <span class="n">node003</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRRESOURCES</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">PROCS</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span><span class="n">MEM</span><span class="o">=</span><span class="mi">512</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRTASKCOUNT</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>(Maui will reserve 2 tasks - with 2 processors and 512 MB each, using
+resources located on node001, node002, and/or node003)</p>
+<p><strong>SRMAXTIME[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Replaced with <a class="reference external" href="7.1.5managingreservations.html">TIMELIMIT</a>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+-1 (no time based access)
+Details:
+specifies the maximum allowed overlap between a the standing reservation
+and a job requesting resource access
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRMAXTIME</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will allow jobs to access up to one hour of resources in standing
+reservation 6)</p>
+<p><strong>SRNAME[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+SRNAME should no longer be used
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies name of standing reservation &lt;X&gt;
+Default:
+Example:</p>
+<p><strong>SRPARTITION[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+&lt;STRING&gt;
+Default:
+[ALL]
+Details:
+specifies the partition in which the standing reservation should be
+created
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRPARTITION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">OLD</span>
+</pre></div>
+</div>
+<p>(only select resource for standing reservation 0 in partition &#8216;OLD&#8217;)</p>
+<p><strong>SRPERIOD[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+one of <strong>DAY</strong>, <strong>WEEK</strong>, or <strong>INFINITY</strong>
+Default:
+<strong>DAY</strong>
+Details:
+specifies the periodicity of the standing reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRPERIOD</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">WEEK</span>
+</pre></div>
+</div>
+<p>(each standing reservation covers a one week period)</p>
+<p><strong>SRQOSLIST[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+zero or more valid QOS names
+Default:
+[NONE]
+Details:
+specifies that jobs with the listed QOS names can access the reserved
+resources
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRQOSLIST</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">1</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>(maui will allow jobs using QOS 1, 3, 4, and 5 to use the reserved
+resources)</p>
+<p><strong>SRRESOURCES[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+semicolon delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs
+Default:
+PROCS=-1 (All processors available on node)
+Details:
+specifies what resources constitute a single standing reservation task.
+(each task must be able to obtain all of its resources as an atomic unit
+on a single node) Supported resources currently include the following:
+| PROCS (number of processors)
+| MEM (real memory in MB)
+| DISK (local disk in MB)
+| SWAP (virtual memory in MB)</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRRESOURCES</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">PROCS</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">MEM</span><span class="o">=</span><span class="mi">512</span>
+</pre></div>
+</div>
+<p>(each standing reservation task will reserve one processor and 512 MB of
+real memory)</p>
+<p><strong>SRSTARTTIME[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+[[HH:]MM:]SS
+Default:
+00:00:00
+Details:
+specifies the time of day the standing reservation becomes active
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRSTARTTIME</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">08</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRENDTIME</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(standing reservation &#8216;1&#8217; is active from 8:00 AM until 5:00 PM)</p>
+<p><strong>SRTASKCOUNT[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies how may tasks should be reserved for the reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRRESOURCES</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">PROCS</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">MEM</span><span class="o">=</span><span class="mi">256</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRTASKCOUNT</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="mi">16</span>
+</pre></div>
+</div>
+<p>(standing reservation &#8216;2&#8217; will reserve 16 tasks worth of resources, in
+this case, 16 procs and 4 GB of real memory)</p>
+<p><strong>SRTIMELOGIC[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+<strong>AND</strong> or <strong>OR</strong>
+Default:
+<strong>OR</strong>
+Details:
+specifies how SRMAXTIME access status will be combined with other
+standing reservation access methods to determine job access. If
+SRTIMELOGIC is set to OR, a job is granted access to the reserved
+resources if it meets the MAXTIME criteria or any other access criteria
+(i.e., SRUSERLIST) If SRTIMELOGIC is set to AND, a job is granted access
+to the reserved resources only if it meets the MAXTIME criteria and at
+least on other access criteria
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRMAXTIME</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRUSERLIST</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="n">carol</span> <span class="n">charles</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRTIMELOGIC</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="n">AND</span>
+</pre></div>
+</div>
+<p>(Maui will allow jobs from users carol and charles to use up to one hour
+of resources in standing reservation 5)</p>
+<p><strong>SRTPN[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+&lt;INTEGER&gt;
+Default:
+0 (no TPN constraint)
+Details:
+specifies the minimum number of tasks per node which must be available
+on eligible nodes.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRTPN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRRESOURCES</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">PROCS</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span><span class="n">MEM</span><span class="o">=</span><span class="mi">256</span>
+</pre></div>
+</div>
+<p>(Maui must locate at least 4 tasks on each node that is to be part of
+the reservation. That is, each node included in standing reservation &#8216;2&#8217;
+must have at least 8 processors and 1 GB of memory available)</p>
+<p><strong>SRUSERLIST[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+space delimited list of users
+Default:
+[NONE]
+Details:
+specifies which users have access to the resources reserved by this
+reservation
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRUSERLIST</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">bob</span> <span class="n">joe</span> <span class="n">mary</span>
+</pre></div>
+</div>
+<p>(users bob, joe and mary can all access the resources reserved within
+this reservation)</p>
+<p><strong>SRWENDTIME[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+7:00:00:00
+Details:
+specifies the week offset at which the stand reservation should end
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRSTARTTIME</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">1</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRENDTIME</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">5</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(standing reservation &#8216;1&#8217; will run from Monday 8:00 AM to Friday 5:00
+PM)</p>
+<p><strong>SRWSTARTTIME[X]</strong>
+Deprecated in Maui 3.2
+Refer to <a class="reference external" href="#SRCFG">SRCFG</a>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+0:00:00:00
+Details:
+specifies the week offset at which the standing reservation should start
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRSTARTTIME</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">1</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SRENDTIME</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="mi">5</span><span class="p">:</span><span class="mi">17</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(standing reservation &#8216;1&#8217; will run from Monday 8:00 AM to Friday 5:00
+PM)</p>
+<p><strong>STATDIR</strong>
+Format:
+&lt;STRING&gt;
+Default:
+stats
+Details:
+specifies the directory in which Maui statistics will be maintained
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">STATDIR</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">adm</span><span class="o">/</span><span class="n">maui</span><span class="o">/</span><span class="n">stats</span>
+</pre></div>
+</div>
+<p><strong>SYSCFG</strong>
+Format:
+list of zero or more space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt;
+is one of the following:
+<strong>PRIORITY</strong>, <strong>FSTARGET</strong>, <strong>QLIST</strong>, <strong>QDEF</strong>, <strong>PLIST</strong> , <strong>PDEF</strong>,
+<strong>FLAGS</strong>, or a <a class="reference external" href="6.2throttlingpolicies.html">fairness policy</a>
+specification.
+Default:
+[NONE]
+Details:
+specifies system-wide default attributes. See the <a class="reference external" href="jobflagoverview.html">Attribute/Flag
+Overview</a> for more information.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SYSCFG</span> <span class="n">PLIST</span><span class="o">=</span><span class="n">Partition1</span> <span class="n">QDEF</span><span class="o">=</span><span class="n">highprio</span>
+</pre></div>
+</div>
+<p>(by default, all jobs will have access to partition <code class="docutils literal"><span class="pre">Partition1</span></code> and
+will use the QOS <code class="docutils literal"><span class="pre">highprio</span></code>)</p>
+<p><strong>SWAPWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the priority weight assigned to the virtual memory request of
+a job
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SWAPWEIGHT</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><strong>SYSTEMDEFAULTJOBWALLTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+10:00:00:00
+Details:
+specifies the walltime for jobs which do not explicitly set this value
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SYSTEMDEFAULTJOBWALLTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will assign a wallclock limit of 1 day to jobs which do not
+explicitly specify a wallclock limit)</p>
+<p><strong>SYSTEMMAXPROCPERJOB</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+-1 (NO LIMIT)
+Details:
+specifies the maximum number of processors that can be requested by any
+single job
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SYSTEMMAXJOBPROC</span> <span class="mi">256</span>
+</pre></div>
+</div>
+<p>(Maui will reject jobs requesting more than 256 processors)</p>
+<p><strong>SYSTEMMAXPROCSECONDPERJOB</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+-1 (NO LIMIT)
+Details:
+specifies the maximum number of proc-seconds that can be requested by
+any single job
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SYSTEMMAXJOBPROCSECOND</span> <span class="mi">86400</span>
+</pre></div>
+</div>
+<p>(Maui will reject jobs requesting more than 86400 procs seconds. i.e.,
+64 processors * 30 minutes will be rejected, while a 2 processor * 12
+hour job will be allowed to run)</p>
+<p><strong>SYSTEMMAXJOBWALLTIME</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+-1 (NO LIMIT)
+Details:
+specifies the maximum amount of wallclock time that can be requested by
+any single job
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SYSTEMMAXJOBWALLTIME</span> <span class="mi">1</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(Maui will reject jobs requesting more than one day of walltime)</p>
+<p><strong>TARGWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight to be applied to a job&#8217;s queuetime and expansion
+factor target components
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TARGETWEIGHT</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p><strong>TASKDISTRIBUTIONPOLICY</strong>
+Format:
+one of <strong>DEFAULT</strong> or <strong>LOCAL</strong>
+Default:
+<strong>DEFAULT</strong>
+Details:
+specifies how job tasks should be mapped to allocated resources.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TASKDISTRIBUTIONPOLICY</span> <span class="n">DEFAULT</span>
+</pre></div>
+</div>
+<p>(Maui should use standard task distribution algorithms)</p>
+<p><strong>TRAPFUNCTION</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the functions to be trapped
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TRAPFUNCTION</span> <span class="n">UpdateNodeUtilization</span><span class="o">|</span><span class="n">GetNodeSResTime</span>
+</pre></div>
+</div>
+<p><strong>TRAPJOB</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the jobs to be trapped
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TRAPJOB</span> <span class="n">buffy</span><span class="o">.</span><span class="mf">0023.0</span>
+</pre></div>
+</div>
+<p><strong>TRAPNODE</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the nodes to be trapped
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TRAPNODE</span> <span class="n">node001</span><span class="o">|</span><span class="n">node004</span><span class="o">|</span><span class="n">node005</span>
+</pre></div>
+</div>
+<p><strong>TRAPRES</strong>
+Format:
+&lt;STRING&gt;
+Default:
+[NONE]
+Details:
+specifies the reservations to be trapped
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">TRAPRES</span> <span class="n">interactive</span><span class="o">.</span><span class="mf">0.1</span>
+</pre></div>
+</div>
+<p><strong>USAGEWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight assigned to the percent and total job usage
+subfactors
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">USAGEWEIGHT</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p><strong>USAGEPERCENTWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+Details:
+Example:</p>
+<p><strong>USEMACHINESPEED</strong>
+Format:
+ON or OFF
+Default:
+OFF
+Details:
+specifies whether or not job wallclock limits should be scaled by the
+machine speed of the node(s) they are running on.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">USEMACHINESPEED</span> <span class="n">ON</span>
+</pre></div>
+</div>
+<p>(job &lt;X&gt; specifying a wallclock limit of 1:00:00 would be given only 40
+minutes to run if started on a node with a machine speed of 1.5)</p>
+<p><strong>USERCFG[&lt;USERID&gt;]</strong>
+Format:
+list of zero or more space delimited &lt;ATTR&gt;=&lt;VALUE&gt; pairs where &lt;ATTR&gt;
+is one of the following:
+<strong>PRIORITY</strong>, <strong>FSTARGET</strong>, <strong>QLIST</strong>, <strong>QDEF</strong>, <strong>PLIST</strong> , <strong>PDEF</strong>,
+<strong>FLAGS</strong>, or a <a class="reference external" href="6.2throttlingpolicies.html">fairness policy</a>
+specification.
+Default:
+[NONE]
+Details:
+specifies user specific attributes. See the <a class="reference external" href="jobflagoverview.html">flag
+overview</a> for a description of legal flag
+values.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">USERCFG</span><span class="p">[</span><span class="n">john</span><span class="p">]</span> <span class="n">MAXJOB</span><span class="o">=</span><span class="mi">50</span> <span class="n">QDEF</span><span class="o">=</span><span class="n">highprio</span>
+</pre></div>
+</div>
+<p>(up to 50 jobs submitted under the user ID <code class="docutils literal"><span class="pre">john</span></code> will be allowed to
+execute simultaneously and will be assigned the QOS
+<a href="#id1"><span class="problematic" id="id2">``</span></a>highprio by default.)                        ``</p>
+<p><strong>USERWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight assigned to the specified user priority (see
+<a class="reference external" href="5.1.2priorityfactors.html#cred">Credential Priority Factor</a> )
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">USERWEIGHT</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p><strong>USESYSTEMQUEUETIME</strong>
+Format:
+ON or OFF
+Default:
+OFF
+Details:
+specifies whether or not job prioritization should be based on the time
+the job has been eligible to run, i.e., idle and meets all fairness
+policies (ON) or the time the job has been idle (OFF). NOTE: In Maui
+3.0.8 and higher, this parameter has been superseded by the
+<a class="reference external" href="#jobprioaccrualpolicy">JOBPRIOACCRUALPOLICY</a> parameter.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">USESYSTEMQUEUETIME</span> <span class="n">OFF</span>
+</pre></div>
+</div>
+<p>(the queuetime and expansion factor components of a job&#8217;s priority will
+be calculated based on the length of time the job has been in the idle
+state.)</p>
+<p>(See <a class="reference external" href="5.1.2priorityfactors.html">QUEUETIMEFACTOR</a> for more info)</p>
+<p><strong>WCVIOLATIONACTION</strong>
+Format:
+&lt;one of CANCEL or PREEMPT&gt;
+Default:
+CANCEL
+Details:
+specifies the action to take when a job exceeds its wallclock limit. If
+set to cancel, the job will be terminated. If set to PREEMPT, the action
+defined by PREEMPTPOLICY parameter will be taken.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">WCVIOLATIONACTION</span> <span class="n">PREEMPT</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">PREEMPTPOLICY</span> <span class="n">REQUEUE</span>
+</pre></div>
+</div>
+<p>(Maui will requeue jobs which exceed their wallclock limit)</p>
+<p><strong>XFACTORCAP</strong>
+Format:
+&lt;DOUBLE&gt;
+Default:
+0 (NO CAP)
+Details:
+specifies the maximum total pre-weighted contribution to job priority
+which can be contributed by the expansion factor component. This value
+is specified as an absolute priority value, not as a percent.
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">XFACTORCAP</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<p>(Maui will not allow a job&#8217;s pre-weighted XFactor priority component to
+exceed the value 10000)</p>
+<p><strong>XFMINWCLIMIT</strong>
+Format:
+[[[DD:]HH:]MM:]SS
+Default:
+-1 (NO LIMIT)
+Details:
+specifies the minimum job wallclock limit that will be considered in job
+expansion factor priority calculations
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">XFMINWCLIMIT</span> <span class="mi">0</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>(jobs requesting less than one minute of wallclock time will be treated
+as if their wallclock limit was set to one minute when determining
+expansion factor for priority calculations)</p>
+<p><strong>XFACTORWEIGHT</strong>
+Format:
+&lt;INTEGER&gt;
+Default:
+0
+Details:
+specifies the weight to be applied to a job&#8217;s minimum expansion factor
+before it is added to the job&#8217;s cumulative priority
+Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">XFACTORWEIGHT</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>(Maui will multiply a job&#8217;s XFactor value by 1000 and then add this
+value to its total priority</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="a.esecurity.html"
+                        title="previous chapter">Appendix E: Security</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="a.gcommandoverview.html"
+                        title="next chapter">Appendix G: Commands Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/a.fparameters.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="a.gcommandoverview.html" title="Appendix G: Commands Overview"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="a.esecurity.html" title="Appendix E: Security"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

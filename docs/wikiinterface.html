@@ -1,0 +1,766 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="wiki-interface-specification-version-1-1">Wiki Interface Specification, version 1.1</p>
+<p><strong>COMMANDS</strong>:</p>
+<p>All commands are requested via a socket interface, one command per
+socket connection. All fields and values are specified in ASCII text.
+Maui is configured to communicate via the wiki interface by specifying
+the following parameters in the maui.cfg file:</p>
+<div class="line-block">
+<div class="line">RMTYPE[X] WIKI</div>
+<div class="line">RMSERVER[X] &lt;HOSTNAME&gt;</div>
+<div class="line">RMPORT[X] &lt;PORTNUMBER&gt;</div>
+</div>
+<p>Field values must backslash escape the following characters if
+specified:</p>
+<p>&#8216;#&#8217; &#8216;;&#8217; &#8216;:&#8217; (ie &#8216;\#&#8217;)</p>
+<p>Supported Commands are:</p>
+<p>GETNODES, GETJOBS, STARTJOB, CANCELJOB, SUSPENDJOB, RESUMEJOB,
+JOBADDTASK, JOBRELEASETASK</p>
+<hr class="docutils" />
+<p><strong>GetNodes</strong>
+send</p>
+<p>CMD=GETNODES ARG={&lt;UPDATETIME&gt;:&lt;NODEID&gt;[:&lt;NODEID&gt;]... |
+&lt;UPDATETIME&gt;:ALL}</p>
+<p>Only nodes updated more recently than &lt;UPDATETIME&gt; will be returned
+where &lt;UPDATETIME&gt; is specified as the epoch time of interest. Setting
+&lt;UPDATETIME&gt; to &#8216;0&#8217; will return information for all nodes. Specify a
+colon delimited list of NODEID&#8217;s if specific nodes are desired or use
+the keyword &#8216;ALL&#8217; to receive information for all nodes.</p>
+<p>receive</p>
+<p>SC=&lt;STATUSCODE&gt;
+ARG=&lt;NODECOUNT&gt;#&lt;NODEID&gt;:&lt;FIELD&gt;=&lt;VALUE&gt;;[&lt;FIELD&gt;=&lt;VALUE&gt;;]...[#&lt;NODEID&gt;:&lt;FIELD&gt;=&lt;VALUE&gt;;[&lt;FIELD&gt;=&lt;VALUE&gt;;]...]...</p>
+<p>or</p>
+<p>SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<p>STATUSCODE Values:</p>
+<div class="line-block">
+<div class="line">0 SUCCESS</div>
+<div class="line">-1 INTERNAL ERROR</div>
+</div>
+<p>FIELD is either the text name listed below or &#8216;A&lt;FIELDNUM&gt;&#8217; (ie,
+&#8216;UPDATETIME&#8217; or &#8216;A2&#8217;)</p>
+<p>RESPONSE is a statuscode sensitive message describing error or state
+details</p>
+<p>EXAMPLE:</p>
+<p>send &#8216;CMD=GETNODES ARG=0:node001:node002:node003&#8217;</p>
+<p>receive &#8216;SC=0
+ARG=4#node001:UPDATETIME=963004212;STATE=Busy;OS=AIX43;ARCH=RS6000...&#8217;</p>
+<div class="line-block">
+<div class="line">Field Values</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="5%" />
+<col width="26%" />
+<col width="4%" />
+<col width="62%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>INDEX</td>
+<td>NAME</td>
+<td>FORMAT</td>
+<td>DEFAULT</td>
+<td>DESCRIPTION</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>UPDATETIME*</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>0</td>
+<td>time node information was last updated</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>STATE*</td>
+<td>one of the following: Idle, Running, Busy, Unknown,Draining, or Down</td>
+<td>Down</td>
+<td>state of the node</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>OS</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>operating system running on node</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>ARCH</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>compute architecture of node</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>CMEMORY</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>configured RAM on node (in MB)</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>AMEMORY</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>available/free RAM on node (in MB)</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>CSWAP</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>configured swap on node (in MB)</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>ASWAP</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>available swap on node (in MB)</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>CDISK</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>configured local disk on node (in MB)</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>ADISK</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>available local disk on node (in MB)</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>CPROC</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>configured processors on node</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>APROC</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>available processors on node</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td>CNET</td>
+<td>one or more colon delimited &lt;STRING&gt;&#8217;s (ie, ETHER:FDDI:ATM)</td>
+<td>[NONE]</td>
+<td>configured network interfaces on node</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>ANET</td>
+<td>one or more colon delimited &lt;STRING&gt;&#8217;s (ie, ETHER:ATM)</td>
+<td>[NONE]</td>
+<td>Available network interfaces on node. Available interfaces are those which are &#8216;up&#8217; and not already dedicated to a job.</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>CPULOAD</td>
+<td>&lt;DOUBLE&gt;</td>
+<td>0.0</td>
+<td>one minute BSD load average</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>CCLASS</td>
+<td>one or more bracket enclosed &lt;NAME&gt;:&lt;COUNT&gt; pairs (ie, [batch:5][sge:3])</td>
+<td>[NONE]</td>
+<td>Run classes supported by node. Typically, one class is &#8216;consumed&#8217; per task. Thus, an 8 processor node may have 8 instances of each class it supports present, ie [batch:8][interactive:8]</td>
+</tr>
+<tr class="row-even"><td>17</td>
+<td>ACLASS</td>
+<td>one or more bracket enclosed &lt;NAME&gt;:&lt;COUNT&gt; pairs (ie, [batch:5][sge:3])</td>
+<td>[NONE]</td>
+<td>run classes currently available on node. If not specified, scheduler will attempt to determine actual ACLASS value.</td>
+</tr>
+<tr class="row-odd"><td>18</td>
+<td>FEATURE</td>
+<td>one or more colon delimited &lt;STRING&gt;&#8217;s (ie, WIDE:HSM)</td>
+<td>[NONE]</td>
+<td>generic attributes, often describing hardware or software features, associated with the node.</td>
+</tr>
+<tr class="row-even"><td>19</td>
+<td>PARTITION</td>
+<td>&lt;STRING&gt;</td>
+<td>DEFAULT</td>
+<td>partition to which node belongs</td>
+</tr>
+<tr class="row-odd"><td>20</td>
+<td>EVENT</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Event or exception which occurred on the node</td>
+</tr>
+<tr class="row-even"><td>21</td>
+<td>CURRENTTASK</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Number of tasks currently active on the node</td>
+</tr>
+<tr class="row-odd"><td>22</td>
+<td>MAXTASK</td>
+<td>&lt;INTEGER&gt;</td>
+<td>&lt;CPROC&gt;</td>
+<td>Maximum number of tasks allowed on the node at any given time</td>
+</tr>
+<tr class="row-even"><td>23</td>
+<td>SPEED</td>
+<td>&lt;DOUBLE&gt;</td>
+<td>1.0</td>
+<td>Relative processor speed of the node</td>
+</tr>
+<tr class="row-odd"><td>24</td>
+<td>FRAME</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Frame location of the node</td>
+</tr>
+<tr class="row-even"><td>25</td>
+<td>SLOT</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Slot location of the node</td>
+</tr>
+<tr class="row-odd"><td>26</td>
+<td>CRES</td>
+<td>one or more colon delimited &lt;NAME&gt;,&lt;VALUE&gt; pairs (ie, MATLAB,6:COMPILER,100)</td>
+<td>[NONE]</td>
+<td>Arbitrary consumable resources supported and tracked on the node, ie software licenses or tape drives.</td>
+</tr>
+<tr class="row-even"><td>27</td>
+<td>ARES</td>
+<td>one or more colon delimited &lt;NAME&gt;,&lt;VALUE&gt; pairs (ie, MATLAB,6:COMPILER,100)</td>
+<td>[NONE]</td>
+<td>Arbitrary consumable resources currently available on the node</td>
+</tr>
+</tbody>
+</table>
+<p>* indicates required field</p>
+<div class="line-block">
+<div class="line">NOTE 1: node states have the following definitions:</div>
+<div class="line">Idle: Node is ready to run jobs but currently is not running any.</div>
+<div class="line">Running: Node is running some jobs and will accept additional jobs</div>
+<div class="line">Busy: Node is running some jobs and will not accept additional jobs</div>
+<div class="line">Unknown: Node is capable of running jobs but the scheduler will need
+to determine if the node state is actually Idle, Running, or Busy.</div>
+<div class="line">Draining: Node is responding but will not accept new jobs</div>
+<div class="line">Down: Resource Manager problems have been detected. Node is incapable
+of running jobs.</div>
+</div>
+<hr class="docutils" />
+<p><strong>GetJobs</strong>
+send</p>
+<p>CMD=GETJOBS ARG={&lt;UPDATETIME&gt;:&lt;JOBID&gt;[:&lt;JOBID&gt;]... | &lt;UPDATETIME&gt;:ALL }</p>
+<p>Only jobs updated more recently than &lt;UPDATETIME&gt; will be returned where
+&lt;UPDATETIME&gt; is specified as the epoch time of interest. Setting
+&lt;UPDATETIME&gt; to &#8216;0&#8217; will return information for all jobs. Specify a
+colon delimited list of JOBID&#8217;s if information for specific jobs is
+desired or use the keyword &#8216;ALL&#8217; to receive information about all jobs</p>
+<p>receive</p>
+<p>SC=&lt;STATUSCODE&gt;
+ARG=&lt;JOBCOUNT&gt;#&lt;JOBID&gt;:&lt;FIELD&gt;=&lt;VALUE&gt;;[&lt;FIELD&gt;=&lt;VALUE&gt;;]...[#&lt;JOBID&gt;:&lt;FIELD&gt;=&lt;VALUE&gt;;[&lt;FIELD&gt;=&lt;VALUE&gt;;]...]...</p>
+<p>or</p>
+<div class="line-block">
+<div class="line">SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</div>
+<div class="line">FIELD is either the text name listed below or &#8216;A&lt;FIELDNUM&gt;&#8217;</div>
+<div class="line">(ie, &#8216;UPDATETIME&#8217; or &#8216;A2&#8217;)</div>
+</div>
+<p>STATUSCODE values:</p>
+<div class="line-block">
+<div class="line">0 SUCCESS</div>
+<div class="line">-1 INTERNAL ERROR</div>
+</div>
+<p>RESPONSE is a statuscode sensitive message describing error or state
+details</p>
+<p>EXAMPLE:</p>
+<p>send &#8216;CMD=GETJOBS ARG=0:LL&#8217;</p>
+<p>receive
+&#8216;ARG=2#nebo3001.0:UPDATETIME=9780000320;STATE=Idle;WCLIMIT=3600;...&#8217;</p>
+<p>Table of Job Field Values</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="8%" />
+<col width="27%" />
+<col width="6%" />
+<col width="55%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>INDEX</td>
+<td>NAME</td>
+<td>FORMAT</td>
+<td>DEFAULT</td>
+<td>DESCRIPTION</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>UPDATETIME*</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>0</td>
+<td>Time job was last updated</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>STATE*</td>
+<td>one of Idle, Running, Hold, Suspended, Completed, or Cancelled</td>
+<td>Idle</td>
+<td>State of job</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>WCLIMIT*</td>
+<td>&lt;INTEGER&gt;</td>
+<td>864000</td>
+<td>Seconds of wall time required by job</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>TASKS*</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>Number of tasks required by job</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>NODES</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>Number of nodes required by job</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>GEOMETRY</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>String describing task geometry required by job</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>QUEUETIME*</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>0</td>
+<td>time job was submitted to resource manager</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>STARTDATE</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>0</td>
+<td>earliest time job should be allowed to start</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>STARTTIME*</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>0</td>
+<td>time job was started by the resource manager</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>COMPLETIONTIME*</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>0</td>
+<td>time job completed execution</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>UNAME*</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>UserID under which job will run</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>GNAME*</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>GroupID under which job will run</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td>ACCOUNT</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>AccountID associated with job</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>RFEATURES</td>
+<td>colon delimited list &lt;STRING&gt;&#8217;s</td>
+<td>[NONE]</td>
+<td>List of features required on nodes</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>RNETWORK</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>network adapter required by job</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>DNETWORK</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>network adapter which must be dedicated to job</td>
+</tr>
+<tr class="row-even"><td>17</td>
+<td>RCLASS</td>
+<td>list of bracket enclosed &lt;STRING&gt;:&lt;INTEGER&gt; pairs</td>
+<td>[NONE]</td>
+<td>list of &lt;CLASSNAME&gt;:&lt;COUNT&gt; pairs indicating type and number of class instances required per task. (ie, &#8216;[batch:1]&#8217; or &#8216;[batch:2][tape:1]&#8217;)</td>
+</tr>
+<tr class="row-odd"><td>18</td>
+<td>ROPSYS</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>operating system required by job</td>
+</tr>
+<tr class="row-even"><td>19</td>
+<td>RARCH</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>architecture required by job</td>
+</tr>
+<tr class="row-odd"><td>20</td>
+<td>RMEM</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>real memory (RAM, in MB) required to be configured on nodes allocated to the job</td>
+</tr>
+<tr class="row-even"><td>21</td>
+<td>RMEMCMP</td>
+<td>one of &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;, &#8216;==&#8217;, &#8216;&lt;&#8217;, or &#8216;&lt;=&#8217;</td>
+<td>&gt;=</td>
+<td>real memory comparison (ie, node must have &gt;= 512MB RAM)</td>
+</tr>
+<tr class="row-odd"><td>22</td>
+<td>DMEM</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>quantity of real memory (RAM, in MB) which must be dedicated to each task of the job</td>
+</tr>
+<tr class="row-even"><td>23</td>
+<td>RDISK</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>local disk space (in MB) required to be configured on nodes allocated to the job</td>
+</tr>
+<tr class="row-odd"><td>24</td>
+<td>RDISKCMP</td>
+<td>one of &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;, &#8216;==&#8217;, &#8216;&lt;&#8217;, or &#8216;&lt;=&#8217;</td>
+<td>&gt;=</td>
+<td>local disk comparison (ie, node must have &gt; 2048 MB local disk)</td>
+</tr>
+<tr class="row-even"><td>25</td>
+<td>DDISK</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>quantity of local disk space (in MB) which must be dedicated to each task of the job</td>
+</tr>
+<tr class="row-odd"><td>26</td>
+<td>RSWAP</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>virtual memory (swap, in MB) required to be configured on nodes allocated to the job</td>
+</tr>
+<tr class="row-even"><td>27</td>
+<td>RSWAPCMP</td>
+<td>one of &#8216;&gt;=&#8217;, &#8216;&gt;&#8217;, &#8216;==&#8217;, &#8216;&lt;&#8217;, or &#8216;&lt;=&#8217;</td>
+<td>&gt;=</td>
+<td>virtual memory comparison (ie, node must have ==4096 MB virtual memory)</td>
+</tr>
+<tr class="row-odd"><td>28</td>
+<td>DSWAP</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>quantity of virtual memory (swap, in MB) which must be dedicated to each task of the job</td>
+</tr>
+<tr class="row-even"><td>29</td>
+<td>PARTITIONMASK</td>
+<td>one or more colon delimited &lt;STRING&gt;s</td>
+<td>[ANY]</td>
+<td>list of partitions in which job can run</td>
+</tr>
+<tr class="row-odd"><td>30</td>
+<td>EXEC</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>job executable command</td>
+</tr>
+<tr class="row-even"><td>31</td>
+<td>IWD</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>job&#8217;s initial working directory</td>
+</tr>
+<tr class="row-odd"><td>32</td>
+<td>COMMENT</td>
+<td>&lt;STRING&gt;</td>
+<td>0</td>
+<td>general job attributes not described by other field</td>
+</tr>
+<tr class="row-even"><td>33</td>
+<td>REJCOUNT</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>number of times job was rejected</td>
+</tr>
+<tr class="row-odd"><td>34</td>
+<td>REJMESSAGE</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>text description of reason job was rejected</td>
+</tr>
+<tr class="row-even"><td>35</td>
+<td>REJCODE</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>reason job was rejected</td>
+</tr>
+<tr class="row-odd"><td>36</td>
+<td>EVENT</td>
+<td>&lt;EVENT&gt;</td>
+<td>[NONE]</td>
+<td>event or exception experienced by job</td>
+</tr>
+<tr class="row-even"><td>37</td>
+<td>TASKLIST</td>
+<td>one or more colon delimited &lt;STRING&gt;s</td>
+<td>[NONE]</td>
+<td>nodeid associated with each active task of job (ie, cl01, cl02, cl01, cl02, cl03)</td>
+</tr>
+<tr class="row-odd"><td>38</td>
+<td>TASKPERNODE</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>exact number of tasks required per node</td>
+</tr>
+<tr class="row-even"><td>39</td>
+<td>QOS</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>quality of service requested</td>
+</tr>
+<tr class="row-odd"><td>40</td>
+<td>ENDDATE</td>
+<td>&lt;EPOCHTIME&gt;</td>
+<td>[ANY]</td>
+<td>time by which job must complete</td>
+</tr>
+<tr class="row-even"><td>41</td>
+<td>CBSERVER</td>
+<td>&lt;STRING&gt;[:&lt;INTEGER&gt;</td>
+<td>[NONE]</td>
+<td>location of server which will handle callback requests in &lt;HOSTNAME&gt;:&lt;PORT&gt; format</td>
+</tr>
+<tr class="row-odd"><td>42</td>
+<td>CBTYPE</td>
+<td>one or more of the following delimited by colons: CANCEL and START</td>
+<td>START:CANCEL</td>
+<td>list of callback types requested by job</td>
+</tr>
+<tr class="row-even"><td>43</td>
+<td>DPROCS</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>number of processors dedicated per task</td>
+</tr>
+<tr class="row-odd"><td>44</td>
+<td>SUSPENDTIME</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Number of seconds job has been suspended</td>
+</tr>
+<tr class="row-even"><td>45</td>
+<td>RESERVATION</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Name of reservation in which job must run</td>
+</tr>
+</tbody>
+</table>
+<p>* indicates required field</p>
+<div class="line-block">
+<div class="line">NOTE 1: job states have the following definitions:</div>
+<div class="line">Idle: job is ready to run</div>
+<div class="line">Running: job is currently executing</div>
+<div class="line">Hold: job is in the queue but is not allowed to run</div>
+<div class="line">Suspended: job has started but execution has temporarily been
+suspended</div>
+<div class="line">Completed: job has completed</div>
+<div class="line">Cancelled: job has been cancelled</div>
+</div>
+<p>NOTE 2: completed and cancelled jobs should be maintained by the
+resource manager for a brief time, perhaps 1 to 5 minutes, before being
+purged. This provides the scheduler time to obtain all final job state
+information for scheduler statistics.</p>
+<hr class="docutils" />
+<p><strong>StartJob</strong>
+The &#8216;StartJob&#8217; command may only be applied to jobs in the &#8216;Idle&#8217; state.
+It causes the job to begin running using the resources listed in the
+NodeID list.</p>
+<p>send CMD=STARTJOB ARG=&lt;JOBID&gt; TASKLIST=&lt;NODEID&gt;[:&lt;NODEID&gt;]...</p>
+<p>receive SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<div class="line-block">
+<div class="line">STATUSCODE &gt;= 0 indicates SUCCESS</div>
+<div class="line">STATUSCODE &lt; 0 indicates FAILURE</div>
+<div class="line">RESPONSE is a text message possibly further describing an error or
+state</div>
+</div>
+<p>EXAMPLE:</p>
+<p>Start job nebo.1 on nodes cluster001 and cluster002</p>
+<p>send &#8216;CMD=STARTJOB ARG=nebo.1 TASKLIST=cluster001:cluster002&#8217;</p>
+<p>receive &#8216;SC=0;RESPONSE=job nebo.1 started with 2 tasks&#8217;</p>
+<hr class="docutils" />
+<p><strong>CancelJob</strong>
+The &#8216;CancelJob&#8217; command, if applied to an active job, with terminate its
+execution. If applied to an idle or active job, the CancelJob command
+will change the job&#8217;s state to &#8216;Cancelled&#8217;.</p>
+<p>send CMD=CANCELJOB ARG=&lt;JOBID&gt; TYPE=&lt;CANCELTYPE&gt;</p>
+<p>&lt;CANCELTYPE&gt; is one of the following:</p>
+<div class="line-block">
+<div class="line">ADMIN (command initiated by scheduler administrator)</div>
+<div class="line">WALLCLOCK (command initiated by scheduler because job exceeded its
+specified wallclock limit)</div>
+</div>
+<p>receive SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<div class="line-block">
+<div class="line">STATUSCODE &gt;= 0 indicates SUCCESS</div>
+<div class="line">STATUSCODE &lt; 0 indicates FAILURE</div>
+<div class="line">RESPONSE is a text message further describing an error or state</div>
+</div>
+<p>EXAMPLE:</p>
+<p>Cancel job nebo.2</p>
+<p>send &#8216;CMD=CANCELJOB ARG=nebo.2 TYPE=ADMIN&#8217;</p>
+<p>receive &#8216;SC=0 RESPONSE=job nebo.2 cancelled&#8217;</p>
+<hr class="docutils" />
+<p><strong>SuspendJob</strong>
+| The &#8216;SuspendJob&#8217; command can only be issued against a job in the state</p>
+<blockquote>
+<div>&#8216;Running&#8217;. This command suspends job execution and results in the job
+changing to the &#8216;Suspended&#8217; state.</div></blockquote>
+<div class="line-block">
+<div class="line">send CMD=SUSPENDJOB ARG=&lt;JOBID&gt;</div>
+</div>
+<p>receive SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<div class="line-block">
+<div class="line">STATUSCODE &gt;= 0 indicates SUCCESS</div>
+<div class="line">STATUSCODE &lt; 0 indicates FAILURE</div>
+<div class="line">RESPONSE is a text message possibly further describing an error or
+state</div>
+</div>
+<p>EXAMPLE:</p>
+<p>Resume job nebo.3</p>
+<p>send &#8216;CMD=RESUMEJOB ARG=nebo.3&#8217;</p>
+<p>receive &#8216;SC=0 RESPONSE=job nebo.3 resumed&#8217;</p>
+<hr class="docutils" />
+<p><strong>ResumeJob</strong>
+The &#8216;ResumeJob&#8217; command can only be issued against a job in the state
+&#8216;Suspended&#8217;. This command resumes a suspended job returning it to the
+&#8216;Running&#8217; state.</p>
+<p>send CMD=RESUMEJOB ARG=&lt;JOBID&gt;</p>
+<p>receive SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<div class="line-block">
+<div class="line">STATUSCODE &gt;= 0 indicates SUCCESS</div>
+<div class="line">STATUSCODE &lt; 0 indicates FAILURE</div>
+<div class="line">RESPONSE is a text message further describing an error or state</div>
+</div>
+<p>EXAMPLE:</p>
+<p>Resume job nebo.3</p>
+<p>send &#8216;CMD=RESUMEJOB ARG=nebo.3&#8217;</p>
+<p>receive &#8216;SC=0 RESPONSE=job nebo.3 resumed&#8217;</p>
+<hr class="docutils" />
+<p><strong>JobAddTask</strong>
+The &#8216;JobAddTask&#8217; command allocates additional tasks to an active job.</p>
+<p>send</p>
+<p>CMD=JOBADDTASK ARG=&lt;JOBID&gt; &lt;NODEID&gt; [&lt;NODEID&gt;]...</p>
+<p>receive</p>
+<p>SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<p>STATUSCODE &gt;= 0 indicates SUCCESS</p>
+<hr class="docutils" />
+<p>STATUSCODE &lt; 0 indicates FAILURE
+RESPONSE is a text message possibly further describing an error or state
+EXAMPLE:</p>
+<p>Add 3 default tasks to job nebo30023.0 using resources located on nodes
+cluster002, cluster016, and cluster112.</p>
+<p>send &#8216;CMD=JOBADDTASK ARG=nebo30023.0 DEFAULT cluster002 cluster016
+cluster112&#8217;</p>
+<p>receive &#8216;SC=0 RESPONSE=3 tasks added&#8217;</p>
+<hr class="docutils" />
+<p><strong>JobReleaseTask</strong>
+The &#8216;JobReleaseTask&#8217; command removes tasks from an active job.</p>
+<p>send</p>
+<p>CMD=JOBREMOVETASK ARG=&lt;JOBID&gt; &lt;TASKID&gt; [&lt;TASKID&gt;]...</p>
+<p>receive</p>
+<p>SC=&lt;STATUSCODE&gt; RESPONSE=&lt;RESPONSE&gt;</p>
+<div class="line-block">
+<div class="line">STATUSCODE &gt;= 0 indicates SUCCESS</div>
+<div class="line">STATUSCODE &lt; 0 indicates FAILURE</div>
+<div class="line">RESPONSE is a text message further describing an error or state</div>
+</div>
+<p>EXAMPLE:</p>
+<p>Free resources allocated to tasks 14, 15, and 16 of job nebo30023.0</p>
+<p>send &#8216;CMD=JOBREMOVETASK ARG=nebo30023.0 14 15 16&#8217;</p>
+<p>receive &#8216;SC=0 RESPONSE=3 tasks removed&#8217;</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/wikiinterface.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

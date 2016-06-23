@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. Prioritizing Jobs and Allocating Resources &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="next" title="5.1. Job Prioritization" href="5.1jobprioritization.html" />
+    <link rel="prev" title="4.7. Miscellaneous Commands" href="4.7misc-cmds.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="5.1jobprioritization.html" title="5.1. Job Prioritization"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="4.7misc-cmds.html" title="4.7. Miscellaneous Commands"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="prioritizing-jobs-and-allocating-resources">
+<h1>5. Prioritizing Jobs and Allocating Resources<a class="headerlink" href="#prioritizing-jobs-and-allocating-resources" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="5.1jobprioritization.html">5.1. Job Prioritization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.1.1priorityoverview.html">5.1.1. Priority Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.2priorityfactors.html">5.1.2. Job Priority Factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.3priorityusage.html">5.1.3. Common Priority Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.4prioritystrategies.html">5.1.4. Prioritization Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.5prioritymanagement.html">5.1.5. Manual Job Priority Adjustment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.2nodeallocation.html">5.2. Node Allocation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.2nodeallocation.html#node-allocation-overview">5.2.1. Node Allocation Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#heterogeneous-resources">5.2.1.1. Heterogeneous Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#shared-nodes">5.2.1.2. Shared Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#reservations-or-service-guarantees">5.2.1.3. Reservations or Service Guarantees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#non-flat-network">5.2.1.4. Non-flat Network</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5.2nodeallocation.html#resource-based-algorithms">5.2.2. Resource Based Algorithms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#cpuload">5.2.2.1. CPULOAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#firstavailable">5.2.2.2. FIRSTAVAILABLE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#lastavailable">5.2.2.3. LASTAVAILABLE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#priority">5.2.2.4. PRIORITY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#minresource">5.2.2.5. MINRESOURCE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#contiguous">5.2.2.6. CONTIGUOUS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#maxbalance">5.2.2.7. MAXBALANCE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#fastest">5.2.2.8. FASTEST</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#local">5.2.2.9. LOCAL</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5.2nodeallocation.html#time-based-algorithms">5.2.3. Time Based Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2nodeallocation.html#locally-defined-algorithms">5.2.4. Locally Defined Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2nodeallocation.html#specifying-per-job-resource-preferences">5.2.5. Specifying &#8216;Per Job&#8217; Resource Preferences</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#specifying-resource-preferences">5.2.5.1. Specifying Resource Preferences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5.2nodeallocation.html#selecting-preferred-resources">5.2.5.2. Selecting &#8216;Preferred&#8217; Resources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.3nodeaccess.html">5.3. Node Access Policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5.4nodeavailability.html">5.4. Node Availability Policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5.5taskdistribution.html">5.5. Task Distribution Policies</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="4.7misc-cmds.html"
+                        title="previous chapter">4.7. Miscellaneous Commands</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="5.1jobprioritization.html"
+                        title="next chapter">5.1. Job Prioritization</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/5.0prioritization.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="5.1jobprioritization.html" title="5.1. Job Prioritization"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="4.7misc-cmds.html" title="4.7. Miscellaneous Commands"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

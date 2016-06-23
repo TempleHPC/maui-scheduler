@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first rubric" id="diagnose-f">diagnose -f</p>
+<p class="last"><strong>Maui Fairshare Diagnostics</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric" id="synopsis">Synopsis</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">diagnose</span> <span class="o">-</span><span class="n">f</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Overview:</strong></div>
+</div>
+<div class="line-block">
+<div class="line">The &#8216;diagnose -f&#8217; command is used to display &#8216;at a glance&#8217; information
+about the fairshare configuration. The affect of this fairshare
+information is determined by the fairshare priority weights as
+described in the &#8216;<a class="reference external" href="../5.1.1priorityoverview.html">Job Prioritization
+Overview</a>&#8216;.</div>
+</div>
+<p><strong>Examples:</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">diagnose</span> <span class="o">-</span><span class="n">f</span>
+<span class="n">FairShare</span> <span class="n">Information</span>
+
+<span class="n">Depth</span><span class="p">:</span> <span class="mi">8</span> <span class="n">intervals</span>   <span class="n">Interval</span> <span class="n">Length</span><span class="p">:</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>   <span class="n">Decay</span> <span class="n">Rate</span><span class="p">:</span> <span class="mf">1.00</span>
+
+<span class="n">FS</span> <span class="n">Policy</span><span class="p">:</span> <span class="p">[</span><span class="n">NONE</span><span class="p">]</span>
+<span class="n">System</span> <span class="n">FS</span> <span class="n">Settings</span><span class="p">:</span>  <span class="n">Target</span> <span class="n">Usage</span><span class="p">:</span> <span class="mf">0.00</span>    <span class="n">Flags</span><span class="p">:</span> <span class="mi">0</span>
+
+<span class="n">FSInterval</span>        <span class="o">%</span>     <span class="n">Target</span>
+<span class="n">FSWeight</span>       <span class="o">-------</span> <span class="o">-------</span>
+<span class="n">TotalUsage</span>      <span class="mf">100.00</span> <span class="o">-------</span>
+
+<span class="n">GROUP</span>
+<span class="o">-------------</span>
+<span class="n">dallas</span>            <span class="mf">0.00</span>  <span class="mf">15.00</span>
+<span class="n">sanjose</span>           <span class="mf">0.00</span>  <span class="mf">15.00</span>
+<span class="n">seattle</span>           <span class="mf">0.00</span>  <span class="mf">15.00</span>
+<span class="n">austin</span>            <span class="mf">0.00</span>  <span class="mf">15.00</span>
+<span class="n">boston</span>            <span class="mf">0.00</span>  <span class="mf">15.00</span>
+<span class="n">orlando</span>           <span class="mf">0.00</span>  <span class="mf">15.00</span>
+<span class="n">newyork</span>           <span class="mf">0.00</span>  <span class="mf">15.00</span>
+
+<span class="n">ACCT</span>
+<span class="o">-------------</span>
+<span class="n">marketing</span>         <span class="mf">0.00</span>   <span class="mf">5.00</span>
+<span class="n">it</span>                <span class="mf">0.00</span>   <span class="mf">5.00</span>
+<span class="n">development</span>       <span class="mf">0.00</span>  <span class="mf">30.00</span>
+<span class="n">research</span>          <span class="mf">0.00</span>  <span class="mf">30.00</span>
+
+<span class="n">QOS</span>
+<span class="o">-------------</span>
+<span class="n">urgent</span>            <span class="mf">0.00</span>   <span class="mf">5.00</span>
+<span class="n">low</span>               <span class="mf">0.00</span>   <span class="mf">5.00</span>
+<span class="n">high</span>              <span class="mf">0.00</span>  <span class="mf">50.00</span>
+<span class="mi">1</span>                 <span class="mf">0.00</span>  <span class="mf">50.00</span>
+<span class="mi">5</span>                 <span class="mf">0.00</span>  <span class="mf">50.00</span>
+
+<span class="n">CLASS</span>
+<span class="o">-------------</span>
+<span class="n">batch</span>             <span class="mf">0.00</span>  <span class="mf">70.00</span>
+<span class="n">long</span>              <span class="mf">0.00</span>  <span class="mf">10.00</span>
+<span class="n">fast</span>              <span class="mf">0.00</span>  <span class="mf">10.00</span>
+<span class="n">bigmem</span>            <span class="mf">0.00</span>  <span class="mf">10.00</span>
+</pre></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/diagnosefairshare.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p><strong>Fairshare Config File</strong>
+The fairshare config file, <strong>fs.cfg</strong>, is used to manage fairshare and
+QOS parameters. While still supported, its use is largely superseded by
+the <strong>*CFG</strong> suite of parameters in later versions of Maui (Maui 3.0.7
+and higher). The file uses the following format:</p>
+<p>&lt;OBJECT&gt; &lt;ATTR&gt;=&lt;VALUE&gt; [&lt;ATTR&gt;=&lt;VALUE&gt;]...</p>
+<p>The following object types may be specified:</p>
+<div class="line-block">
+<div class="line">USER:&lt;USER&gt;</div>
+<div class="line">GROUP:&lt;GROUP&gt;</div>
+<div class="line">ACCOUNT:&lt;ACCOUNT&gt;</div>
+<div class="line">QOS:&lt;QOSNAME&gt;</div>
+<div class="line">SYSTEM</div>
+</div>
+<p><strong>NOTE:</strong> The keyword &#8216;DEFAULT&#8217; may be used in place of an actual user,
+group, account, or QOS name to specify the default fairshare
+configuration for objects not explicitly specified, i.e. USER:DEFAULT
+FSTARGET=5.0</p>
+<p>The following attributes may be specified:</p>
+<div class="line-block">
+<div class="line">QDEF (default QOS)</div>
+<div class="line">QLIST (QOS access list)</div>
+<div class="line">PDEF (default partition)</div>
+<div class="line">PLIST (partition access list)</div>
+<div class="line">JOBFLAGS (special job attributes)</div>
+<div class="line">FSTARGET (target percent system utilization)</div>
+</div>
+<p>QDEF</p>
+<div class="line-block">
+<div class="line">DESCRIPTION: specifies default QOS value for jobs</div>
+<div class="line">FORMAT: &lt;INTEGER&gt;</div>
+<div class="line">DEFAULT: [NONE]</div>
+<div class="line">EXAMPLE: QDEF=3</div>
+<div class="line">DETAILS: Default QOS values are assigned to a job in the following
+precedence order: User -&gt; Group -&gt; Account -&gt; System</div>
+<div class="line">(i.e., User QOS defaults overrule all others). If no default values
+are specified, the job will be assigned QOS 0.</div>
+</div>
+<p>QLIST</p>
+<div class="line-block">
+<div class="line">DESCRIPTION: specifies list of QOS values which jobs have access to</div>
+<div class="line">FORMAT: &lt;QOSINDEX&gt;[,&lt;QOSINDEX&gt;]...</div>
+<div class="line">DEFAULT: [NONE]</div>
+<div class="line">EXAMPLE: QLIST=2,4-8</div>
+<div class="line">DETAILS: If the QLIST value is followed by an ampersand, &#8216;&amp;&#8217;, QLIST
+values are considered an &#8216;AND&#8217; list rather than an &#8216;OR&#8217; list.</div>
+</div>
+<p>PDEF</p>
+<div class="line-block">
+<div class="line">DESCRIPTION: specifies default partition in which jobs will run</div>
+<div class="line">FORMAT: &lt;PARTITIONNAME&gt;</div>
+<div class="line">DEFAULT: [ANY]</div>
+<div class="line">EXAMPLE: PDEF=OldSP</div>
+<div class="line">DETAILS: Default partition values are assigned to a job in the
+following precedence order: User -&gt; Group -&gt; Account -&gt; System. If no
+default partition is specified, the job will be assigned to any
+partition.</div>
+</div>
+<p>PLIST</p>
+<div class="line-block">
+<div class="line">DESCRIPTION: specifies list of partitions which jobs have access to</div>
+<div class="line">FORMAT: &lt;PARTITION&gt;[:&lt;PARTITION&gt;]...</div>
+<div class="line">DEFAULT: [ALL]</div>
+<div class="line">EXAMPLE: PLIST=OldSP:NewSP:O2K</div>
+<div class="line">DETAILS: PLIST values are or&#8217;d together to determine the partitions a
+job may access.</div>
+</div>
+<p>JOBFLAGS</p>
+<div class="line-block">
+<div class="line">DESCRIPTION: specifies default job flags</div>
+<div class="line">FORMAT: &lt;FLAG&gt;[:&lt;FLAG&gt;]...</div>
+<div class="line">where flag is one of the following:</div>
+<div class="line">BENCHMARK // maintain maximum locality</div>
+<div class="line">SPAN // allow job resources to cross partition boundaries</div>
+<div class="line">ADVRES // allocate only reserved resources</div>
+<div class="line">SHAREDNODE // share resources with other jobs</div>
+<div class="line">NOQUEUE // cancel job if resources not immediately available</div>
+<div class="line">DEFAULT: [NONE]</div>
+<div class="line">EXAMPLE: JOBFLAGS=ADVRES:SPAN</div>
+</div>
+<p>FSTARGET</p>
+<div class="line-block">
+<div class="line">DESCRIPTION: specifies target fairshare utilization in percent (see
+FairShare.doc)</div>
+<div class="line">FORMAT: &lt;DOUBLE&gt;[+-^]</div>
+<div class="line">DEFAULT: [NONE]</div>
+<div class="line">EXAMPLE: FSTARGET=10.0 // FairShare target is 10.0%</div>
+<div class="line">EXAMPLE: FSTARGET=25.5- // FairShare cap is 25.5%</div>
+<div class="line">EXAMPLE: FSTARGET=5+ // FairShare floor is 5%</div>
+</div>
+<p>Sample &#8216;fs.cfg&#8217; file</p>
+<div class="line-block">
+<div class="line">&#8212;&#8212;&#8212;&#8212;&#8212;</div>
+<div class="line">SYSTEM PLIST=OldSP PDEF=OldSP QLIST=0 QDEF=0</div>
+<div class="line">USER:DEFAULTFSTARGET=5.0-</div>
+<div class="line">USER:steve QLIST=2,3,4 QDEF=2</div>
+<div class="line">USER:bob QDEF=2 FSFLAGS=ADVRES</div>
+<div class="line">USER:charles FSTARGET=15+ QLIST=4,5,6 QDEF=4</div>
+<div class="line">GROUP:staff FSTARGET=10.0-</div>
+<div class="line">ACCOUNT:system FSTARGET=35.5+ PLIST=DevSP:OldSP PDEF=DevSP</div>
+<div class="line">QOS:3 FSTARGET=75.0</div>
+<div class="line">&#8212;&#8212;&#8212;&#8212;&#8212;</div>
+</div>
+<p>The above sample config file does the following:</p>
+<ul class="simple">
+<li>default jobs will be granted access to the partition OldSP and QOS &#8216;0&#8217;</li>
+<li>jobs submitted by default will have only limited access to compute</li>
+</ul>
+<p>resources via a default &#8216;per user&#8217; fairshare target cap of 5.0%
+- user steve will have access to QOS&#8217;s &#8216;2&#8217;, &#8216;3&#8217;, and &#8216;4&#8217; and his jobs
+will use QOS &#8216;2&#8217; unless he explicitly requested a different QOS level.
+- jobs submitted by user bob will default to using QOS &#8216;2&#8217; and all of
+bob&#8217;s jobs may only run on reserved nodes.
+- user charles has a fairshare floor of 15% of delivered resources, and
+has access to QOS&#8217;s &#8216;4&#8217;, &#8216;5&#8217;, and &#8216;6&#8217; with his jobs defaulting to QOS
+&#8216;4&#8217;.
+- jobs submitted by members of the group staff are given a fairshare
+target cap of 10.0%.
+- jobs submitted under the system account ID are given extensive access
+to resources via a fairshare target floor of 35.5%
+- jobs running under QOS &#8216;3&#8217; will be given a fairshare target of 75.0%</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/fsconfig.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

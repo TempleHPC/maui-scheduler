@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="diagnose">diagnose</p>
+<p><strong>(Diagnostics)</strong>
+<strong>Caution</strong>: This command is deprecated. Use <a class="reference external" href="mdiag.html">mdiag</a>
+instead.</p>
+<p class="rubric" id="synopsis">Synopsis</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">diagnose</span> <span class="o">-</span><span class="n">a</span> <span class="p">[</span><span class="n">accountid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">b</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">policylevel</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">c</span> <span class="p">[</span><span class="n">classid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">C</span> <span class="p">[</span><span class="n">configfile</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">f</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">user</span><span class="o">|</span><span class="n">group</span><span class="o">|</span><span class="n">account</span><span class="o">|</span><span class="n">qos</span><span class="o">|</span><span class="n">class</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">g</span> <span class="p">[</span><span class="n">groupid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">j</span> <span class="p">[</span><span class="n">jobid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">L</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">m</span> <span class="p">[</span><span class="n">rackid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">n</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span> <span class="p">[</span><span class="n">nodeid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">p</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">q</span> <span class="p">[</span><span class="n">qosid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">r</span> <span class="p">[</span><span class="n">reservationid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">R</span> <span class="p">[</span><span class="n">resourcemanagername</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">s</span> <span class="p">[</span><span class="n">standingreservationid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">S</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">u</span> <span class="p">[</span><span class="n">userid</span><span class="p">]</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">v</span>
+<span class="n">diagnose</span> <span class="o">-</span><span class="n">x</span>
+</pre></div>
+</div>
+<p class="rubric" id="overview">Overview</p>
+<p>The <strong>diagnose</strong> command is used to display information about various
+aspects of scheduling and the results of internal diagnostic tests.</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/diagnose.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

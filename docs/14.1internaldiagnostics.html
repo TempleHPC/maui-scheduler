@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14.1. Internal Diagnostics/Diagnosing System Behavior and Problems &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="14. Trouble Shooting and System Maintenance" href="14.0troubleshootingandsysmaintenance.html" />
+    <link rel="next" title="14.2. Logging Overview" href="14.2logging.html" />
+    <link rel="prev" title="14. Trouble Shooting and System Maintenance" href="14.0troubleshootingandsysmaintenance.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="14.2logging.html" title="14.2. Logging Overview"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="14.0troubleshootingandsysmaintenance.html" title="14. Trouble Shooting and System Maintenance"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" accesskey="U">14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="internal-diagnostics-diagnosing-system-behavior-and-problems">
+<h1>14.1. Internal Diagnostics/Diagnosing System Behavior and Problems<a class="headerlink" href="#internal-diagnostics-diagnosing-system-behavior-and-problems" title="Permalink to this headline">¶</a></h1>
+<p>Maui provides a number of commands for diagnosing system behavior. These
+diagnostic commands present detailed state information about various
+aspects of the scheduling problem, summarize performance, and evaluate
+current operation reporting on any unexpected or potentially erroneous
+conditions found. Where possible, Maui&#8217;s diagnostic commands even
+correct detected problems if desired.</p>
+<p>At a high level, the diagnostic commands are organized along
+functionality and object based delineations. Diagnostic command exist to
+help prioritize workload, evaluate fairness, and determine effectiveness
+of scheduling optimizations. Commands are also available to evaluate
+reservations reporting state information, potential reservation
+conflicts, and possible corruption issues. Scheduling is a complicated
+task. Failures and unexpected conditions can occur as a result of
+resource failures, jobs failures, or conflicting policies.</p>
+<p>Maui&#8217;s diagnostics can intelligently organize information to help
+isolate these failures and allow them to be resolved quickly. Another
+powerful use of the diagnostic commands is to address the situation in
+which there are no <em>hard</em> failures. In these cases, the jobs, compute
+nodes, and scheduler are all functioning properly, but the cluster is
+not behaving exactly as desired. Maui diagnostics can help a site
+determine how the current configuration is performing and how it can be
+changed to obtain the desired behavior.</p>
+<div class="section" id="diagnose-command">
+<h2>14.1.1. Diagnose Command<a class="headerlink" href="#diagnose-command" title="Permalink to this headline">¶</a></h2>
+<p>The cornerstone of Maui&#8217;s diagnostics is a command named, aptly enough,
+<a class="reference external" href="commands/diagnose.html">diagnose</a>. This command provides detailed
+information about scheduler state and also performs a large number of
+internal sanity checks presenting problems it finds as warning messages.</p>
+<div class="line-block">
+<div class="line">Currently, the diagnose command provides in depth analysis of the
+following objects and subsystems</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="19%" />
+<col width="71%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Object/Subsystem</strong></td>
+<td><strong>Diagnose Flag</strong></td>
+<td><strong>Use</strong></td>
+</tr>
+<tr class="row-even"><td>Account</td>
+<td>-a</td>
+<td>shows detailed account configuration information</td>
+</tr>
+<tr class="row-odd"><td>FairShare</td>
+<td><a class="reference external" href="commands/diagnosefairshare.html">-f</a></td>
+<td>shows detailed fairshare configuration information as well as current fairshare usage</td>
+</tr>
+<tr class="row-even"><td>Frame</td>
+<td>-m</td>
+<td>shows detailed frame information</td>
+</tr>
+<tr class="row-odd"><td>Group</td>
+<td>-g</td>
+<td>shows detailed group information</td>
+</tr>
+<tr class="row-even"><td>Job</td>
+<td><a class="reference external" href="commands/diagnosejob.html">-j</a></td>
+<td>shows detailed job information. Reports on corrupt job attributes, unexpected states, and excessive job failures</td>
+</tr>
+<tr class="row-odd"><td>Node</td>
+<td>-n</td>
+<td>shows detailed node information. Reports on unexpected node states and resource allocation conditions.</td>
+</tr>
+<tr class="row-even"><td>Partition</td>
+<td>-t</td>
+<td>shows detailed partition information</td>
+</tr>
+<tr class="row-odd"><td>Priority</td>
+<td><a class="reference external" href="commands/diagnosepriority.html">-p</a></td>
+<td>shows detailed job priority information including priority factor contributions to all idle jobs</td>
+</tr>
+<tr class="row-even"><td>QOS</td>
+<td>-Q</td>
+<td>shows detailed QOS information</td>
+</tr>
+<tr class="row-odd"><td>Queue</td>
+<td><a class="reference external" href="commands/diagnosequeue.html">-q</a></td>
+<td>indicates why ineligible jobs or not allowed to run</td>
+</tr>
+<tr class="row-even"><td>Reservation</td>
+<td><a class="reference external" href="commands/diagnosereservations.html">-r</a></td>
+<td>shows detailed reservation information. Reports on reservation corruption of unexpected reservation conditions</td>
+</tr>
+<tr class="row-odd"><td>Resource Manager</td>
+<td><a class="reference external" href="commands/diagnoserm.html">-R</a></td>
+<td>shows detailed resource manager information. Reports configured and detected state, configuration, performance, and failures of all configured resource manager interfaces.</td>
+</tr>
+<tr class="row-even"><td>Scheduler</td>
+<td><a class="reference external" href="commands/diagnose.html">-S</a></td>
+<td>shows detailed scheduler state information. Indicates if scheduler is stopped, reports status of grid interface, identifies and reports high-level scheduler failures.</td>
+</tr>
+<tr class="row-odd"><td>User</td>
+<td>-u</td>
+<td>shows detailed user information</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="other-diagnostic-commands">
+<h2>14.1.2. Other Diagnostic Commands<a class="headerlink" href="#other-diagnostic-commands" title="Permalink to this headline">¶</a></h2>
+<p>Beyond <strong>diagnose</strong>, the <a class="reference external" href="commands/checkjob.html">checkjob</a> and
+<a class="reference external" href="commands/checknode.html">checknode</a> commands also provide detailed
+information and sanity checking on individual jobs and nodes
+respectively. These commands can indicate why a job cannot start, which
+nodes can be available, and information regarding the recent events
+impacting current job or nodes state.</p>
+</div>
+<div class="section" id="using-maui-logs-for-troubleshooting">
+<h2>14.1.3. Using Maui Logs for Troubleshooting<a class="headerlink" href="#using-maui-logs-for-troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>Maui logging is extremely useful in determining the cause of a problem.
+Where other systems may be cursed for not providing adequate logging to
+diagnose a problem, Maui may be cursed for the opposite reason. If the
+logging level is configured too high, huge volumes of log output may be
+recorded, potentially obscuring the problems in a flood of data.
+Intelligent searching, combined with the use of the
+<a class="reference external" href="a.fparameters.html#loglevel">LOGLEVEL</a> and
+<a class="reference external" href="a.fparameters.html#logfacility">LOGFACILITY</a> parameters can mine out
+the needed information. Key information associated with various problems
+is generally marked with the keywords WARNING, ALERT, or ERROR. See the
+<a class="reference external" href="14.2logging.html">Logging Overview</a> for further information.</p>
+</div>
+<div class="section" id="using-a-debugger">
+<h2>14.1.4. Using a Debugger<a class="headerlink" href="#using-a-debugger" title="Permalink to this headline">¶</a></h2>
+<p>If other methods do not resolve the problem, the use of a debugger can
+provide missing information. While output recorded in the Maui logs can
+specify which routine is failing, the debugger can actually locate the
+very source of the problem. Log information can help you pinpoint
+exactly which section of code needs to be examined and which data is
+suspicious. Historically, combining log information with debugger
+flexibility have made locating and correcting Maui bugs a relatively
+quick and straightforward process.</p>
+<p>To use a debugger, you can either <em>attach</em> to a running Maui process or
+start Maui under the debugger. Starting Maui under a debugger requires
+that the MAUIDEBUG environment variable be set to the value &#8216;yes&#8217; to
+prevent Maui from daemonizing and backgrounding itself. The following
+example shows a typical debugging start up using gdb.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">----</span>
+<span class="o">&gt;</span> <span class="n">export</span> <span class="n">MAUIDEBUG</span><span class="o">=</span><span class="n">yes</span>
+<span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span><span class="n">MAUIHOMEDIR</span><span class="o">&gt;/</span><span class="n">src</span><span class="o">/</span><span class="n">moab</span>
+<span class="o">&gt;</span> <span class="n">gdb</span> <span class="o">../../</span><span class="nb">bin</span><span class="o">/</span><span class="n">maui</span>
+<span class="o">&gt;</span> <span class="n">b</span> <span class="n">MQOSInitialize</span>
+<span class="o">&gt;</span> <span class="n">r</span>
+<span class="o">&gt;----</span>
+</pre></div>
+</div>
+<p>The gdb debugger has the ability to specify conditional breakpoints
+which make debugging much easier. For debuggers which do not have such
+capabilities, the &#8216;<strong>TRAP*</strong>&#8216; parameters are of value allowing
+breakpoints to be set which only trigger when specific routines are
+processing particular nodes, jobs or reservations. See the
+<a class="reference external" href="a.fparameters.html#trapnode">TRAPNODE</a>,
+<a class="reference external" href="a.fparameters.html#trapjob">TRAPJOB</a>,
+<a class="reference external" href="a.fparameters.html#trapres">TRAPRES,</a> and
+<a class="reference external" href="a.fparameters.html#trapfunction">TRAPFUNCTION</a> parameters for more
+information.</p>
+</div>
+<div class="section" id="controlling-behavior-after-a-crash">
+<h2>14.1.5. Controlling behavior after a &#8216;crash&#8217;<a class="headerlink" href="#controlling-behavior-after-a-crash" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>MAUICRASHMODE</strong> environment variable can be set to control
+scheduler action in the case of a catastrophic internal failure. Valid
+valus include <strong>trap</strong>, <strong>ignore</strong>, and <strong>die</strong>.</p>
+<p><strong>See also:</strong></p>
+<p><strong>`Troubleshooting Individual Jobs &lt;14.7troubleshootingjobs.html&gt;`__.</strong></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">14.1. Internal Diagnostics/Diagnosing System Behavior and Problems</a><ul>
+<li><a class="reference internal" href="#diagnose-command">14.1.1. Diagnose Command</a></li>
+<li><a class="reference internal" href="#other-diagnostic-commands">14.1.2. Other Diagnostic Commands</a></li>
+<li><a class="reference internal" href="#using-maui-logs-for-troubleshooting">14.1.3. Using Maui Logs for Troubleshooting</a></li>
+<li><a class="reference internal" href="#using-a-debugger">14.1.4. Using a Debugger</a></li>
+<li><a class="reference internal" href="#controlling-behavior-after-a-crash">14.1.5. Controlling behavior after a &#8216;crash&#8217;</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="14.0troubleshootingandsysmaintenance.html"
+                        title="previous chapter">14. Trouble Shooting and System Maintenance</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="14.2logging.html"
+                        title="next chapter">14.2. Logging Overview</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/14.1internaldiagnostics.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="14.2logging.html" title="14.2. Logging Overview"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="14.0troubleshootingandsysmaintenance.html" title="14. Trouble Shooting and System Maintenance"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="14.0troubleshootingandsysmaintenance.html" >14. Trouble Shooting and System Maintenance</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

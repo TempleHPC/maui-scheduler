@@ -1,0 +1,488 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16.3. Workload Traces &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="index.html" />
+    <link rel="up" title="16. Simulations" href="16.0simulations.html" />
+    <link rel="next" title="16.4. Simulation Specific Configuration" href="16.4simspecconfig.html" />
+    <link rel="prev" title="16.2. Resource Traces" href="16.2resourcetrace.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="16.4simspecconfig.html" title="16.4. Simulation Specific Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="16.2resourcetrace.html" title="16.2. Resource Traces"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="16.0simulations.html" accesskey="U">16. Simulations</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="workload-traces">
+<h1>16.3. Workload Traces<a class="headerlink" href="#workload-traces" title="Permalink to this headline">¶</a></h1>
+<p>Workload traces fully describe all scheduling relevant aspects of batch
+jobs including resources requested and utilized, time of all major
+scheduling events (i.e., submission time, start time, etc), the job
+credentials used, and the job execution environment. Each job trace is
+composed of a single line consisting of 44 whitespace delimited fields
+as shown in the table below.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Maui 3.2.6 and higher can be configured to provide this information in XML format conforming
+to the SSS 1.0 job description specification.</p>
+</div>
+<div class="section" id="workload-trace-format">
+<h2>16.3.1. Workload Trace Format<a class="headerlink" href="#workload-trace-format" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="5%" />
+<col width="8%" />
+<col width="5%" />
+<col width="74%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Field Name</strong></td>
+<td><strong>Field Index</strong></td>
+<td><strong>Data Format</strong></td>
+<td><strong>Default Value</strong></td>
+<td><strong>Details</strong></td>
+</tr>
+<tr class="row-even"><td>JobID</td>
+<td>1</td>
+<td>&lt;STRING&gt;</td>
+<td>[NO DEFAULT]</td>
+<td>Name of job, must be unique</td>
+</tr>
+<tr class="row-odd"><td>Nodes Requested</td>
+<td>2</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Number of nodes requested (0 = no node request count specified)</td>
+</tr>
+<tr class="row-even"><td>Tasks Requested</td>
+<td>3</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>Number of tasks requested</td>
+</tr>
+<tr class="row-odd"><td>User Name</td>
+<td>4</td>
+<td>&lt;STRING&gt;</td>
+<td>[NO DEFAULT]</td>
+<td>Name of user submitting job</td>
+</tr>
+<tr class="row-even"><td>Group Name</td>
+<td>5</td>
+<td>&lt;STRING&gt;</td>
+<td>[NO DEFAULT]</td>
+<td>Primary group of user submitting job</td>
+</tr>
+<tr class="row-odd"><td>Wallclock Limit</td>
+<td>6</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>Maximum allowed job duration in seconds</td>
+</tr>
+<tr class="row-even"><td>Job Completion State</td>
+<td>7</td>
+<td>&lt;STRING&gt;</td>
+<td>Completed</td>
+<td>One of Completed, Removed, NotRun</td>
+</tr>
+<tr class="row-odd"><td>Required Class</td>
+<td>8</td>
+<td>&lt;STRING&gt;</td>
+<td>[DEFAULT:1]</td>
+<td>Class/queue required by job specified as square bracket list of &lt;QUEUE&gt;[:&lt;QUEUE INSTANCE&gt;] requirements. (ie, [batch:1])</td>
+</tr>
+<tr class="row-even"><td>Submission Time</td>
+<td>9</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time when job was submitted</td>
+</tr>
+<tr class="row-odd"><td>Dispatch Time</td>
+<td>10</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time when scheduler requested job begin executing</td>
+</tr>
+<tr class="row-even"><td>Start Time</td>
+<td>11</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time when job began executing (NOTE: usually identical to &#8216;Dispatch Time&#8217;)</td>
+</tr>
+<tr class="row-odd"><td>Completion Time</td>
+<td>12</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time when job completed execution</td>
+</tr>
+<tr class="row-even"><td>Required Network Adapter</td>
+<td>13</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Name of required network adapter if specified</td>
+</tr>
+<tr class="row-odd"><td>Required Node
+Architecture</td>
+<td>14</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Required node architecture if specified</td>
+</tr>
+<tr class="row-even"><td>Required Node
+Operating System</td>
+<td>15</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Required node operating system if specified</td>
+</tr>
+<tr class="row-odd"><td>Required Node
+Memory
+Comparison</td>
+<td>16</td>
+<td>one of &gt;, &gt;=, =, &lt;=, &lt;</td>
+<td>&gt;=</td>
+<td>Comparison for determining compliance with required node memory</td>
+</tr>
+<tr class="row-even"><td>Required Node
+Memory</td>
+<td>17</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Amount of required configured RAM (in MB) on each node</td>
+</tr>
+<tr class="row-odd"><td>Required Node Disk
+Comparison</td>
+<td>18</td>
+<td>one of &gt;, &gt;=, =, &lt;=, &lt;</td>
+<td>&gt;=</td>
+<td>Comparison for determining compliance with required node disk</td>
+</tr>
+<tr class="row-even"><td>Required Node Disk</td>
+<td>19</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Amount of required configured local disk (in MB) on each node</td>
+</tr>
+<tr class="row-odd"><td>Required Node
+Attributes</td>
+<td>20</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>square bracket enclosed list of node features required by job if specified (ie &#8216;[fast][ethernet]&#8217;)</td>
+</tr>
+<tr class="row-even"><td>System Queue
+Time</td>
+<td>21</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time when job met all fairness policies</td>
+</tr>
+<tr class="row-odd"><td>Tasks Allocated</td>
+<td>22</td>
+<td>&lt;INTEGER&gt;</td>
+<td>&lt;TASKS REQUESTED&gt;</td>
+<td>Number of tasks actually allocated to job (NOTE: in most cases, this field is identical to field #3, Tasks Requested)</td>
+</tr>
+<tr class="row-even"><td>Required Tasks Per
+Node</td>
+<td>23</td>
+<td>&lt;INTEGER&gt;</td>
+<td>-1</td>
+<td>Number of Tasks Per Node required by job or &#8216;-1&#8217; if no requirement specified</td>
+</tr>
+<tr class="row-odd"><td>QOS</td>
+<td>24</td>
+<td>&lt;STRING&gt;[:&lt;STRING&gt;]</td>
+<td>[NONE]</td>
+<td>QOS requested/delivered using the format &lt;QOS_REQUESTED&gt;[:&lt;QOS_DELIVERED&gt;] (ie, &#8216;hipriority:bottomfeeder&#8217;)</td>
+</tr>
+<tr class="row-even"><td>JobFlags</td>
+<td>25</td>
+<td>&lt;STRING&gt;[:&lt;STRING&gt;]...</td>
+<td>[NONE]</td>
+<td>square bracket delimited list of job attributes (i.e., [BACKFILL][BENCHMARK][PREEMPTEE])</td>
+</tr>
+<tr class="row-odd"><td>Account Name</td>
+<td>26</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Name of account associated with job if specified</td>
+</tr>
+<tr class="row-even"><td>Executable</td>
+<td>27</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Name of job executable if specified</td>
+</tr>
+<tr class="row-odd"><td>Comment</td>
+<td>28</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Resource manager specific list of job attributes if specified. See the <a class="reference external" href="13.3.1pbsrmextensions.html">Resource Manager Extension Overview</a> for more info.</td>
+</tr>
+<tr class="row-even"><td>Bypass Count</td>
+<td>29</td>
+<td>&lt;INTEGER&gt;</td>
+<td>-1</td>
+<td>Number of time job was bypassed by lower priority jobs via backfill or &#8216;-1&#8217; if not specified</td>
+</tr>
+<tr class="row-odd"><td>ProcSeconds
+Utilized</td>
+<td>30</td>
+<td>&lt;DOUBLE&gt;</td>
+<td>0</td>
+<td>Number of processor seconds actually utilized by job</td>
+</tr>
+<tr class="row-even"><td>Partition Name</td>
+<td>31</td>
+<td>&lt;STRING&gt;</td>
+<td>[DEFAULT]</td>
+<td>Name of partition in which job ran</td>
+</tr>
+<tr class="row-odd"><td>Dedicated Processors per Task</td>
+<td>32</td>
+<td>&lt;INTEGER&gt;</td>
+<td>1</td>
+<td>Number of processors required per task</td>
+</tr>
+<tr class="row-even"><td>Dedicated Memory per Task</td>
+<td>33</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Amount of RAM (in MB) required per task</td>
+</tr>
+<tr class="row-odd"><td>Dedicated Disk per Task</td>
+<td>34</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Amount of local disk (in MB) required per task</td>
+</tr>
+<tr class="row-even"><td>Dedicated Swap per Task</td>
+<td>35</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Amount of virtual memory (in MB) required per task</td>
+</tr>
+<tr class="row-odd"><td>Start Date</td>
+<td>36</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time indicating earliest time job can start</td>
+</tr>
+<tr class="row-even"><td>End Date</td>
+<td>37</td>
+<td>&lt;INTEGER&gt;</td>
+<td>0</td>
+<td>Epoch time indicating latest time by which job must complete</td>
+</tr>
+<tr class="row-odd"><td>Allocated Host List</td>
+<td>38</td>
+<td>&lt;STRING&gt;[:&lt;STRING&gt;]...</td>
+<td>[NONE]</td>
+<td>colon delimited list of hosts allocated to job (i.e., node001:node004) <strong>NOTE</strong>: In Maui 3.0, this field only lists the job&#8217;s master host.</td>
+</tr>
+<tr class="row-even"><td>Resource Manager Name</td>
+<td>39</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Name of resource manager if specified</td>
+</tr>
+<tr class="row-odd"><td>Required Host Mask</td>
+<td>40</td>
+<td>&lt;STRING&gt;[&lt;STRING&gt;]...</td>
+<td>[NONE]</td>
+<td>List of hosts required by job. (if taskcount &gt; #hosts, scheduler must use these nodes in addition to others, if taskcount &lt; #host, scheduler must select needed hosts from this list)</td>
+</tr>
+<tr class="row-even"><td>Reservation</td>
+<td>41</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>Name of reservation required by job if specified</td>
+</tr>
+<tr class="row-odd"><td>Set Description</td>
+<td>42</td>
+<td>&lt;STRING&gt;:&lt;STRING&gt;[:&lt;STRING&gt;]</td>
+<td>[NONE]</td>
+<td>Set constraints required by node in the form &lt;SetConstraint&gt;:&lt;SetType&gt;[:&lt;SetList&gt;] where SetConstraint is one of ONEOF, FIRSTOF, or ANYOF, SetType is one of PROCSPEED, FEATURE, or NETWORK, and SetList is an optional colon delimited list of allowed set attributes, (i.e. &#8216;ONEOF:PROCSPEED:350:450:500&#8217;)</td>
+</tr>
+<tr class="row-even"><td>Application Simulator Data</td>
+<td>43</td>
+<td>&lt;STRING&gt;[:&lt;STRING&gt;]</td>
+<td>[NONE]</td>
+<td>Name of application simulator module and associated configuration data (i.e., &#8216;HSM:IN=infile.txt:140000;OUT=outfile.txt:500000&#8217;)</td>
+</tr>
+<tr class="row-odd"><td>RESERVED FIELD 1</td>
+<td>44</td>
+<td>&lt;STRING&gt;</td>
+<td>[NONE]</td>
+<td>RESERVED FOR FUTURE USE</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">if no applicable value is specified, the exact string &#8216;<strong>[NONE]</strong>&#8216; should be entered.</p>
+</div>
+<p>Sample Workload Trace:</p>
+<p>&#8216;<code class="docutils literal"><span class="pre">SP02.2343.0</span> <span class="pre">20</span> <span class="pre">20</span> <span class="pre">570</span> <span class="pre">519</span> <span class="pre">86400</span> <span class="pre">Removed</span> <span class="pre">[batch:1]</span> <span class="pre">887343658</span> <span class="pre">889585185</span> <span class="pre">889585185</span> <span class="pre">889585411</span> <span class="pre">ethernet</span> <span class="pre">R6000</span> <span class="pre">AIX43</span> <span class="pre">&gt;=</span> <span class="pre">256</span> <span class="pre">&gt;=</span> <span class="pre">0</span> <span class="pre">[NONE]</span> <span class="pre">889584538</span> <span class="pre">20</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">2</span> <span class="pre">0</span> <span class="pre">test.cmd</span> <span class="pre">1001</span> <span class="pre">6</span> <span class="pre">678.08</span> <span class="pre">0</span> <span class="pre">1</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">[NONE]</span> <span class="pre">0</span> <span class="pre">[NONE]</span> <span class="pre">[NONE]</span> <span class="pre">[NONE]</span> <span class="pre">[NONE]</span> <span class="pre">[NONE]</span></code>&#8216;</p>
+</div>
+<div class="section" id="creating-new-workload-traces">
+<h2>16.3.2. Creating New Workload Traces<a class="headerlink" href="#creating-new-workload-traces" title="Permalink to this headline">¶</a></h2>
+<p>Because workload traces and workload statistics utilize the same format,
+there are trace fields which provide information that is valuable to a
+statistical analysis of historical system performance but not necessary
+for the execution of a simulation.</p>
+<div class="line-block">
+<div class="line">Particularly, in the area of time based fields, there exists an
+opportunity to overspecify. Which time based fields are important
+depend on the setting the the
+<a class="reference external" href="a.fparameters.html#jobsubmissionpolicy">JOBSUBMISSIONPOLICY</a>
+parameter.</div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>JOBSUBMISSIONPOLICY Value</strong></td>
+<td><strong>Critical Time Based Fields</strong></td>
+</tr>
+<tr class="row-even"><td><strong>NORMAL</strong></td>
+<td>WallClock Limit
+Submission Time
+StartTime
+Completion Time</td>
+</tr>
+<tr class="row-odd"><td><strong>CONSTANTJOBDEPTH</strong>
+<strong>CONSTANTPSDEPTH</strong></td>
+<td>WallClock Limit
+StartTime
+Completion Time</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Dispatch Time should always be identical to Start Time</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In all cases, the difference of &#8216;Completion Time - Start Time&#8217; is used to determine actual job run time.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">System Queue Time and Proc-Seconds Utilized are only used for statistics gathering purposes and will not
+alter the behavior of the simulation.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In all cases, relative time values are important, i.e., Start Time must be greater than or equal to
+Submission Time and less than Completion Time.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">16.3. Workload Traces</a><ul>
+<li><a class="reference internal" href="#workload-trace-format">16.3.1. Workload Trace Format</a></li>
+<li><a class="reference internal" href="#creating-new-workload-traces">16.3.2. Creating New Workload Traces</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="16.2resourcetrace.html"
+                        title="previous chapter">16.2. Resource Traces</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="16.4simspecconfig.html"
+                        title="next chapter">16.4. Simulation Specific Configuration</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/16.3workloadtrace.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="16.4simspecconfig.html" title="16.4. Simulation Specific Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="16.2resourcetrace.html" title="16.2. Resource Traces"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="16.0simulations.html" >16. Simulations</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

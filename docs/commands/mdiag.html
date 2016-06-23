@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &mdash; Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric" id="mdiag">mdiag</p>
+<p><strong>(Moab Diagnostics)</strong>
+<strong>Synopsis</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdiag</span> <span class="o">-</span><span class="n">a</span> <span class="p">[</span><span class="n">accountid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">b</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">policylevel</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">c</span> <span class="p">[</span><span class="n">classid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">C</span> <span class="p">[</span><span class="n">configfile</span><span class="p">]</span>  <span class="o">//</span> <span class="n">diagnose</span> <span class="n">config</span> <span class="n">file</span> <span class="n">syntax</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">f</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="n">user</span><span class="o">|</span><span class="n">group</span><span class="o">|</span><span class="n">acct</span><span class="o">|</span><span class="n">qos</span><span class="o">|</span><span class="n">class</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">g</span> <span class="p">[</span><span class="n">groupid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">G</span> <span class="p">[</span><span class="n">Green</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">j</span> <span class="p">[</span><span class="n">jobid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">partition</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">L</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>  <span class="o">//</span> <span class="n">diagnose</span> <span class="n">usage</span> <span class="n">limits</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">m</span> <span class="p">[</span><span class="n">rackid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">n</span> <span class="p">[</span><span class="o">-</span><span class="n">A</span> <span class="o">&lt;</span><span class="n">creds</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span> <span class="p">[</span><span class="n">nodeid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">p</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="n">partition</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="o">//</span> <span class="n">diagnose</span> <span class="n">job</span> <span class="n">priority</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">q</span> <span class="p">[</span><span class="n">qosid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">r</span> <span class="p">[</span><span class="n">reservationid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">w</span> <span class="nb">type</span><span class="o">=&lt;</span><span class="nb">type</span><span class="o">&gt;</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">R</span> <span class="p">[</span><span class="n">resourcemanagername</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">s</span> <span class="p">[</span><span class="n">standingreservationid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">S</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="o">//</span> <span class="n">diagnose</span> <span class="n">scheduler</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">t</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="o">//</span> <span class="n">diagnose</span> <span class="n">partitions</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">T</span> <span class="p">[</span><span class="n">triggerid</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">u</span> <span class="p">[</span><span class="n">userid</span><span class="p">]</span>
+<span class="n">mdiag</span> <span class="o">-</span><span class="n">x</span>
+<span class="n">mdiag</span> <span class="p">[</span><span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Overview</strong></p>
+<p>The <strong>mdiag</strong> command is used to display information about various
+aspects of the cluster and the results of internal diagnostic tests. &nbsp;In
+summary, it provides the following:</p>
+<ul class="simple">
+<li>current object health and state information</li>
+<li>current object configuration (resources, policies, attributes, etc)</li>
+<li>current and historical performance/utilization information</li>
+<li>reports on recent failure</li>
+<li>object messages</li>
+</ul>
+<p><strong>Arguments</strong></p>
+<p>Argument
+Description
+<a class="reference external" href="mdiag-accounts.html">-a [accountid]</a>
+display <a class="reference external" href="../3.5credoverview.html#account">account</a> information
+<a class="reference external" href="mdiag-blockedjobs.html">-b</a>
+display information on jobs blocked by policies, holds, or other
+factors.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="96%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id1"><span class="problematic" id="id2">|Note|</span></a></td>
+<td>If blocked job diagnostics are specified, the &#8216;<strong>-t</strong>&#8216; option is also available to constrain the report to analysis of particular partition. &nbsp;Also, with blocked job diagnosis, the &#8216;<strong>-l</strong>&#8216; option can be used to specify the analysis policy level.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference external" href="mdiag-class.html">-c [classid]</a>
+display <a class="reference external" href="../3.5credoverview.html#class">class</a> information
+<a href="#id7"><span class="problematic" id="id8">`-C &lt;&gt;`__</span></a> [file]
+analyze configuration file for errors including use of invalid
+parameters, deprecated parameters, and illegal values. (If you start
+Moab with the -e flag, Moab evaluates the configuration file at startup
+and quits if an error exists.)
+<a class="reference external" href="mdiag-fairshare.html">-f</a>
+display <a class="reference external" href="../6.3fairshare.html">fairshare</a> information
+<a class="reference external" href="mdiag-groups.html">-g [groupid]</a>
+display <a class="reference external" href="../3.5credoverview.html#group">group</a> information
+-G [Green]
+display <a class="reference external" href="../18.2enablinggreen.html">power management</a> information
+<a class="reference external" href="mdiag-jobs.html">-j [jobid]</a>
+display job information
+-L
+display limits
+-m rackid
+display rack/frame information
+<a class="reference external" href="mdiag-node.html">-n [nodeid]</a>
+display nodes.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id3"><span class="problematic" id="id4">|Note|</span></a></td>
+<td>If node diagnostics are specified, the &#8216;<strong>-t</strong>&#8216; option is also available to constrain the report to a particular partition.</td>
+</tr>
+</tbody>
+</table>
+<p>-o &lt;OTYPE&gt;[:&lt;OID&gt;]
+organize information by specified object type
+<a class="reference external" href="mdiag-priority.html">-p</a>
+display <a class="reference external" href="../5.1jobprioritization.html">job priority</a>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="93%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a href="#id5"><span class="problematic" id="id6">|Note|</span></a></td>
+<td>If priority diagnostics are specified, the &#8216;<strong>-t</strong>&#8216; option is also available to constrain the report to a particular partition.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference external" href="mdiag-qos.html">-q [qosid]</a>
+display <a class="reference external" href="../3.5credoverview.html#qos">qos</a> information
+<a class="reference external" href="mdiag-reservations.html">-r [reservationid]</a>
+display reservation information
+<a class="reference external" href="mdiag-rm.html">-R [rmid]</a>
+display resource manager information
+-s [srsv]
+display <a class="reference external" href="../7.1.3standingreservations.html">standing reservation</a>
+information
+<a class="reference external" href="mdiag-sched.html">-S</a>
+display general scheduler information
+<a class="reference external" href="mdiag-triggers.html">-T [triggerid]</a>
+display trigger information
+<a class="reference external" href="mdiag-users.html">-u [userid]</a>
+display <a class="reference external" href="../3.5credoverview.html#user">user</a> information
+-x
+display advanced system information
+&#8211;format=xml
+display output in XML format
+.. rubric:: See Also</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">name:</th><td class="field-body">see-also</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ul class="simple">
+<li><a class="reference external" href="../2.2installation.html#client">Moab Client Installation</a> -
+explains how to distribute this command to client nodes</li>
+<li><a class="reference external" href="checkjob.html">checkjob</a></li>
+<li><a class="reference external" href="checknode.html">checknode</a></li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/commands/mdiag.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Maui Scheduler™ Administrator&#39;s Guide 3.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 1999-2014, Adaptive Computing Enterprises, Inc.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>
