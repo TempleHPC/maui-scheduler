@@ -10,6 +10,7 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libtorque2-dev
   - sudo apt-get install -y python-pip python-virtualenv python-dev
+  - sudo apt-get install -y doxygen
 
 notifications:
   email:

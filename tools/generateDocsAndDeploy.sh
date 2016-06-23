@@ -8,20 +8,24 @@ git clone -b gh-pages https://${GH_REPO_REF} gh-pages
 
 # configure git user to be Travis CI
 git config --global push.default simple
-git config user.name "Travis CI"
-git config user.email "travis@travis-ci.org"
+git config --global user.name "Travis CI"
+git config --global user.email "travis@travis-ci.org"
 
 # clear branch contents
 cd gh-pages
 rm -rf *
 touch .nojekyll
 
-# build HTML
+# build HTML (Sphinx)
 cd ../docs
 make guide
 
+# build HTML (Doxygen)
+make refman
+
 # commit to gh-pages branch
 mv rst/_build/html ../gh-pages/docs
+mv refman ../gh-pages/doxygen
 cd ../gh-pages
 
 # TODO enable this code before merging to master
