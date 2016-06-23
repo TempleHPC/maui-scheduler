@@ -28,12 +28,11 @@ mv rst/_build/html ../gh-pages/docs
 mv refman ../gh-pages/doxygen
 cd ../gh-pages
 
-# TODO enable this code before merging to master
-#if [ "$TRAVIS_BRANCH" != "master" ]
-#then
-#  echo "This commit was made against $TRAVIS_BRANCH and not the master! Not deploying updated documentation!"
-#  exit 0
-#fi
+if [ "$TRAVIS_BRANCH" != "master" ]
+then
+  echo "This commit was made against $TRAVIS_BRANCH and not the master! Not deploying updated documentation!"
+  exit 0
+fi
 
 if [ -d "docs" ] && [ -f "docs/index.html" ]; then
     git add --all
