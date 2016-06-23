@@ -1,0 +1,25 @@
+var struct_resource_data_st =
+[
+    [ "AvgDiskUsage", "struct_resource_data_st.html#a4519b93e8a28e9404302410125fa4fe6", null ],
+    [ "AvgMemUsage", "struct_resource_data_st.html#a017c320b38f0f0545142193a4ea95640", null ],
+    [ "AvgSwapUsage", "struct_resource_data_st.html#ad4a9ac0daba9a32716753a85d2f01f1c", null ],
+    [ "AvgSysTime", "struct_resource_data_st.html#a404189a096e9c2746a8ff2be9593d195", null ],
+    [ "AvgUserTime", "struct_resource_data_st.html#a551e447bdcff2573f2b617ee81070466", null ],
+    [ "AvgWaitTime", "struct_resource_data_st.html#a4b1360d52f42c2a204bcbde8538dc30d", null ],
+    [ "CollectionEnd", "struct_resource_data_st.html#a548bb1eeb8072f8358160edf2fb6d6b3", null ],
+    [ "CollectionID", "struct_resource_data_st.html#abebd54ddbfdbf64429a1a0827c842dbf", null ],
+    [ "CollectionStart", "struct_resource_data_st.html#a53915b46738c306556f08a4d56784e87", null ],
+    [ "CollectionSubID", "struct_resource_data_st.html#aa06b04c4973fd61e1f6387a368b7258c", null ],
+    [ "Command", "struct_resource_data_st.html#a8fae079bdb6fb68cf4d66000612c9ca5", null ],
+    [ "MaxDiskUsage", "struct_resource_data_st.html#a0a32ae53a716d772fe8721d02108b921", null ],
+    [ "MaxMemUsage", "struct_resource_data_st.html#a85be01630ca9c842d956fae30c72798a", null ],
+    [ "MaxSwapUsage", "struct_resource_data_st.html#a969370e8c14ec05dca8021a8d5aacef0", null ],
+    [ "MaxSysTime", "struct_resource_data_st.html#a7b78ea8ced6523437892f7cb1d6a3531", null ],
+    [ "MaxUserTime", "struct_resource_data_st.html#ac6102a78b8e51b087f766fba3c01c65c", null ],
+    [ "MaxWaitTime", "struct_resource_data_st.html#a7b4be3c6768bcef36b3920e247169f41", null ],
+    [ "SampleCount", "struct_resource_data_st.html#aa251ebc163a1adda2b5be228b8b066d1", null ],
+    [ "TotalCSSPackets", "struct_resource_data_st.html#a4692df16e46c6b6310333c4899f0c375", null ],
+    [ "TotalEtherPackets", "struct_resource_data_st.html#a395fea79cf1954980adba31c5ceec37a", null ],
+    [ "TotalNFSReads", "struct_resource_data_st.html#afe9b343a4339674c6303790acba31134", null ],
+    [ "TotalNFSWrites", "struct_resource_data_st.html#a7414e87f1498838bd209c2ac25308db4", null ]
+];

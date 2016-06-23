@@ -1,0 +1,26 @@
+var structmrmfunc__t =
+[
+    [ "ClusterQuery", "structmrmfunc__t.html#af73dc635159862d5a4f0f6cb03adeb20", null ],
+    [ "CycleFinalize", "structmrmfunc__t.html#acb4047d64db0e470cb8742244fc4a861", null ],
+    [ "Initialize", "structmrmfunc__t.html#a3363d9bf883f4f40d4f84b5a31805cce", null ],
+    [ "IsInitialized", "structmrmfunc__t.html#a1292acb1f394ea8e04a16d86116806bf", null ],
+    [ "JobCancel", "structmrmfunc__t.html#a5bf5b5531f09a13b0f64cc6cb4f8cbda", null ],
+    [ "JobCheckpoint", "structmrmfunc__t.html#ab1a21845aef837a92d043466728c0a04", null ],
+    [ "JobGetProximateTasks", "structmrmfunc__t.html#a1156a614751f619970133d84fb3670d7", null ],
+    [ "JobMigrate", "structmrmfunc__t.html#a8b32764548e28c9ddb1c879e979cc512", null ],
+    [ "JobModify", "structmrmfunc__t.html#a88e84dcae90715ed92201a165c017f6f", null ],
+    [ "JobQuery", "structmrmfunc__t.html#adebeb78fb7397d2fd42c6b3265c4f395", null ],
+    [ "JobRequeue", "structmrmfunc__t.html#aea691c52467bdd816e6b2453c4015f98", null ],
+    [ "JobResume", "structmrmfunc__t.html#ac6253ba7c4da4214da155f55539d33fa", null ],
+    [ "JobStart", "structmrmfunc__t.html#ad522be62d1f24509dddfe3c5fa11a50f", null ],
+    [ "JobSubmit", "structmrmfunc__t.html#a2f012d47fc0f87904b85b267e8e77ee7", null ],
+    [ "JobSuspend", "structmrmfunc__t.html#a770bd57309524203c7b41f31ecc889ae", null ],
+    [ "QueueQuery", "structmrmfunc__t.html#a3aee9ba43c6b6cbb8024394f073c1373", null ],
+    [ "ResourceModify", "structmrmfunc__t.html#a2c909dc066341385c6133a06d2754b52", null ],
+    [ "ResourceQuery", "structmrmfunc__t.html#aadf60e9dc99cc9d89f5635cc606a4f69", null ],
+    [ "RMEventQuery", "structmrmfunc__t.html#ada00608caeffcd3efa6f0be4e9b67a14", null ],
+    [ "RMGetData", "structmrmfunc__t.html#a1bdfd1a96ca00f4103c16f79244a006b", null ],
+    [ "RMInitialize", "structmrmfunc__t.html#aced3d103f3b8af29efdd0cb7314db2bf", null ],
+    [ "RMQuery", "structmrmfunc__t.html#a8f0a00b7736c7e23a01456d7c41d60db", null ],
+    [ "WorkloadQuery", "structmrmfunc__t.html#ab6368bbfca3f40b7e44472e85685325a", null ]
+];
