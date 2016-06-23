@@ -1,5 +1,5 @@
 /*
- * showq standalong client program code
+ * showq standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
