@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Maui Scheduler™ Administrator\'s Guide'
-copyright = '1999-2014, Adaptive Computing Enterprises, Inc'
-author = 'Adaptive Computing Enterprises, Inc'
+copyright = '1999-2014, Adaptive Computing Enterprises, Inc; 2016, Temple HPC Team'
+author = 'Adaptive Computing Enterprises, Inc; Temple HPC Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
