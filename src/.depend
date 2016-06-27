@@ -1,8 +1,8 @@
 # FastDep v2.1 for LAMMPS
 # Search path: .:..:../include:/usr/include/torque
-#    61 sources
+#    62 sources
 #    26 includes
-#    62 depfiles
+#    63 depfiles
 MAcct.o : MAcct.c ../include/mcom.h ../include/msched.h ../include/msched-proto.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
 MACL.o : MACL.c ../include/mcom.h ../include/msched.h ../include/msched-proto.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
 MAM.o : MAM.c ../include/mcom.h ../include/msched.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
@@ -61,6 +61,7 @@ MXML.o : MXML.c ../include/mcom.h
 OLLI.o : OLLI.c
 omclient.o : omclient.c
 Server.o : Server.c ../include/mcom.h ../include/msched.h ../include/msched-proto.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
-showq.o : showq.c ../include/maui_utils.h ../include/msched-version.h
+changeparam.o : changeparam.c ../include/maui_utils.h ../include/msched-version.h
 mjobctl.o : mjobctl.c ../include/maui_utils.h ../include/msched-version.h
+showq.o : showq.c ../include/maui_utils.h ../include/msched-version.h
 UserI.o : UserI.c ../include/mcom.h ../include/msched.h ../include/msched-proto.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h

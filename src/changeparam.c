@@ -1,5 +1,5 @@
 /*
- * showq standalone client program code
+ * changeparam standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -12,49 +12,36 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for showq options */
-typedef struct _showq_info {
-    char  *pName;               /**< Partition name */
-    char  *username;            /**< User name */
-    int   idle;                 /**< Show idle jobs */
-    int   running;              /**< Show running jobs */
-    int   blocked;              /**< Show blocked jobs */
-} showq_info_t;
+/** Struct for changeparam options */
+typedef struct _changeparam_info {
+    char *attr;               /**< Attribute name*/
+    char **value;              /**< Attribute value */
+} changeparam_info_t;
 
-// local convenience functions
-
-static int process_args(int, char **, showq_info_t *, client_info_t *);
+static void free_structs(changeparam_info_t *, client_info_t *);
+static int process_args(int, char **, changeparam_info_t *, client_info_t *);
 static void print_usage();
-static void free_structs(showq_info_t *, client_info_t *);
 
-int main (int argc, char **argv)
-{
-    showq_info_t showq_info;
+int main(int argc, char **argv) {
+
+    int i;
+
+    changeparam_info_t changeparam_info;
     client_info_t client_info;
 
-    memset(&showq_info, 0, sizeof(showq_info));
+    memset(&changeparam_info, 0, sizeof(changeparam_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &showq_info, &client_info)) {
+    if (process_args(argc, argv, &changeparam_info, &client_info)) {
 
-        /* if username has been set, then only print that user's jobs*/
-        if ((showq_info.username != NULL) && (strlen(showq_info.username) != 0))
-            printf("only printing jobs for user %s\n", showq_info.username);
-
-        if (showq_info.blocked)
-            puts("printing information about all jobs in blocked state");
-
-        if (showq_info.idle)
-            puts("printing information about all jobs in idle state");
-
-        if (showq_info.running)
-            puts("printing information about all jobs in active state");
-
-        /* if no flag has been set, print jobs in all states */
-        if (showq_info.running + showq_info.idle + showq_info.blocked < 1) {
-            puts( "printing information about all jobs in active, idle and blocked states");
+        i = 0;
+        printf("changing parameter %s to value %s", changeparam_info.attr,
+                (changeparam_info.value)[i++]);
+        while ((changeparam_info.value)[i] != NULL) {
+            printf(" %s", (changeparam_info.value)[i++]);
         }
+        puts("");
 
         if (client_info.configfile != NULL)
             printf("will use %s as configfile instead of default\n",client_info.configfile);
@@ -68,11 +55,11 @@ int main (int argc, char **argv)
             printf("will use %d as server port instead of default\n",client_info.port);
         if (client_info.keyfile != NULL)
             printf("will use %s as key file instead of default\n",client_info.keyfile);
-
     }
 
-    free_structs(&showq_info,&client_info);
-    return 0;
+    free_structs(&changeparam_info, &client_info);
+
+    exit(0);
 }
 
 /*
@@ -81,19 +68,15 @@ int main (int argc, char **argv)
  returns 0 if no more action needs to be done
 */
 int process_args(int argc, char **argv,
-                 showq_info_t *showq_info,
+                 changeparam_info_t *changeparam_info,
                  client_info_t *client_info)
 {
-    int c;
+    int c, i;
     while (1) {
         struct option options[] = {
+
             {"help",        no_argument,       0, 'h'},
             {"version",     no_argument,       0, 'V'},
-            {"block",       no_argument,       0, 'b'},
-            {"idle",        no_argument,       0, 'i'},
-            {"partition",   required_argument, 0, 'p'},
-            {"running",     no_argument,       0, 'r'},
-            {"username",    required_argument, 0, 'u'},
             {"configfile",  required_argument, 0, 'C'},
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
@@ -105,7 +88,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVbip:ru:C:D:F:H:k:P:",
+        c = getopt_long (argc, argv, "hVC:D:F:H:K:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -123,31 +106,6 @@ int process_args(int argc, char **argv,
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
               exit(EXIT_SUCCESS);
-              break;
-
-          case 'b':
-              puts ("Show blocked queue: blocked sets to 1\n");
-              showq_info->blocked = 1;
-              break;
-
-          case 'i':
-              puts ("Show idle queue: idle sets to 1\n");
-              showq_info->idle = 1;
-              break;
-
-          case 'p':
-              printf ("set partition to %s\n", optarg);
-              showq_info->pName = string_dup(optarg);
-              break;
-
-          case 'r':
-              puts ("Show running queue: running sets to 1\n");
-              showq_info->running = 1;
-              break;
-
-          case 'u':
-              printf ("set username to %s\n", optarg);
-              showq_info->username = string_dup(optarg);
               break;
 
           case 'C':
@@ -185,21 +143,45 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'showq --help' for more information.\n");
+              puts ("Try 'changeparam --help' for more information.");
               return 0;
 
           default:
-              abort();
+              //abort();
+              return 0;
         }
     }
+
+    /* needs at least two arguments */
+    if(optind > argc - 2){
+        print_usage();
+        exit(EXIT_FAILURE);
+    }
+
+    /* allocate memory to save the string array from input*/
+    changeparam_info->value = (char **) malloc((argc - optind + 1) * sizeof(char *));
+    if(!changeparam_info->value){
+        puts("Error: memory allocation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    /* copy and save attribute name from input */
+    changeparam_info->attr = string_dup(argv[optind++]);
+
+    /* copy and save attribute value from input */
+    i = 0;
+    while(optind < argc){
+        (changeparam_info->value)[i++] = string_dup(argv[optind++]);
+    }
+    (changeparam_info->value)[i] = NULL;
 
     return 1;
 }
 
-/* frees memory*/
-void free_structs(showq_info_t *showq_info, client_info_t *client_info){
-    free(showq_info->username);
-    free(showq_info->pName);
+/* frees memory */
+void free_structs(changeparam_info_t *changeparam_info, client_info_t *client_info) {
+    free(changeparam_info->attr);
+    free(changeparam_info->value);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->keyfile);
@@ -208,16 +190,13 @@ void free_structs(showq_info_t *showq_info, client_info_t *client_info){
 
 void print_usage()
 {
-    puts ("\nUsage: showq [FLAGS]\n\n"
-          "Display information about all jobs in active, idle and blocked states.\n"
-          "\n"
-          "  -h, --help                     display this help\n"
-          "  -V, --version                  display client version\n"
-          "\n"
-          "  -b, --blocked                  display blocked jobs only\n"
-          "  -i, --idle                     display idle jobs only\n"
-          "  -r, --running                  display active jobs only\n"
-          "  -p, --partition=PARTITIONID    display jobs assigned to the specified partition\n"
-          "  -u, --username=USERNAMEID      display information about jobs for the specified user\n");
+    puts ("\nUsage: changeparam <PARAMETER> <VALUE> [VALUE]...\n\n"
+            "Dynamically change the value of any configuration parameter which can be specified in the moab.cfg file.\n"
+            "The changes take affect at the beginning of the next scheduling iteration. They are not persistent, only\n"
+            "lasting until Moab is shutdown.\n"
+            "\n"
+            "  -h, --help                     display this help\n"
+            "  -V, --version                  display client version\n"
+            "\n");
     print_client_usage();
 }

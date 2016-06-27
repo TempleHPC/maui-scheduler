@@ -1,5 +1,5 @@
 /*
- * mjobctl standalong client program code
+ * mjobctl standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -26,11 +26,11 @@ enum mJobCtlCmdEnum {
 
 /** Struct for mjobctl options */
 typedef struct _mjobctl_info {
-    int action;
-    char *jobid;
-    char *attr;
-    char *value;
-    char *mode;
+    int action;               /**< Action name */
+    char *jobid;              /**< Job ID */
+    char *attr;               /**< Attribute name*/
+    char *value;              /**< Attribute value */
+    char *mode;               /**< Mode */
 } mjobctl_info_t;
 
 static void free_structs(mjobctl_info_t *, client_info_t *);
@@ -118,7 +118,6 @@ int process_args(int argc, char **argv,
             {"resume",      no_argument,       0, 'r'},
             {"requeue",     no_argument,       0, 'R'},
             {"suspend",     no_argument,       0, 's'},
-            {"submit",      no_argument,       0, 'S'},
             {"configfile",  required_argument, 0, 'C'},
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
@@ -130,7 +129,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVcem:o:q:rRsSC:D:F:H:K:P:",
+        c = getopt_long (argc, argv, "hVcem:o:q:rRsC:D:F:H:K:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -169,7 +168,7 @@ int process_args(int argc, char **argv,
 
               mjobctl_info->action = mjcmModify;
 
-              /* get attribute field field and value field*/
+              /* get attribute field and value field*/
               char tempStr[128];
               strcpy(tempStr, optarg);
               char *attr = strtok(tempStr,"=");
@@ -245,7 +244,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'showq --help' for more information.");
+              puts ("Try 'mjobctl --help' for more information.");
               return 0;
 
           default:
@@ -285,8 +284,7 @@ void print_usage()
             "Modify attributes or perform operation on a specified job."
             "\n"
             "  -h, --help                     display this help\n"
-            "  -V, --version                  display client version, serverhost, serverport, home\n"
-            "                                   directory, build location, build host and build date\n"
+            "  -V, --version                  display client version\n"
             "\n"
             "  -c, --cancel                   attempt to cancel a job\n"
             "  -e, --checkpoint               attempt to checkpoint a job\n"
