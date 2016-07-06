@@ -257,21 +257,15 @@ int main(
      */
 
     /* set default environment */
-
     __MCInitialize();
-
     /* load config file */
-
     __MCLoadConfig(C.HomeDir, C.ConfigFile);
-
     /* load environment variables */
 
     __MCLoadEnvironment(ParName, C.ServerHost, &C.ServerPort);
-
     /* load command line flags */
 
     __MCLoadArgs(argc, argv, &CIndex);
-
     Msg.SIndex = CIndex;
     /*
       Msg.RID = MOSGetEUID();
@@ -327,7 +321,7 @@ int main(
                 strcpy(S.CSKey, C.ServerCSKey);
             else
                 strcpy(S.CSKey, MSched.DefaultCSKey);
-
+            printf("S.CSKey:%s, MSched.DefaultCSKey:%s",S.CSKey, MSched.DefaultCSKey);
             S.CSAlgo = MSched.DefaultCSAlgo;
 
             S.SocketProtocol = C.SocketProtocol;
@@ -655,9 +649,9 @@ int __MCInitialize()
         int UseAuthFile;
 
         sprintf(MSched.KeyFile, "%s/%s", C.HomeDir, MSCHED_KEYFILE);
-
+        printf("12MSched.DefaultCSKey:%s\n",MSched.DefaultCSKey);
         MUCheckAuthFile(&MSched, MSched.DefaultCSKey, &UseAuthFile, FALSE);
-
+        printf("13MSched.DefaultCSKey:%s\n",MSched.DefaultCSKey);
         if (UseAuthFile == TRUE) MSched.DefaultCSAlgo = mcsaRemote;
     } /* END BLOCK */
 
@@ -963,10 +957,8 @@ int __MCLoadConfig(
 
     MCfgGetSVal(MSched.ConfigBuffer, NULL, MParam[pServerHost], NULL, NULL,
                 C.ServerHost, sizeof(C.ServerHost), 1, NULL);
-
     MCfgGetIVal(MSched.ConfigBuffer, NULL, MParam[pServerPort], NULL, NULL,
                 &C.ServerPort, NULL);
-
     MCfgGetSVal(MSched.ConfigBuffer, NULL, MParam[pSchedMode], NULL, NULL,
                 C.SchedulerMode, sizeof(C.SchedulerMode), 1, NULL);
 
@@ -3318,6 +3310,8 @@ int MCJobCtlCreateRequest(
     MXMLToString(E, Request, MAX_MLINE, NULL, TRUE);
 
     MXMLDestroyE(&E);
+
+    printf("%s msgbuffer:", Request);
 
     return (SUCCESS);
 } /* END MCJobCtlCreateRequest() */

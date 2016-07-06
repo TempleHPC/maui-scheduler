@@ -185,7 +185,6 @@ int MCfgGetVal(
 
     while (ptr != NULL) {
         if ((head = strstr(ptr, Parm)) == NULL) break;
-
         ptr = head + strlen(Parm);
 
         /* look backwards for newline or start of buffer */
@@ -307,18 +306,14 @@ int MCfgGetIVal(
            (IndexName != NULL) ? IndexName : "NULL");
 
     ptr = Buf;
-
     if (CurPtr != NULL) ptr = MAX(ptr, *CurPtr);
-
     rc = MCfgGetVal(&ptr, Parm, IndexName, Index, ValLine, sizeof(ValLine),
                     SymTable);
-
     if (CurPtr != NULL) *CurPtr = ptr;
 
     if (rc == FAILURE) return (FAILURE);
 
     *Value = (int)strtol(ValLine, NULL, 0);
-
     DBG(4, fCONFIG)
     DPrint("INFO:     %s[%d] set to %d\n", Parm, (Index != NULL) ? *Index : 0,
            *Value);

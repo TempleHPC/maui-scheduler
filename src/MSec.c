@@ -189,6 +189,7 @@ int MSecGetChecksum(
         return (FAILURE);
     }
 
+    printf("Algo:%d\n", Algo);
     switch (Algo) {
         case mcsaHMAC:
 
@@ -258,12 +259,12 @@ int MSecGetChecksum(
 
             lword = crc;
             rword = SKey;
-
+            printf("lword,rword:%d,%d\n",lword, rword);
             __MSecPSDES(&lword, &rword);
-
+            printf("lword,rword:%d,%d\n",lword, rword);
             Checksum[0] = '\0';
-
             sprintf(Checksum, "%08x%08x", (int)lword, (int)rword);
+            printf("Checksum:%s, CSKeyString:%s \n",Checksum, CSKeyString);
         } /* END BLOCK */
 
         break;

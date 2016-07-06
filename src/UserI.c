@@ -174,7 +174,7 @@ int UIProcessCommand(
     char tmpLine[MMAX_LINE];
 
     const char *FName = "UIProcessCommand";
-
+    printf("123");
     DBG(3, fUI) DPrint("%s(S)\n", FName);
 
     if (S == NULL) {
@@ -224,6 +224,7 @@ int UIProcessCommand(
 
     /* locate/process args */
 
+    printf("S->RBuffer:%s\n",S->RBuffer);
     if ((args = strstr(S->RBuffer, MCKeyword[mckArgs])) == NULL) {
         DBG(3, fSOCK) DPrint("ALERT:    cannot locate command arg\n");
 

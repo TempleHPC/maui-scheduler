@@ -8,21 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <time.h>
 
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Enum for mjobctl actions */
-enum mJobCtlCmdEnum {
-    mjcmNONE = 0,
-    mjcmCancel,
-    mjcmCheckpoint,
-    mjcmModify,
-    mjcmQuery,
-    mjcmRequeue,
-    mjcmResume,
-    mjcmSuspend,
-};
+
 
 /** Struct for mjobctl options */
 typedef struct _mjobctl_info {
@@ -34,47 +25,153 @@ typedef struct _mjobctl_info {
 } mjobctl_info_t;
 
 static void free_structs(mjobctl_info_t *, client_info_t *);
-static int process_args(int, char **, mjobctl_info_t *, client_info_t *);
+static int process_args(int, char **, mjobctl_info_t *, client_info_t *, char *);
 static void print_usage();
+
+const char *_MService[] = {NONE,          "showstate",       "setspri",
+                          "setupri",     "showq",           "sethold",
+                          "releasehold", "showhold",        "showstats",
+                          "resetstats",  "setres",          "releaseres",
+                          "showres",     "schedctl",        "diagnose",
+                          "setdeadline", "releasedeadline", "showdeadline",
+                          "showstart",   "setqos",          "showgrid",
+                          "showbf",      "showconfig",      "checkjob",
+                          "checknode",   "runjob",          "canceljob",
+                          "changeparam", "migratejob",      "showstart",
+                          "query",       "mjobctl",         "mgridctl",
+                          "mnodectl",    "mresctl",         "mschedctl",
+                          "mstat",       "mdiag",           "mshow",
+                          "mbal",        "showtasks",       NULL};
 
 int main(int argc, char **argv) {
 
     mjobctl_info_t mjobctl_info;
     client_info_t client_info;
 
+    msocket_t S;
+
+    time_t tmpTime;
+    char *ptr;
+
+    char SBuffer[MAX_MBUFFER];
+
+    const char *FName = "main";
+    mlog.logfp = stderr;
+    DBG(4, fCORE) dPrint("%s(%d,argv)\n", FName, argc);
+
+    dPrint("%s(%d,argv)\n", FName, Mode);
+
+    getTime(&tmpTime, mtmInit, NULL);
+
+    MSched.Time = tmpTime;
+
+    /* set default environment */
+    _MCInitialize();
+
+    /* load config file */
+    _MCLoadConfig(C.HomeDir, C.ConfigFile);
+
+    /* load environment variables */
+    __MCLoadEnvironment(ParName, C.ServerHost, &C.ServerPort);
     memset(&mjobctl_info, 0, sizeof(mjobctl_info));
     memset(&client_info, 0, sizeof(client_info));
 
+    ptr = NULL;
+
+    char MsgBuffer[MAX_MLINE << 3];
+
     /* process all the options and arguments */
-    if (process_args(argc, argv, &mjobctl_info, &client_info)) {
+    if (process_args(argc, argv, &mjobctl_info, &client_info, MsgBuffer)) {
+        _MSUInitialize(&S, C.ServerHost, C.ServerPort, C.Timeout,
+                      (1 << TCP));
+        if (C.ServerCSKey[0] != '\0')
+            strcpy(S.CSKey, C.ServerCSKey);
+        else
+            strcpy(S.CSKey, MSched.DefaultCSKey);
 
-        if (mjobctl_info.action == mjcmCancel) {
-            printf("canceling job %s\n", mjobctl_info.jobid);
+        printf("S.CSKey:%s, MSched.DefaultCSKey:%s",S.CSKey, MSched.DefaultCSKey);
+
+        S.CSAlgo = MSched.DefaultCSAlgo;
+
+        S.SocketProtocol = C.SocketProtocol;
+        S.SBuffer = SBuffer;
+        if (_MSUConnect(&S, FALSE, NULL) == FAILURE) {
+            DBG(0, fSOCK)
+            dPrint("ERROR:    cannot connect to '%s' port %d\n",
+                   S.RemoteHost, S.RemotePort);
+
+            exit(1);
+        }
+        sprintf(S.SBuffer, "%s%s %s%s %s%s\n", _MCKeyword[mckCommand],
+        		_MService[31], _MCKeyword[mckAuth],
+                _MUUIDToName(_MOSGetEUID()), _MCKeyword[mckArgs], MsgBuffer);
+        printf("S.SBuffer:%s\n", S.SBuffer);
+        S.SBufSize = (long)strlen(S.SBuffer);
+
+        S.Timeout = C.Timeout;
+
+        S.WireProtocol = mwpXML;
+
+        /* attempt connection to primary server */
+        if (_MCSendRequest(&S) == FAILURE) {
+            if (MSched.FBServerHost[0] != '\0') {
+                _MUStrCpy(S.RemoteHost, MSched.FBServerHost,
+                         sizeof(S.RemoteHost));
+                S.RemotePort = MSched.FBServerPort;
+
+                /* attempt connection to secondary server */
+
+                if (_MCSendRequest(&S) == FAILURE) {
+                    DBG(0, fUI)
+                    dPrint("ERROR:    cannot request service (status)\n");
+                	printf("buffer1:%s\n", MsgBuffer);
+                    exit(1);
+                }
+            } else {
+                DBG(0, fUI)
+                dPrint("ERROR:    cannot request service (status)\n");
+            	printf("buffer2:%s\n", MsgBuffer);
+                exit(1);
+            }
         }
 
-        if (mjobctl_info.action == mjcmCheckpoint) {
-            printf("checkpointing job %s\n", mjobctl_info.jobid);
+        if (((ptr = strchr(S.RBuffer, '<')) == NULL) ||
+                            (_MXMLFromString((mxml_t **)&S.SE, ptr, NULL, NULL) ==
+                             FAILURE)) {
+                            DBG(0, fUI)
+                            dPrint("ERROR:    cannot parse server response (status)\n");
+
+                            exit(1);
         }
 
-        if (mjobctl_info.action == mjcmModify) {
-            printf("setting job %s attribute %s to %s\n", mjobctl_info.jobid, mjobctl_info.attr, mjobctl_info.value);
-        }
+        mxml_t *E = (mxml_t *) S.SE;
 
-        if (mjobctl_info.action == mjcmQuery) {
-            printf("querying job %s attribute %s\n", mjobctl_info.jobid, mjobctl_info.attr);
-        }
+		/* NOTE:  if query, must display job results */
 
-        if (mjobctl_info.action == mjcmResume) {
-            printf("resuming job %s\n", mjobctl_info.jobid);
-        }
+		if (E->Val != NULL) {
+			fprintf(stdout, "\n%s\n", E->Val);
+		}
 
-        if (mjobctl_info.action == mjcmRequeue) {
-            printf("requeuing job %s\n", mjobctl_info.jobid);
-        }
+		if (E->CCount > 0) {
+			int cindex;
 
-        if (mjobctl_info.action == mjcmSuspend) {
-            printf("suspending job %s\n", mjobctl_info.jobid);
-        }
+			mxml_t *C;
+			mxml_t *GC;
+
+			for (cindex = 0; cindex < E->CCount; cindex++) {
+				C = E->C[cindex];
+
+				fprintf(stdout, "%s %s", C->Name, C->AVal[0]);
+
+				if (C->CCount > 0) {
+					GC = C->C[0];
+
+					fprintf(stdout, " %s", GC->Val);
+				}
+
+				fprintf(stdout, "\n");
+			} /* END for (cindex) */
+		} /* END if (E->CCount > 0) */
 
         if (client_info.configfile != NULL)
             printf("will use %s as configfile instead of default\n",client_info.configfile);
@@ -102,9 +199,16 @@ int main(int argc, char **argv) {
 */
 int process_args(int argc, char **argv,
                  mjobctl_info_t *mjobctl_info,
-                 client_info_t *client_info)
+                 client_info_t *client_info, char *msgBuffer)
 {
+    int option_index = 0;
+
+    mxml_t *E = NULL;
+
     int c;
+
+    _MXMLCreateE(&E, "schedrequest");
+
     while (1) {
         struct option options[] = {
 
@@ -126,8 +230,6 @@ int process_args(int argc, char **argv,
             {"port",        required_argument, 0, 'P'},
             {0, 0, 0, 0}
         };
-
-        int option_index = 0;
 
         c = getopt_long (argc, argv, "hVcem:o:q:rRsC:D:F:H:K:P:",
                          options, &option_index);
@@ -151,12 +253,13 @@ int process_args(int argc, char **argv,
 
           case 'c':
               puts ("cancel job: action sets to mjcmCancel");
-              mjobctl_info->action = mjcmCancel;
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmCancel], mdfString);
               break;
 
           case 'e':
               puts ("checkpoint job: action sets to mjcmCheckpoint");
-              mjobctl_info->action = mjcmCheckpoint;
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmCheckpoint],
+                          mdfString);
               break;
 
           case 'm':
@@ -168,45 +271,57 @@ int process_args(int argc, char **argv,
 
               mjobctl_info->action = mjcmModify;
 
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmModify],
+                          mdfString);
+
+
               /* get attribute field and value field*/
               char tempStr[128];
               strcpy(tempStr, optarg);
               char *attr = strtok(tempStr,"=");
               char *value = strtok(NULL, "=");
-              mjobctl_info->attr = string_dup(attr);
-              mjobctl_info->value = string_dup(value);
-              mjobctl_info->mode = string_dup("set");
-              printf("modify job attribute:  action sets to mjcmModify, attr sets to %s, value sets to %s\n",
-                    mjobctl_info->attr, mjobctl_info->value);
+              _MXMLSetAttr(E, "attr", attr, mdfString);
+              _MXMLSetAttr(E, "value", value, mdfString);
+              _MXMLSetAttr(E, "mode", "set", mdfString);
+
+
               break;
 
           case 'o':
-              mjobctl_info->action = mjcmModify;
-              mjobctl_info->attr = string_dup("hold");
-              mjobctl_info->value = string_dup(optarg);
-              printf("modify job attribute: action sets to mjcmModify, attr sets to %s, value sets to %s\n",
-                    mjobctl_info->attr, mjobctl_info->value);
+
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmModify],
+                          mdfString);
+              _MXMLSetAttr(E, "attr", "hold", mdfString);
+
+              if ((optarg == NULL) || (optarg[0] == '\0'))
+                  _MXMLSetAttr(E, "value", "user", mdfString);
+              else
+                  _MXMLSetAttr(E, "value", optarg, mdfString);
+
               break;
 
           case 'q':
-              printf ("query job attribute: action sets to mjcmQuery, attr sets to %s\n", optarg);
-              mjobctl_info->action = mjcmQuery;
-              mjobctl_info->attr = string_dup(optarg);
+              if (optarg == NULL) break;
+
+              _MXMLSetAttr(E, "attr", optarg, mdfString);
+
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmQuery],
+                          mdfString);
               break;
 
           case 'r':
-              puts ("resume job: action sets to mjcmResume");
               mjobctl_info->action = mjcmResume;
               break;
 
           case 'R':
-              puts ("requeue job: action sets to mjcmRequeue");
-              mjobctl_info->action = mjcmRequeue;
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmResume],
+                          mdfString);
+
               break;
 
           case 's':
-              puts ("suspend job: action sets to mjcmSuspend");
-              mjobctl_info->action = mjcmSuspend;
+              _MXMLSetAttr(E, "action", (void *)_MJobCtlCmds[mjcmSuspend],
+                          mdfString);
               break;
 
           case 'C':
@@ -259,9 +374,12 @@ int process_args(int argc, char **argv,
         puts("Error: only accept one argument(jobid)");
         return 0;
     }else{
-        mjobctl_info->jobid = string_dup(argv[optind]);
+        _MXMLSetAttr(E, "job", argv[optind], mdfString);
     }
 
+    _MXMLToString(E, msgBuffer, MAX_MLINE, NULL, TRUE);
+
+    _MXMLDestroyE(&E);
 
     return 1;
 }

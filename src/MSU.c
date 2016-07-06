@@ -1136,7 +1136,7 @@ int MSUSendData(
                 }
 
                 sprintf(TSLine, "%s %s", tmpStr, MCKeyword[mckData]);
-
+                printf("TSLine:%s, S->SBuffer:%s,S->CSAlgo:%d,S->CSKey:%s\n",TSLine, S->SBuffer,S->CSAlgo,S->CSKey);
                 MSecGetChecksum2(
                     TSLine, strlen(TSLine), S->SBuffer,
                     strlen(S->SBuffer), /* NOTE:  was S->SBufSize */
@@ -1144,6 +1144,7 @@ int MSUSendData(
 
                 sprintf(CKLine, "%s%s %s", MCKeyword[mckCheckSum], CKSum,
                         TSLine);
+                printf("CKSum:%s\n",CKSum);
             } /* END if (DoSocketLayerAuth == TRUE) */
 
             PacketSize = S->SBufSize;
@@ -1314,7 +1315,7 @@ int MSUSendPacket(
 
             return (FAILURE);
         }
-
+        printf("Buf + count:%s\n",Buf + count);
         if ((rc = send(sd, (Buf + count), (BufSize - count), SOCKETFLAGS)) <
             0) {
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
@@ -1443,7 +1444,7 @@ int MSURecvData(
     S->RBuffer = NULL;
 
     TMarker[0] = '\0';
-
+    printf("S->SocketProtocol:%d\n",S->SocketProtocol);
     switch (S->SocketProtocol) {
         case mspS3Challenge:
 
@@ -2029,13 +2030,22 @@ int MSURecvData(
 
                     return (FAILURE);
                 }
+                printf("ptr:%s\n",ptr);
+                MSecGetChecksum(ptr, strlen(ptr), CKSum, NULL, S->CSAlgo,
+                                S->CSKey);
+                printf("S->CSKey:%s\n",S->CSKey);
+                printf( "ALERT:    checksum does not match (%s:%s)  "
+                        "request '%.120s'\n",
+                        CKSum, CKLine, ptr);
 
                 /* verify checksum */
 
-                if (S->CSAlgo != mcsaNONE) {
+                /*if (S->CSAlgo != mcsaNONE) {
                     MSecGetChecksum(ptr, strlen(ptr), CKSum, NULL, S->CSAlgo,
                                     S->CSKey);
-
+                    printf( "ALERT:    checksum does not match (%s:%s)  "
+                            "request '%.120s'\n",
+                            CKSum, CKLine, ptr);
                     if (strcmp(CKSum, CKLine) != 0) {
                         MDB(1, fSOCK)
                         MLog(
@@ -2046,9 +2056,9 @@ int MSURecvData(
 #ifdef __M32COMPAT
                         if (strcmp(MSched.Admin4User[0], "ALL"))
 #else  /* __M32COMPAT */
-                        if (strcmp(MSched.Admin[4].UName[0], "ALL"))
+/*                        if (strcmp(MSched.Admin[4].UName[0], "ALL"))
 #endif /* __M32COMPAT */
-                        {
+                   /*     {
                             MUFree(&S->RBuffer);
 
                             if (EMsg != NULL)
@@ -2059,7 +2069,7 @@ int MSURecvData(
                             return (FAILURE);
                         }
                     } /* END if (strcmp(CKSum,CKLine) != 0) */
-                }     /* END if (S->CSKey != NULL) */
+               // }     /* END if (S->CSKey != NULL) */
 
                 /* get timestamp */
 
