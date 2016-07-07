@@ -12,21 +12,9 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Enum for mjobctl actions */
-enum mJobCtlCmdEnum {
-    mjcmNONE = 0,
-    mjcmCancel,
-    mjcmCheckpoint,
-    mjcmModify,
-    mjcmQuery,
-    mjcmRequeue,
-    mjcmResume,
-    mjcmSuspend,
-};
-
 /** Struct for mjobctl options */
 typedef struct _mjobctl_info {
-    int action;               /**< Action name */
+    char *action;               /**< Action name */
     char *jobid;              /**< Job ID */
     char *attr;               /**< Attribute name*/
     char *value;              /**< Attribute value */
@@ -36,45 +24,75 @@ typedef struct _mjobctl_info {
 static void free_structs(mjobctl_info_t *, client_info_t *);
 static int process_args(int, char **, mjobctl_info_t *, client_info_t *);
 static void print_usage();
+static char *buildXML(mjobctl_info_t);
 
 int main(int argc, char **argv) {
-
     mjobctl_info_t mjobctl_info;
     client_info_t client_info;
 
     memset(&mjobctl_info, 0, sizeof(mjobctl_info));
     memset(&client_info, 0, sizeof(client_info));
 
+    char *response, request[MAXBUFFER], *result, *ptr, *XMLBuffer;
+    int sd;
+    long bufSize;
+    const char tmpLine[20] = "</SchedResponse>";
+    int port;
+    FILE *f;
+    const char serverMode[10] = "SERVERMODE", serverPort[10] = "SERVERPORT";
+    char configDir[MAXLINE], *configBuffer;
+    char *pch, *tmpPtr;
+
+    /* get server port from config file */
+    strcpy(configDir,MBUILD_HOMEDIR);
+    strcat(configDir,CONFIGFILE);
+
+    f = fopen(configDir, "rb");
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    configBuffer = (char *)malloc(fsize + 1);
+    fread(configBuffer, fsize, 1, f);
+    fclose(f);
+
+    configBuffer[fsize] = '\0';
+    ptr = strstr(configBuffer,serverPort);
+    tmpPtr = strstr(configBuffer, serverMode);
+    *tmpPtr = '\0';
+	pch = strtok(ptr, " ");
+	pch = strtok(NULL, " ");
+
+	port = atoi(pch);
+
+	free(configBuffer);
+
     /* process all the options and arguments */
     if (process_args(argc, argv, &mjobctl_info, &client_info)) {
 
-        if (mjobctl_info.action == mjcmCancel) {
-            printf("canceling job %s\n", mjobctl_info.jobid);
-        }
+		connectToServer(&sd, port);
 
-        if (mjobctl_info.action == mjcmCheckpoint) {
-            printf("checkpointing job %s\n", mjobctl_info.jobid);
-        }
+		XMLBuffer = buildXML(mjobctl_info);
+		generateBuffer(request, XMLBuffer);
+		free(XMLBuffer);
 
-        if (mjobctl_info.action == mjcmModify) {
-            printf("setting job %s attribute %s to %s\n", mjobctl_info.jobid, mjobctl_info.attr, mjobctl_info.value);
-        }
+		sendPacket(sd, request);
 
-        if (mjobctl_info.action == mjcmQuery) {
-            printf("querying job %s attribute %s\n", mjobctl_info.jobid, mjobctl_info.attr);
-        }
+		bufSize = getMessageSize(sd);
 
-        if (mjobctl_info.action == mjcmResume) {
-            printf("resuming job %s\n", mjobctl_info.jobid);
-        }
+		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			puts("Error: cannot allocate memory for message");
+			exit(EXIT_FAILURE);
+		}
 
-        if (mjobctl_info.action == mjcmRequeue) {
-            printf("requeuing job %s\n", mjobctl_info.jobid);
-        }
+		/* receive message from server*/
+		recvPacket(sd, &response, bufSize);
 
-        if (mjobctl_info.action == mjcmSuspend) {
-            printf("suspending job %s\n", mjobctl_info.jobid);
-        }
+		/* get and print result*/
+		result = strchr(response, '>');
+		ptr = strstr(result, tmpLine);
+		*ptr = '\0';
+
+		printf("%s\n", ++result);
 
         if (client_info.configfile != NULL)
             printf("will use %s as configfile instead of default\n",client_info.configfile);
@@ -91,6 +109,8 @@ int main(int argc, char **argv) {
     }
 
     free_structs(&mjobctl_info, &client_info);
+
+    free(response);
 
     exit(0);
 }
@@ -150,13 +170,11 @@ int process_args(int argc, char **argv,
               break;
 
           case 'c':
-              puts ("cancel job: action sets to mjcmCancel");
-              mjobctl_info->action = mjcmCancel;
+              mjobctl_info->action = string_dup("cancel");
               break;
 
           case 'e':
-              puts ("checkpoint job: action sets to mjcmCheckpoint");
-              mjobctl_info->action = mjcmCheckpoint;
+              mjobctl_info->action = string_dup("checkpoint");
               break;
 
           case 'm':
@@ -166,7 +184,7 @@ int process_args(int argc, char **argv,
                   break;
               }
 
-              mjobctl_info->action = mjcmModify;
+              mjobctl_info->action = string_dup("modify");
 
               /* get attribute field and value field*/
               char tempStr[128];
@@ -176,37 +194,29 @@ int process_args(int argc, char **argv,
               mjobctl_info->attr = string_dup(attr);
               mjobctl_info->value = string_dup(value);
               mjobctl_info->mode = string_dup("set");
-              printf("modify job attribute:  action sets to mjcmModify, attr sets to %s, value sets to %s\n",
-                    mjobctl_info->attr, mjobctl_info->value);
               break;
 
           case 'o':
-              mjobctl_info->action = mjcmModify;
-              mjobctl_info->attr = string_dup("hold");
+              mjobctl_info->action = string_dup("modify");
+              mjobctl_info->attr = string_dup("Hold");
               mjobctl_info->value = string_dup(optarg);
-              printf("modify job attribute: action sets to mjcmModify, attr sets to %s, value sets to %s\n",
-                    mjobctl_info->attr, mjobctl_info->value);
               break;
 
           case 'q':
-              printf ("query job attribute: action sets to mjcmQuery, attr sets to %s\n", optarg);
-              mjobctl_info->action = mjcmQuery;
+              mjobctl_info->action = string_dup("query");
               mjobctl_info->attr = string_dup(optarg);
               break;
 
           case 'r':
-              puts ("resume job: action sets to mjcmResume");
-              mjobctl_info->action = mjcmResume;
+              mjobctl_info->action = string_dup("resume");
               break;
 
           case 'R':
-              puts ("requeue job: action sets to mjcmRequeue");
-              mjobctl_info->action = mjcmRequeue;
+              mjobctl_info->action = string_dup("requeue");
               break;
 
           case 's':
-              puts ("suspend job: action sets to mjcmSuspend");
-              mjobctl_info->action = mjcmSuspend;
+              mjobctl_info->action = string_dup("suspend");
               break;
 
           case 'C':
@@ -264,6 +274,54 @@ int process_args(int argc, char **argv,
 
 
     return 1;
+}
+
+/** build XML buffer
+ *
+ * This function will take the object passed as argument,
+ * build and return the buffer in XML format.
+ *
+ * @param input object to build buffer
+ * @return string buffer.
+ */
+
+char *buildXML(mjobctl_info_t mjobctl_info){
+	char *XMLBuffer;
+
+	if((XMLBuffer = (char *)malloc(MAXLINE)) == NULL){
+		puts("Erro: cannot allocate memory to XML buffer");
+		return NULL;
+	}
+
+	strcpy(XMLBuffer, "<schedrequest action=\"");
+	strcat(XMLBuffer, mjobctl_info.action);
+	strcat(XMLBuffer,"\"");
+
+	if(mjobctl_info.attr != NULL){
+		strcat(XMLBuffer, " attr=\"");
+		strcat(XMLBuffer, mjobctl_info.attr);
+		strcat(XMLBuffer,"\"");
+	}
+
+	strcat(XMLBuffer, " job=\"");
+	strcat(XMLBuffer, mjobctl_info.jobid);
+	strcat(XMLBuffer,"\"");
+
+	if(mjobctl_info.mode != NULL){
+		strcat(XMLBuffer, " mode=\"");
+		strcat(XMLBuffer, mjobctl_info.mode);
+		strcat(XMLBuffer,"\"");
+	}
+
+	if(mjobctl_info.value != NULL){
+		strcat(XMLBuffer, " value=\"");
+		strcat(XMLBuffer, mjobctl_info.value);
+		strcat(XMLBuffer,"\"");
+	}
+
+	strcat(XMLBuffer,"></schedrequest>");
+
+	return XMLBuffer;
 }
 
 /* frees memory */

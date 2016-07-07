@@ -5,6 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <pwd.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <time.h>
 
 
 /** Duplicate a string
@@ -72,4 +82,348 @@ void print_client_usage()
          "  -H, --host=SERVERHOSTNAME      set serverhost\n"
          "  -k, --keyfile=FILENAME         set server keyfile\n"
          "  -P, --port=SERVERPORT          set serverport\n");
+}
+
+/** Generate buffer to be sent to the server
+ *
+ * This function will take the strings passed as arguments and
+ * generate the whole buffer which will be sent to the server.
+ *
+ * @param1 output string to be saved
+ * @param2 input string to be used to build the whole buffer
+ * @return 1 if success.
+ */
+
+int generateBuffer(char *request, char *XMLBuffer)
+{
+
+	char TSLine[MAXLINE], CKSum[MAXLINE], CKLine[MAXLINE], header[MAXBUFFER];
+    char tmpStr[MAXBUFFER];
+
+    time_t Now;
+
+    /* build header */
+    sprintf(header, "%s%s %s%s %s%s\n", "CMD=",
+            "mjobctl", "AUTH=",
+			getpwuid(geteuid())->pw_name, "ARG=", XMLBuffer);
+
+    /* get time stamp */
+    time(&Now);
+	sprintf(tmpStr, "%s%ld %s%s", "TS=", (long) Now, "AUTH=",
+			getpwuid(geteuid())->pw_name);
+    sprintf(TSLine, "%s %s", tmpStr, "DT=");
+
+    /* get checksum */
+	getChecksum(TSLine, strlen(TSLine), header, strlen(header), CKSum, MBUILD_SKEY);
+
+	/* combine checksum and time stamp */
+	sprintf(CKLine, "%s%s %s", "CK=", CKSum, TSLine);
+
+	/* write buffer size to buffer */
+	sprintf(request, "%08ld\n%s", strlen(header) + (long) strlen(CKLine), CKLine);
+
+	/* combine all the strings */
+	strcat(request,header);
+
+	return 1;
+}
+
+/** Generate checksum
+ *
+ * This function will take the strings and integers passed as arguments
+ * and generate the checksum.
+ *
+ * @param1 input string to be used for building checksum
+ * @param2 input integer to be used for building checksum
+ * @param3 input string to be used for building checksum
+ * @param4 input integer to be used for building checksum
+ * @param5 output string to save the checksum
+ * @param6 input string to be used for building checksum
+ * @return 1 if success.
+ */
+
+int getChecksum(char *timeStamp, int timeStampSize, char *header, int headerSize,
+	    char *checksum, char *csKeyString)
+{
+	unsigned int crc;
+	unsigned int lword;
+	unsigned int rword;
+
+	unsigned int seed;
+
+	int index;
+
+	seed = (unsigned int) strtoul(csKeyString, NULL, 0);
+
+	crc = 0;
+
+	for (index = 0; index < timeStampSize; index++) {
+		crc = (unsigned int) secDoCRC((unsigned short) crc, timeStamp[index]);
+	}
+
+	for (index = 0; index < headerSize; index++) {
+		crc = (unsigned int) secDoCRC((unsigned short) crc, header[index]);
+	}
+
+	lword = crc;
+	rword = seed;
+
+	secPSDES(&lword, &rword);
+
+	sprintf(checksum, "%08x%08x", (int) lword, (int) rword);
+	return 1;
+}
+
+/* an algorithm to build checksum */
+
+unsigned short secDoCRC(unsigned short crc, unsigned char val)
+{
+    int index;
+    unsigned int ans;
+
+    ans = (crc ^ val << 8);
+
+    for (index = 0; index < 8; index++) {
+        if (ans & 0x8000)
+            ans = (ans << 1) ^ 4129;
+        else
+            ans <<= 1;
+    }
+
+    return ((unsigned short)ans);
+}
+
+/* an algorithm to build checksum */
+
+int secPSDES(unsigned int *lword, unsigned int *irword)
+{
+    int index;
+
+    unsigned int ia;
+    unsigned int ib;
+    unsigned int iswap;
+    unsigned int itmph;
+    unsigned int itmpl;
+
+    static unsigned int c1[MAX_MDESCKSUM_ITERATION] = {
+        (unsigned int)0xcba4e531, (unsigned int)0x537158eb,
+        (unsigned int)0x145cdc3c, (unsigned int)0x0d3fdeb2};
+
+    static unsigned int c2[MAX_MDESCKSUM_ITERATION] = {
+        (unsigned int)0x12be4590, (unsigned int)0xab54ce58,
+        (unsigned int)0x6954c7a6, (unsigned int)0x15a2ca46};
+
+    itmph = 0;
+    itmpl = 0;
+
+    for (index = 0; index < MAX_MDESCKSUM_ITERATION; index++) {
+        iswap = *irword;
+
+        ia = iswap ^ c1[index];
+
+        itmpl = ia & 0xffff;
+        itmph = ia >> 16;
+
+        ib = (itmpl * itmpl) + ~(itmph * itmph);
+        ia = (ib >> 16) | ((ib & 0xffff) << 16);
+
+        *irword = (*lword) ^ ((ia ^ c2[index]) + (itmpl * itmph));
+
+        *lword = iswap;
+    }
+
+    return 1;
+}
+
+/** Connect to server
+ *
+ * This function will take the objects passed as arguments
+ * and connect to the server.
+ *
+ * @param1 output file descriptor associated with the socket
+ * @param2 input integer to declare the server port
+ * @return 1 if success.
+ */
+
+int connectToServer(int *sd, int port){
+    struct sockaddr_in s_sockaddr;
+    struct hostent *s_hostent;
+    struct in_addr in;
+
+	char *hptr = "dallin-ThinkCentre-M900";
+
+	int flags;
+
+    memset(&s_sockaddr, 0, sizeof(s_sockaddr));
+
+    /* get IP address */
+	if (inet_aton(hptr, &in) == 0) {
+
+		s_hostent = gethostbyname(hptr);
+
+		memcpy(&s_sockaddr.sin_addr, s_hostent->h_addr, s_hostent->h_length);
+
+	} else {
+		memcpy(&s_sockaddr.sin_addr, &in.s_addr, sizeof(s_sockaddr.sin_addr));
+	}
+
+    s_sockaddr.sin_family = AF_INET;
+    s_sockaddr.sin_port = htons(port);
+
+    /* create socket */
+    *sd = socket(PF_INET,SOCK_STREAM,0);
+
+    fcntl(*sd, F_SETFD, 1);
+
+    /* enable non-blocking mode on client */
+    flags = fcntl(*sd, F_GETFL, 0);
+
+    /* set socket NDELAY attribute */
+    fcntl(*sd, F_SETFL, (flags | O_NDELAY));
+
+    /* connect to server */
+	if (connect(*sd, (struct sockaddr *) &s_sockaddr, sizeof(s_sockaddr))
+			== -1) {
+		selectWriteOrRead(*sd, TIMELIMIT, WRITE);
+	}
+
+	return 1;
+}
+
+/** waiting for input or output
+ *
+ * This function will take the numbers passed as arguments
+ * and wait for input or output.
+ *
+ * @param1 input file descriptor associated with the socket
+ * @param2 input number to specify the time limit
+ * @param3 input integer to specify mode(WRITE or READ)
+ * @return 1 if success.
+ */
+
+int selectWriteOrRead(int sd, unsigned long timeLimit, int flag){
+    struct timeval timeOut;
+    int numfds;
+
+    fd_set set;
+
+    FD_ZERO(&set);
+
+    FD_SET(sd, &set);
+
+    timeOut.tv_sec = timeLimit / 1000000;
+    timeOut.tv_usec = timeLimit % 1000000;
+
+    numfds = sd;
+	if (flag == WRITE){
+		if (select(numfds + 1, NULL, &set, NULL, &timeOut) > 0) {
+			if (FD_ISSET(sd, &set)) {
+				return 1;
+			}
+		}
+	}else{
+	    if (select(numfds + 1, &set, NULL, NULL, &timeOut) > 0) {
+	        if (FD_ISSET(sd, &set)) {
+	            return 1;
+	        }
+	    }
+	}
+
+    return 0;
+
+}
+
+/** get message size
+ *
+ * This function will take the integer passed as argument
+ * and return the message size it extracts from the message.
+ *
+ * @param1 input file descriptor associated with the socket
+ * @return 1 if success.
+ */
+
+int getMessageSize(int sd){
+	char tmpLine[MAXLINE];
+	long bufSize;
+
+	char *ptr;
+
+	ptr = tmpLine;
+
+	ptr[0] = '\0';
+
+	recvPacket(sd, &ptr, 9 * sizeof(char));
+
+	tmpLine[8] = '\0';
+
+	sscanf(tmpLine, "%ld", &bufSize);
+
+	return bufSize;
+}
+
+/** send message
+ *
+ * This function will take the string and integer passed as arguments
+ * and send message to server
+ *
+ * @param1 input file descriptor associated with the socket
+ * @param2 input string to be sent to the server
+ * @return 1 if success.
+ */
+
+int sendPacket(int sd, char *request) {
+	int rc;
+	int count = 0;
+	while (count < strlen(request)) {
+		if((rc = send(sd, request, strlen(request), 0)) < 0){
+			continue;
+		}
+		if (rc > 0) count += rc;
+	}
+	return 1;
+}
+
+/** receive message
+ *
+ * This function will take the string pointer and numbers passed
+ * as arguments, receive and save message from server
+ *
+ * @param1 input string to be sent to the server
+ * @param2 output string pointer to save the message
+ * @param3 input number to declare the message size
+ * @return 1 if success.
+ */
+
+int recvPacket(int sd, char **bufP, long bufSize){
+	int count = 0;
+	int rc;
+	char *ptr;
+
+	ptr = *bufP;
+
+	while (count < bufSize) {
+		 if (selectWriteOrRead(sd, TIMELIMIT, READ) == 0)
+			 return 0;
+
+		 rc = recv(sd, (ptr + count), (bufSize - count), 0);
+
+         if (rc > 0) {
+             count += rc;
+             continue;
+         }
+
+         if (rc < 0) {
+			if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+				/* continue if packet partially read */
+				continue;
+			}
+         }
+
+         if ((rc == 0) && (count == 0)) {
+             /* fail if no packet detected */
+
+             return 0;
+         }
+	}
+	return 1;
 }
