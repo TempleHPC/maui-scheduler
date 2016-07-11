@@ -141,7 +141,6 @@ int process_args(int argc, char **argv,
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
             {"host",        required_argument, 0, 'H'},
-            {"keyfile",     required_argument, 0, 'k'},
             {"port",        required_argument, 0, 'P'},
             {0, 0, 0, 0}
         };
@@ -240,11 +239,6 @@ int process_args(int argc, char **argv,
               client_info->host = string_dup(optarg);
               break;
 
-          case 'k':
-              printf ("set keyfile to %s\n", optarg);
-              client_info->keyfile = string_dup(optarg);
-              break;
-
           case 'P':
               client_info->port = string2int(optarg);
               if (client_info->port != INVALID_STRING)
@@ -331,7 +325,6 @@ void free_structs(mjobctl_info_t *mjobctl_info, client_info_t *client_info) {
     free(mjobctl_info->value);
     free(client_info->configfile);
     free(client_info->host);
-    free(client_info->keyfile);
     free(client_info->logfacility);
 }
 

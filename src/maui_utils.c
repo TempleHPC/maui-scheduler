@@ -80,7 +80,6 @@ void print_client_usage()
          "  -D, --loglevel=LOGLEVEL        set loglevel\n"
          "  -F, --logfacility=LOGFACILITY  set logfacility\n"
          "  -H, --host=SERVERHOSTNAME      set serverhost\n"
-         "  -k, --keyfile=FILENAME         set server keyfile\n"
          "  -P, --port=SERVERPORT          set serverport\n");
 }
 

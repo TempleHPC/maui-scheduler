@@ -24,7 +24,6 @@ typedef struct _client_info {
     int    loglevel;            /**< Log level  */
     char  *logfacility;         /**< Log facility  */
     char  *host;                /**< Host name of Maui server to contact */
-    char  *keyfile;             /**< Keyfile location for authentication */
     int    port;                /**< Port number of Maui server to contact */
 } client_info_t;
 

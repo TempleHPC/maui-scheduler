@@ -66,8 +66,6 @@ int main (int argc, char **argv)
             printf("will contact %s as maui server instead of default\n",client_info.host);
         if (client_info.port > 0)
             printf("will use %d as server port instead of default\n",client_info.port);
-        if (client_info.keyfile != NULL)
-            printf("will use %s as key file instead of default\n",client_info.keyfile);
 
     }
 
@@ -172,11 +170,6 @@ int process_args(int argc, char **argv,
               client_info->host = string_dup(optarg);
               break;
 
-          case 'k':
-              printf ("set keyfile to %s\n", optarg);
-              client_info->keyfile = string_dup(optarg);
-              break;
-
           case 'P':
               client_info->port = string2int(optarg);
               if (client_info->port != INVALID_STRING)
@@ -202,7 +195,6 @@ void free_structs(showq_info_t *showq_info, client_info_t *client_info){
     free(showq_info->pName);
     free(client_info->configfile);
     free(client_info->host);
-    free(client_info->keyfile);
     free(client_info->logfacility);
 }
 
