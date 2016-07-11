@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
 }
 
 /*
- processes all the arguments
+ process all the arguments
  returns 1 if the option requires more action to be done
  returns 0 if no more action needs to be done
 */
@@ -312,7 +312,7 @@ char *buildXML(mjobctl_info_t mjobctl_info){
 	return XMLBuffer;
 }
 
-/* frees memory */
+/* free memory */
 void free_structs(mjobctl_info_t *mjobctl_info, client_info_t *client_info) {
     free(mjobctl_info->attr);
     free(mjobctl_info->jobid);

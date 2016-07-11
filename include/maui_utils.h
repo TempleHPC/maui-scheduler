@@ -66,6 +66,7 @@ extern int generateBuffer(char *, char *);
 /* an algorithm to build checksum */
 extern int secPSDES(unsigned int *, unsigned int *);
 
+/* get attribute value contained in config file */
 extern char *getConfigVal(FILE *, char *);
 
 #endif

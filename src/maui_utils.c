@@ -91,7 +91,7 @@ void print_client_usage()
  *
  * @param1 output string to be saved
  * @param2 input string to be used to build the whole buffer
- * @return 1 if success.
+ * @return 1 if succeed.
  */
 
 int generateBuffer(char *request, char *buffer)
@@ -139,7 +139,7 @@ int generateBuffer(char *request, char *buffer)
  * @param4 input integer to be used for building checksum
  * @param5 output string to save the checksum
  * @param6 input string to be used for building checksum
- * @return 1 if success.
+ * @return 1 if succeed.
  */
 
 int getChecksum(char *timeStamp, int timeStampSize, char *header, int headerSize,
@@ -242,7 +242,8 @@ int secPSDES(unsigned int *lword, unsigned int *irword)
  *
  * @param1 output file descriptor associated with the socket
  * @param2 input integer to declare the server port
- * @return 1 if success.
+ * @param3 input string to declare the server host
+ * @return 1 if succeed.
  */
 
 int connectToServer(int *sd, int port, char *host){
@@ -296,7 +297,7 @@ int connectToServer(int *sd, int port, char *host){
  * @param1 input file descriptor associated with the socket
  * @param2 input number to specify the time limit
  * @param3 input integer to specify mode(WRITE or READ)
- * @return 1 if success.
+ * @return 1 if succeed.
  */
 
 int selectWriteOrRead(int sd, unsigned long timeLimit, int flag){
@@ -336,8 +337,8 @@ int selectWriteOrRead(int sd, unsigned long timeLimit, int flag){
  * This function will take the integer passed as argument
  * and return the message size it extracts from the message.
  *
- * @param1 input file descriptor associated with the socket
- * @return 1 if success.
+ * @param input file descriptor associated with the socket
+ * @return 1 if succeed.
  */
 
 int getMessageSize(int sd){
@@ -366,7 +367,7 @@ int getMessageSize(int sd){
  *
  * @param1 input file descriptor associated with the socket
  * @param2 input string to be sent to the server
- * @return 1 if success.
+ * @return 1 if succeed.
  */
 
 int sendPacket(int sd, char *request) {
@@ -389,7 +390,7 @@ int sendPacket(int sd, char *request) {
  * @param1 input string to be sent to the server
  * @param2 output string pointer to save the message
  * @param3 input number to declare the message size
- * @return 1 if success.
+ * @return 1 if succeed.
  */
 
 int recvPacket(int sd, char **bufP, long bufSize){
@@ -433,8 +434,8 @@ int recvPacket(int sd, char **bufP, long bufSize){
  * config file
  *
  * @param1 input config FILE pointer
- * @param2 input attribute name
- * @return attribute value.
+ * @param2 input string to declare the attribute name
+ * @return a string pointer which contains the attribute value.
  */
 
 char *getConfigVal(FILE *f, char *attr){
