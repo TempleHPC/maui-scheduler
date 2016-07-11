@@ -7,6 +7,8 @@
 
 #include "moab-local.h"
 
+#include <stdio.h>
+
 #define WRITE 1
 #define READ 0
 #define TIMELIMIT 3000000
@@ -41,7 +43,7 @@ extern void print_client_usage();
 extern int sendPacket(int , char *);
 
 /* connect to server */
-extern int connectToServer(int *, int);
+extern int connectToServer(int *, int, char *);
 
 /* waiting for input or output */
 extern int selectWriteOrRead(int , unsigned long , int);
@@ -63,5 +65,7 @@ extern int generateBuffer(char *, char *);
 
 /* an algorithm to build checksum */
 extern int secPSDES(unsigned int *, unsigned int *);
+
+extern char *getConfigVal(FILE *, char *);
 
 #endif

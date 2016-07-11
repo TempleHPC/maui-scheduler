@@ -94,7 +94,7 @@ void print_client_usage()
  * @return 1 if success.
  */
 
-int generateBuffer(char *request, char *XMLBuffer)
+int generateBuffer(char *request, char *buffer)
 {
 
 	char TSLine[MAXLINE], CKSum[MAXLINE], CKLine[MAXLINE], header[MAXBUFFER];
@@ -105,7 +105,7 @@ int generateBuffer(char *request, char *XMLBuffer)
     /* build header */
     sprintf(header, "%s%s %s%s %s%s\n", "CMD=",
             "mjobctl", "AUTH=",
-			getpwuid(geteuid())->pw_name, "ARG=", XMLBuffer);
+			getpwuid(geteuid())->pw_name, "ARG=", buffer);
 
     /* get time stamp */
     time(&Now);
@@ -245,21 +245,19 @@ int secPSDES(unsigned int *lword, unsigned int *irword)
  * @return 1 if success.
  */
 
-int connectToServer(int *sd, int port){
+int connectToServer(int *sd, int port, char *host){
     struct sockaddr_in s_sockaddr;
     struct hostent *s_hostent;
     struct in_addr in;
-
-	char *hptr = "dallin-ThinkCentre-M900";
 
 	int flags;
 
     memset(&s_sockaddr, 0, sizeof(s_sockaddr));
 
     /* get IP address */
-	if (inet_aton(hptr, &in) == 0) {
+	if (inet_aton(host, &in) == 0) {
 
-		s_hostent = gethostbyname(hptr);
+		s_hostent = gethostbyname(host);
 
 		memcpy(&s_sockaddr.sin_addr, s_hostent->h_addr, s_hostent->h_length);
 
@@ -426,4 +424,39 @@ int recvPacket(int sd, char **bufP, long bufSize){
          }
 	}
 	return 1;
+}
+
+/** get attribute value
+ *
+ * This function will take the FILE and string pointer passed
+ * as arguments and return the attribute value contained in the
+ * config file
+ *
+ * @param1 input config FILE pointer
+ * @param2 input attribute name
+ * @return attribute value.
+ */
+
+char *getConfigVal(FILE *f, char *attr){
+	char *configBuffer, *ptr, *pch, *val;
+
+	/* read config file and save its content into a buffer*/
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    configBuffer = (char *)malloc(fsize + 1);
+    fread(configBuffer, fsize, 1, f);
+
+    /* locate and get attribute value */
+    configBuffer[fsize] = '\0';
+    ptr = strstr(configBuffer,attr);
+	pch = strtok(ptr, " \n");
+	pch = strtok(NULL, " \n");
+
+    val = (char *)malloc(strlen(pch) + 1);
+    strcpy(val,pch);
+
+	free(configBuffer);
+
+	return val;
 }

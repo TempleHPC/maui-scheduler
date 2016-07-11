@@ -33,43 +33,31 @@ int main(int argc, char **argv) {
     memset(&mjobctl_info, 0, sizeof(mjobctl_info));
     memset(&client_info, 0, sizeof(client_info));
 
-    char *response, request[MAXBUFFER], *result, *ptr, *XMLBuffer;
-    int sd;
+    char *response, request[MAXBUFFER], *result, *XMLBuffer;
+    int sd, port;
     long bufSize;
     const char tmpLine[20] = "</SchedResponse>";
-    int port;
     FILE *f;
-    const char serverMode[10] = "SERVERMODE", serverPort[10] = "SERVERPORT";
-    char configDir[MAXLINE], *configBuffer;
-    char *pch, *tmpPtr;
+    char configDir[MAXLINE];
+    char *ptr, *host;
 
-    /* get server port from config file */
+    /* get config file directory and open it*/
     strcpy(configDir,MBUILD_HOMEDIR);
     strcat(configDir,CONFIGFILE);
+	if ((f = fopen(configDir, "rb")) == NULL) {
+		puts("Error: cannot locate config file");
+		exit(EXIT_FAILURE);
+	}
 
-    f = fopen(configDir, "rb");
-    fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    configBuffer = (char *)malloc(fsize + 1);
-    fread(configBuffer, fsize, 1, f);
+    port = atoi(getConfigVal(f, "SERVERPORT"));
+    host = getConfigVal(f, "SERVERHOST");
+
     fclose(f);
-
-    configBuffer[fsize] = '\0';
-    ptr = strstr(configBuffer,serverPort);
-    tmpPtr = strstr(configBuffer, serverMode);
-    *tmpPtr = '\0';
-	pch = strtok(ptr, " ");
-	pch = strtok(NULL, " ");
-
-	port = atoi(pch);
-
-	free(configBuffer);
 
     /* process all the options and arguments */
     if (process_args(argc, argv, &mjobctl_info, &client_info)) {
 
-		connectToServer(&sd, port);
+		connectToServer(&sd, port, host);
 
 		XMLBuffer = buildXML(mjobctl_info);
 		generateBuffer(request, XMLBuffer);
