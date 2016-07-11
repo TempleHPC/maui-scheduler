@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <errno.h>
 
 #include "msched-version.h"
 #include "maui_utils.h"
@@ -41,31 +42,53 @@ int main(int argc, char **argv) {
     char configDir[MAXLINE];
     char *ptr, *host;
 
-    /* get config file directory and open it*/
-    strcpy(configDir,MBUILD_HOMEDIR);
-    strcat(configDir,CONFIGFILE);
-	if ((f = fopen(configDir, "rb")) == NULL) {
-		puts("Error: cannot locate config file");
-		exit(EXIT_FAILURE);
-	}
-
-    port = atoi(getConfigVal(f, "SERVERPORT"));
-    host = getConfigVal(f, "SERVERHOST");
-
-    fclose(f);
-
     /* process all the options and arguments */
-    if (process_args(argc, argv, &mjobctl_info, &client_info)) {
+	if (process_args(argc, argv, &mjobctl_info, &client_info)) {
 
-		connectToServer(&sd, port, host);
+		/* get config file directory and open it*/
+		strcpy(configDir, MBUILD_HOMEDIR);
+		if (client_info.configfile != NULL) {
+			printf("will use %s as configfile instead of default\n",
+					client_info.configfile);
+			strcat(configDir, client_info.configfile);
+		} else {
+			strcat(configDir, CONFIGFILE);
+		}
+		if ((f = fopen(configDir, "rb")) == NULL) {
+			puts("Error: cannot locate config file");
+			exit(EXIT_FAILURE);
+		}
+
+		if (client_info.host != NULL) {
+			printf("will contact %s as maui server instead of default\n",
+					client_info.host);
+			host = client_info.host;
+		} else {
+			host = getConfigVal(f, "SERVERHOST");
+		}
+
+		if (client_info.port > 0) {
+			printf("will use %d as server port instead of default\n",
+					client_info.port);
+			port = client_info.port;
+		} else {
+			port = atoi(getConfigVal(f, "SERVERPORT"));
+		}
+
+		fclose(f);
+
+		if (!connectToServer(&sd, port, host))
+			exit(EXIT_FAILURE);
 
 		XMLBuffer = buildXML(mjobctl_info);
 		generateBuffer(request, XMLBuffer);
 		free(XMLBuffer);
 
-		sendPacket(sd, request);
+		if (!sendPacket(sd, request))
+			exit(EXIT_FAILURE);
 
-		bufSize = getMessageSize(sd);
+		if ((bufSize = getMessageSize(sd)) == 0)
+			exit(EXIT_FAILURE);
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("Error: cannot allocate memory for message");
@@ -73,7 +96,8 @@ int main(int argc, char **argv) {
 		}
 
 		/* receive message from server*/
-		recvPacket(sd, &response, bufSize);
+		if (!recvPacket(sd, &response, bufSize))
+			exit(EXIT_FAILURE);
 
 		/* get and print result*/
 		result = strchr(response, '>');
@@ -81,19 +105,6 @@ int main(int argc, char **argv) {
 		*ptr = '\0';
 
 		printf("%s\n", ++result);
-
-        if (client_info.configfile != NULL)
-            printf("will use %s as configfile instead of default\n",client_info.configfile);
-        if (client_info.loglevel > 0)
-            printf("will use %d as loglevel instead of default\n",client_info.loglevel);
-        if (client_info.logfacility != NULL)
-            printf("will use %s as log facility instead of default\n",client_info.logfacility);
-        if (client_info.host != NULL)
-            printf("will contact %s as maui server instead of default\n",client_info.host);
-        if (client_info.port > 0)
-            printf("will use %d as server port instead of default\n",client_info.port);
-        if (client_info.keyfile != NULL)
-            printf("will use %s as key file instead of default\n",client_info.keyfile);
     }
 
     free_structs(&mjobctl_info, &client_info);

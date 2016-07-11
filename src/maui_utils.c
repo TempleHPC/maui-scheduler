@@ -258,7 +258,10 @@ int connectToServer(int *sd, int port, char *host){
     /* get IP address */
 	if (inet_aton(host, &in) == 0) {
 
-		s_hostent = gethostbyname(host);
+		if ((s_hostent = gethostbyname(host)) == (struct hostent *) NULL) {
+			printf("ERROR: cannot resolve IP address from hostname '%s'\n", host);
+			return 0;
+		}
 
 		memcpy(&s_sockaddr.sin_addr, s_hostent->h_addr, s_hostent->h_length);
 
@@ -269,21 +272,43 @@ int connectToServer(int *sd, int port, char *host){
     s_sockaddr.sin_family = AF_INET;
     s_sockaddr.sin_port = htons(port);
 
-    /* create socket */
-    *sd = socket(PF_INET,SOCK_STREAM,0);
+	/* create socket */
+	if ((*sd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("ERROR: cannot create socket, errno: %d (%s)\n", errno,
+				strerror(errno));
+		return 0;
+	}
 
     fcntl(*sd, F_SETFD, 1);
 
-    /* enable non-blocking mode on client */
-    flags = fcntl(*sd, F_GETFL, 0);
+	/* enable non-blocking mode on client */
+	if ((flags = fcntl(*sd, F_GETFL, 0)) == -1) {
+		printf("WARNING: cannot get socket attribute values, errno: %d "
+				"(%s)\n", errno, strerror(errno));
+		return 0;
+	}
 
-    /* set socket NDELAY attribute */
-    fcntl(*sd, F_SETFL, (flags | O_NDELAY));
+	/* set socket NDELAY attribute */
+	if ((fcntl(*sd, F_SETFL, (flags | O_NDELAY))) == -1) {
+		printf("WARNING: cannot set socket NDELAY attribute, errno: %d "
+				"(%s)\n", errno, strerror(errno));
+		return 0;
+	}
 
     /* connect to server */
 	if (connect(*sd, (struct sockaddr *) &s_sockaddr, sizeof(s_sockaddr))
 			== -1) {
-		selectWriteOrRead(*sd, TIMELIMIT, WRITE);
+		if ((errno == EINPROGRESS) && (TIMELIMIT > 0)) {
+			/* wait if non-blocking */
+			if (!selectWriteOrRead(*sd, TIMELIMIT, WRITE)) {
+				printf("ERROR: cannot connect to server '%s' on port %d, "
+						"errno: %d (%s)\n", host, port, errno, strerror(errno));
+				return 0;
+			}
+		} else {
+			printf("ERROR: cannot connect to server '%s' on port %d, "
+					"errno: %d (%s)\n", host, port, errno, strerror(errno));
+		}
 	}
 
 	return 1;
@@ -344,17 +369,16 @@ int selectWriteOrRead(int sd, unsigned long timeLimit, int flag){
 int getMessageSize(int sd){
 	char tmpLine[MAXLINE];
 	long bufSize;
-
 	char *ptr;
 
 	ptr = tmpLine;
-
 	ptr[0] = '\0';
 
-	recvPacket(sd, &ptr, 9 * sizeof(char));
+	if(!recvPacket(sd, &ptr, 9 * sizeof(char))){
+		return 0;
+	}
 
 	tmpLine[8] = '\0';
-
 	sscanf(tmpLine, "%ld", &bufSize);
 
 	return bufSize;
@@ -374,8 +398,15 @@ int sendPacket(int sd, char *request) {
 	int rc;
 	int count = 0;
 	while (count < strlen(request)) {
-		if((rc = send(sd, request, strlen(request), 0)) < 0){
-			continue;
+		if (!selectWriteOrRead(sd, TIMELIMIT, WRITE)) {
+			printf("WARNING: cannot send message within %1.6f second timeout "
+					"(aborting)\n", (double) TIMELIMIT / 1000000);
+			return 0;
+		}
+		if ((rc = send(sd, request, strlen(request), 0)) < 0) {
+			printf("WARNING:  cannot send packet, errno: %d (%s)\n", errno,
+					strerror(errno));
+			return 0;
 		}
 		if (rc > 0) count += rc;
 	}
@@ -398,11 +429,19 @@ int recvPacket(int sd, char **bufP, long bufSize){
 	int rc;
 	char *ptr;
 
+	time_t start;
+	time_t now;
+
 	ptr = *bufP;
 
+	time(&start);
+
 	while (count < bufSize) {
-		 if (selectWriteOrRead(sd, TIMELIMIT, READ) == 0)
-			 return 0;
+		if (!selectWriteOrRead(sd, TIMELIMIT, READ)) {
+			printf("WARNING: cannot send message within %1.6f second timeout "
+					"(aborting)\n", (double) TIMELIMIT / 1000000);
+			return 0;
+		}
 
 		 rc = recv(sd, (ptr + count), (bufSize - count), 0);
 
@@ -410,19 +449,35 @@ int recvPacket(int sd, char **bufP, long bufSize){
              count += rc;
              continue;
          }
+		time(&now);
+		if (((long) now - (long) start) >= (TIMELIMIT / 1000000)) {
+			printf("WARNING: cannot send message within %1.6f second timeout "
+					"(aborting)\n", (double) TIMELIMIT / 1000000);
+			return 0;
+		}
 
-         if (rc < 0) {
+		if (rc < 0) {
 			if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
 				/* continue if packet partially read */
 				continue;
 			}
-         }
 
-         if ((rc == 0) && (count == 0)) {
-             /* fail if no packet detected */
+			if ((errno == ECONNRESET) || (errno == EINTR)) {
+				printf("INFO: client has disconnected, errno: %d (%s)\n", errno,
+						strerror(errno));
+				return 0;
+			}
 
-             return 0;
-         }
+			printf("WARNING:  cannot read client socket, errno: %d (%s)\n",
+					errno, strerror(errno));
+			return 0;
+		}
+
+		if ((rc == 0) && (count == 0)) {
+			/* fail if no packet detected */
+			puts("no packet detected");
+			return 0;
+		}
 	}
 	return 1;
 }
