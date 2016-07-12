@@ -8,6 +8,20 @@
 #include "moab-local.h"
 
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <pwd.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <getopt.h>
 
 #define WRITE 1
 #define READ 0
@@ -15,8 +29,16 @@
 #define MAXLINE 1024
 #define MAXBUFFER 65536
 #define MAX_MDESCKSUM_ITERATION 4
+#define MAXNAME 64
+#define TRUE 1
+#define FALSE 0
 
 #define CONFIGFILE "maui.cfg"
+#define MSCHED_ENVSMPVAR "MAUISMP"
+#define MSCHED_ENVPARVAR "MAUIPARTITION"
+#define GLOBAL_MPARNAME "ALL"
+
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 /** Struct to collect generic command line flag properties */
 typedef struct _client_info {
@@ -60,12 +82,18 @@ extern int getChecksum(char *, int , char *, int , char *, char *);
 extern unsigned short secDoCRC(unsigned short , unsigned char );
 
 /* Generate buffer to be sent to the server */
-extern int generateBuffer(char *, char *);
+extern int generateBuffer(char *, char *, char *);
 
 /* an algorithm to build checksum */
 extern int secPSDES(unsigned int *, unsigned int *);
 
 /* get attribute value contained in config file */
 extern char *getConfigVal(FILE *, char *);
+
+/* convert time to string but ignore the year value */
+extern char *getDateString(time_t *);
+
+/* convert time number to string with format: [DD:]HH:MM:SS */
+extern char *timeToString(long );
 
 #endif

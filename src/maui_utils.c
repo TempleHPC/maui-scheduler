@@ -1,22 +1,6 @@
 
 #include "maui_utils.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <pwd.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <time.h>
-
-
 /** Duplicate a string
  *
  * This function will take the string passed as argument
@@ -93,8 +77,7 @@ void print_client_usage()
  * @return 1 if succeed.
  */
 
-int generateBuffer(char *request, char *buffer)
-{
+int generateBuffer(char *request, char *buffer, char *command) {
 
 	char TSLine[MAXLINE], CKSum[MAXLINE], CKLine[MAXLINE], header[MAXBUFFER];
     char tmpStr[MAXBUFFER];
@@ -102,8 +85,7 @@ int generateBuffer(char *request, char *buffer)
     time_t Now;
 
     /* build header */
-    sprintf(header, "%s%s %s%s %s%s\n", "CMD=",
-            "mjobctl", "AUTH=",
+	sprintf(header, "%s%s %s%s %s%s\n", "CMD=", command, "AUTH=",
 			getpwuid(geteuid())->pw_name, "ARG=", buffer);
 
     /* get time stamp */
@@ -112,14 +94,16 @@ int generateBuffer(char *request, char *buffer)
 			getpwuid(geteuid())->pw_name);
     sprintf(TSLine, "%s %s", tmpStr, "DT=");
 
-    /* get checksum */
-	getChecksum(TSLine, strlen(TSLine), header, strlen(header), CKSum, MBUILD_SKEY);
+	/* get checksum */
+	getChecksum(TSLine, strlen(TSLine), header, strlen(header), CKSum,
+			MBUILD_SKEY);
 
 	/* combine checksum and time stamp */
 	sprintf(CKLine, "%s%s %s", "CK=", CKSum, TSLine);
 
 	/* write buffer size to buffer */
-	sprintf(request, "%08ld\n%s", strlen(header) + (long) strlen(CKLine), CKLine);
+	sprintf(request, "%08ld\n%s", strlen(header) + (long) strlen(CKLine),
+			CKLine);
 
 	/* combine all the strings */
 	strcat(request,header);
@@ -501,10 +485,11 @@ char *getConfigVal(FILE *f, char *attr){
     fseek(f, 0, SEEK_SET);
     configBuffer = (char *)malloc(fsize + 1);
     fread(configBuffer, fsize, 1, f);
-
     /* locate and get attribute value */
     configBuffer[fsize] = '\0';
-    ptr = strstr(configBuffer,attr);
+
+	if ((ptr = strstr(configBuffer, attr)) == NULL)
+		return NULL;
 	pch = strtok(ptr, " \n");
 	pch = strtok(NULL, " \n");
 
@@ -514,4 +499,127 @@ char *getConfigVal(FILE *f, char *attr){
 	free(configBuffer);
 
 	return val;
+}
+
+/** convert time to string but ignore the year value
+ *
+ * This function will take the time_t pointer passed
+ * as argument and return the formatted string converted
+ * from the input
+ *
+ * @param input time_t pointer
+ * @return a string pointer which contains the formatted string.
+ */
+
+char *getDateString(time_t *time) {
+	static char string[MAXNAME];
+
+	strncpy(string, ctime(time), 19);
+
+	string[19] = '\n';
+	string[20] = '\0';
+
+	return (string);
+}
+
+/** convert time number to string with format: [DD:]HH:MM:SS
+ *
+ * This function will take the number of time passed
+ * as argument and return the formatted string converted
+ * from the input
+ *
+ * @param input long which represents time value
+ * @return a string pointer which contains the formatted string.
+ */
+
+char *timeToString(long iTime) {
+	static char string[MAXNAME];
+	long time;
+	int negative = FALSE;
+
+	int index;
+
+	/* FORMAT:  [DD:]HH:MM:SS */
+
+	if (iTime >= 8640000) {
+		strcpy(string, "  INFINITY");
+
+		return (string);
+	} else if (iTime <= -864000) {
+		strcpy(string, " -INFINITY");
+
+		return (string);
+	}
+
+	/* determine if number is negative */
+
+	if (iTime < 0) {
+		negative = TRUE;
+
+		time = -iTime;
+	} else {
+		time = iTime;
+	}
+
+	string[11] = '\0';
+
+	/* setup seconds */
+
+	string[10] = (time) % 10 + '0';
+	string[9] = (time / 10) % 6 + '0';
+	string[8] = ':';
+
+	time /= 60;
+
+	/* setup minutes */
+
+	string[7] = (time) % 10 + '0';
+	string[6] = (time / 10) % 6 + '0';
+	string[5] = ':';
+
+	/* setup hours */
+
+	time /= 60;
+
+	string[4] = (time % 24) % 10 + '0';
+	string[3] = (time / 10) ? (((time % 24) / 10) % 10 + '0') : ' ';
+
+	if ((string[4] == '0') && (string[3] == ' '))
+		string[3] = '0';
+
+	/* setup days */
+
+	time /= 24;
+
+	if (time > 0) {
+		string[2] = ':';
+		string[1] = (time) % 10 + '0';
+		string[0] = (time / 10) ? ((time / 10) % 10 + '0') : ' ';
+	} else {
+		string[2] = ' ';
+		string[1] = ' ';
+		string[0] = ' ';
+	}
+
+	if (negative == TRUE) {
+		if (string[3] == ' ') {
+			string[3] = '-';
+		} else if (string[2] == ' ') {
+			string[2] = '-';
+		} else if (string[1] == ' ') {
+			string[1] = '-';
+		} else if (string[0] == ' ') {
+			string[0] = '-';
+		} else {
+			string[1] = '9';
+			string[0] = '-';
+		}
+	}
+
+	for (index = 3; index >= 0; index--) {
+		if (string[index] == ' ')
+			return (&string[index + 1]);
+	}
+
+	return (string);
 }

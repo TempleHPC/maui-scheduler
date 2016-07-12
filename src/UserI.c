@@ -3,6 +3,10 @@
 #include "moab.h"
 #include "msched-proto.h"
 
+#define IDLE 1
+#define RUNNING 2
+#define BLOCKED 3
+
 time_t UIDeadLine;
 
 int IgnoreToIteration = 0;
@@ -4882,6 +4886,8 @@ int UIQueueShow(
     char PName[MAX_MNAME];
     char UName[MAX_MNAME];
 
+    char tmpSBuffer[MAX_SBUFFER];
+
     int rc;
 
     int Flags;
@@ -4902,68 +4908,54 @@ int UIQueueShow(
         return (FAILURE);
     }
 
-    switch (QueueMode) {
-        case 0:
+	if (QueueMode == 0) {
 
-            /* show all queues */
+		/* show all queues */
+		rc = UIQueueShowAllJobs(Buffer, BufSize, P, UName);
+	}
 
-            rc = UIQueueShowAllJobs(Buffer, BufSize, P, UName);
+	if (QueueMode & (1 << IDLE)) {
+		/* show detailed eligible queue */
 
-            break;
+		if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2) | (1 << fAdmin3)))) {
+			sprintf(Buffer, "ERROR:  not authorized to run this command\n");
 
-        case 1:
+			return (FAILURE);
+		}
 
-            /* show detailed eligible queue */
+		rc = UIQueueShowEJobs(Buffer, BufSize, P, UName);
+	}
 
-            if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2) | (1 << fAdmin3)))) {
-                sprintf(Buffer, "ERROR:  not authorized to run this command\n");
+	if (QueueMode & (1 << RUNNING)) {
+		/* show detailed active queue */
 
-                return (FAILURE);
-            }
+		if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2) | (1 << fAdmin3)))) {
+			sprintf(Buffer, "ERROR:  not authorized to run this command\n");
 
-            rc = UIQueueShowEJobs(Buffer, BufSize, P, UName);
+			return (FAILURE);
+		}
 
-            break;
+		rc = UIQueueShowAJobs(tmpSBuffer, BufSize, P, Flags, UName);
+		strcat(Buffer, "[RUNNING]\n");
+		strcat(Buffer, tmpSBuffer);
+	}
 
-        case 2:
+	if(QueueMode & (1 << BLOCKED)) {
+		/* show detailed blocked queue */
 
-            /* show detailed active queue */
+		/*
+		 if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2) | (1 << fAdmin3))))
+		 {
+		 sprintf(Buffer,"ERROR:  not authorized to run this command\n");
 
-            if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2) | (1 << fAdmin3)))) {
-                sprintf(Buffer, "ERROR:  not authorized to run this command\n");
+		 return(FAILURE);
+		 }
+		 */
 
-                return (FAILURE);
-            }
-
-            rc = UIQueueShowAJobs(Buffer, BufSize, P, Flags, UName);
-
-            break;
-
-        case 3:
-
-            /* show detailed blocked queue */
-
-            /*
-            if (!(FLAGS & ((1 << fAdmin1) | (1 << fAdmin2) | (1 << fAdmin3))))
-              {
-              sprintf(Buffer,"ERROR:  not authorized to run this command\n");
-
-              return(FAILURE);
-              }
-            */
-
-            rc = UIQueueShowBJobs(Buffer, BufSize, P, UName);
-
-            break;
-
-        default:
-
-            rc = FAILURE;
-
-            sprintf(Buffer, "ERROR:  unexpected display mode, %d\n", QueueMode);
-
-            break;
-    } /* END switch(QueueMode) */
+		rc = UIQueueShowBJobs(tmpSBuffer, BufSize, P, UName);
+		strcat(Buffer, "[BLOCKED]\n");
+		strcat(Buffer, tmpSBuffer);
+	}
 
     return (rc);
 } /* END UIQueueShow() */

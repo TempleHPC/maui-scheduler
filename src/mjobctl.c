@@ -4,12 +4,6 @@
  * (c) 2016 Temple HPC Team
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <getopt.h>
-#include <errno.h>
-
 #include "msched-version.h"
 #include "maui_utils.h"
 
@@ -33,7 +27,6 @@ int main(int argc, char **argv) {
 
     memset(&mjobctl_info, 0, sizeof(mjobctl_info));
     memset(&client_info, 0, sizeof(client_info));
-
     char *response, request[MAXBUFFER], *result, *XMLBuffer;
     int sd, port;
     long bufSize;
@@ -55,7 +48,7 @@ int main(int argc, char **argv) {
 			strcat(configDir, CONFIGFILE);
 		}
 		if ((f = fopen(configDir, "rb")) == NULL) {
-			puts("Error: cannot locate config file");
+			puts("ERROR: cannot locate config file");
 			exit(EXIT_FAILURE);
 		}
 
@@ -81,7 +74,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 
 		XMLBuffer = buildXML(mjobctl_info);
-		generateBuffer(request, XMLBuffer);
+		generateBuffer(request, XMLBuffer, "mjobctl");
 		free(XMLBuffer);
 
 		if (!sendPacket(sd, request))
@@ -105,11 +98,12 @@ int main(int argc, char **argv) {
 		*ptr = '\0';
 
 		printf("%s\n", ++result);
-    }
 
-    free_structs(&mjobctl_info, &client_info);
+		free(response);
+		free(host);
+	}
 
-    free(response);
+	free_structs(&mjobctl_info, &client_info);
 
     exit(0);
 }
