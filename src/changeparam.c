@@ -4,11 +4,6 @@
  * (c) 2016 Temple HPC Team
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <getopt.h>
-
 #include "msched-version.h"
 #include "maui_utils.h"
 
@@ -21,13 +16,19 @@ typedef struct _changeparam_info {
 static void free_structs(changeparam_info_t *, client_info_t *);
 static int process_args(int, char **, changeparam_info_t *, client_info_t *);
 static void print_usage();
+static char *buildMsgBuffer(changeparam_info_t );
 
 int main(int argc, char **argv) {
 
-    int i;
-
     changeparam_info_t changeparam_info;
     client_info_t client_info;
+
+    char *response, request[MAXBUFFER], *msgBuffer;
+    int sd, port;
+    long bufSize;;
+    FILE *f;
+    char configDir[MAXLINE];
+    char *host;
 
     memset(&changeparam_info, 0, sizeof(changeparam_info));
     memset(&client_info, 0, sizeof(client_info));
@@ -35,24 +36,65 @@ int main(int argc, char **argv) {
     /* process all the options and arguments */
     if (process_args(argc, argv, &changeparam_info, &client_info)) {
 
-        i = 0;
-        printf("changing parameter %s to value %s", changeparam_info.attr,
-                (changeparam_info.value)[i++]);
-        while ((changeparam_info.value)[i] != NULL) {
-            printf(" %s", (changeparam_info.value)[i++]);
-        }
-        puts("");
+		/* get config file directory and open it*/
+		strcpy(configDir, MBUILD_HOMEDIR);
+		if (client_info.configfile != NULL) {
+			printf("will use %s as configfile instead of default\n",
+					client_info.configfile);
+			strcat(configDir, client_info.configfile);
+		} else {
+			strcat(configDir, CONFIGFILE);
+		}
+		if ((f = fopen(configDir, "rb")) == NULL) {
+			puts("Error: cannot locate config file");
+			exit(EXIT_FAILURE);
+		}
 
-        if (client_info.configfile != NULL)
-            printf("will use %s as configfile instead of default\n",client_info.configfile);
-        if (client_info.loglevel > 0)
-            printf("will use %d as loglevel instead of default\n",client_info.loglevel);
-        if (client_info.logfacility != NULL)
-            printf("will use %s as log facility instead of default\n",client_info.logfacility);
-        if (client_info.host != NULL)
-            printf("will contact %s as maui server instead of default\n",client_info.host);
-        if (client_info.port > 0)
-            printf("will use %d as server port instead of default\n",client_info.port);
+		if (client_info.host != NULL) {
+			printf("will contact %s as maui server instead of default\n",
+					client_info.host);
+			host = client_info.host;
+		} else {
+			host = getConfigVal(f, "SERVERHOST");
+		}
+
+		if (client_info.port > 0) {
+			printf("will use %d as server port instead of default\n",
+					client_info.port);
+			port = client_info.port;
+		} else {
+			port = atoi(getConfigVal(f, "SERVERPORT"));
+		}
+
+		fclose(f);
+
+		if (!connectToServer(&sd, port, host))
+			exit(EXIT_FAILURE);
+
+		msgBuffer = buildMsgBuffer(changeparam_info);
+		generateBuffer(request, msgBuffer, "changeparam");
+		free(msgBuffer);
+
+		if (!sendPacket(sd, request))
+			exit(EXIT_FAILURE);
+
+		if ((bufSize = getMessageSize(sd)) == 0)
+			exit(EXIT_FAILURE);
+
+		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			puts("Error: cannot allocate memory for message");
+			exit(EXIT_FAILURE);
+		}
+
+		/* receive message from server*/
+		if (!recvPacket(sd, &response, bufSize))
+			exit(EXIT_FAILURE);
+
+		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
+
+		free(host);
+		free(response);
+
     }
 
     free_structs(&changeparam_info, &client_info);
@@ -60,11 +102,40 @@ int main(int argc, char **argv) {
     exit(0);
 }
 
+/* combine and save information into a buffer */
+char *buildMsgBuffer(changeparam_info_t changeparam_info) {
+	char *buffer;
+	int i = 0, len = 0;
+
+	/* calculate the length of the whole buffer */
+	len += strlen(changeparam_info.attr) + 2;
+    while ((changeparam_info.value)[i] != NULL) {
+        len += strlen((changeparam_info.value)[i++]) + 2;
+    }
+
+	i = 0;
+	if ((buffer = (char *) malloc(len + 2)) == NULL) {
+		puts("ERROR: cannot allocate memory for XML buffer");
+		return NULL;
+	}
+
+	/* build buffer */
+	strcpy(buffer, changeparam_info.attr);
+	strcat(buffer, " ");
+	while ((changeparam_info.value)[i] != NULL) {
+		strcat(buffer, (changeparam_info.value)[i++]);
+		strcat(buffer, " ");
+	}
+
+	return buffer;
+}
+
 /*
- processes all the arguments
+ process all the arguments
  returns 1 if the option requires more action to be done
  returns 0 if no more action needs to be done
 */
+
 int process_args(int argc, char **argv,
                  changeparam_info_t *changeparam_info,
                  client_info_t *client_info)
@@ -171,7 +242,7 @@ int process_args(int argc, char **argv,
     return 1;
 }
 
-/* frees memory */
+/* free memory */
 void free_structs(changeparam_info_t *changeparam_info, client_info_t *client_info) {
     free(changeparam_info->attr);
     free(changeparam_info->value);

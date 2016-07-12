@@ -98,6 +98,7 @@ int main (int argc, char **argv)
 		free(ptr);
 
 		fclose(f);
+
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
@@ -532,7 +533,7 @@ int showRQueue(char *msgBuffer, char *parName, int displayFlags) {
 	return 1;
 }
 
-/* combine and save information in a buffer */
+/* combine and save information into a buffer */
 char *buildMsgBuffer(showq_info_t showq_info) {
 	char *buffer;
 	int queueMode = 0;
@@ -562,10 +563,11 @@ char *buildMsgBuffer(showq_info_t showq_info) {
 }
 
 /*
- processes all the arguments
+ process all the arguments
  returns 1 if the option requires more action to be done
  returns 0 if no more action needs to be done
 */
+
 int process_args(int argc, char **argv,
                  showq_info_t *showq_info,
                  client_info_t *client_info)
@@ -672,7 +674,7 @@ int process_args(int argc, char **argv,
     return 1;
 }
 
-/* frees memory*/
+/* free memory */
 void free_structs(showq_info_t *showq_info, client_info_t *client_info){
     free(showq_info->username);
     free(showq_info->pName);

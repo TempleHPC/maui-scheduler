@@ -22,7 +22,7 @@ DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 MCLIENTS =canceljob checkjob checknode diagnose releasehold \
           releaseres resetstats runjob schedctl sethold setqos setres setspri \
-          showbf showconfig showgrid showhold showstart showtasks showres showq \
+          showbf showconfig showgrid showhold showstart showtasks showres \
           showstate showstats mschedctl mnodectl mdiag mstat mbal
 
 LIBMAUI  =libmaui.a
