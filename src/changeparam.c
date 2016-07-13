@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 
     char *response, request[MAXBUFFER], *msgBuffer;
     int sd, port;
-    long bufSize;;
+    long bufSize;
     FILE *f;
     char configDir[MAXLINE];
     char *host;
@@ -216,7 +216,7 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* needs at least two arguments */
+    /* need at least two arguments */
     if(optind > argc - 2){
         print_usage();
         exit(EXIT_FAILURE);

@@ -7,32 +7,25 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for changeparam options */
-typedef struct _showtasks_info {
-    char *username;               /**< Username*/
-} showtasks_info_t;
-
-static void free_structs(showtasks_info_t *, client_info_t *);
-static int process_args(int, char **, showtasks_info_t *, client_info_t *);
+static void free_structs(client_info_t *);
+static int process_args(int, char **, client_info_t *);
 static void print_usage();
 
 int main(int argc, char **argv) {
 
-    showtasks_info_t showtasks_info;
     client_info_t client_info;
 
     char *response, request[MAXBUFFER];
     int sd, port;
-    long bufSize;
+    long bufSize, time;
     FILE *f;
     char configDir[MAXLINE];
     char *host;
 
-    memset(&showtasks_info, 0, sizeof(showtasks_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &showtasks_info, &client_info)) {
+    if (process_args(argc, argv, &client_info)) {
 
 		/* get config file directory and open it*/
 		strcpy(configDir, MBUILD_HOMEDIR);
@@ -44,7 +37,7 @@ int main(int argc, char **argv) {
 			strcat(configDir, CONFIGFILE);
 		}
 		if ((f = fopen(configDir, "rb")) == NULL) {
-			puts("Error: cannot locate config file");
+			puts("ERROR: cannot locate config file");
 			exit(EXIT_FAILURE);
 		}
 
@@ -69,7 +62,7 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
-		generateBuffer(request, showtasks_info.username, "showtasks");
+		generateBuffer(request, "", "resetstats");
 
 		if (!sendPacket(sd, request))
 			exit(EXIT_FAILURE);
@@ -78,7 +71,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("Error: cannot allocate memory for message");
+			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
@@ -86,15 +79,15 @@ int main(int argc, char **argv) {
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
-		printf("\nThe number of tasks running for %s is ", showtasks_info.username);
-		printf("%s\n", strstr(response, "ARG=") + strlen("ARG="));
+	    time = strtol(strstr(response, "ARG=") + strlen("ARG="), NULL, 0);
+		printf("\nstatistics reset on %s\n", getDateString(&time));
 
 		free(host);
 		free(response);
 
     }
 
-    free_structs(&showtasks_info, &client_info);
+    free_structs(&client_info);
 
     exit(0);
 }
@@ -105,9 +98,7 @@ int main(int argc, char **argv) {
  returns 0 if no more action needs to be done
 */
 
-int process_args(int argc, char **argv,
-                 showtasks_info_t *showtasks_info,
-                 client_info_t *client_info)
+int process_args(int argc, char **argv, client_info_t *client_info)
 {
     int c;
     while (1) {
@@ -185,21 +176,17 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* only need one argument */
-    if(optind != argc - 1){
+    /* no arguments accepted */
+    if(optind != argc){
         print_usage();
         exit(EXIT_FAILURE);
     }
-
-    /* copy and save username from input */
-    showtasks_info->username = string_dup(argv[optind]);
 
     return 1;
 }
 
 /* free memory */
-void free_structs(showtasks_info_t *changeparam_info, client_info_t *client_info) {
-    free(changeparam_info->username);
+void free_structs(client_info_t *client_info) {
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
@@ -207,8 +194,9 @@ void free_structs(showtasks_info_t *changeparam_info, client_info_t *client_info
 
 void print_usage()
 {
-    puts ("\nUsage: showtasks <USERNAME>\n\n"
-            "Query the number of tasks running for a given user.\n"
+    puts ("\nUsage: resetstats [FLAGS]\n\n"
+            "Reset all internally-stored Maui Scheduler statistics to the initial start-up state as\n"
+            "of the time the command was executed.\n"
             "\n"
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n"

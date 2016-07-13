@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 
     char *response, request[MAXBUFFER], *msgBuffer;
     int sd, port;
-    long bufSize;;
+    long bufSize;
     FILE *f;
     char configDir[MAXLINE];
     char *host;
@@ -246,7 +246,7 @@ void free_structs(canceljob_info_t *changeparam_info, client_info_t *client_info
 
 void print_usage()
 {
-    puts ("\nUsage: changeparam <PARAMETER> <VALUE> [VALUE]...\n\n"
+    puts ("\nUsage: canceljob [FLAGS] <JOBID> [<JOBID>]...\n\n"
             "Selectively cancel the specified job(s) (active, idle, or non-queued) from the queue.\n"
             "\n"
             "  -h, --help                     display this help\n"

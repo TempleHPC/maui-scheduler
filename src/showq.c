@@ -41,7 +41,7 @@ int main (int argc, char **argv)
 
     char *response, request[MAXBUFFER], *msgBuffer;
     int sd, port, displayFlags;
-    long bufSize;;
+    long bufSize;
     FILE *f;
     char configDir[MAXLINE];
     char *host, *ptr;
