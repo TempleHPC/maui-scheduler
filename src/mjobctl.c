@@ -326,7 +326,7 @@ void free_structs(mjobctl_info_t *mjobctl_info, client_info_t *client_info) {
 void print_usage()
 {
     puts ("\nUsage: mjobctl <FLAGS> <JOBID>\n\n"
-            "Modify attributes or perform operation on a specified job."
+            "Modify attributes or perform operation on a specified job.\n"
             "\n"
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n"
