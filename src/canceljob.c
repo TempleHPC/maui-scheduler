@@ -153,7 +153,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVC:D:F:H:K:P:",
+        c = getopt_long (argc, argv, "hVC:D:F:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -249,7 +249,6 @@ void print_usage()
             "Selectively cancel the specified job(s) (active, idle, or non-queued) from the queue.\n"
             "\n"
             "  -h, --help                     display this help\n"
-            "  -V, --version                  display client version\n"
-            "\n");
+            "  -V, --version                  display client version\n");
     print_client_usage();
 }

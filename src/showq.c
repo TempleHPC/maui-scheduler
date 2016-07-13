@@ -592,7 +592,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVbip:ru:C:D:F:H:k:P:",
+        c = getopt_long (argc, argv, "hVbip:ru:C:D:F:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */

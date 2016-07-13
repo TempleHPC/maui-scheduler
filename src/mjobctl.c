@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
 		ptr = strstr(result, tmpLine);
 		*ptr = '\0';
 
-		printf("%s\n", ++result);
+		printf("\n%s\n", ++result);
 
 		free(response);
 		free(host);
@@ -142,7 +142,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVcem:o:q:rRsC:D:F:H:K:P:",
+        c = getopt_long (argc, argv, "hVcem:o:q:rRsC:D:F:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
