@@ -13,7 +13,7 @@ SHELL  =/bin/sh
 SERVER   =maui
 SCHEDLIB =maui
 
-MBINS    =$(SERVER) mclient mprof showq mjobctl changeparam showtasks canceljob resetstats
+MBINS    =$(SERVER) mclient mprof showq mjobctl changeparam showtasks canceljob resetstats showgrid
 LIBS     =-l$(SCHEDLIB) $(REGEXLIB) $(SECLIB) -lm
 
 LP   =-L$(LIB) $(SCHEDLP) $(REGEXLP) $(PBSLDFLAGS)
@@ -22,7 +22,7 @@ DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
 MCLIENTS =checkjob checknode diagnose releasehold \
           releaseres runjob schedctl sethold setqos setres setspri \
-          showbf showconfig showgrid showhold showstart showres \
+          showbf showconfig showhold showstart showres \
           showstate showstats mschedctl mnodectl mdiag mstat mbal
 
 LIBMAUI  =libmaui.a
@@ -137,6 +137,10 @@ mprof:  $(POBJECTS) $(LIBMAUI)
 
 resetstats: resetstats.o maui_utils.o $(LIBMAUI)
 	$(LD) resetstats.o maui_utils.o -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS) $(LP)
+	chmod 751 $(BIN)/$@
+
+showgrid: showgrid.o maui_utils.o $(LIBMAUI)
+	$(LD) showgrid.o maui_utils.o -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS) $(LP)
 	chmod 751 $(BIN)/$@
 
 showq: showq.o maui_utils.o $(LIBMAUI)

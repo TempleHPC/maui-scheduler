@@ -1,5 +1,5 @@
 /*
- * showtasks standalone client program code
+ * showgrid standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -7,18 +7,18 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for showtasks options */
-typedef struct _showtasks_info {
-    char *username;               /**< Username*/
-} showtasks_info_t;
+/** Struct for showgrid options */
+typedef struct _showgrid_info {
+    char *statistics;               /**< Statistics name*/
+} showgrid_info_t;
 
-static void free_structs(showtasks_info_t *, client_info_t *);
-static int process_args(int, char **, showtasks_info_t *, client_info_t *);
+static void free_structs(showgrid_info_t *, client_info_t *);
+static int process_args(int, char **, showgrid_info_t *, client_info_t *);
 static void print_usage();
 
 int main(int argc, char **argv) {
 
-    showtasks_info_t showtasks_info;
+    showgrid_info_t showgrid_info;
     client_info_t client_info;
 
     char *response, request[MAXBUFFER];
@@ -28,11 +28,11 @@ int main(int argc, char **argv) {
     char configDir[MAXLINE];
     char *host;
 
-    memset(&showtasks_info, 0, sizeof(showtasks_info));
+    memset(&showgrid_info, 0, sizeof(showgrid_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &showtasks_info, &client_info)) {
+    if (process_args(argc, argv, &showgrid_info, &client_info)) {
 
 		/* get config file directory and open it*/
 		strcpy(configDir, MBUILD_HOMEDIR);
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
-		generateBuffer(request, showtasks_info.username, "showtasks");
+		generateBuffer(request, showgrid_info.statistics, "showgrid");
 
 		if (!sendPacket(sd, request))
 			exit(EXIT_FAILURE);
@@ -86,15 +86,14 @@ int main(int argc, char **argv) {
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
-		printf("\nThe number of tasks running for %s is ", showtasks_info.username);
-		printf("%s\n", strstr(response, "ARG=") + strlen("ARG="));
+		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
 		free(host);
 		free(response);
 
     }
 
-    free_structs(&showtasks_info, &client_info);
+    free_structs(&showgrid_info, &client_info);
 
     exit(0);
 }
@@ -106,7 +105,7 @@ int main(int argc, char **argv) {
 */
 
 int process_args(int argc, char **argv,
-                 showtasks_info_t *showtasks_info,
+                 showgrid_info_t *showgrid_info,
                  client_info_t *client_info)
 {
     int c;
@@ -175,7 +174,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'showtasks --help' for more information.");
+              puts ("Try 'showgrid --help' for more information.");
               return 0;
 
           default:
@@ -190,15 +189,15 @@ int process_args(int argc, char **argv,
         exit(EXIT_FAILURE);
     }
 
-    /* copy and save username from input */
-    showtasks_info->username = string_dup(argv[optind]);
+    /* copy and save statistics name from input */
+    showgrid_info->statistics = string_dup(argv[optind]);
 
     return 1;
 }
 
 /* free memory */
-void free_structs(showtasks_info_t *showtasks_info, client_info_t *client_info) {
-    free(showtasks_info->username);
+void free_structs(showgrid_info_t *showgrid_info, client_info_t *client_info) {
+    free(showgrid_info->statistics);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
@@ -206,8 +205,10 @@ void free_structs(showtasks_info_t *showtasks_info, client_info_t *client_info) 
 
 void print_usage()
 {
-    puts ("\nUsage: showtasks <USERNAME>\n\n"
-            "Query the number of tasks running for a given user.\n"
+    puts ("\nUsage: showgrid [FLAGS] <STATISTICSID>\n\n"
+    		"Show table of various scheduler statistics. STATISTICSID can be 'AVGXFACTOR',\n"
+    		"'MAXXFACTOR', 'AVGQTIME', 'AVGBYPASS', 'MAXBYPASS', 'JOBCOUNT', 'PHREQUEST', 'PHRUN',\n"
+    		"'WCACCURACY', 'BFCOUNT', 'BFPHRUN', 'JOBEFFICIENCY', or 'QOSDELIVERED'.\n"
             "\n"
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n"

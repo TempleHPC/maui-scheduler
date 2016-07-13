@@ -150,7 +150,6 @@ int process_args(int argc, char **argv,
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
             {"host",        required_argument, 0, 'H'},
-            {"keyfile",     required_argument, 0, 'k'},
             {"port",        required_argument, 0, 'P'},
             {0, 0, 0, 0}
         };

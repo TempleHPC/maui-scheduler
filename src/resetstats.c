@@ -1,5 +1,5 @@
 /*
- * changeparam standalone client program code
+ * resetstats standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -110,7 +110,6 @@ int process_args(int argc, char **argv, client_info_t *client_info)
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
             {"host",        required_argument, 0, 'H'},
-            {"keyfile",     required_argument, 0, 'k'},
             {"port",        required_argument, 0, 'P'},
             {0, 0, 0, 0}
         };
@@ -167,7 +166,7 @@ int process_args(int argc, char **argv, client_info_t *client_info)
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'changeparam --help' for more information.");
+              puts ("Try 'resetstats --help' for more information.");
               return 0;
 
           default:

@@ -1,5 +1,5 @@
 /*
- * changeparam standalone client program code
+ * canceljob standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -7,7 +7,7 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for changeparam options */
+/** Struct for canceljob options */
 typedef struct _canceljob_info {
     char **usernames;              /**< Usernames */
 } canceljob_info_t;
@@ -134,7 +134,7 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 */
 
 int process_args(int argc, char **argv,
-                 canceljob_info_t *changeparam_info,
+                 canceljob_info_t *canceljob_info,
                  client_info_t *client_info)
 {
     int c, i;
@@ -147,7 +147,6 @@ int process_args(int argc, char **argv,
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
             {"host",        required_argument, 0, 'H'},
-            {"keyfile",     required_argument, 0, 'k'},
             {"port",        required_argument, 0, 'P'},
             {0, 0, 0, 0}
         };
@@ -204,7 +203,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'changeparam --help' for more information.");
+              puts ("Try 'canceljob --help' for more information.");
               return 0;
 
           default:
@@ -220,8 +219,8 @@ int process_args(int argc, char **argv,
     }
 
     /* allocate memory to save the string array from input*/
-    changeparam_info->usernames = (char **) malloc((argc - optind + 1) * sizeof(char *));
-    if(!changeparam_info->usernames){
+    canceljob_info->usernames = (char **) malloc((argc - optind + 1) * sizeof(char *));
+    if(!canceljob_info->usernames){
         puts("ERROR: memory allocation failed");
         exit(EXIT_FAILURE);
     }
@@ -229,16 +228,16 @@ int process_args(int argc, char **argv,
     /* copy and save usernames from input */
     i = 0;
     while(optind < argc){
-        (changeparam_info->usernames)[i++] = string_dup(argv[optind++]);
+        (canceljob_info->usernames)[i++] = string_dup(argv[optind++]);
     }
-    (changeparam_info->usernames)[i] = NULL;
+    (canceljob_info->usernames)[i] = NULL;
 
     return 1;
 }
 
 /* free memory */
-void free_structs(canceljob_info_t *changeparam_info, client_info_t *client_info) {
-    free(changeparam_info->usernames);
+void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) {
+    free(canceljob_info->usernames);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
