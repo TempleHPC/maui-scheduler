@@ -161,7 +161,11 @@ int showAQueue(char *buffer) {
 	int procs, count, priority, state;
 	int upProcs, idleProcs, upNodes, idleNodes, activeNodes;
 	int busyNodes, busyProcs, acount, icount, ncount, rc;
-	const char *jobState[] = { "NONE", "Idle", "Starting", "Running" };
+	const char *jobState[] = {
+		    "NONE",      "Idle",      "Starting",  "Running",    "Removed", "Completed",
+		    "Hold",      "Deferred",  "SubmitErr", "Vacated",    "NotRun",  "NotQueued",
+		    "Unknown",   "BatchHold", "UserHold",  "SystemHold", "Staging", "Staged",
+		    "Suspended", "Lost",      NULL};
 
 	buffer = strstr(buffer, "ARG=") + strlen("ARG=");
 
