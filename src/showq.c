@@ -39,15 +39,15 @@ int main (int argc, char **argv)
     showq_info_t showq_info;
     client_info_t client_info;
 
-    memset(&showq_info, 0, sizeof(showq_info));
-    memset(&client_info, 0, sizeof(client_info));
-
     char *response, request[MAXBUFFER], *msgBuffer;
     int sd, port, displayFlags;
     long bufSize;;
     FILE *f;
     char configDir[MAXLINE];
     char *host, *ptr;
+
+    memset(&showq_info, 0, sizeof(showq_info));
+    memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
     if (process_args(argc, argv, &showq_info, &client_info)) {
@@ -70,7 +70,7 @@ int main (int argc, char **argv)
 			strcat(configDir, CONFIGFILE);
 		}
 		if ((f = fopen(configDir, "rb")) == NULL) {
-			puts("Error: cannot locate config file");
+			puts("ERROR: cannot locate config file");
 			exit(EXIT_FAILURE);
 		}
 
@@ -113,7 +113,7 @@ int main (int argc, char **argv)
 			exit(EXIT_FAILURE);
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("Error: cannot allocate memory for message");
+			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
@@ -539,7 +539,7 @@ char *buildMsgBuffer(showq_info_t showq_info) {
 	int queueMode = 0;
 
 	if ((buffer = (char *) malloc(24)) == NULL) {
-		puts("ERROR: cannot allocate memory for XML buffer");
+		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}
 

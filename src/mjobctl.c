@@ -25,8 +25,6 @@ int main(int argc, char **argv) {
     mjobctl_info_t mjobctl_info;
     client_info_t client_info;
 
-    memset(&mjobctl_info, 0, sizeof(mjobctl_info));
-    memset(&client_info, 0, sizeof(client_info));
     char *response, request[MAXBUFFER], *result, *XMLBuffer;
     int sd, port;
     long bufSize;
@@ -34,6 +32,9 @@ int main(int argc, char **argv) {
     FILE *f;
     char configDir[MAXLINE];
     char *ptr, *host;
+
+    memset(&mjobctl_info, 0, sizeof(mjobctl_info));
+    memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
 	if (process_args(argc, argv, &mjobctl_info, &client_info)) {
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("Error: cannot allocate memory for message");
+			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
@@ -171,7 +172,7 @@ int process_args(int argc, char **argv,
 
           case 'm':
               if ((optarg == NULL) || (strchr(optarg, '=') == NULL)){
-                  printf("Error: no value found in argument\n");
+                  printf("ERROR: no value found in argument\n");
                   return 0;
                   break;
               }
@@ -250,10 +251,10 @@ int process_args(int argc, char **argv,
     }
 
     if (optind == argc) {
-        puts("Error: no jobid found in argument");
+        puts("ERROR: no jobid found in argument");
         return 0;
     }else if(optind != argc - 1){
-        puts("Error: only accept one argument(jobid)");
+        puts("ERROR: only accept one argument(jobid)");
         return 0;
     }else{
         mjobctl_info->jobid = string_dup(argv[optind]);

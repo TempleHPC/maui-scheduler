@@ -8,19 +8,18 @@
 #include "maui_utils.h"
 
 /** Struct for changeparam options */
-typedef struct _changeparam_info {
-    char *attr;               /**< Attribute name*/
-    char **value;              /**< Attribute value */
-} changeparam_info_t;
+typedef struct _canceljob_info {
+    char **usernames;              /**< Usernames */
+} canceljob_info_t;
 
-static void free_structs(changeparam_info_t *, client_info_t *);
-static int process_args(int, char **, changeparam_info_t *, client_info_t *);
+static void free_structs(canceljob_info_t *, client_info_t *);
+static int process_args(int, char **, canceljob_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(changeparam_info_t );
+static char *buildMsgBuffer(canceljob_info_t );
 
 int main(int argc, char **argv) {
 
-    changeparam_info_t changeparam_info;
+    canceljob_info_t canceljob_info;
     client_info_t client_info;
 
     char *response, request[MAXBUFFER], *msgBuffer;
@@ -30,11 +29,11 @@ int main(int argc, char **argv) {
     char configDir[MAXLINE];
     char *host;
 
-    memset(&changeparam_info, 0, sizeof(changeparam_info));
+    memset(&canceljob_info, 0, sizeof(canceljob_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &changeparam_info, &client_info)) {
+    if (process_args(argc, argv, &canceljob_info, &client_info)) {
 
 		/* get config file directory and open it*/
 		strcpy(configDir, MBUILD_HOMEDIR);
@@ -71,8 +70,8 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
-		msgBuffer = buildMsgBuffer(changeparam_info);
-		generateBuffer(request, msgBuffer, "changeparam");
+		msgBuffer = buildMsgBuffer(canceljob_info);
+		generateBuffer(request, msgBuffer, "canceljob");
 		free(msgBuffer);
 
 		if (!sendPacket(sd, request))
@@ -97,20 +96,19 @@ int main(int argc, char **argv) {
 
     }
 
-    free_structs(&changeparam_info, &client_info);
+    free_structs(&canceljob_info, &client_info);
 
     exit(0);
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(changeparam_info_t changeparam_info) {
+char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 	char *buffer;
 	int i = 0, len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(changeparam_info.attr) + 2;
-    while ((changeparam_info.value)[i] != NULL) {
-        len += strlen((changeparam_info.value)[i++]) + 2;
+    while ((canceljob_info.usernames)[i] != NULL) {
+        len += strlen((canceljob_info.usernames)[i++]) + 2;
     }
 
 	i = 0;
@@ -120,10 +118,9 @@ char *buildMsgBuffer(changeparam_info_t changeparam_info) {
 	}
 
 	/* build buffer */
-	strcpy(buffer, changeparam_info.attr);
-	strcat(buffer, " ");
-	while ((changeparam_info.value)[i] != NULL) {
-		strcat(buffer, (changeparam_info.value)[i++]);
+	buffer[0] = '\0';
+	while ((canceljob_info.usernames)[i] != NULL) {
+		strcat(buffer, (canceljob_info.usernames)[i++]);
 		strcat(buffer, " ");
 	}
 
@@ -137,7 +134,7 @@ char *buildMsgBuffer(changeparam_info_t changeparam_info) {
 */
 
 int process_args(int argc, char **argv,
-                 changeparam_info_t *changeparam_info,
+                 canceljob_info_t *changeparam_info,
                  client_info_t *client_info)
 {
     int c, i;
@@ -216,36 +213,32 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* needs at least two arguments */
-    if(optind > argc - 2){
+    /* needs at least one arguments */
+    if(optind > argc - 1){
         print_usage();
         exit(EXIT_FAILURE);
     }
 
     /* allocate memory to save the string array from input*/
-    changeparam_info->value = (char **) malloc((argc - optind + 1) * sizeof(char *));
-    if(!changeparam_info->value){
+    changeparam_info->usernames = (char **) malloc((argc - optind + 1) * sizeof(char *));
+    if(!changeparam_info->usernames){
         puts("ERROR: memory allocation failed");
         exit(EXIT_FAILURE);
     }
 
-    /* copy and save attribute name from input */
-    changeparam_info->attr = string_dup(argv[optind++]);
-
-    /* copy and save attribute value from input */
+    /* copy and save usernames from input */
     i = 0;
     while(optind < argc){
-        (changeparam_info->value)[i++] = string_dup(argv[optind++]);
+        (changeparam_info->usernames)[i++] = string_dup(argv[optind++]);
     }
-    (changeparam_info->value)[i] = NULL;
+    (changeparam_info->usernames)[i] = NULL;
 
     return 1;
 }
 
 /* free memory */
-void free_structs(changeparam_info_t *changeparam_info, client_info_t *client_info) {
-    free(changeparam_info->attr);
-    free(changeparam_info->value);
+void free_structs(canceljob_info_t *changeparam_info, client_info_t *client_info) {
+    free(changeparam_info->usernames);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
@@ -254,9 +247,7 @@ void free_structs(changeparam_info_t *changeparam_info, client_info_t *client_in
 void print_usage()
 {
     puts ("\nUsage: changeparam <PARAMETER> <VALUE> [VALUE]...\n\n"
-            "Dynamically change the value of any configuration parameter which can be specified in the moab.cfg file.\n"
-            "The changes take affect at the beginning of the next scheduling iteration. They are not persistent, only\n"
-            "lasting until Moab is shutdown.\n"
+            "Selectively cancel the specified job(s) (active, idle, or non-queued) from the queue.\n"
             "\n"
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n"
