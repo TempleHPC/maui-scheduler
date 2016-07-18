@@ -670,7 +670,8 @@ int process_args(int argc, char **argv,
               return 0;
 
           default:
-              abort();
+              //abort();
+              return 0;
         }
     }
 

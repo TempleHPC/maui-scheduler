@@ -1,5 +1,5 @@
 /*
- * canceljob standalone client program code
+ * showstart standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -7,33 +7,32 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for canceljob options */
-typedef struct _canceljob_info {
-    char **jobid;              /**< Job ID */
-} canceljob_info_t;
+/** Struct for showstart options */
+typedef struct _showstart_info {
+    char *jobid;               /**< Job ID*/
+} showstart_info_t;
 
-static void free_structs(canceljob_info_t *, client_info_t *);
-static int process_args(int, char **, canceljob_info_t *, client_info_t *);
+static void free_structs(showstart_info_t *, client_info_t *);
+static int process_args(int, char **, showstart_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(canceljob_info_t );
 
 int main(int argc, char **argv) {
 
-    canceljob_info_t canceljob_info;
+    showstart_info_t showstart_info;
     client_info_t client_info;
 
-    char *response, request[MAXBUFFER], *msgBuffer;
-    int sd, port;
-    long bufSize;
+    char *response, request[MAXBUFFER];
+    int sd, port, pc;
+    long bufSize, now, deadline, startTime, wCLimit;
     FILE *f;
-    char configDir[MAXLINE];
+    char configDir[MAXLINE], pName[MAXNAME];
     char *host;
 
-    memset(&canceljob_info, 0, sizeof(canceljob_info));
+    memset(&showstart_info, 0, sizeof(showstart_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &canceljob_info, &client_info)) {
+    if (process_args(argc, argv, &showstart_info, &client_info)) {
 
 		/* get config file directory and open it*/
 		strcpy(configDir, MBUILD_HOMEDIR);
@@ -45,7 +44,7 @@ int main(int argc, char **argv) {
 			strcat(configDir, CONFIGFILE);
 		}
 		if ((f = fopen(configDir, "rb")) == NULL) {
-			puts("ERROR: cannot locate config file");
+			puts("Error: cannot locate config file");
 			exit(EXIT_FAILURE);
 		}
 
@@ -70,9 +69,7 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
-		msgBuffer = buildMsgBuffer(canceljob_info);
-		generateBuffer(request, msgBuffer, "canceljob");
-		free(msgBuffer);
+		generateBuffer(request, showstart_info.jobid, "showstart");
 
 		if (!sendPacket(sd, request))
 			exit(EXIT_FAILURE);
@@ -81,7 +78,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("ERROR: cannot allocate memory for message");
+			puts("Error: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
@@ -89,42 +86,33 @@ int main(int argc, char **argv) {
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
-		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
+		/* print result */
+		sscanf(strstr(response, "ARG=") + strlen("ARG="),
+				"%s %ld %ld %ld %d %s", showstart_info.jobid, &now, &deadline,
+				&wCLimit, &pc, pName);
+
+		startTime = deadline - wCLimit;
+
+		fprintf(stdout, "\njob %s requires %d proc%s for %s\n",
+				showstart_info.jobid, pc, (pc == 1) ? "" : "s",
+				timeToString(wCLimit));
+
+		fprintf(stdout, "Earliest start in      %11s on %s",
+				timeToString(startTime - now), getDateString(&startTime));
+
+		fprintf(stdout, "Earliest completion in %11s on %s",
+				timeToString(deadline - now), getDateString(&deadline));
+
+		fprintf(stdout, "Best Partition: %s\n\n", pName);
 
 		free(host);
 		free(response);
 
     }
 
-    free_structs(&canceljob_info, &client_info);
+    free_structs(&showstart_info, &client_info);
 
     exit(0);
-}
-
-/* combine and save information into a buffer */
-char *buildMsgBuffer(canceljob_info_t canceljob_info) {
-	char *buffer;
-	int i = 0, len = 0;
-
-	/* calculate the length of the whole buffer */
-    while ((canceljob_info.jobid)[i] != NULL) {
-        len += strlen((canceljob_info.jobid)[i++]) + 2;
-    }
-
-	i = 0;
-	if ((buffer = (char *) malloc(len + 2)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
-	}
-
-	/* build buffer */
-	buffer[0] = '\0';
-	while ((canceljob_info.jobid)[i] != NULL) {
-		strcat(buffer, (canceljob_info.jobid)[i++]);
-		strcat(buffer, " ");
-	}
-
-	return buffer;
 }
 
 /*
@@ -134,10 +122,10 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 */
 
 int process_args(int argc, char **argv,
-                 canceljob_info_t *canceljob_info,
+                 showstart_info_t *showstart_info,
                  client_info_t *client_info)
 {
-    int c, i;
+    int c;
     while (1) {
         struct option options[] = {
 
@@ -203,7 +191,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'canceljob --help' for more information.");
+              puts ("Try 'showstart --help' for more information.");
               return 0;
 
           default:
@@ -212,32 +200,21 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* needs at least one arguments */
-    if(optind > argc - 1){
+    /* only need one argument */
+    if(optind != argc - 1){
         print_usage();
         exit(EXIT_FAILURE);
     }
 
-    /* allocate memory to save the string array from input*/
-    canceljob_info->jobid = (char **) malloc((argc - optind + 1) * sizeof(char *));
-    if(!canceljob_info->jobid){
-        puts("ERROR: memory allocation failed");
-        exit(EXIT_FAILURE);
-    }
-
-    /* copy and save jobs' id from input */
-    i = 0;
-    while(optind < argc){
-        (canceljob_info->jobid)[i++] = string_dup(argv[optind++]);
-    }
-    (canceljob_info->jobid)[i] = NULL;
+    /* copy and save job id from input */
+    showstart_info->jobid = string_dup(argv[optind]);
 
     return 1;
 }
 
 /* free memory */
-void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) {
-    free(canceljob_info->jobid);
+void free_structs(showstart_info_t *showstart_info, client_info_t *client_info) {
+    free(showstart_info->jobid);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
@@ -245,9 +222,10 @@ void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) 
 
 void print_usage()
 {
-    puts ("\nUsage: canceljob [FLAGS] <JOBID> [<JOBID>]...\n\n"
-            "Selectively cancel the specified job(s) (active, idle, or non-queued) from the queue.\n"
-            "\n"
+    puts ("\nUsage: showstart <JOBID>\n\n"
+            "Attempt to determine earliest start time for the specified job and display the start\n"
+            "time, completion time, procs required and best partition.\n"
+    		"\n"
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n");
     print_client_usage();
