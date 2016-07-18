@@ -1,5 +1,5 @@
 /*
- * canceljob standalone client program code
+ * releasehold standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -7,19 +7,20 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for canceljob options */
-typedef struct _canceljob_info {
-    char **jobid;              /**< Job ID */
-} canceljob_info_t;
+/** Struct for releasehold options */
+typedef struct _releasehold_info {
+    char *jobid;              /**< Job ID */
+    char *type;				  /**< Hole type */
+} releasehold_info_t;
 
-static void free_structs(canceljob_info_t *, client_info_t *);
-static int process_args(int, char **, canceljob_info_t *, client_info_t *);
+static void free_structs(releasehold_info_t *, client_info_t *);
+static int process_args(int, char **, releasehold_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(canceljob_info_t );
+static char *buildMsgBuffer(releasehold_info_t );
 
 int main(int argc, char **argv) {
 
-    canceljob_info_t canceljob_info;
+    releasehold_info_t releasehold_info;
     client_info_t client_info;
 
     char *response, request[MAXBUFFER], *msgBuffer;
@@ -27,13 +28,14 @@ int main(int argc, char **argv) {
     long bufSize;
     FILE *f;
     char configDir[MAXLINE];
-    char *host;
+    const char tmpLine[20] = "</SchedResponse>";
+    char *host, *result, *ptr;
 
-    memset(&canceljob_info, 0, sizeof(canceljob_info));
+    memset(&releasehold_info, 0, sizeof(releasehold_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &canceljob_info, &client_info)) {
+    if (process_args(argc, argv, &releasehold_info, &client_info)) {
 
 		/* get config file directory and open it*/
 		strcpy(configDir, MBUILD_HOMEDIR);
@@ -70,8 +72,8 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
-		msgBuffer = buildMsgBuffer(canceljob_info);
-		generateBuffer(request, msgBuffer, "canceljob");
+		msgBuffer = buildMsgBuffer(releasehold_info);
+		generateBuffer(request, msgBuffer, "mjobctl");
 		free(msgBuffer);
 
 		if (!sendPacket(sd, request))
@@ -89,40 +91,44 @@ int main(int argc, char **argv) {
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
-		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
+		/* get and print result */
+		result = strchr(response, '>');
+		ptr = strstr(result, tmpLine);
+		*ptr = '\0';
+
+		printf("\n%s\n\n", ++result);
 
 		free(host);
 		free(response);
 
     }
 
-    free_structs(&canceljob_info, &client_info);
+    free_structs(&releasehold_info, &client_info);
 
     exit(0);
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(canceljob_info_t canceljob_info) {
+char *buildMsgBuffer(releasehold_info_t releasehold_info) {
 	char *buffer;
-	int i = 0, len = 0;
+	int len = 0;
+
+	if (releasehold_info.type == NULL)
+		releasehold_info.type = string_dup("All");
 
 	/* calculate the length of the whole buffer */
-    while ((canceljob_info.jobid)[i] != NULL) {
-        len += strlen((canceljob_info.jobid)[i++]) + 2;
-    }
+    len += strlen(releasehold_info.jobid)+ 2;
+    len += strlen(releasehold_info.type)+ 2;
 
-	i = 0;
-	if ((buffer = (char *) malloc(len + 2)) == NULL) {
+	if ((buffer = (char *) malloc(len + 100)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}
 
 	/* build buffer */
-	buffer[0] = '\0';
-	while ((canceljob_info.jobid)[i] != NULL) {
-		strcat(buffer, (canceljob_info.jobid)[i++]);
-		strcat(buffer, " ");
-	}
+	sprintf(buffer, "<schedrequest action=\"modify\" attr=\"Hold\" "
+			"value=\"%s\" flag=\"%s\" job=\"%s\"></schedrequest>\n",
+			releasehold_info.type, "unset", releasehold_info.jobid);
 
 	return buffer;
 }
@@ -134,15 +140,19 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 */
 
 int process_args(int argc, char **argv,
-                 canceljob_info_t *canceljob_info,
+                 releasehold_info_t *releasehold_info,
                  client_info_t *client_info)
 {
-    int c, i;
+    int c;
     while (1) {
         struct option options[] = {
 
             {"help",        no_argument,       0, 'h'},
             {"version",     no_argument,       0, 'V'},
+            {"all",         no_argument,       0, 'A'},
+            {"batch",       no_argument,       0, 'b'},
+            {"sysrem",      no_argument,       0, 's'},
+            {"user",        no_argument,       0, 'u'},
             {"configfile",  required_argument, 0, 'C'},
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
@@ -153,7 +163,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVC:D:F:H:P:",
+        c = getopt_long (argc, argv, "hVAbsuC:D:F:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -171,6 +181,22 @@ int process_args(int argc, char **argv,
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
               exit(EXIT_SUCCESS);
+              break;
+
+          case 'A':
+        	  releasehold_info->type = string_dup("All");
+              break;
+
+          case 'b':
+        	  releasehold_info->type = string_dup("Batch");
+              break;
+
+          case 's':
+        	  releasehold_info->type = string_dup("System");
+              break;
+
+          case 'u':
+        	  releasehold_info->type = string_dup("User");
               break;
 
           case 'C':
@@ -203,7 +229,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'canceljob --help' for more information.");
+              puts ("Try 'releasehold --help' for more information.");
               return 0;
 
           default:
@@ -212,32 +238,22 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* need at least one arguments */
-    if(optind > argc - 1){
+    /* need one arguments */
+    if(optind != argc - 1){
         print_usage();
         exit(EXIT_FAILURE);
     }
 
-    /* allocate memory to save the string array from input*/
-    canceljob_info->jobid = (char **) malloc((argc - optind + 1) * sizeof(char *));
-    if(!canceljob_info->jobid){
-        puts("ERROR: memory allocation failed");
-        exit(EXIT_FAILURE);
-    }
-
-    /* copy and save jobs' id from input */
-    i = 0;
-    while(optind < argc){
-        (canceljob_info->jobid)[i++] = string_dup(argv[optind++]);
-    }
-    (canceljob_info->jobid)[i] = NULL;
+    /* copy and save job id from input */
+    releasehold_info->jobid= string_dup(argv[optind]);
 
     return 1;
 }
 
 /* free memory */
-void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) {
-    free(canceljob_info->jobid);
+void free_structs(releasehold_info_t *releasehold_info, client_info_t *client_info) {
+    free(releasehold_info->jobid);
+    free(releasehold_info->type);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
@@ -245,10 +261,15 @@ void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) 
 
 void print_usage()
 {
-    puts ("\nUsage: canceljob [FLAGS] <JOBID> [<JOBID>]...\n\n"
-            "Selectively cancel the specified job(s) (active, idle, or non-queued) from the queue.\n"
+    puts ("\nUsage: releasehold [FLAGS] <JOBID>\n\n"
+            "Release holds on a specified job. The default value of FLAGS is '-A'.\n"
             "\n"
             "  -h, --help                     display this help\n"
-            "  -V, --version                  display client version\n");
+            "  -V, --version                  display client version\n"
+            "\n"
+    		"  -A, --all                      release all types of holds\n"
+    		"  -b, --batch                    release bacth holds\n"
+    		"  -s, --sysrem                   release system hold\n"
+    		"  -u, --user                     release user hold\n");
     print_client_usage();
 }
