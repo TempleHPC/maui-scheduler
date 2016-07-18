@@ -37,6 +37,7 @@
 #define MSCHED_ENVSMPVAR "MAUISMP"
 #define MSCHED_ENVPARVAR "MAUIPARTITION"
 #define GLOBAL_MPARNAME "ALL"
+#define NONE "[NONE]"
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
