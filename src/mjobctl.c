@@ -89,11 +89,11 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 		}
 
-		/* receive message from server*/
+		/* receive message from server */
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
-		/* get and print result*/
+		/* get and print result */
 		result = strchr(response, '>');
 		ptr = strstr(result, tmpLine);
 		*ptr = '\0';

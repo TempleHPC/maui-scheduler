@@ -1,5 +1,5 @@
 /*
- * setspri standalone client program code
+ * mnodectl standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
@@ -7,21 +7,24 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-/** Struct for setspri options */
-typedef struct _setspri_info {
-    char *value;               /**< Attribute name*/
-    char *jobid;              /**< Attribute value */
-    int  relative;			  /**< Relative mode */
-} setspri_info_t;
+#define VERBOSE 4
+#define AVP 6
 
-static void free_structs(setspri_info_t *, client_info_t *);
-static int process_args(int, char **, setspri_info_t *, client_info_t *);
+/** Struct for mnodectl options */
+typedef struct _checknode_info {
+	char *subcommand;		   /**< Subcommand */
+	char *argument;			   /**< Argument */
+    char *nodeid;              /**< Node ID */
+} checknode_info_t;
+
+static void free_structs(checknode_info_t *, client_info_t *);
+static int process_args(int, char **, checknode_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(setspri_info_t );
+static char *buildMsgBuffer(checknode_info_t );
 
 int main(int argc, char **argv) {
 
-    setspri_info_t setspri_info;
+    checknode_info_t checknode_info;
     client_info_t client_info;
 
     char *response, request[MAXBUFFER], *msgBuffer;
@@ -30,13 +33,13 @@ int main(int argc, char **argv) {
     FILE *f;
     const char tmpLine[20] = "</SchedResponse>";
     char configDir[MAXLINE];
-    char *host, *ptr, *result;
+    char *host, *result, *ptr;
 
-    memset(&setspri_info, 0, sizeof(setspri_info));
+    memset(&checknode_info, 0, sizeof(checknode_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &setspri_info, &client_info)) {
+    if (process_args(argc, argv, &checknode_info, &client_info)) {
 
 		/* get config file directory and open it*/
 		strcpy(configDir, MBUILD_HOMEDIR);
@@ -73,8 +76,8 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, port, host))
 			exit(EXIT_FAILURE);
 
-		msgBuffer = buildMsgBuffer(setspri_info);
-		generateBuffer(request, msgBuffer, "mjobctl");
+		msgBuffer = buildMsgBuffer(checknode_info);
+		generateBuffer(request, msgBuffer, "mnodectl");
 		free(msgBuffer);
 
 		if (!sendPacket(sd, request))
@@ -97,39 +100,36 @@ int main(int argc, char **argv) {
 		ptr = strstr(result, tmpLine);
 		*ptr = '\0';
 
-		printf("\n%s\n\n", ++result);
+		printf("\n%s\n", ++result);
 
 		free(host);
 		free(response);
 
     }
 
-    free_structs(&setspri_info, &client_info);
+    free_structs(&checknode_info, &client_info);
 
     exit(0);
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(setspri_info_t setspri_info) {
+char *buildMsgBuffer(checknode_info_t checknode_info) {
 	char *buffer;
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(setspri_info.value) + 1;
-    len += strlen(setspri_info.jobid) + 1;
+	len += strlen(checknode_info.nodeid) + 2;
+	len += strlen(checknode_info.subcommand) + 2;
+	len += strlen(checknode_info.argument) + 2;
 
-	if ((buffer = (char *) malloc(len + 100)) == NULL) {
+	if ((buffer = (char *) malloc(len + 4)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}
 
 	/* build buffer */
-    sprintf(buffer,
-            "<schedrequest action=\"modify\" attr=\"SysPrio\" "
-            "value=\"%s\" flag=\"set\" job=\"%s\" "
-            "arg=\"%s\"></schedrequest>\n",
-			setspri_info.value, setspri_info.jobid,
-			setspri_info.relative ? "relative" : "absolute");
+	sprintf(buffer, "%s %s %s", checknode_info.subcommand,
+			checknode_info.argument, checknode_info.nodeid);
 
 	return buffer;
 }
@@ -141,7 +141,7 @@ char *buildMsgBuffer(setspri_info_t setspri_info) {
 */
 
 int process_args(int argc, char **argv,
-                 setspri_info_t *setspri_info,
+                 checknode_info_t *checknode_info,
                  client_info_t *client_info)
 {
     int c;
@@ -150,7 +150,6 @@ int process_args(int argc, char **argv,
 
             {"help",        no_argument,       0, 'h'},
             {"version",     no_argument,       0, 'V'},
-            {"relative",    no_argument,       0, 'r'},
             {"configfile",  required_argument, 0, 'C'},
             {"loglevel",    required_argument, 0, 'D'},
             {"logfacility", required_argument, 0, 'F'},
@@ -161,7 +160,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVrC:D:F:H:P:",
+        c = getopt_long (argc, argv, "hVC:D:F:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -179,10 +178,6 @@ int process_args(int argc, char **argv,
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
               exit(EXIT_SUCCESS);
-              break;
-
-          case 'r':
-        	  setspri_info->relative = TRUE;
               break;
 
           case 'C':
@@ -215,7 +210,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'setspri --help' for more information.");
+              puts ("Try 'mnodectl --help' for more information.");
               return 0;
 
           default:
@@ -224,25 +219,25 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* only accept two arguments */
-    if(optind != argc - 2){
+    /* need three arguments */
+    if(optind != argc - 3){
         print_usage();
         exit(EXIT_FAILURE);
     }
 
-    /* copy and save attribute name from input */
-    setspri_info->value = string_dup(argv[optind++]);
-
-    /* copy and save attribute value from input */
-    setspri_info->jobid= string_dup(argv[optind]);
+    /* copy and save node id from input */
+    checknode_info->subcommand = string_dup(argv[optind++]);
+    checknode_info->argument = string_dup(argv[optind++]);
+    checknode_info->nodeid = string_dup(argv[optind++]);
 
     return 1;
 }
 
 /* free memory */
-void free_structs(setspri_info_t *setspri_info, client_info_t *client_info) {
-    free(setspri_info->value);
-    free(setspri_info->jobid);
+void free_structs(checknode_info_t *checknode_info, client_info_t *client_info) {
+    free(checknode_info->nodeid);
+    free(checknode_info->subcommand);
+    free(checknode_info->argument);
     free(client_info->configfile);
     free(client_info->host);
     free(client_info->logfacility);
@@ -250,13 +245,11 @@ void free_structs(setspri_info_t *setspri_info, client_info_t *client_info) {
 
 void print_usage()
 {
-    puts ("\nUsage: setspri [FLAGS] <PRIORITY> <JOBID>\n\n"
-            "Set or adjust job priorities. By default a preferred absolute priority will be set,\n"
-            "which will place the job ahead of any regularly scheduled jobs. \n"
+    puts ("\nUsage: mnodectl [FLAGS] <SUBCOMMAND> <ARG> <NODEID>\n\n"
+            "Modify attributes or perform operation on a specified node in simulation mode. SUBCOMMAND can be 'create',\n"
+    		"'destroy', or 'modify'. ARG can be 'resource', 'state', or 'trace'.\n"
             "\n"
             "  -h, --help                     display this help\n"
-            "  -V, --version                  display client version\n"
-    		"\n"
-    		"  -r, --relative                 adjust dynamically computed job priority\n");
+            "  -V, --version                  display client version\n");
     print_client_usage();
 }

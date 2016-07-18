@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 		}
 
-		/* receive message from server*/
+		/* receive message from server */
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
@@ -141,9 +141,6 @@ int process_args(int argc, char **argv,
             {"help",        no_argument,       0, 'h'},
             {"version",     no_argument,       0, 'V'},
             {"avp",         no_argument,       0, 'A'},
-            {"policylevel", required_argument, 0, 'l'},
-            {"node",  		required_argument, 0, 'n'},
-            {"reservation", required_argument, 0, 'r'},
             {"verbose",     no_argument,       0, 'v'},
             {"configfile",  required_argument, 0, 'C'},
             {"loglevel",    required_argument, 0, 'D'},
@@ -155,7 +152,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVAl:n:r:vC:D:F:H:P:",
+        c = getopt_long (argc, argv, "hVAvC:D:F:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */

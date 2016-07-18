@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 		}
 
-		/* receive message from server*/
+		/* receive message from server */
 		if (!recvPacket(sd, &response, bufSize))
 			exit(EXIT_FAILURE);
 
