@@ -14,15 +14,15 @@ SERVER   =maui
 SCHEDLIB =maui
 
 MBINS    =$(SERVER) canceljob changeparam checkjob checknode diagnose mclient mjobctl mnodectl mprof \
-		            releasehold releaseres resetstats runjob schedctl setspri setqos showgrid showhold showq showstart \
-		            showtasks
+		            releasehold releaseres resetstats runjob schedctl sethold setspri setqos showgrid \
+		            showhold showq showstart showtasks
 LIBS     =-l$(SCHEDLIB) $(REGEXLIB) $(SECLIB) -lm
 
 LP   =-L$(LIB) $(SCHEDLP) $(REGEXLP) $(PBSLDFLAGS)
 IP   =$(SCHEDIP) $(REGEXIP) $(PBSCFLAGS)
 DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
 
-MCLIENTS =sethold setres \
+MCLIENTS =setres \
           showbf showconfig showres \
           showstate showstats mschedctl mdiag mstat mbal
 
@@ -170,6 +170,10 @@ runjob: runjob.o maui_utils.o $(LIBMAUI)
 
 schedctl: schedctl.o maui_utils.o $(LIBMAUI)
 	$(LD) schedctl.o maui_utils.o -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS) $(LP)
+	chmod 751 $(BIN)/$@
+
+sethold: sethold.o maui_utils.o $(LIBMAUI)
+	$(LD) sethold.o maui_utils.o -o $(BIN)/$@ $(OSLDFLAGS) $(LIBS) $(LP)
 	chmod 751 $(BIN)/$@
 
 setqos: setqos.o maui_utils.o $(LIBMAUI)
