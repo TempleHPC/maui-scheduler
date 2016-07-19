@@ -23,13 +23,11 @@ int main(int argc, char **argv) {
     setqos_info_t setqos_info;
     client_info_t client_info;
 
-    char *response, request[MAXBUFFER], *msgBuffer;
-    int sd, port;
-    long bufSize;
-    FILE *f;
-    const char tmpLine[20] = "</SchedResponse>";
-    char configDir[MAXLINE];
-    char *host, *ptr, *result;
+	char *response, *ptr, *result, *msgBuffer;
+	int sd;
+	long bufSize;
+	const char tmpLine[20] = "</SchedResponse>";
+	char request[MAXBUFFER];
 
     memset(&setqos_info, 0, sizeof(setqos_info));
     memset(&client_info, 0, sizeof(client_info));
@@ -37,39 +35,9 @@ int main(int argc, char **argv) {
     /* process all the options and arguments */
     if (process_args(argc, argv, &setqos_info, &client_info)) {
 
-		/* get config file directory and open it*/
-		strcpy(configDir, MBUILD_HOMEDIR);
-		if (client_info.configfile != NULL) {
-			printf("will use %s as configfile instead of default\n",
-					client_info.configfile);
-			strcat(configDir, client_info.configfile);
-		} else {
-			strcat(configDir, CONFIGFILE);
-		}
-		if ((f = fopen(configDir, "rb")) == NULL) {
-			puts("ERROR: cannot locate config file");
-			exit(EXIT_FAILURE);
-		}
+		get_connection_params(&client_info);
 
-		if (client_info.host != NULL) {
-			printf("will contact %s as maui server instead of default\n",
-					client_info.host);
-			host = client_info.host;
-		} else {
-			host = getConfigVal(f, "SERVERHOST");
-		}
-
-		if (client_info.port > 0) {
-			printf("will use %d as server port instead of default\n",
-					client_info.port);
-			port = client_info.port;
-		} else {
-			port = atoi(getConfigVal(f, "SERVERPORT"));
-		}
-
-		fclose(f);
-
-		if (!connectToServer(&sd, port, host))
+		if (!connectToServer(&sd, client_info.port, client_info.host))
 			exit(EXIT_FAILURE);
 
 		msgBuffer = buildMsgBuffer(setqos_info);
@@ -98,7 +66,6 @@ int main(int argc, char **argv) {
 
 		printf("\n%s\n\n", ++result);
 
-		free(host);
 		free(response);
 
     }

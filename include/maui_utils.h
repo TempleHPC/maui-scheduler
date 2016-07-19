@@ -89,6 +89,9 @@ extern int secPSDES(unsigned int *, unsigned int *);
 /* get attribute value contained in config file */
 extern char *getConfigVal(FILE *, char *);
 
+/* get connection parameters */
+extern void get_connection_params(client_info_t *);
+
 /* convert time to string but ignore the year value */
 extern char *getDateString(time_t *);
 

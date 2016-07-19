@@ -463,6 +463,46 @@ int recvPacket(int sd, char **bufP, long bufSize){
 	return 1;
 }
 
+/** get connection parameters
+ *
+ * This function will take the object pointer passed
+ * as argument and set the connection parameters contained
+ * in the object
+ *
+ * @param input object pointer
+ */
+
+void get_connection_params(client_info_t * client_info) {
+
+	FILE *f;
+	char configDir[MAXLINE];
+
+	/* get config file directory and open it*/
+	strcpy(configDir, MBUILD_HOMEDIR);
+	if (client_info->configfile != NULL) {
+		printf("will use %s as configfile instead of default\n",
+				client_info->configfile);
+		strcat(configDir, client_info->configfile);
+	} else {
+		strcat(configDir, CONFIGFILE);
+	}
+
+	if ((f = fopen(configDir, "rb")) == NULL) {
+		puts("ERROR: cannot locate config file");
+		exit(EXIT_FAILURE);
+	}
+
+	if (client_info->host == NULL) {
+		client_info->host = getConfigVal(f, "SERVERHOST");
+	}
+
+	if (client_info->port <= 0) {
+		client_info->port = atoi(getConfigVal(f, "SERVERPORT"));
+	}
+
+	fclose(f);
+}
+
 /** get attribute value
  *
  * This function will take the FILE and string pointer passed

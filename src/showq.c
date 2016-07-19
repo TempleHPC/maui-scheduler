@@ -39,12 +39,12 @@ int main (int argc, char **argv)
     showq_info_t showq_info;
     client_info_t client_info;
 
-    char *response, request[MAXBUFFER], *msgBuffer;
-    int sd, port, displayFlags;
-    long bufSize;
-    FILE *f;
-    char configDir[MAXLINE];
-    char *host, *ptr;
+	char *response, *ptr, *msgBuffer;
+	int sd, displayFlags;
+	long bufSize;
+	FILE *f;
+	char request[MAXBUFFER];
+	char configDir[MAXLINE];
 
     memset(&showq_info, 0, sizeof(showq_info));
     memset(&client_info, 0, sizeof(client_info));
@@ -60,46 +60,29 @@ int main (int argc, char **argv)
     		}
     	}
 
-		/* get config file directory and open it*/
-		strcpy(configDir, MBUILD_HOMEDIR);
-		if (client_info.configfile != NULL) {
-			printf("will use %s as configfile instead of default\n",
-					client_info.configfile);
-			strcat(configDir, client_info.configfile);
-		} else {
-			strcat(configDir, CONFIGFILE);
-		}
-		if ((f = fopen(configDir, "rb")) == NULL) {
-			puts("ERROR: cannot locate config file");
-			exit(EXIT_FAILURE);
-		}
+    	/* get config file directory and open it*/
+    	strcpy(configDir, MBUILD_HOMEDIR);
+    	if (client_info.configfile != NULL) {
+    		printf("will use %s as configfile instead of default\n",
+    				client_info.configfile);
+    		strcat(configDir, client_info.configfile);
+    	} else {
+    		strcat(configDir, CONFIGFILE);
+    	}
 
-		if (client_info.host != NULL) {
-			printf("will contact %s as maui server instead of default\n",
-					client_info.host);
-			host = client_info.host;
-		} else {
-			host = getConfigVal(f, "SERVERHOST");
-		}
-
-		if (client_info.port > 0) {
-			printf("will use %d as server port instead of default\n",
-					client_info.port);
-			port = client_info.port;
-		} else {
-			port = atoi(getConfigVal(f, "SERVERPORT"));
-		}
+    	f = fopen(configDir, "rb");
 
 		if((ptr = getConfigVal(f, "DISPLAYFLAGS")) != NULL){
 			if (strstr(ptr, "NODECENTRIC") != NULL){
 				displayFlags = TRUE;
 			}
 		}
-		free(ptr);
 
 		fclose(f);
 
-		if (!connectToServer(&sd, port, host))
+		get_connection_params(&client_info);
+
+		if (!connectToServer(&sd, client_info.port, client_info.host))
 			exit(EXIT_FAILURE);
 
 		msgBuffer = buildMsgBuffer(showq_info);
@@ -145,7 +128,6 @@ int main (int argc, char **argv)
 			}
 		}
 
-		free(host);
 		free(response);
     }
 
