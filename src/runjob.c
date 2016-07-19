@@ -91,12 +91,12 @@ char *buildMsgBuffer(runjob_info_t runjob_info) {
 		runjob_info.mode = string_dup("NONE");
 
 	/* calculate the length of the whole buffer */
-	len += strlen(runjob_info.jobid) + 2;
-	len += strlen(runjob_info.pName) + 2;
-	len += strlen(runjob_info.nodeid) + 2;
-	len += strlen(runjob_info.mode) + 2;
+	len += strlen(runjob_info.jobid) + 1;
+	len += strlen(runjob_info.pName) + 1;
+	len += strlen(runjob_info.nodeid) + 1;
+	len += strlen(runjob_info.mode) + 1;
 
-	if ((buffer = (char *) malloc(len + 2)) == NULL) {
+	if ((buffer = (char *) malloc(len)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}

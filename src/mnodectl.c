@@ -85,11 +85,11 @@ char *buildMsgBuffer(checknode_info_t checknode_info) {
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(checknode_info.nodeid) + 2;
-	len += strlen(checknode_info.subcommand) + 2;
-	len += strlen(checknode_info.argument) + 2;
+	len += strlen(checknode_info.nodeid) + 1;
+	len += strlen(checknode_info.subcommand) + 1;
+	len += strlen(checknode_info.argument) + 1;
 
-	if ((buffer = (char *) malloc(len + 4)) == NULL) {
+	if ((buffer = (char *) malloc(len)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}

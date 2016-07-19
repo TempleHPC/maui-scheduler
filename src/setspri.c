@@ -82,10 +82,10 @@ char *buildMsgBuffer(setspri_info_t setspri_info) {
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(setspri_info.value) + 1;
-    len += strlen(setspri_info.jobid) + 1;
+	len += strlen(setspri_info.value);
+    len += strlen(setspri_info.jobid);
 
-	if ((buffer = (char *) malloc(len + 100)) == NULL) {
+	if ((buffer = (char *) malloc(len + 110)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}

@@ -90,9 +90,9 @@ char *buildMsgBuffer(checkjob_info_t checkjob_info) {
 		checkjob_info.resid = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
-	len += strlen(checkjob_info.jobid) + 2;
-	len += strlen(checkjob_info.resid) + 2;
-	len += strlen(checkjob_info.nodeid) + 2;
+	len += strlen(checkjob_info.jobid) + 1;
+	len += strlen(checkjob_info.resid) + 1;
+	len += strlen(checkjob_info.nodeid) + 1;
 
     if (checkjob_info.pType == 0)
     	checkjob_info.pType = SOFT;

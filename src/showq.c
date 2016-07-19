@@ -522,9 +522,20 @@ int showRQueue(char *msgBuffer, char *parName, int displayFlags) {
 /* combine and save information into a buffer */
 char *buildMsgBuffer(showq_info_t showq_info) {
 	char *buffer;
-	int queueMode = 0;
+	int queueMode = 0, len = 0;
 
-	if ((buffer = (char *) malloc(24)) == NULL) {
+	if (showq_info.username == NULL) {
+		showq_info.username = strdup("");
+	}
+
+	len += strlen(showq_info.username) + 1;
+	len += strlen(showq_info.pName) + 1;
+
+	if (showq_info.username == NULL) {
+		showq_info.username = strdup("");
+	}
+
+	if ((buffer = (char *) malloc(len + 5)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}
@@ -537,10 +548,6 @@ char *buildMsgBuffer(showq_info_t showq_info) {
 
 	if (showq_info.idle)
 		queueMode |= (1 << IDLE);
-
-	if (showq_info.username == NULL) {
-		showq_info.username = strdup("");
-	}
 
 	sprintf(buffer, "%d %s %d %s", queueMode, showq_info.pName, 0,
 			showq_info.username);

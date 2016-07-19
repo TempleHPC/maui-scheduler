@@ -75,7 +75,7 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 
 	/* calculate the length of the whole buffer */
     while ((canceljob_info.jobid)[i] != NULL) {
-        len += strlen((canceljob_info.jobid)[i++]) + 2;
+        len += strlen((canceljob_info.jobid)[i++]) + 1;
     }
 
 	i = 0;
@@ -90,6 +90,7 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 		strcat(buffer, (canceljob_info.jobid)[i++]);
 		strcat(buffer, " ");
 	}
+	printf("%d\n",strlen(buffer));
 
 	return buffer;
 }

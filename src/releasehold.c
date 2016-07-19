@@ -84,18 +84,18 @@ char *buildMsgBuffer(releasehold_info_t releasehold_info) {
 		releasehold_info.type = string_dup("All");
 
 	/* calculate the length of the whole buffer */
-    len += strlen(releasehold_info.jobid)+ 2;
-    len += strlen(releasehold_info.type)+ 2;
+    len += strlen(releasehold_info.jobid);
+    len += strlen(releasehold_info.type);
 
-	if ((buffer = (char *) malloc(len + 100)) == NULL) {
+	if ((buffer = (char *) malloc(len + 94)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}
 
 	/* build buffer */
 	sprintf(buffer, "<schedrequest action=\"modify\" attr=\"Hold\" "
-			"value=\"%s\" flag=\"%s\" job=\"%s\"></schedrequest>\n",
-			releasehold_info.type, "unset", releasehold_info.jobid);
+			"value=\"%s\" flag=\"unset\" job=\"%s\"></schedrequest>\n",
+			releasehold_info.type, releasehold_info.jobid);
 
 	return buffer;
 }

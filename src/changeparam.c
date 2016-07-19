@@ -75,9 +75,9 @@ char *buildMsgBuffer(changeparam_info_t changeparam_info) {
 	int i = 0, len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(changeparam_info.attr) + 2;
+	len += strlen(changeparam_info.attr) + 1;
     while ((changeparam_info.value)[i] != NULL) {
-        len += strlen((changeparam_info.value)[i++]) + 2;
+        len += strlen((changeparam_info.value)[i++]) + 1;
     }
 
 	i = 0;
