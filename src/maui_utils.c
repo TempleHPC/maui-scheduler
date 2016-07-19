@@ -61,8 +61,6 @@ int string2int(const char *input){
 void print_client_usage()
 {
     puts("  -C, --configfile=FILENAME      set configfile\n"
-         "  -D, --loglevel=LOGLEVEL        set loglevel\n"
-         "  -F, --logfacility=LOGFACILITY  set logfacility\n"
          "  -H, --host=SERVERHOSTNAME      set serverhost\n"
          "  -P, --port=SERVERPORT          set serverport\n");
 }

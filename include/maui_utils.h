@@ -44,8 +44,6 @@
 /** Struct to collect generic command line flag properties */
 typedef struct _client_info {
     char  *configfile;          /**< Name of config file to use */
-    int    loglevel;            /**< Log level  */
-    char  *logfacility;         /**< Log facility  */
     char  *host;                /**< Host name of Maui server to contact */
     int    port;                /**< Port number of Maui server to contact */
 } client_info_t;

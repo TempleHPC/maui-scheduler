@@ -152,8 +152,6 @@ int process_args(int argc, char **argv,
             {"version",     no_argument,       0, 'V'},
             {"relative",    no_argument,       0, 'r'},
             {"configfile",  required_argument, 0, 'C'},
-            {"loglevel",    required_argument, 0, 'D'},
-            {"logfacility", required_argument, 0, 'F'},
             {"host",        required_argument, 0, 'H'},
             {"port",        required_argument, 0, 'P'},
             {0, 0, 0, 0}
@@ -161,7 +159,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVrC:D:F:H:P:",
+        c = getopt_long (argc, argv, "hVrC:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -188,18 +186,6 @@ int process_args(int argc, char **argv,
           case 'C':
               printf ("set configfile to %s\n", optarg);
               client_info->configfile = string_dup(optarg);
-              break;
-
-          case 'D':
-              client_info->loglevel = string2int(optarg);
-
-              if (client_info->loglevel != INVALID_STRING)
-                  printf ("set loglevel to %s\n", optarg);
-              break;
-
-          case 'F':
-              printf ("set logfacility to %s\n", optarg);
-              client_info->logfacility = string_dup(optarg);
               break;
 
           case 'H':
@@ -245,7 +231,6 @@ void free_structs(setspri_info_t *setspri_info, client_info_t *client_info) {
     free(setspri_info->jobid);
     free(client_info->configfile);
     free(client_info->host);
-    free(client_info->logfacility);
 }
 
 void print_usage()
