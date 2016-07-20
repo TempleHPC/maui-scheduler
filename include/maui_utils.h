@@ -40,6 +40,7 @@
 #define NONE "[NONE]"
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 /** Struct to collect generic command line flag properties */
 typedef struct _client_info {

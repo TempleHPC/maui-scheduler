@@ -90,7 +90,6 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 		strcat(buffer, (canceljob_info.jobid)[i++]);
 		strcat(buffer, " ");
 	}
-	printf("%d\n",strlen(buffer));
 
 	return buffer;
 }
