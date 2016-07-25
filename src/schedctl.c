@@ -15,7 +15,7 @@
 #define SUBMIT 6
 #define LIST 7
 #define MODIFY 8
-#define FAILURE 9
+#define FAILURE1 9
 #define INIT 10
 
 /** Struct for schedctl options */
@@ -162,7 +162,7 @@ int process_args(int argc, char **argv,
               break;
 
           case 'f':
-        	  schedctl_info->mode = FAILURE;
+        	  schedctl_info->mode = FAILURE1;
               break;
 
           case 'i':

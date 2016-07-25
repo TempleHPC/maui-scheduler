@@ -32,12 +32,15 @@
 #define MAXNAME 64
 #define TRUE 1
 #define FALSE 0
+#define SUCCESS 1
+#define FAILURE 0
 
 #define CONFIGFILE "maui.cfg"
 #define MSCHED_ENVSMPVAR "MAUISMP"
 #define MSCHED_ENVPARVAR "MAUIPARTITION"
 #define GLOBAL_MPARNAME "ALL"
 #define NONE "[NONE]"
+#define MSCHED_SNAME "maui"
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -88,7 +91,7 @@ extern int generateBuffer(char *, char *, char *);
 extern int secPSDES(unsigned int *, unsigned int *);
 
 /* get attribute value contained in config file */
-extern char *getConfigVal(FILE *, char *);
+extern char *getConfigVal(client_info_t *client_info, char *);
 
 /* get connection parameters */
 extern void get_connection_params(client_info_t *);

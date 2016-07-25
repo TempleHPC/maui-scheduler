@@ -9271,6 +9271,8 @@ int UIStatShow(
             break;
     } /* END switch (ObjectType) */
 
+    strcat(Buffer, "[TIME]");
+    strcat(Buffer, MULToDString(&MStat.InitTime));
     return (rc);
 } /* END UIStatShow() */
 

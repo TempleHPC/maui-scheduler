@@ -472,9 +472,32 @@ int recvPacket(int sd, char **bufP, long bufSize){
  * @param input object pointer
  */
 
-void get_connection_params(client_info_t * client_info) {
+void get_connection_params(client_info_t *client_info) {
+
+	if (client_info->host == NULL) {
+		client_info->host = getConfigVal(client_info, "SERVERHOST");
+	}
+
+	if (client_info->port <= 0) {
+		client_info->port = atoi(getConfigVal(client_info, "SERVERPORT"));
+	}
+}
+
+/** get attribute value
+ *
+ * This function will take the FILE and string pointer passed
+ * as arguments and return the attribute value contained in the
+ * config file
+ *
+ * @param1 input config FILE pointer
+ * @param2 input string to declare the attribute name
+ * @return a string pointer which contains the attribute value.
+ */
+
+char *getConfigVal(client_info_t *client_info, char *attr){
 
 	FILE *f;
+	char *configBuffer, *ptr, *pch, *val;
 	char configDir[MAXLINE];
 
 	/* get config file directory and open it*/
@@ -491,31 +514,6 @@ void get_connection_params(client_info_t * client_info) {
 		puts("ERROR: cannot locate config file");
 		exit(EXIT_FAILURE);
 	}
-
-	if (client_info->host == NULL) {
-		client_info->host = getConfigVal(f, "SERVERHOST");
-	}
-
-	if (client_info->port <= 0) {
-		client_info->port = atoi(getConfigVal(f, "SERVERPORT"));
-	}
-
-	fclose(f);
-}
-
-/** get attribute value
- *
- * This function will take the FILE and string pointer passed
- * as arguments and return the attribute value contained in the
- * config file
- *
- * @param1 input config FILE pointer
- * @param2 input string to declare the attribute name
- * @return a string pointer which contains the attribute value.
- */
-
-char *getConfigVal(FILE *f, char *attr){
-	char *configBuffer, *ptr, *pch, *val;
 
 	/* read config file and save its content into a buffer*/
     fseek(f, 0, SEEK_END);
@@ -535,6 +533,8 @@ char *getConfigVal(FILE *f, char *attr){
     strcpy(val,pch);
 
 	free(configBuffer);
+
+	fclose(f);
 
 	return val;
 }

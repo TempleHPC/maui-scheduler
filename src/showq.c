@@ -72,7 +72,7 @@ int main (int argc, char **argv)
 
     	f = fopen(configDir, "rb");
 
-		if((ptr = getConfigVal(f, "DISPLAYFLAGS")) != NULL){
+		if((ptr = getConfigVal(&client_info, "DISPLAYFLAGS")) != NULL){
 			if (strstr(ptr, "NODECENTRIC") != NULL){
 				displayFlags = TRUE;
 			}
