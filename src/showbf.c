@@ -1,49 +1,50 @@
 /*
- * setres standalone client program code
+ * showbf standalone client program code
  *
  * (c) 2016 Temple HPC Team
  */
 
 #include <locale.h>
+#include <grp.h>
 
 #include "msched-version.h"
 #include "maui_utils.h"
 
 #define MAX_MTIME 2140000000
+#define VERBOSE 4
+#define ALL "[ALL]"
 
-/** Struct for setres options */
-typedef struct _setres_info {
-	long  clientTime;		   /**< Client time */
-	long  beginTime;		   /**< Begin time */
-	long  endTime;		       /**< End time */
+/** Struct for showbf options */
+typedef struct _showbf_info {
+    int   nodeCount;		   /**< Node count */
+    int   procCount;		   /**< Proc count */
+    int   dMemory;		       /**< Dedicated memory */
+    int   memory;		       /**< Memory */
+    int   mIndex;			   /**< Memory index */
+    int   mode;		           /**< Mode */
+    int   flags;		   	   /**< Flags */
 	long  duration;            /**< Duration */
     char *pName;               /**< Partition name */
-    char *userList;			   /**< User list */
-    char *accountList;		   /**< Account list */
-    char *groupList;		   /**< Group list */
-    char *classList;		   /**< Class list */
-    char *QOSList;			   /**< QOS list */
-    char *rName;			   /**< Reservation name */
-    char *resourceList;		   /**< Resource list */
-    char *chargeAccount;	   /**< Charge list */
+    char *user;			       /**< User */
+    char *account;		       /**< Account*/
+    char *group;		       /**< Group */
+    char *class;		       /**< Class */
+    char *QOS;			       /**< QOS name */
     char *featureString;	   /**< Feature string */
-    char *nodeSetString;       /**< Node set string*/
-    char *flags;			   /**< Flags */
-    char *jobFeatureString;	   /**< Job feature string */
-    int   taskCount;		   /**< Task count */
-    char *nodeid;			   /**< Node ID */
-} setres_info_t;
+} showbf_info_t;
 
-static void free_structs(setres_info_t *, client_info_t *);
-static int process_args(int, char **, setres_info_t *, client_info_t *);
+static void free_structs(showbf_info_t *, client_info_t *);
+static int process_args(int, char **, showbf_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(setres_info_t );
+static char *buildMsgBuffer(showbf_info_t );
 static long timeFromString(char *);
 static int stringToE(char *, long *);
+static char *GIDToName(gid_t GID);
+static char *UIDToName(uid_t UID);
 
 int main(int argc, char **argv) {
 
-    setres_info_t setres_info;
+    showbf_info_t showbf_info;
     client_info_t client_info;
 
 	char *response, *msgBuffer, *ptr;
@@ -51,19 +52,21 @@ int main(int argc, char **argv) {
 	long bufSize;
 	char request[MAXBUFFER];
 
-    memset(&setres_info, 0, sizeof(setres_info));
+    memset(&showbf_info, 0, sizeof(showbf_info));
     memset(&client_info, 0, sizeof(client_info));
 
-    setres_info.endTime = MAX_MTIME;
+    showbf_info.account = string_dup("ALL");
+    showbf_info.user = string_dup(UIDToName(getuid()));
+    showbf_info.group = string_dup(GIDToName(getgid()));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &setres_info, &client_info)) {
+    if (process_args(argc, argv, &showbf_info, &client_info)) {
 
-    	if (setres_info.pName == NULL) {
+    	if (showbf_info.pName == NULL) {
     		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			setres_info.pName = string_dup(ptr);
+    			showbf_info.pName = string_dup(ptr);
     		} else {
-    			setres_info.pName = string_dup(GLOBAL_MPARNAME);
+    			showbf_info.pName = string_dup(GLOBAL_MPARNAME);
     		}
     	}
 
@@ -72,8 +75,8 @@ int main(int argc, char **argv) {
 		if (!connectToServer(&sd, client_info.port, client_info.host))
 			exit(EXIT_FAILURE);
 
-		msgBuffer = buildMsgBuffer(setres_info);
-		generateBuffer(request, msgBuffer, "setres");
+		msgBuffer = buildMsgBuffer(showbf_info);
+		generateBuffer(request, msgBuffer, "showbf");
 		free(msgBuffer);
 
 		if (!sendPacket(sd, request))
@@ -99,96 +102,92 @@ int main(int argc, char **argv) {
 
     }
 
-    free_structs(&setres_info, &client_info);
+    free_structs(&showbf_info, &client_info);
 
     exit(0);
 }
 
+char *UIDToName(uid_t UID)
+{
+    struct passwd *bufptr;
+    static char Line[MAXNAME];
+
+    if (UID == ~0U) {
+        strcpy(Line, NONE);
+
+        return (Line);
+    }
+
+    if ((bufptr = getpwuid(UID)) == NULL) {
+        sprintf(Line, "UID%d", UID);
+    } else {
+        strcpy(Line, bufptr->pw_name);
+    }
+
+    return (Line);
+}
+
+char *GIDToName(gid_t GID)
+{
+    struct group *bufptr;
+
+    static char Line[MAXNAME];
+
+    if (GID == ~0U) {
+        strcpy(Line, NONE);
+
+        return (Line);
+    }
+
+    if ((bufptr = getgrgid(GID)) == NULL) {
+        sprintf(Line, "GID%d", GID);
+    } else {
+        strcpy(Line, bufptr->gr_name);
+    }
+
+    return (Line);
+}
+
 /* combine and save information into a buffer */
-char *buildMsgBuffer(setres_info_t setres_info) {
+char *buildMsgBuffer(showbf_info_t showbf_info) {
 
 	char *buffer;
 	int len = 0;
 
-    time_t tmpT;
+	const char *MComp[] = {"NC", "<",  "<=", "==", ">=", ">", "<>",
+	                       "=",  "!=", "%<", "%!", "%=", NULL};
 
-    time(&tmpT);
-    setres_info.clientTime = (long)tmpT;
-
-	if (setres_info.beginTime == 0)
-		setres_info.beginTime = setres_info.clientTime;
-
-	if (setres_info.duration != 0)
-		setres_info.endTime = setres_info.beginTime + setres_info.duration;
-	else if (setres_info.endTime == MAX_MTIME)
-		setres_info.endTime = setres_info.beginTime + 100000000;
-
-	if (strlen(setres_info.nodeid) >= (MAXLINE << 2)) {
-		fprintf(stderr, "ERROR:    regular expression too long. (%d > %d)\n",
-				(int) strlen(setres_info.nodeid), (MAXLINE << 2));
-
-		exit(1);
-	}
-
-	if (setres_info.userList == NULL)
-		setres_info.userList = string_dup(NONE);
-	if (setres_info.accountList == NULL)
-		setres_info.accountList = string_dup(NONE);
-	if (setres_info.groupList == NULL)
-		setres_info.groupList = string_dup(NONE);
-	if (setres_info.classList == NULL)
-		setres_info.classList = string_dup(NONE);
-	if (setres_info.QOSList == NULL)
-		setres_info.QOSList = string_dup(NONE);
-	if (setres_info.rName == NULL)
-		setres_info.rName = string_dup(NONE);
-	if (setres_info.resourceList == NULL)
-		setres_info.resourceList = string_dup(NONE);
-	if (setres_info.chargeAccount == NULL)
-		setres_info.chargeAccount = string_dup(NONE);
-	if (setres_info.featureString == NULL)
-		setres_info.featureString = string_dup(NONE);
-	if (setres_info.nodeSetString == NULL)
-		setres_info.nodeSetString = string_dup(NONE);
-	if (setres_info.flags == NULL)
-		setres_info.flags = string_dup(NONE);
-	if (setres_info.jobFeatureString == NULL)
-		setres_info.jobFeatureString = string_dup(NONE);
+	if (showbf_info.class == NULL)
+		showbf_info.class = string_dup(NONE);
+	if (showbf_info.QOS == NULL)
+		showbf_info.QOS = string_dup(NONE);
+	if (showbf_info.featureString == NULL)
+		showbf_info.featureString = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(setres_info.pName) + 1;
-	len += strlen(setres_info.userList) + 1;
-	len += strlen(setres_info.accountList) + 1;
-	len += strlen(setres_info.groupList) + 1;
-	len += strlen(setres_info.classList) + 1;
-	len += strlen(setres_info.QOSList) + 1;
-	len += strlen(setres_info.rName) + 1;
-	len += strlen(setres_info.resourceList) + 1;
-	len += strlen(setres_info.chargeAccount) + 1;
-	len += strlen(setres_info.featureString) + 1;
-	len += strlen(setres_info.nodeSetString) + 1;
-	len += strlen(setres_info.flags) + 1;
-	len += strlen(setres_info.jobFeatureString) + 1;
-	len += strlen(setres_info.nodeid) + 1;
+	len += strlen(showbf_info.pName) + 1;
+	len += strlen(showbf_info.user) + 1;
+	len += strlen(showbf_info.account) + 1;
+	len += strlen(showbf_info.group) + 1;
+	len += strlen(showbf_info.class) + 1;
+	len += strlen(showbf_info.QOS) + 1;
+	len += strlen(showbf_info.featureString) + 1;
 
 	/* reserve space for numbers */
-	if ((buffer = (char *) malloc(len + 35)) == NULL) {
+	if ((buffer = (char *) malloc(len + 30)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
 	}
 
 	/* build buffer */
-	sprintf(buffer, "%ld %ld %ld %s %s %s %s %s %s %s %s %s %s %s %s %s %d %s",
-			setres_info.clientTime, setres_info.beginTime, setres_info.endTime,
-			setres_info.pName, setres_info.userList, setres_info.groupList,
-			setres_info.accountList, setres_info.classList, setres_info.QOSList,
-			setres_info.rName, setres_info.resourceList,
-			setres_info.chargeAccount, setres_info.nodeid,
-			setres_info.featureString, setres_info.nodeSetString,
-			setres_info.flags, setres_info.taskCount,
-			setres_info.jobFeatureString);
+	sprintf(buffer, "%s %s %s %s %ld %d %d %d %d %s %d %d %s %s %s",
+			showbf_info.user, showbf_info.group, showbf_info.account,
+			showbf_info.pName, showbf_info.duration, showbf_info.nodeCount,
+			showbf_info.procCount, showbf_info.dMemory, showbf_info.memory,
+			MComp[showbf_info.mIndex], showbf_info.mode, showbf_info.flags,
+			showbf_info.class, showbf_info.featureString, showbf_info.QOS);
 	return buffer;
 }
 
@@ -199,32 +198,51 @@ char *buildMsgBuffer(setres_info_t setres_info) {
 */
 
 int process_args(int argc, char **argv,
-                 setres_info_t *setres_info,
+                 showbf_info_t *showbf_info,
                  client_info_t *client_info)
 {
     int c;
+    int index;
+
+    const char *MComp[] = {"NC", "<",  "<=", "==", ">=", ">", "<>",
+                           "=",  "!=", "%<", "%!", "%=", NULL};
+
+    enum MCompEnum {
+        mcmpNONE = 0,
+        mcmpLT,
+        mcmpLE,
+        mcmpEQ,
+        mcmpGE,
+        mcmpGT,
+        mcmpNE,
+        mcmpEQ2,
+        mcmpNE2,
+        mcmpSSUB,
+        mcmpSNE,
+        mcmpSEQ
+    };
+
     while (1) {
         struct option options[] = {
 
             {"help",        no_argument,       0, 'h'},
             {"version",     no_argument,       0, 'V'},
             {"account",     required_argument, 0, 'a'},
-            {"charge",      required_argument, 0, 'A'},
+            {"all",         required_argument, 0, 'A'},
             {"class",       required_argument, 0, 'c'},
             {"duration",  	required_argument, 0, 'd'},
-            {"endtime",     required_argument, 0, 'e'},
             {"feature",     required_argument, 0, 'f'},
             {"group",       required_argument, 0, 'g'},
             {"jobfeature",  required_argument, 0, 'j'},
-            {"name",        required_argument, 0, 'n'},
-            {"nodesetlist", required_argument, 0, 'N'},
+            {"memory",      required_argument, 0, 'm'},
+            {"dmemory",     required_argument, 0, 'M'},
+            {"nodecount",   required_argument, 0, 'n'},
             {"partition",   required_argument, 0, 'p'},
             {"qos",         required_argument, 0, 'Q'},
-            {"resource",    required_argument, 0, 'r'},
-            {"starttime",   required_argument, 0, 's'},
-            {"maxtask",     required_argument, 0, 't'},
+            {"proccount",   required_argument, 0, 'r'},
+            {"smp",         no_argument,       0, 's'},
             {"user",        required_argument, 0, 'u'},
-            {"flags",       required_argument, 0, 'x'},
+            {"verbose",     no_argument,       0, 'v'},
             {"configfile",  required_argument, 0, 'C'},
             {"host",        required_argument, 0, 'H'},
             {"port",        required_argument, 0, 'P'},
@@ -234,7 +252,7 @@ int process_args(int argc, char **argv,
         int option_index = 0;
 
 		c = getopt_long(argc, argv,
-				"hVa:A:c:d:e:f:g:j:n:N:p:Q:r:s:t:u:x:C:H:P:", options,
+				"hVa:A:c:d:f:g:j:m:M:n:p:Q:r:su:vC:H:P:", options,
 				&option_index);
 
         /* Detect the end of the options. */
@@ -255,85 +273,87 @@ int process_args(int argc, char **argv,
               break;
 
           case 'a':
-        	  setres_info->accountList = string_dup(optarg);
+        	  showbf_info->account = string_dup(optarg);
               break;
 
           case 'A':
-        	  setres_info->chargeAccount = string_dup(optarg);
+        	  showbf_info->account = string_dup(ALL);
+        	  showbf_info->group = string_dup(ALL);
+        	  showbf_info->user = string_dup(ALL);
               break;
 
           case 'c':
-        	  setres_info->classList = string_dup(optarg);
+        	  if (!strcmp(optarg, "ALL"))
+        		  showbf_info->class = string_dup(ALL);
+        	  else
+        		  showbf_info->class = string_dup(optarg);
               break;
 
           case 'd':
-        	  setres_info->duration = timeFromString(optarg);
-              break;
-
-          case 'e':
-              if (stringToE(optarg, &(setres_info->endTime)) != SUCCESS) {
-				print_usage();
-
-				fprintf(stderr, "ERROR:    invalid endtime specified, '%s'\n",
-						optarg);
-
-				exit(EXIT_FAILURE);
-              }
+        	  showbf_info->duration = timeFromString(optarg);
               break;
 
           case 'f':
-        	  setres_info->featureString = string_dup(optarg);
+        	  showbf_info->featureString = string_dup(optarg);
               break;
 
           case 'g':
-        	  setres_info->groupList = string_dup(optarg);
+        	  showbf_info->group = string_dup(optarg);
               break;
 
-          case 'j':
-        	  setres_info->jobFeatureString = string_dup(optarg);
-              break;
+          case 'm':
+              if (isdigit(optarg[0])) {
+                  /* if no comparison given */
 
-          case 'n':
-        	  setres_info->rName = string_dup(optarg);
-              break;
+            	  showbf_info->memory = (int)strtol(optarg, NULL, 0);
+            	  showbf_info->mIndex = mcmpGE;
+              } else {
+                  char tmpLine[MAXLINE];
 
-          case 'N':
-        	  setres_info->nodeSetString = string_dup(optarg);
-              break;
+                  /* if comparison given */
 
-          case 'p':
-        	  setres_info->pName = string_dup(optarg);
-              break;
+                  for (index = 0; ispunct(optarg[index]); index++)
+                      ;
 
-          case 'Q':
-        	  setres_info->QOSList = string_dup(optarg);
-              break;
+                  strncpy(tmpLine, optarg, index);
+                  tmpLine[index] = '\0';
 
-          case 'r':
-        	  setres_info->resourceList = string_dup(optarg);
-              break;
+                  for (showbf_info->mIndex = 0; MComp[showbf_info->mIndex] != NULL; showbf_info->mIndex++) {
+                      if (!strcmp(tmpLine, MComp[showbf_info->mIndex])) break;
+                  }
 
-          case 's':
-              if (stringToE(optarg, &(setres_info->beginTime)) != SUCCESS) {
-				print_usage();
+                  if (MComp[showbf_info->mIndex] == NULL) showbf_info->mIndex = 0;
 
-				fprintf(stderr, "ERROR:    invalid starttime specified, '%s'\n",
-						optarg);
-
-				exit(EXIT_FAILURE);
+                  sscanf((optarg + index), "%d", &(showbf_info->memory));
               }
               break;
 
-          case 't':
-        	  setres_info->taskCount = (int)strtol(optarg, NULL, 0);;
+          case 'M':
+        	  showbf_info->dMemory = atoi(optarg);
               break;
 
-          case 'u':
-        	  setres_info->userList = string_dup(optarg);
+          case 'n':
+        	  showbf_info->nodeCount = atoi(optarg);
               break;
 
-          case 'x':
-        	  setres_info->flags = string_dup(optarg);
+          case 'p':
+        	  showbf_info->pName = string_dup(optarg);
+              break;
+
+          case 'Q':
+        	  showbf_info->QOS = string_dup(optarg);
+              break;
+
+          case 'r':
+        	  showbf_info->procCount = atoi(optarg);
+              break;
+
+          case 's':
+        	  showbf_info->mode = 1;
+              break;
+
+          case 'v':
+        	  showbf_info->flags |= (1 << VERBOSE);
               break;
 
           case 'C':
@@ -354,7 +374,7 @@ int process_args(int argc, char **argv,
 
           case '?':
               /* getopt_long already printed an error message. */
-              puts ("Try 'setres --help' for more information.");
+              puts ("Try 'showbf --help' for more information.");
               return 0;
 
           default:
@@ -363,14 +383,11 @@ int process_args(int argc, char **argv,
         }
     }
 
-    /* only need one argument */
-    if(optind != argc - 1){
+    /* no argument accepted */
+    if(optind < argc){
         print_usage();
         exit(EXIT_FAILURE);
     }
-
-    /* copy and save node id from input */
-    setres_info->nodeid = string_dup(argv[optind]);
 
     return 1;
 }
@@ -605,59 +622,53 @@ int stringToE(char *TimeLine, long *EpochTime)
 }
 
 /* free memory */
-void free_structs(setres_info_t *setres_info, client_info_t *client_info) {
-    free(setres_info->pName);
-    free(setres_info->userList);
-    free(setres_info->accountList);
-    free(setres_info->groupList);
-    free(setres_info->classList);
-    free(setres_info->QOSList);
-    free(setres_info->rName);
-    free(setres_info->resourceList);
-    free(setres_info->chargeAccount);
-    free(setres_info->featureString);
-    free(setres_info->nodeSetString);
-    free(setres_info->flags);
-    free(setres_info->jobFeatureString);
-    free(setres_info->nodeid);
+void free_structs(showbf_info_t *showbf_info, client_info_t *client_info) {
+    free(showbf_info->pName);
+    free(showbf_info->user);
+    free(showbf_info->account);
+    free(showbf_info->group);
+    free(showbf_info->class);
+    free(showbf_info->QOS);
+    free(showbf_info->featureString);
     free(client_info->configfile);
     free(client_info->host);
 }
 
 void print_usage()
 {
-    puts ("\nUsage: setres [FLAGS] <NODEID>\n\n"
-            "Create reservations on a specified node. Time format:\n"
-            "[HH[:MM[:SS]]][_MO[/DD[/YY]]] i.e. 14:30_06/20 or\n"
-            "+[[[DD:]HH:]MM:]SS(relative time).\n"
+    puts ("\nUsage: showbf [FLAGS]\n\n"
+            "Show what resources are available for immediate use. \n"
             "\n"
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n"
     		"\n"
-    		"  -a, --account=ACCOUNTID[:ACCOUNTID]...\n"
-    		"                                 set account list\n"
-    		"  -A, --charge=ACCOUNTID[,GROUPID[,USERID]]\n"
-    		"                                 charge creds\n"
-    		"  -c, --class=CLASSID[:CLASSID]...\n"
-    		"                                 set class list\n"
-    		"  -d, --duration=VALUE           set duration\n"
-    		"  -e, --endtime=VALUE            set endtime\n"
+    		"  -a, --account=ACCOUNTID        show resource availability information only for the\n"
+    		"                                   specified account\n"
+    		"  -A, --all                      show resource availability information for all users,\n"
+    		"                                   groups, and accounts\n"
+    		"  -c, --class=CLASSID            set class\n"
+    		"  -d, --duration=VALUE           show resource availability information for the\n"
+    		"                                   specified duration in the format [[[DD:]HH:]MM:]SS\n"
     		"  -f, --feature=FEATUREID[:FEATUREID]...\n"
     		"                                 set feature list\n"
-    		"  -g, --group=GROUPID[:GROUPID]...\n"
-    		"                                 set group list\n"
+    		"  -g, --group=GROUPID            show resource availability information only for the\n"
+    		"                                   specified group.\n"
     		"  -j, --jobfeature=JOBFEATUREID[:JOBFEATUREID]...\n"
     		"                                 set jobfeature list\n"
-    		"  -n, --name=VALUE               set reservation name\n"
-    		"  -N, --nodesetlist=SETSELECTION:SETTYPE[:SETLIST]...\n"
-    		"                                 set node set list\n"
-    		"  -p, --partition=VALUE          set partition\n"
-    		"  -Q, --qos=QOSID[:QOSID]...     set QOS list\n"
-    		"  -r, --resource RESOURCETYPE=VALUE,[RESOURCETYPE=VALUE]...\n"
-    		"                                 set resource list\n"
-    		"  -s, --starttime=VALUE          set start time\n"
-    		"  -t, --maxtask=VALUE            set max tasks\n"
-    		"  -u, --user=USERID[:USERID]...  set user list\n"
-    		"  -x, --flags=FLAGID[,FLAGID]... set flags\n");
+    		"  -m, --memory=VALUE             Allows user to specify the memory requirements for\n"
+    		"                                   the backfill nodes of interest\n"
+    		"  -M, --dmemory=VALUE            set dedicated memory\n"
+    		"  -n, --nodecount=VALUE          show resource availability information for the\n"
+    		"                                   specified number of nodes\n"
+    		"  -p, --partition=PARTITIONID    show resource availability information only for the\n"
+    		"                                   specified partition\n"
+    		"  -Q, --qos=QOSID                show resource availability information only for the\n"
+    		"                                   specified QOS\n"
+    		"  -r, --proccount=VALUE          show resource availability information only for the\n"
+    		"                                   specified number of procs\n"
+    		"  -s, --smp                      show SMP\n"
+    		"  -u, --user=USERID              show resource availability information only for the\n"
+    		"                                   specified user\n"
+    		"  -v, --verbose                  display additional information\n");
     print_client_usage();
 }
