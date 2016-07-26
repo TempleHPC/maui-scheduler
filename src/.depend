@@ -1,8 +1,8 @@
 # FastDep v2.1 for LAMMPS
 # Search path: .:..:../include:/usr/include/torque
-#    82 sources
+#    83 sources
 #    26 includes
-#    83 depfiles
+#    84 depfiles
 MAcct.o : MAcct.c ../include/mcom.h ../include/msched.h ../include/msched-proto.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
 MACL.o : MACL.c ../include/mcom.h ../include/msched.h ../include/msched-proto.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
 MAM.o : MAM.c ../include/mcom.h ../include/msched.h ../include/moab-local.h ../include/mcom-proto.h ../include/msched-common.h ../include/moab-utils.h ../include/msched-version.h ../include/moab-proto.h ../include/moab.h ../include/moab-wiki.h
@@ -75,6 +75,7 @@ runjob.o : runjob.c ../include/maui_utils.h ../include/msched-version.h
 schedctl.o : schedctl.c ../include/maui_utils.h ../include/msched-version.h
 sethold.o : sethold.c ../include/maui_utils.h ../include/msched-version.h
 setqos.o : setqos.c ../include/maui_utils.h ../include/msched-version.h
+setres.o : setres.c ../include/maui_utils.h ../include/msched-version.h
 setspri.o : setspri.c ../include/maui_utils.h ../include/msched-version.h
 showconfig.o : showconfig.c ../include/maui_utils.h ../include/msched-version.h
 showgrid.o : showgrid.c ../include/maui_utils.h ../include/msched-version.h
