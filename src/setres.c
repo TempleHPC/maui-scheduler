@@ -173,7 +173,7 @@ char *buildMsgBuffer(setres_info_t setres_info) {
 	len += strlen(setres_info.jobFeatureString) + 1;
 	len += strlen(setres_info.nodeid) + 1;
 
-	/* reserve space for numbers */
+	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 35)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

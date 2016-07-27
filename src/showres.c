@@ -1689,6 +1689,8 @@ char *buildMsgBuffer(showres_info_t *showres_info) {
 		showres_info->jobid = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space or a 0 */
 	len += strlen(showres_info->jobid) + 1;
 	len += strlen(showres_info->pName) + 1;
 

@@ -85,6 +85,8 @@ char *buildMsgBuffer(checknode_info_t checknode_info) {
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space or a 0 */
 	len += strlen(checknode_info.nodeid) + 1;
 	len += strlen(checknode_info.subcommand) + 1;
 	len += strlen(checknode_info.argument) + 1;

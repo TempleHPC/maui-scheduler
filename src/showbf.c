@@ -175,7 +175,7 @@ char *buildMsgBuffer(showbf_info_t showbf_info) {
 	len += strlen(showbf_info.QOS) + 1;
 	len += strlen(showbf_info.featureString) + 1;
 
-	/* reserve space for numbers */
+	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 30)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

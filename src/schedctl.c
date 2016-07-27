@@ -96,6 +96,7 @@ char *buildMsgBuffer(schedctl_info_t schedctl_info) {
 	/* calculate the length of the whole buffer */
 	len += strlen(schedctl_info.argument) + 1;
 
+	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 3)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

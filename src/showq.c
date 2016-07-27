@@ -528,6 +528,7 @@ char *buildMsgBuffer(showq_info_t showq_info) {
 		showq_info.username = strdup("");
 	}
 
+	/* plus one for a white space or 0 */
 	len += strlen(showq_info.username) + 1;
 	len += strlen(showq_info.pName) + 1;
 
@@ -535,6 +536,7 @@ char *buildMsgBuffer(showq_info_t showq_info) {
 		showq_info.username = strdup("");
 	}
 
+	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 5)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

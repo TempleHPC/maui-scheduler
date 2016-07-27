@@ -91,6 +91,8 @@ char *buildMsgBuffer(runjob_info_t runjob_info) {
 		runjob_info.mode = string_dup("NONE");
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space or a 0*/
 	len += strlen(runjob_info.jobid) + 1;
 	len += strlen(runjob_info.pName) + 1;
 	len += strlen(runjob_info.nodeid) + 1;

@@ -90,6 +90,8 @@ char *buildMsgBuffer(checkjob_info_t checkjob_info) {
 		checkjob_info.resid = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space */
 	len += strlen(checkjob_info.jobid) + 1;
 	len += strlen(checkjob_info.resid) + 1;
 	len += strlen(checkjob_info.nodeid) + 1;
@@ -97,6 +99,7 @@ char *buildMsgBuffer(checkjob_info_t checkjob_info) {
     if (checkjob_info.pType == 0)
     	checkjob_info.pType = SOFT;
 
+    /* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 5)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

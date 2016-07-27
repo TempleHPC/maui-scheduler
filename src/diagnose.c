@@ -111,9 +111,12 @@ char *buildMsgBuffer(diagnose_info_t diagnose_info) {
 		diagnose_info.argument = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space */
 	len += strlen(diagnose_info.pName) + 1;
 	len += strlen(diagnose_info.argument) + 1;
 
+	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 6)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

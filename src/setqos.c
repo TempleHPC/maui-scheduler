@@ -81,8 +81,8 @@ char *buildMsgBuffer(setqos_info_t setqos_info) {
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(setqos_info.value) + 1;
-    len += strlen(setqos_info.jobid) + 1;
+	len += strlen(setqos_info.value);
+    len += strlen(setqos_info.jobid);
 
 	if ((buffer = (char *) malloc(len + 89)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");

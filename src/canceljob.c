@@ -74,6 +74,8 @@ char *buildMsgBuffer(canceljob_info_t canceljob_info) {
 	int i = 0, len = 0;
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space */
     while ((canceljob_info.jobid)[i] != NULL) {
         len += strlen((canceljob_info.jobid)[i++]) + 1;
     }

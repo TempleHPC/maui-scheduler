@@ -2518,11 +2518,11 @@ char *buildMsgBuffer(showstats_info_t *showstats_info) {
 
 	/* calculate the length of the whole buffer */
 
-	/* len plus one for white space */
+	/* plus one for a white space */
 	len += strlen(showstats_info->id) + 1;
 	len += strlen(showstats_info->pName) + 1;
 
-	/* len plus eight for one two-digit number, one four-digit number, one white space and a 0 */
+	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 8)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;

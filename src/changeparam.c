@@ -75,12 +75,16 @@ char *buildMsgBuffer(changeparam_info_t changeparam_info) {
 	int i = 0, len = 0;
 
 	/* calculate the length of the whole buffer */
+
+	/* plus one for a white space */
 	len += strlen(changeparam_info.attr) + 1;
     while ((changeparam_info.value)[i] != NULL) {
         len += strlen((changeparam_info.value)[i++]) + 1;
     }
 
 	i = 0;
+
+	/* plus two for a white space and a 0 */
 	if ((buffer = (char *) malloc(len + 2)) == NULL) {
 		puts("ERROR: cannot allocate memory for buffer");
 		return NULL;
