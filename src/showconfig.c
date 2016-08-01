@@ -12,7 +12,7 @@ typedef struct _showconfig_info {
     int verbose;               /**< Verbose flag*/
 } showconfig_info_t;
 
-static void free_structs(showconfig_info_t *, client_info_t *);
+static void free_structs(client_info_t *);
 static int process_args(int, char **, showconfig_info_t *, client_info_t *);
 static void print_usage();
 
@@ -34,26 +34,35 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		generateBuffer(request, showconfig_info.verbose ? "VERBOSE" : "",
 				"showconfig");
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("Error: cannot allocate memory for message");
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* print result */
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
@@ -62,7 +71,7 @@ int main(int argc, char **argv) {
 
     }
 
-    free_structs(&showconfig_info, &client_info);
+    free_structs(&client_info);
 
     exit(0);
 }
@@ -104,11 +113,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -146,6 +157,7 @@ int process_args(int argc, char **argv,
     /* no arguments accepted */
     if(optind < argc){
         print_usage();
+        free_structs(client_info);
         exit(EXIT_FAILURE);
     }
 
@@ -153,7 +165,7 @@ int process_args(int argc, char **argv,
 }
 
 /* free memory */
-void free_structs(showconfig_info_t *showconfig_info, client_info_t *client_info) {
+void free_structs(client_info_t *client_info) {
     free(client_info->configfile);
     free(client_info->host);
 }

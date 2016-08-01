@@ -19,7 +19,7 @@ typedef struct _checknode_info {
 static void free_structs(checknode_info_t *, client_info_t *);
 static int process_args(int, char **, checknode_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(checknode_info_t );
+static char *buildMsgBuffer(checknode_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -39,27 +39,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&checknode_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(checknode_info);
+		msgBuffer = buildMsgBuffer(&checknode_info, &client_info);
 		generateBuffer(request, msgBuffer, "checknode");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&checknode_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&checknode_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&checknode_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&checknode_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -73,23 +82,24 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(checknode_info_t checknode_info) {
+char *buildMsgBuffer(checknode_info_t *checknode_info,client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(checknode_info.nodeid) + 1;
+	len += strlen(checknode_info->nodeid) + 1;
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 3)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(checknode_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
-	sprintf(buffer, "%s %d", checknode_info.nodeid, checknode_info.flags);
+	sprintf(buffer, "%s %d", checknode_info->nodeid, checknode_info->flags);
 
 	return buffer;
 }
@@ -132,11 +142,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(checknode_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(checknode_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -178,6 +190,7 @@ int process_args(int argc, char **argv,
     /* only need one argument */
     if(optind != argc - 1){
         print_usage();
+        free_structs(checknode_info, client_info);
         exit(EXIT_FAILURE);
     }
 

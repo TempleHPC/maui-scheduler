@@ -16,7 +16,7 @@ typedef struct _sethold_info {
 static void free_structs(sethold_info_t *, client_info_t *);
 static int process_args(int, char **, sethold_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(sethold_info_t );
+static char *buildMsgBuffer(sethold_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -37,27 +37,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&sethold_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(sethold_info);
+		msgBuffer = buildMsgBuffer(&sethold_info, &client_info);
 		generateBuffer(request, msgBuffer, "mjobctl");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&sethold_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&sethold_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&sethold_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&sethold_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* get and print result */
 		result = strchr(response, '>');
@@ -76,26 +85,27 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(sethold_info_t sethold_info) {
+char *buildMsgBuffer(sethold_info_t *sethold_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
-	if (sethold_info.type == NULL)
-		sethold_info.type = string_dup("All");
+	if (sethold_info->type == NULL)
+		sethold_info->type = string_dup("All");
 
 	/* calculate the length of the whole buffer */
-    len += strlen(sethold_info.jobid);
-    len += strlen(sethold_info.type);
+    len += strlen(sethold_info->jobid);
+    len += strlen(sethold_info->type);
 
 	if ((buffer = (char *) malloc(len + 92)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(sethold_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
 	sprintf(buffer, "<schedrequest action=\"modify\" attr=\"Hold\" "
 			"value=\"%s\" flag=\"set\" job=\"%s\"></schedrequest>\n",
-			sethold_info.type, sethold_info.jobid);
+			sethold_info->type, sethold_info->jobid);
 
 	return buffer;
 }
@@ -140,11 +150,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(sethold_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(sethold_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -194,6 +206,7 @@ int process_args(int argc, char **argv,
     /* need one arguments */
     if(optind != argc - 1){
         print_usage();
+        free_structs(sethold_info, client_info);
         exit(EXIT_FAILURE);
     }
 

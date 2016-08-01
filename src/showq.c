@@ -28,7 +28,7 @@ typedef struct _showq_info {
 static int process_args(int, char **, showq_info_t *, client_info_t *);
 static void print_usage();
 static void free_structs(showq_info_t *, client_info_t *);
-static char *buildMsgBuffer(showq_info_t);
+static char *buildMsgBuffer(showq_info_t *, client_info_t *);
 static int showAQueue(char *);
 static int showIQueue(char *, char *);
 static int showRQueue(char *, char *, int );
@@ -40,7 +40,7 @@ int main (int argc, char **argv)
     client_info_t client_info;
 
 	char *response, *ptr, *msgBuffer;
-	int sd, displayFlags;
+	int sd, displayFlags = FALSE;
 	long bufSize;
 	FILE *f;
 	char request[MAXBUFFER];
@@ -51,14 +51,6 @@ int main (int argc, char **argv)
 
     /* process all the options and arguments */
     if (process_args(argc, argv, &showq_info, &client_info)) {
-
-    	if (showq_info.pName == NULL) {
-    		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			showq_info.pName = string_dup(ptr);
-    		} else {
-    			showq_info.pName = string_dup(GLOBAL_MPARNAME);
-    		}
-    	}
 
     	/* get config file directory and open it*/
     	strcpy(configDir, MBUILD_HOMEDIR);
@@ -82,27 +74,36 @@ int main (int argc, char **argv)
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&showq_info,&client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(showq_info);
+		msgBuffer = buildMsgBuffer(&showq_info, &client_info);
 		generateBuffer(request, msgBuffer, "showq");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&showq_info,&client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&showq_info,&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&showq_info,&client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&showq_info,&client_info);
 			exit(EXIT_FAILURE);
+		}
 
         /* if no flag has been set, print jobs in all states */
 		if (showq_info.running + showq_info.idle + showq_info.blocked < 1) {
@@ -139,10 +140,10 @@ int main (int argc, char **argv)
 /* show all queue */
 int showAQueue(char *buffer) {
 	char *ptr, name[MAXNAME], tmpQOS[MAXNAME], UserName[MAXNAME], tmp[MAXLINE];
-	long stime, qtime, now, wCLimit;
-	int procs, count, priority, state;
-	int upProcs, idleProcs, upNodes, idleNodes, activeNodes;
-	int busyNodes, busyProcs, acount, icount, ncount, rc;
+	long stime = 0, qtime = 0, now = 0, wCLimit = 0;
+	int procs = 0, count = 0, priority = 0, state = 0;
+	int upProcs = 0, idleProcs = 0, upNodes = 0, idleNodes = 0, activeNodes = 0;
+	int busyNodes = 0, busyProcs = 0, acount = 0, icount = 0, ncount = 0, rc = 0;
 	const char *jobState[] = {
 		    "NONE",      "Idle",      "Starting",  "Running",    "Removed", "Completed",
 		    "Hold",      "Deferred",  "SubmitErr", "Vacated",    "NotRun",  "NotQueued",
@@ -184,28 +185,28 @@ int showAQueue(char *buffer) {
 			continue;
 
 		/* display job */
-		fprintf(stdout, "%-18s %8s %10s %5d %11s  %19s", name, UserName,
-				jobState[state], procs, timeToString(wCLimit - (now - stime)),
+		printf("%-18s %8s %10s %5d %11s  %19s", name, UserName, jobState[state],
+				procs, timeToString(wCLimit - (now - stime)),
 				getDateString(&stime));
 	}
 
 	sprintf(tmp, "%d Active Job%c   ", acount, (acount == 1) ? ' ' : 's');
 
-	fprintf(stdout, "\n%21s %4d of %4d Processors Active (%.2f%c)\n", tmp,
-			busyProcs, upProcs,
-			(upProcs > 0) ? (double) busyProcs / upProcs * 100.0 : 0.0, '%');
+	printf("\n%21s %4d of %4d Processors Active (%.2f%c)\n", tmp, busyProcs,
+			upProcs, (upProcs > 0) ? (double) busyProcs / upProcs * 100.0 : 0.0,
+			'%');
 
 	if ((upNodes > 0) && (upProcs != upNodes)) {
-		fprintf(stdout, "%21s %4d of %4d Nodes Active      (%.2f%c)\n", " ",
-				busyNodes, upNodes,
+		printf("%21s %4d of %4d Nodes Active      (%.2f%c)\n", " ", busyNodes,
+				upNodes,
 				(upNodes > 0) ? (double) busyNodes / upNodes * 100.0 : 0.0,
 				'%');
 	}
 
 	/* display list of idle jobs */
-	fprintf(stdout, "\nIDLE JOBS----------------------\n");
+	printf("\nIDLE JOBS----------------------\n");
 
-	fprintf(stdout, "%-18s %8s %10s %5s %11s %20s\n\n", "JOBNAME", "USERNAME",
+	printf("%-18s %8s %10s %5s %11s %20s\n\n", "JOBNAME", "USERNAME",
 			"STATE", "PROC", "WCLIMIT", "QUEUETIME");
 
 	/* read all idle jobs */
@@ -227,17 +228,17 @@ int showAQueue(char *buffer) {
 		if (rc != 9)
 			continue;
 
-		fprintf(stdout, "%-18s %8s %10s %5d %11s  %19s", name, UserName,
+		printf("%-18s %8s %10s %5d %11s  %19s", name, UserName,
 				jobState[state], procs, timeToString(wCLimit),
 				getDateString(&qtime));
 	}
 
-	fprintf(stdout, "\n%d Idle Job%c\n", icount, (icount == 1) ? ' ' : 's');
+	printf("\n%d Idle Job%c\n", icount, (icount == 1) ? ' ' : 's');
 
 	/* display list of non-queued jobs */
-	fprintf(stdout, "\nBLOCKED JOBS----------------\n");
+	printf("\nBLOCKED JOBS----------------\n");
 
-	fprintf(stdout, "%-18s %8s %10s %5s %11s %20s\n\n", "JOBNAME", "USERNAME",
+	printf("%-18s %8s %10s %5s %11s %20s\n\n", "JOBNAME", "USERNAME",
 			"STATE", "PROC", "WCLIMIT", "QUEUETIME");
 
 	/* read all blocked jobs */
@@ -260,17 +261,16 @@ int showAQueue(char *buffer) {
 			continue;
 
 		/* display job */
-		fprintf(stdout, "%-18s %8s %10s %5d %11s  %19s", name, UserName,
+		printf("%-18s %8s %10s %5d %11s  %19s", name, UserName,
 				(state > 0) ? jobState[state] : "-", procs,
 				timeToString(wCLimit), getDateString(&qtime));
 	}
 
-	fprintf(stdout,
-			"\nTotal Jobs: %d   Active Jobs: %d   Idle Jobs: %d   Blocked "
-					"Jobs: %d\n", count, acount, icount, ncount);
+	printf("\nTotal Jobs: %d   Active Jobs: %d   Idle Jobs: %d   Blocked "
+			"Jobs: %d\n", count, acount, icount, ncount);
 
 	while ((ptr = strtok(NULL, "\n")) != NULL) {
-		fprintf(stdout, "\n%s\n", ptr);
+		printf("\n%s\n", ptr);
 	}
 
 	return 1;
@@ -290,9 +290,7 @@ int showIQueue(char *msgBuffer, char *parName) {
 	else
 		SMP = FALSE;
 
-	buffer = (char *) malloc(strlen(msgBuffer) + 1);
-	strcpy(buffer,msgBuffer);
-	buffer = strstr(buffer, "ARG=") + strlen("ARG=");
+	buffer = string_dup(strstr(msgBuffer, "ARG=") + strlen("ARG="));
 
 	SMPLine[0] = '\0';
 
@@ -355,6 +353,8 @@ int showIQueue(char *msgBuffer, char *parName) {
 			"\nJobs: %d  Total Backlog:  %.2f ProcHours  (%.2f Hours)\n", count,
 			totalLoad / 3600.0, (double) totalLoad / 3600.0 / totalProcs);
 
+	free(buffer);
+
 	return 1;
 }
 
@@ -367,9 +367,7 @@ int showBQueue(char *msgBuffer) {
 
 	fprintf(stdout, "%18s %9s %20s\n\n", "JobName", "User", "Reason");
 
-	buffer = (char *) malloc(strlen(msgBuffer) + 1);
-	strcpy(buffer, msgBuffer);
-	buffer = strstr(buffer, "[BLOCKED]\n") + strlen("[BLOCKED]\n");
+	buffer = string_dup(strstr(msgBuffer, "[BLOCKED]\n") + strlen("[BLOCKED]\n"));
 
     sscanf(buffer, "%ld %d\n", &startTime, &totalProcs);
 
@@ -389,6 +387,8 @@ int showBQueue(char *msgBuffer) {
 		/* display job */
 		fprintf(stdout, "%18s %9s %s\n", name, userName, reason);
 	}
+
+	free(buffer);
 
 	return 1;
 }
@@ -412,9 +412,7 @@ int showRQueue(char *msgBuffer, char *parName, int displayFlags) {
 
 	SMPLine[0] = '\0';
 
-	buffer = (char *) malloc(strlen(msgBuffer) + 1);
-	strcpy(buffer, msgBuffer);
-	buffer = strstr(buffer, "[RUNNING]\n") + strlen("[RUNNING]\n");
+	buffer = string_dup(strstr(msgBuffer, "[RUNNING]\n") + strlen("[RUNNING]\n"));
 
 	/* get general state */
 	sscanf(buffer, "%ld %d %d %d %d %d %d\n", &now, &upProcs, &idleProcs,
@@ -516,43 +514,47 @@ int showRQueue(char *msgBuffer, char *parName, int displayFlags) {
 				(double) dedicatedMemory / configuredMemory * 100.0, '%');
 	}
 
+	free(buffer);
+
 	return 1;
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(showq_info_t showq_info) {
+char *buildMsgBuffer(showq_info_t *showq_info, client_info_t *client_info) {
 	char *buffer;
 	int queueMode = 0, len = 0;
 
-	if (showq_info.username == NULL) {
-		showq_info.username = strdup("");
+	if (showq_info->username == NULL) {
+		showq_info->username = string_dup("");
 	}
+
+
+	if (showq_info->pName == NULL)
+		if ((showq_info->pName = getenv(MSCHED_ENVPARVAR)) == NULL)
+			showq_info->pName = string_dup(GLOBAL_MPARNAME);
 
 	/* plus one for a white space or 0 */
-	len += strlen(showq_info.username) + 1;
-	len += strlen(showq_info.pName) + 1;
-
-	if (showq_info.username == NULL) {
-		showq_info.username = strdup("");
-	}
+	len += strlen(showq_info->username) + 1;
+	len += strlen(showq_info->pName) + 1;
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 5)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(showq_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
-	if (showq_info.blocked)
+	if (showq_info->blocked)
 		queueMode |= (1 << BLOCKED);
 
-	if (showq_info.running)
+	if (showq_info->running)
 		queueMode |= (1 << RUNNING);
 
-	if (showq_info.idle)
+	if (showq_info->idle)
 		queueMode |= (1 << IDLE);
 
-	sprintf(buffer, "%d %s %d %s", queueMode, showq_info.pName, 0,
-			showq_info.username);
+	sprintf(buffer, "%d %s %d %s", queueMode, showq_info->pName, 0,
+			showq_info->username);
 
 	return buffer;
 }
@@ -597,11 +599,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(showq_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(showq_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -650,6 +654,13 @@ int process_args(int argc, char **argv,
               //abort();
               return 0;
         }
+    }
+
+    /* no arguments accepted */
+    if(optind != argc){
+        print_usage();
+        free_structs(showq_info, client_info);
+        exit(EXIT_FAILURE);
     }
 
     return 1;

@@ -34,25 +34,34 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&showgrid_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		generateBuffer(request, showgrid_info.statistics, "showgrid");
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&showgrid_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&showgrid_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("Error: cannot allocate memory for message");
+			free_structs(&showgrid_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&showgrid_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -101,11 +110,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(showgrid_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(showgrid_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -139,6 +150,7 @@ int process_args(int argc, char **argv,
     /* only need one argument */
     if(optind != argc - 1){
         print_usage();
+        free_structs(showgrid_info, client_info);
         exit(EXIT_FAILURE);
     }
 

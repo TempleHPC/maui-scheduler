@@ -202,7 +202,7 @@ typedef struct _showstats_info {
 static void free_structs(showstats_info_t *, client_info_t *);
 static int process_args(int, char **, showstats_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(showstats_info_t *);
+static char *buildMsgBuffer(showstats_info_t *, client_info_t *);
 static int MStatSetAttr(must_t *, int, void **, int, int);
 static int MStatFromXML(must_t *, mxml_t *);
 static int MUGetIndex(char *, const char **, int , int );
@@ -248,37 +248,38 @@ int main(int argc, char **argv) {
     /* process all the options and arguments */
     if (process_args(argc, argv, &showstats_info, &client_info)) {
 
-    	if (showstats_info.pName == NULL) {
-    		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			showstats_info.pName = string_dup(ptr);
-    		} else {
-    			showstats_info.pName = string_dup(GLOBAL_MPARNAME);
-    		}
-    	}
-
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&showstats_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(&showstats_info);
+		msgBuffer = buildMsgBuffer(&showstats_info, &client_info);
 		generateBuffer(request, msgBuffer, "showstats");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&showstats_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&showstats_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&showstats_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&showstats_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		ptr = strstr(response, "ARG=") + strlen("ARG=");
 
@@ -999,6 +1000,8 @@ int showCStats(
     } /* END while (MOGetNextObject() != NULL) */
 
     fprintf(stdout, "\n\n");
+
+    free(tmpCred);
 
     return (SUCCESS);
 } /* END MCShowCStats() */
@@ -2499,9 +2502,13 @@ int MXMLCreateE(
 } /* END MXMLCreateE() */
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(showstats_info_t *showstats_info) {
+char *buildMsgBuffer(showstats_info_t *showstats_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
+
+	if (showstats_info->pName == NULL)
+		if ((showstats_info->pName = getenv(MSCHED_ENVPARVAR)) == NULL)
+			showstats_info->pName = string_dup(GLOBAL_MPARNAME);
 
 	if (showstats_info->type == -1)
 		showstats_info->type = mxoSched;
@@ -2524,8 +2531,9 @@ char *buildMsgBuffer(showstats_info_t *showstats_info) {
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 8)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(showstats_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
@@ -2581,11 +2589,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(showstats_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(showstats_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -2659,6 +2669,7 @@ int process_args(int argc, char **argv,
     /* only accept one argument */
     if(optind < argc - 1){
         print_usage();
+        free_structs(showstats_info, client_info);
         exit(EXIT_FAILURE);
 	} else if (optind == argc - 1) {
 

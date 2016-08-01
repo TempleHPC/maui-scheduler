@@ -63,7 +63,7 @@ typedef struct {
 
 typedef mhost_t msys_t[MAX_MFRAME][MAX_MSLOTPERFRAME + 1];
 
-static void free_structs(showstate_info_t *, client_info_t *);
+static void free_structs(client_info_t *);
 static int process_args(int, char **, showstate_info_t *, client_info_t *);
 static void print_usage();
 static int clusterShow(char *, int);
@@ -87,26 +87,35 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		generateBuffer(request, showstate_info.xml ? "XML" : "DEFAULT",
 				"showstate");
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("Error: cannot allocate memory for message");
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* print result */
 		ptr = strstr(response, "ARG=") + strlen("ARG=");
@@ -117,7 +126,7 @@ int main(int argc, char **argv) {
 
     }
 
-    free_structs(&showstate_info, &client_info);
+    free_structs(&client_info);
 
     exit(0);
 }
@@ -127,8 +136,8 @@ int main(int argc, char **argv) {
  */
 int clusterShow(char *buffer, int xml)
 {
-    char *ptr;
-    char *oPtr;
+    char *ptr = NULL;
+    char *oPtr = NULL;
 
     int index;
 
@@ -143,7 +152,7 @@ int clusterShow(char *buffer, int xml)
 
     char tmpNLString[MAXBUFFER];
 
-    int sChar;
+    int sChar = 0;
 
 	char jName[MAXJOB][MAXNAME];
 	char jUName[MAXJOB][MAXNAME];
@@ -154,22 +163,22 @@ int clusterShow(char *buffer, int xml)
 	int jPCount[MAXJOB];
 	long jDuration[MAXJOB];
 
-	int jindex;
-	int findex;
-	int sindex;
+	int jindex = 0;
+	int findex = 0;
+	int sindex = 0;
 
 	char warnings[MAXBUFFER];
-	int totalNodes;
+	int totalNodes = 0;
 
-	long now;
-	int maxSlotPerFrame;
-	int maxFrame;
+	long now = 0;
+	int maxSlotPerFrame = 0;
+	int maxFrame = 0;
 
-	int slotsUsed;
+	int slotsUsed = 0;
 
-	char *fPtr;
-	char *sPtr;
-	char *tokPtr;
+	char *fPtr = NULL;
+	char *sPtr = NULL;
+	char *tokPtr = NULL;
 
 	const char *MNodeState[] =
 			{ "NONE", "None", "Down", "Idle", "Busy", "Running", "Drained",
@@ -178,7 +187,9 @@ int clusterShow(char *buffer, int xml)
 	char JID[] =
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
 
-    mhost_t *S;
+    mhost_t *S = NULL;
+
+    warnings[0] = '\0';
 
     /* FORMAT:                                             */
     /*                                                     */
@@ -189,8 +200,6 @@ int clusterShow(char *buffer, int xml)
     }
 
     memset(mapj, 255, sizeof(mapj));
-
-    warnings[0] = '\0';
 
     jindex = 0;
 
@@ -260,6 +269,8 @@ int clusterShow(char *buffer, int xml)
 			/* NOTE:  temporary:  failure is now string */
 
 			S->Failures = strtol(tmpLine, NULL, 0);
+
+			system[findex][0].SlotsUsed = 0;
 
 			system[findex][0].SlotsUsed = MAX(system[findex][0].SlotsUsed,
 					sindex + slotsUsed - 1);
@@ -690,11 +701,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -732,6 +745,7 @@ int process_args(int argc, char **argv,
     /* no arguments accepted */
     if(optind < argc){
         print_usage();
+        free_structs(client_info);
         exit(EXIT_FAILURE);
     }
 
@@ -739,7 +753,7 @@ int process_args(int argc, char **argv,
 }
 
 /* free memory */
-void free_structs(showstate_info_t *showstate_info, client_info_t *client_info) {
+void free_structs(client_info_t *client_info) {
     free(client_info->configfile);
     free(client_info->host);
 }

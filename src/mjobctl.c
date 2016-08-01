@@ -19,7 +19,7 @@ typedef struct _mjobctl_info {
 static void free_structs(mjobctl_info_t *, client_info_t *);
 static int process_args(int, char **, mjobctl_info_t *, client_info_t *);
 static void print_usage();
-static char *buildXML(mjobctl_info_t);
+static char *buildXML(mjobctl_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
     mjobctl_info_t mjobctl_info;
@@ -39,27 +39,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&mjobctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		XMLBuffer = buildXML(mjobctl_info);
+		XMLBuffer = buildXML(&mjobctl_info, &client_info);
 		generateBuffer(request, XMLBuffer, "mjobctl");
 		free(XMLBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&mjobctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&mjobctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&mjobctl_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&mjobctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* get and print result */
 		result = strchr(response, '>');
@@ -119,11 +128,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(mjobctl_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(mjobctl_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -139,7 +150,6 @@ int process_args(int argc, char **argv,
               if ((optarg == NULL) || (strchr(optarg, '=') == NULL)){
                   printf("ERROR: no value found in argument\n");
                   return 0;
-                  break;
               }
 
               mjobctl_info->action = string_dup("modify");
@@ -227,37 +237,38 @@ int process_args(int argc, char **argv,
  * @return string buffer.
  */
 
-char *buildXML(mjobctl_info_t mjobctl_info){
+char *buildXML(mjobctl_info_t *mjobctl_info, client_info_t *client_info){
 	char *XMLBuffer;
 
 	if((XMLBuffer = (char *)malloc(MAXLINE)) == NULL){
-		puts("Erro: cannot allocate memory to XML buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(mjobctl_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	strcpy(XMLBuffer, "<schedrequest action=\"");
-	strcat(XMLBuffer, mjobctl_info.action);
+	strcat(XMLBuffer, mjobctl_info->action);
 	strcat(XMLBuffer,"\"");
 
-	if(mjobctl_info.attr != NULL){
+	if(mjobctl_info->attr != NULL){
 		strcat(XMLBuffer, " attr=\"");
-		strcat(XMLBuffer, mjobctl_info.attr);
+		strcat(XMLBuffer, mjobctl_info->attr);
 		strcat(XMLBuffer,"\"");
 	}
 
 	strcat(XMLBuffer, " job=\"");
-	strcat(XMLBuffer, mjobctl_info.jobid);
+	strcat(XMLBuffer, mjobctl_info->jobid);
 	strcat(XMLBuffer,"\"");
 
-	if(mjobctl_info.mode != NULL){
+	if(mjobctl_info->mode != NULL){
 		strcat(XMLBuffer, " mode=\"");
-		strcat(XMLBuffer, mjobctl_info.mode);
+		strcat(XMLBuffer, mjobctl_info->mode);
 		strcat(XMLBuffer,"\"");
 	}
 
-	if(mjobctl_info.value != NULL){
+	if(mjobctl_info->value != NULL){
 		strcat(XMLBuffer, " value=\"");
-		strcat(XMLBuffer, mjobctl_info.value);
+		strcat(XMLBuffer, mjobctl_info->value);
 		strcat(XMLBuffer,"\"");
 	}
 
@@ -272,6 +283,7 @@ void free_structs(mjobctl_info_t *mjobctl_info, client_info_t *client_info) {
     free(mjobctl_info->jobid);
     free(mjobctl_info->mode);
     free(mjobctl_info->value);
+    free(mjobctl_info->action);
     free(client_info->configfile);
     free(client_info->host);
 }

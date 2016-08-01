@@ -289,6 +289,7 @@ int connectToServer(int *sd, int port, char *host){
 		} else {
 			printf("ERROR: cannot connect to server '%s' on port %d, "
 					"errno: %d (%s)\n", host, port, errno, strerror(errno));
+			return 0;
 		}
 	}
 
@@ -479,7 +480,9 @@ void get_connection_params(client_info_t *client_info) {
 	}
 
 	if (client_info->port <= 0) {
-		client_info->port = atoi(getConfigVal(client_info, "SERVERPORT"));
+		char *ptr = getConfigVal(client_info, "SERVERPORT");
+		client_info->port = atoi(ptr);
+		free(ptr);
 	}
 }
 
@@ -524,8 +527,12 @@ char *getConfigVal(client_info_t *client_info, char *attr){
     /* locate and get attribute value */
     configBuffer[fsize] = '\0';
 
-	if ((ptr = strstr(configBuffer, attr)) == NULL)
+	if ((ptr = strstr(configBuffer, attr)) == NULL){
+		free(configBuffer);
+		fclose(f);
 		return NULL;
+	}
+
 	pch = strtok(ptr, " \n");
 	pch = strtok(NULL, " \n");
 

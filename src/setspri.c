@@ -17,7 +17,7 @@ typedef struct _setspri_info {
 static void free_structs(setspri_info_t *, client_info_t *);
 static int process_args(int, char **, setspri_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(setspri_info_t );
+static char *buildMsgBuffer(setspri_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -38,27 +38,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&setspri_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(setspri_info);
+		msgBuffer = buildMsgBuffer(&setspri_info, &client_info);
 		generateBuffer(request, msgBuffer, "mjobctl");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&setspri_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&setspri_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&setspri_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&setspri_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* get and print result */
 		result = strchr(response, '>');
@@ -77,17 +86,18 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(setspri_info_t setspri_info) {
+char *buildMsgBuffer(setspri_info_t *setspri_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(setspri_info.value);
-    len += strlen(setspri_info.jobid);
+	len += strlen(setspri_info->value);
+    len += strlen(setspri_info->jobid);
 
 	if ((buffer = (char *) malloc(len + 110)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(setspri_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
@@ -95,8 +105,8 @@ char *buildMsgBuffer(setspri_info_t setspri_info) {
             "<schedrequest action=\"modify\" attr=\"SysPrio\" "
             "value=\"%s\" flag=\"set\" job=\"%s\" "
             "arg=\"%s\"></schedrequest>\n",
-			setspri_info.value, setspri_info.jobid,
-			setspri_info.relative ? "relative" : "absolute");
+			setspri_info->value, setspri_info->jobid,
+			setspri_info->relative ? "relative" : "absolute");
 
 	return buffer;
 }
@@ -138,11 +148,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(setspri_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(setspri_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -180,6 +192,7 @@ int process_args(int argc, char **argv,
     /* only accept two arguments */
     if(optind != argc - 2){
         print_usage();
+        free_structs(setspri_info, client_info);
         exit(EXIT_FAILURE);
     }
 

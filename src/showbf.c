@@ -36,7 +36,7 @@ typedef struct _showbf_info {
 static void free_structs(showbf_info_t *, client_info_t *);
 static int process_args(int, char **, showbf_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(showbf_info_t );
+static char *buildMsgBuffer(showbf_info_t *, client_info_t *);
 static long timeFromString(char *);
 static int stringToE(char *, long *);
 static char *GIDToName(gid_t GID);
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
     showbf_info_t showbf_info;
     client_info_t client_info;
 
-	char *response, *msgBuffer, *ptr;
+	char *response, *msgBuffer;
 	int sd;
 	long bufSize;
 	char request[MAXBUFFER];
@@ -62,37 +62,38 @@ int main(int argc, char **argv) {
     /* process all the options and arguments */
     if (process_args(argc, argv, &showbf_info, &client_info)) {
 
-    	if (showbf_info.pName == NULL) {
-    		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			showbf_info.pName = string_dup(ptr);
-    		} else {
-    			showbf_info.pName = string_dup(GLOBAL_MPARNAME);
-    		}
-    	}
-
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&showbf_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(showbf_info);
+		msgBuffer = buildMsgBuffer(&showbf_info, &client_info);
 		generateBuffer(request, msgBuffer, "showbf");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&showbf_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&showbf_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&showbf_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&showbf_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 	    fprintf(stdout, "\nreservation created\n");
 
@@ -149,7 +150,7 @@ char *GIDToName(gid_t GID)
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(showbf_info_t showbf_info) {
+char *buildMsgBuffer(showbf_info_t *showbf_info, client_info_t *client_info) {
 
 	char *buffer;
 	int len = 0;
@@ -157,37 +158,42 @@ char *buildMsgBuffer(showbf_info_t showbf_info) {
 	const char *MComp[] = {"NC", "<",  "<=", "==", ">=", ">", "<>",
 	                       "=",  "!=", "%<", "%!", "%=", NULL};
 
-	if (showbf_info.class == NULL)
-		showbf_info.class = string_dup(NONE);
-	if (showbf_info.QOS == NULL)
-		showbf_info.QOS = string_dup(NONE);
-	if (showbf_info.featureString == NULL)
-		showbf_info.featureString = string_dup(NONE);
+	if (showbf_info->pName == NULL)
+		if ((showbf_info->pName = getenv(MSCHED_ENVPARVAR)) == NULL)
+			showbf_info->pName = string_dup(GLOBAL_MPARNAME);
+
+	if (showbf_info->class == NULL)
+		showbf_info->class = string_dup(NONE);
+	if (showbf_info->QOS == NULL)
+		showbf_info->QOS = string_dup(NONE);
+	if (showbf_info->featureString == NULL)
+		showbf_info->featureString = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(showbf_info.pName) + 1;
-	len += strlen(showbf_info.user) + 1;
-	len += strlen(showbf_info.account) + 1;
-	len += strlen(showbf_info.group) + 1;
-	len += strlen(showbf_info.class) + 1;
-	len += strlen(showbf_info.QOS) + 1;
-	len += strlen(showbf_info.featureString) + 1;
+	len += strlen(showbf_info->pName) + 1;
+	len += strlen(showbf_info->user) + 1;
+	len += strlen(showbf_info->account) + 1;
+	len += strlen(showbf_info->group) + 1;
+	len += strlen(showbf_info->class) + 1;
+	len += strlen(showbf_info->QOS) + 1;
+	len += strlen(showbf_info->featureString) + 1;
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 30)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(showbf_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
 	sprintf(buffer, "%s %s %s %s %ld %d %d %d %d %s %d %d %s %s %s",
-			showbf_info.user, showbf_info.group, showbf_info.account,
-			showbf_info.pName, showbf_info.duration, showbf_info.nodeCount,
-			showbf_info.procCount, showbf_info.dMemory, showbf_info.memory,
-			MComp[showbf_info.mIndex], showbf_info.mode, showbf_info.flags,
-			showbf_info.class, showbf_info.featureString, showbf_info.QOS);
+			showbf_info->user, showbf_info->group, showbf_info->account,
+			showbf_info->pName, showbf_info->duration, showbf_info->nodeCount,
+			showbf_info->procCount, showbf_info->dMemory, showbf_info->memory,
+			MComp[showbf_info->mIndex], showbf_info->mode, showbf_info->flags,
+			showbf_info->class, showbf_info->featureString, showbf_info->QOS);
 	return buffer;
 }
 
@@ -264,11 +270,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(showbf_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(showbf_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -386,6 +394,7 @@ int process_args(int argc, char **argv,
     /* no argument accepted */
     if(optind < argc){
         print_usage();
+        free_structs(showbf_info, client_info);
         exit(EXIT_FAILURE);
     }
 

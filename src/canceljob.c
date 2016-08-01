@@ -15,7 +15,7 @@ typedef struct _canceljob_info {
 static void free_structs(canceljob_info_t *, client_info_t *);
 static int process_args(int, char **, canceljob_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(canceljob_info_t );
+static char *buildMsgBuffer(canceljob_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -35,27 +35,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&canceljob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(canceljob_info);
+		msgBuffer = buildMsgBuffer(&canceljob_info, &client_info);
 		generateBuffer(request, msgBuffer, "canceljob");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&canceljob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&canceljob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&canceljob_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&canceljob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -69,27 +78,28 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(canceljob_info_t canceljob_info) {
+char *buildMsgBuffer(canceljob_info_t *canceljob_info,client_info_t *client_info) {
 	char *buffer;
 	int i = 0, len = 0;
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-    while ((canceljob_info.jobid)[i] != NULL) {
-        len += strlen((canceljob_info.jobid)[i++]) + 1;
+    while ((canceljob_info->jobid)[i] != NULL) {
+        len += strlen((canceljob_info->jobid)[i++]) + 1;
     }
 
 	i = 0;
 	if ((buffer = (char *) malloc(len + 2)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+        puts("ERROR: memory allocation failed");
+        free_structs(canceljob_info, client_info);
+        exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
 	buffer[0] = '\0';
-	while ((canceljob_info.jobid)[i] != NULL) {
-		strcat(buffer, (canceljob_info.jobid)[i++]);
+	while ((canceljob_info->jobid)[i] != NULL) {
+		strcat(buffer, (canceljob_info->jobid)[i++]);
 		strcat(buffer, " ");
 	}
 
@@ -132,11 +142,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(canceljob_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(canceljob_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -169,6 +181,7 @@ int process_args(int argc, char **argv,
 
     /* need at least one arguments */
     if(optind > argc - 1){
+    	free_structs(canceljob_info, client_info);
         print_usage();
         exit(EXIT_FAILURE);
     }
@@ -177,6 +190,7 @@ int process_args(int argc, char **argv,
     canceljob_info->jobid = (char **) malloc((argc - optind + 1) * sizeof(char *));
     if(!canceljob_info->jobid){
         puts("ERROR: memory allocation failed");
+        free_structs(canceljob_info, client_info);
         exit(EXIT_FAILURE);
     }
 
@@ -192,6 +206,11 @@ int process_args(int argc, char **argv,
 
 /* free memory */
 void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) {
+	int i = 0;
+
+	while ((canceljob_info->jobid)[i] != NULL)
+		free((canceljob_info->jobid)[i++]);
+
     free(canceljob_info->jobid);
     free(client_info->configfile);
     free(client_info->host);

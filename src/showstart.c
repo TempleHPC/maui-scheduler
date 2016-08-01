@@ -22,9 +22,11 @@ int main(int argc, char **argv) {
     client_info_t client_info;
 
 	char *response;
-	int sd, pc;
-	long bufSize, now, deadline, startTime, wCLimit;
+	int sd, pc = 0;
+	long bufSize, now = 0, deadline = 0, startTime = 0, wCLimit = 0;
 	char pName[MAXNAME], request[MAXBUFFER];
+
+	pName[0] = '\0';
 
     memset(&showstart_info, 0, sizeof(showstart_info));
     memset(&client_info, 0, sizeof(client_info));
@@ -34,25 +36,34 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&showstart_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		generateBuffer(request, showstart_info.jobid, "showstart");
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&showstart_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&showstart_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("Error: cannot allocate memory for message");
+			free_structs(&showstart_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&showstart_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* print result */
 		sscanf(strstr(response, "ARG=") + strlen("ARG="),
@@ -118,11 +129,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(showstart_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(showstart_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -156,6 +169,7 @@ int process_args(int argc, char **argv,
     /* only need one argument */
     if(optind != argc - 1){
         print_usage();
+        free_structs(showstart_info, client_info);
         exit(EXIT_FAILURE);
     }
 

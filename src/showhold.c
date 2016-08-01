@@ -15,9 +15,9 @@ int main(int argc, char **argv) {
 
     client_info_t client_info;
 
-	char *response, *ptr;
-	int sd, holds, index;
-	long bufSize;
+	char *response = NULL, *ptr = NULL;
+	int sd, holds = 0, index = 0;
+	long bufSize = 0;
 	char request[MAXBUFFER], name[MAXNAME];
 
 	const char *holdType[] = { "[NONE]", "User", "System", "Batch", "Defer", "All"};
@@ -29,25 +29,34 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		generateBuffer(request, "", "showhold");
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* print result */
 		ptr = strstr(response, "ARG=") + strlen("ARG=");
@@ -60,7 +69,7 @@ int main(int argc, char **argv) {
 
 	        fprintf(stdout, "%16s ", name);
 
-	        for (index = 0; holdType[index] != 0; index++) {
+	        for (index = 0; index < 6; index++) {
 	            if (holds & (1 << index))
 	                fprintf(stdout, "%10s ", holdType[index]);
 	        }
@@ -111,11 +120,13 @@ int process_args(int argc, char **argv, client_info_t *client_info)
 
           case 'h':
               print_usage();
+              free_structs(client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -149,6 +160,7 @@ int process_args(int argc, char **argv, client_info_t *client_info)
     /* no arguments accepted */
     if(optind != argc){
         print_usage();
+        free_structs(client_info);
         exit(EXIT_FAILURE);
     }
 

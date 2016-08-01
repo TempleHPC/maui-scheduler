@@ -27,7 +27,7 @@ typedef struct _schedctl_info {
 static void free_structs(schedctl_info_t *, client_info_t *);
 static int process_args(int, char **, schedctl_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(schedctl_info_t );
+static char *buildMsgBuffer(schedctl_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -50,27 +50,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&schedctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(schedctl_info);
+		msgBuffer = buildMsgBuffer(&schedctl_info, &client_info);
 		generateBuffer(request, msgBuffer, "schedctl");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&schedctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&schedctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&schedctl_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&schedctl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -84,26 +93,28 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(schedctl_info_t schedctl_info) {
+char *buildMsgBuffer(schedctl_info_t *schedctl_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
-	if (schedctl_info.mode == -1) {
+	if (schedctl_info->mode == -1) {
 		print_usage();
+		free_structs(schedctl_info, client_info);
 		exit(EXIT_FAILURE);
 	}
 
 	/* calculate the length of the whole buffer */
-	len += strlen(schedctl_info.argument) + 1;
+	len += strlen(schedctl_info->argument) + 1;
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 3)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(schedctl_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
-    sprintf(buffer, "%d %s", schedctl_info.mode, schedctl_info.argument);
+    sprintf(buffer, "%d %s", schedctl_info->mode, schedctl_info->argument);
 
 	return buffer;
 }
@@ -154,11 +165,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(schedctl_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(schedctl_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -234,6 +247,7 @@ int process_args(int argc, char **argv,
 	/* only accpet one argument */
 	if (optind < argc - 1) {
 		print_usage();
+		free_structs(schedctl_info, client_info);
 		exit(EXIT_FAILURE);
 	} else if (optind == argc - 1) {
 		/* copy and save argument from input */

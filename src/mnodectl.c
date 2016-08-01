@@ -7,24 +7,21 @@
 #include "msched-version.h"
 #include "maui_utils.h"
 
-#define VERBOSE 4
-#define AVP 6
-
 /** Struct for mnodectl options */
-typedef struct _checknode_info {
+typedef struct _mnodectl_info {
 	char *subcommand;		   /**< Subcommand */
 	char *argument;			   /**< Argument */
     char *nodeid;              /**< Node ID */
-} checknode_info_t;
+} mnodectl_info_t;
 
-static void free_structs(checknode_info_t *, client_info_t *);
-static int process_args(int, char **, checknode_info_t *, client_info_t *);
+static void free_structs(mnodectl_info_t *, client_info_t *);
+static int process_args(int, char **, mnodectl_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(checknode_info_t );
+static char *buildMsgBuffer(mnodectl_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
-    checknode_info_t checknode_info;
+    mnodectl_info_t mnodectl_info;
     client_info_t client_info;
 
 	char *response, *result, *ptr, *msgBuffer;
@@ -33,35 +30,44 @@ int main(int argc, char **argv) {
 	const char tmpLine[20] = "</SchedResponse>";
 	char request[MAXBUFFER];
 
-    memset(&checknode_info, 0, sizeof(checknode_info));
+    memset(&mnodectl_info, 0, sizeof(mnodectl_info));
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &checknode_info, &client_info)) {
+    if (process_args(argc, argv, &mnodectl_info, &client_info)) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&mnodectl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(checknode_info);
+		msgBuffer = buildMsgBuffer(&mnodectl_info, &client_info);
 		generateBuffer(request, msgBuffer, "mnodectl");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&mnodectl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&mnodectl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&mnodectl_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&mnodectl_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* get and print result */
 		result = strchr(response, '>');
@@ -74,31 +80,32 @@ int main(int argc, char **argv) {
 
     }
 
-    free_structs(&checknode_info, &client_info);
+    free_structs(&mnodectl_info, &client_info);
 
     exit(0);
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(checknode_info_t checknode_info) {
+char *buildMsgBuffer(mnodectl_info_t *mnodectl_info,client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space or a 0 */
-	len += strlen(checknode_info.nodeid) + 1;
-	len += strlen(checknode_info.subcommand) + 1;
-	len += strlen(checknode_info.argument) + 1;
+	len += strlen(mnodectl_info->nodeid) + 1;
+	len += strlen(mnodectl_info->subcommand) + 1;
+	len += strlen(mnodectl_info->argument) + 1;
 
 	if ((buffer = (char *) malloc(len)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(mnodectl_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
-	sprintf(buffer, "%s %s %s", checknode_info.subcommand,
-			checknode_info.argument, checknode_info.nodeid);
+	sprintf(buffer, "%s %s %s", mnodectl_info->subcommand,
+			mnodectl_info->argument, mnodectl_info->nodeid);
 
 	return buffer;
 }
@@ -110,7 +117,7 @@ char *buildMsgBuffer(checknode_info_t checknode_info) {
 */
 
 int process_args(int argc, char **argv,
-                 checknode_info_t *checknode_info,
+                 mnodectl_info_t *mnodectl_info,
                  client_info_t *client_info)
 {
     int c;
@@ -139,11 +146,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(mnodectl_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(mnodectl_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -177,22 +186,23 @@ int process_args(int argc, char **argv,
     /* need three arguments */
     if(optind != argc - 3){
         print_usage();
+        free_structs(mnodectl_info, client_info);
         exit(EXIT_FAILURE);
     }
 
     /* copy and save node id from input */
-    checknode_info->subcommand = string_dup(argv[optind++]);
-    checknode_info->argument = string_dup(argv[optind++]);
-    checknode_info->nodeid = string_dup(argv[optind++]);
+    mnodectl_info->subcommand = string_dup(argv[optind++]);
+    mnodectl_info->argument = string_dup(argv[optind++]);
+    mnodectl_info->nodeid = string_dup(argv[optind++]);
 
     return 1;
 }
 
 /* free memory */
-void free_structs(checknode_info_t *checknode_info, client_info_t *client_info) {
-    free(checknode_info->nodeid);
-    free(checknode_info->subcommand);
-    free(checknode_info->argument);
+void free_structs(mnodectl_info_t *mnodectl_info, client_info_t *client_info) {
+    free(mnodectl_info->nodeid);
+    free(mnodectl_info->subcommand);
+    free(mnodectl_info->argument);
     free(client_info->configfile);
     free(client_info->host);
 }

@@ -25,7 +25,7 @@ typedef struct _checkjob_info {
 static void free_structs(checkjob_info_t *, client_info_t *);
 static int process_args(int, char **, checkjob_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(checkjob_info_t );
+static char *buildMsgBuffer(checkjob_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -45,27 +45,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&checkjob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(checkjob_info);
+		msgBuffer = buildMsgBuffer(&checkjob_info, &client_info);
 		generateBuffer(request, msgBuffer, "checkjob");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&checkjob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&checkjob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&checkjob_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&checkjob_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -79,36 +88,38 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(checkjob_info_t checkjob_info) {
+char *buildMsgBuffer(checkjob_info_t *checkjob_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
-	if(checkjob_info.nodeid == NULL)
-		checkjob_info.nodeid = string_dup(NONE);
+	if(checkjob_info->nodeid == NULL)
+		checkjob_info->nodeid = string_dup(NONE);
 
-	if(checkjob_info.resid == NULL)
-		checkjob_info.resid = string_dup(NONE);
+	if(checkjob_info->resid == NULL)
+		checkjob_info->resid = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(checkjob_info.jobid) + 1;
-	len += strlen(checkjob_info.resid) + 1;
-	len += strlen(checkjob_info.nodeid) + 1;
+	len += strlen(checkjob_info->jobid) + 1;
+	len += strlen(checkjob_info->resid) + 1;
+	len += strlen(checkjob_info->nodeid) + 1;
 
-    if (checkjob_info.pType == 0)
-    	checkjob_info.pType = SOFT;
+    if (checkjob_info->pType == 0)
+    	checkjob_info->pType = SOFT;
 
     /* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 5)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
+        puts("ERROR: memory allocation failed");
+		free_structs(checkjob_info, client_info);
+		exit(EXIT_FAILURE);
 		return NULL;
 	}
 
 	/* build buffer */
-	sprintf(buffer, "%d %s %d %s %s", checkjob_info.pType,
-			checkjob_info.jobid, checkjob_info.flags, checkjob_info.resid,
-			checkjob_info.nodeid);
+	sprintf(buffer, "%d %s %d %s %s", checkjob_info->pType,
+			checkjob_info->jobid, checkjob_info->flags, checkjob_info->resid,
+			checkjob_info->nodeid);
 
 	return buffer;
 }
@@ -154,11 +165,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(checkjob_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(checkjob_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -188,6 +201,7 @@ int process_args(int argc, char **argv,
 
 				default:
 		            print_usage();
+		            free_structs(checkjob_info, client_info);
 		            exit(EXIT_FAILURE);
 					break;
 				}
@@ -197,7 +211,7 @@ int process_args(int argc, char **argv,
               if (strlen(optarg) >= (MAXLINE << 2)) {
 				fprintf(stderr, "ERROR: expression too long. (%d > %d)\n",
 						(int)strlen(optarg), (MAXLINE << 2));
-
+				free_structs(checkjob_info, client_info);
 				exit(EXIT_FAILURE);
               }
 
@@ -241,6 +255,7 @@ int process_args(int argc, char **argv,
 
     /* only need one argument */
     if(optind != argc - 1){
+    	free_structs(checkjob_info, client_info);
         print_usage();
         exit(EXIT_FAILURE);
     }

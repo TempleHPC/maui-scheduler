@@ -18,14 +18,14 @@ typedef struct _runjob_info {
 static void free_structs(runjob_info_t *, client_info_t *);
 static int process_args(int, char **, runjob_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(runjob_info_t );
+static char *buildMsgBuffer(runjob_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
     runjob_info_t runjob_info;
     client_info_t client_info;
 
-	char *response, *ptr, *msgBuffer;
+	char *response, *msgBuffer;
 	int sd;
 	long bufSize;
 	char request[MAXBUFFER];
@@ -36,20 +36,12 @@ int main(int argc, char **argv) {
     /* process all the options and arguments */
     if (process_args(argc, argv, &runjob_info, &client_info)) {
 
-    	if (runjob_info.pName == NULL) {
-    		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			runjob_info.pName = string_dup(ptr);
-    		} else {
-    			runjob_info.pName = string_dup(GLOBAL_MPARNAME);
-    		}
-    	}
-
 		get_connection_params(&client_info);
 
 		if (!connectToServer(&sd, client_info.port, client_info.host))
 			exit(EXIT_FAILURE);
 
-		msgBuffer = buildMsgBuffer(runjob_info);
+		msgBuffer = buildMsgBuffer(&runjob_info, &client_info);
 		generateBuffer(request, msgBuffer, "runjob");
 		free(msgBuffer);
 
@@ -80,32 +72,38 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(runjob_info_t runjob_info) {
+char *buildMsgBuffer(runjob_info_t *runjob_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
-	if(runjob_info.nodeid == NULL)
-		runjob_info.nodeid = string_dup(NONE);
 
-	if(runjob_info.mode == NULL)
-		runjob_info.mode = string_dup("NONE");
+	if (runjob_info->pName == NULL)
+		if ((runjob_info->pName = getenv(MSCHED_ENVPARVAR)) == NULL)
+			runjob_info->pName = string_dup(GLOBAL_MPARNAME);
+
+	if(runjob_info->nodeid == NULL)
+		runjob_info->nodeid = string_dup(NONE);
+
+	if(runjob_info->mode == NULL)
+		runjob_info->mode = string_dup("NONE");
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space or a 0*/
-	len += strlen(runjob_info.jobid) + 1;
-	len += strlen(runjob_info.pName) + 1;
-	len += strlen(runjob_info.nodeid) + 1;
-	len += strlen(runjob_info.mode) + 1;
+	len += strlen(runjob_info->jobid) + 1;
+	len += strlen(runjob_info->pName) + 1;
+	len += strlen(runjob_info->nodeid) + 1;
+	len += strlen(runjob_info->mode) + 1;
 
 	if ((buffer = (char *) malloc(len)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(runjob_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
-	sprintf(buffer, "%s %s %s %s", runjob_info.jobid, runjob_info.mode,
-			runjob_info.pName, runjob_info.nodeid);
+	sprintf(buffer, "%s %s %s %s", runjob_info->jobid, runjob_info->mode,
+			runjob_info->pName, runjob_info->nodeid);
 
 	return buffer;
 }
@@ -152,11 +150,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(runjob_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(runjob_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -173,6 +173,7 @@ int process_args(int argc, char **argv,
 				fprintf(stderr, "ERROR: expression too long. (%d > %d)\n",
 						(int)strlen(optarg), (MAXLINE << 2));
 
+				free_structs(runjob_info, client_info);
 				exit(EXIT_FAILURE);
               }
 
@@ -221,6 +222,7 @@ int process_args(int argc, char **argv,
     /* only need one argument */
     if(optind != argc - 1){
         print_usage();
+        free_structs(runjob_info, client_info);
         exit(EXIT_FAILURE);
     }
 

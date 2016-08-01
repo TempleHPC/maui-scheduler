@@ -41,14 +41,14 @@ typedef struct _diagnose_info {
 static void free_structs(diagnose_info_t *, client_info_t *);
 static int process_args(int, char **, diagnose_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(diagnose_info_t );
+static char *buildMsgBuffer(diagnose_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
     diagnose_info_t diagnose_info;
     client_info_t client_info;
 
-	char *response, *ptr, *msgBuffer;
+	char *response, *msgBuffer;
 	int sd;
 	long bufSize;
 	char request[MAXBUFFER];
@@ -57,39 +57,40 @@ int main(int argc, char **argv) {
     memset(&client_info, 0, sizeof(client_info));
 
     /* process all the options and arguments */
-    if (process_args(argc, argv, &diagnose_info, &client_info)) {
-
-    	if (diagnose_info.pName == NULL) {
-    		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			diagnose_info.pName = string_dup(ptr);
-    		} else {
-    			diagnose_info.pName = string_dup(GLOBAL_MPARNAME);
-    		}
-    	}
+	if (process_args(argc, argv, &diagnose_info, &client_info)) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+		    free_structs(&diagnose_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(diagnose_info);
+		msgBuffer = buildMsgBuffer(&diagnose_info, &client_info);
 		generateBuffer(request, msgBuffer, "diagnose");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&diagnose_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&diagnose_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&diagnose_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&diagnose_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -103,39 +104,44 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(diagnose_info_t diagnose_info) {
+char *buildMsgBuffer(diagnose_info_t *diagnose_info, client_info_t * client_info) {
 	char *buffer;
 	int len = 0;
 
-	if(diagnose_info.argument == NULL)
-		diagnose_info.argument = string_dup(NONE);
+    if (diagnose_info->mode == 0) {
+        print_usage();
+        free_structs(diagnose_info, client_info);
+        exit(EXIT_FAILURE);
+    }
+
+	if ((diagnose_info->pName = getenv(MSCHED_ENVPARVAR)) == NULL)
+		diagnose_info->pName = string_dup(GLOBAL_MPARNAME);
+
+	if(diagnose_info->argument == NULL)
+		diagnose_info->argument = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(diagnose_info.pName) + 1;
-	len += strlen(diagnose_info.argument) + 1;
+	len += strlen(diagnose_info->pName) + 1;
+	len += strlen(diagnose_info->argument) + 1;
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 6)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(diagnose_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
-    if (diagnose_info.mode == 0) {
-        print_usage();
-        exit(EXIT_FAILURE);
-    }
+	if (diagnose_info->mode == QUEUE) {
+		if (diagnose_info->pType == 0)
+			diagnose_info->pType = SOFT;
 
-	if (diagnose_info.mode == QUEUE) {
-		if (diagnose_info.pType == 0)
-			diagnose_info.pType = SOFT;
-
-		sprintf(buffer, "%d %d %s", diagnose_info.mode, diagnose_info.pType,
-				diagnose_info.pName);
+		sprintf(buffer, "%d %d %s", diagnose_info->mode, diagnose_info->pType,
+				diagnose_info->pName);
 	} else {
-		sprintf(buffer, "%d %d %s %s", diagnose_info.mode, diagnose_info.flags,
-				diagnose_info.pName, diagnose_info.argument);
+		sprintf(buffer, "%d %d %s %s", diagnose_info->mode, diagnose_info->flags,
+				diagnose_info->pName, diagnose_info->argument);
 	}
 
 	return buffer;
@@ -157,7 +163,7 @@ int process_args(int argc, char **argv,
 
             {"help",        no_argument,       0, 'h'},
             {"version",     no_argument,       0, 'V'},
-            {"account",     no_argument,       0, 'A'},
+            {"account",     no_argument,       0, 'a'},
             {"class",       no_argument,       0, 'c'},
             {"fairshare",   no_argument,       0, 'f'},
             {"group",       no_argument,       0, 'g'},
@@ -182,7 +188,7 @@ int process_args(int argc, char **argv,
 
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "hVAcfgjmnpl:qQrRStuvC:H:P:",
+        c = getopt_long (argc, argv, "hVacfgjmnpl:qQrRStuvC:H:P:",
                          options, &option_index);
 
         /* Detect the end of the options. */
@@ -194,15 +200,17 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(diagnose_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(diagnose_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
-          case 'A':
+          case 'a':
         	  diagnose_info->mode = ACCT;
               break;
 
@@ -244,6 +252,7 @@ int process_args(int argc, char **argv,
 
 				default:
 		            print_usage();
+		            free_structs(diagnose_info, client_info);
 		            exit(EXIT_FAILURE);
 					break;
 				}
@@ -344,7 +353,7 @@ void print_usage()
             "  -h, --help                     display this help\n"
             "  -V, --version                  display client version\n"
     		"\n"
-    		"  -A, --account [ACCOUNTID]      provide detailed information about the accounts(aka\n"
+    		"  -a, --account [ACCOUNTID]      provide detailed information about the accounts(aka\n"
     		"                                   projects) or a specified account Maui is currently\n"
     		"                                   tracking\n"
     		"  -c, --class [CLASSID]          provide detailed information about the classes or a\n"

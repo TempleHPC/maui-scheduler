@@ -16,7 +16,7 @@ typedef struct _setqos_info {
 static void free_structs(setqos_info_t *, client_info_t *);
 static int process_args(int, char **, setqos_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(setqos_info_t );
+static char *buildMsgBuffer(setqos_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -37,27 +37,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&setqos_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(setqos_info);
+		msgBuffer = buildMsgBuffer(&setqos_info, &client_info);
 		generateBuffer(request, msgBuffer, "mjobctl");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&setqos_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&setqos_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&setqos_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&setqos_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		/* get and print result */
 		result = strchr(response, '>');
@@ -76,24 +85,25 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(setqos_info_t setqos_info) {
+char *buildMsgBuffer(setqos_info_t *setqos_info, client_info_t *client_info) {
 	char *buffer;
 	int len = 0;
 
 	/* calculate the length of the whole buffer */
-	len += strlen(setqos_info.value);
-    len += strlen(setqos_info.jobid);
+	len += strlen(setqos_info->value);
+    len += strlen(setqos_info->jobid);
 
 	if ((buffer = (char *) malloc(len + 89)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(setqos_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
     sprintf(buffer,
             "<schedrequest action=\"modify\" attr=\"QOS\" value=\"%s\" "
             "flag=\"set\" job=\"%s\"></schedrequest>\n",
-			setqos_info.value, setqos_info.jobid);
+			setqos_info->value, setqos_info->jobid);
 
 	return buffer;
 }
@@ -134,11 +144,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(setqos_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(setqos_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -172,6 +184,7 @@ int process_args(int argc, char **argv,
     /* only accept two arguments */
     if(optind != argc - 2){
         print_usage();
+        free_structs(setqos_info, client_info);
         exit(EXIT_FAILURE);
     }
 

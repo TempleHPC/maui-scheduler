@@ -37,7 +37,7 @@ typedef struct _setres_info {
 static void free_structs(setres_info_t *, client_info_t *);
 static int process_args(int, char **, setres_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(setres_info_t );
+static char *buildMsgBuffer(setres_info_t *, client_info_t *);
 static long timeFromString(char *);
 static int stringToE(char *, long *);
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     setres_info_t setres_info;
     client_info_t client_info;
 
-	char *response, *msgBuffer, *ptr;
+	char *response, *msgBuffer;
 	int sd;
 	long bufSize;
 	char request[MAXBUFFER];
@@ -59,37 +59,38 @@ int main(int argc, char **argv) {
     /* process all the options and arguments */
     if (process_args(argc, argv, &setres_info, &client_info)) {
 
-    	if (setres_info.pName == NULL) {
-    		if ((ptr = getenv(MSCHED_ENVPARVAR)) != NULL) {
-    			setres_info.pName = string_dup(ptr);
-    		} else {
-    			setres_info.pName = string_dup(GLOBAL_MPARNAME);
-    		}
-    	}
-
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&setres_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(setres_info);
+		msgBuffer = buildMsgBuffer(&setres_info, &client_info);
 		generateBuffer(request, msgBuffer, "setres");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&setres_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&setres_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			puts("ERROR: cannot allocate memory for message");
+			free_structs(&setres_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&setres_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 	    fprintf(stdout, "\nreservation created\n");
 
@@ -105,7 +106,7 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(setres_info_t setres_info) {
+char *buildMsgBuffer(setres_info_t *setres_info, client_info_t *client_info) {
 
 	char *buffer;
 	int len = 0;
@@ -113,82 +114,88 @@ char *buildMsgBuffer(setres_info_t setres_info) {
     time_t tmpT;
 
     time(&tmpT);
-    setres_info.clientTime = (long)tmpT;
+    setres_info->clientTime = (long)tmpT;
 
-	if (setres_info.beginTime == 0)
-		setres_info.beginTime = setres_info.clientTime;
 
-	if (setres_info.duration != 0)
-		setres_info.endTime = setres_info.beginTime + setres_info.duration;
-	else if (setres_info.endTime == MAX_MTIME)
-		setres_info.endTime = setres_info.beginTime + 100000000;
+	if (setres_info->pName == NULL)
+		if ((setres_info->pName = getenv(MSCHED_ENVPARVAR)) == NULL)
+			setres_info->pName = string_dup(GLOBAL_MPARNAME);
 
-	if (strlen(setres_info.nodeid) >= (MAXLINE << 2)) {
+	if (setres_info->beginTime == 0)
+		setres_info->beginTime = setres_info->clientTime;
+
+	if (setres_info->duration != 0)
+		setres_info->endTime = setres_info->beginTime + setres_info->duration;
+	else if (setres_info->endTime == MAX_MTIME)
+		setres_info->endTime = setres_info->beginTime + 100000000;
+
+	if (strlen(setres_info->nodeid) >= (MAXLINE << 2)) {
 		fprintf(stderr, "ERROR:    regular expression too long. (%d > %d)\n",
-				(int) strlen(setres_info.nodeid), (MAXLINE << 2));
+				(int) strlen(setres_info->nodeid), (MAXLINE << 2));
 
 		exit(1);
 	}
 
-	if (setres_info.userList == NULL)
-		setres_info.userList = string_dup(NONE);
-	if (setres_info.accountList == NULL)
-		setres_info.accountList = string_dup(NONE);
-	if (setres_info.groupList == NULL)
-		setres_info.groupList = string_dup(NONE);
-	if (setres_info.classList == NULL)
-		setres_info.classList = string_dup(NONE);
-	if (setres_info.QOSList == NULL)
-		setres_info.QOSList = string_dup(NONE);
-	if (setres_info.rName == NULL)
-		setres_info.rName = string_dup(NONE);
-	if (setres_info.resourceList == NULL)
-		setres_info.resourceList = string_dup(NONE);
-	if (setres_info.chargeAccount == NULL)
-		setres_info.chargeAccount = string_dup(NONE);
-	if (setres_info.featureString == NULL)
-		setres_info.featureString = string_dup(NONE);
-	if (setres_info.nodeSetString == NULL)
-		setres_info.nodeSetString = string_dup(NONE);
-	if (setres_info.flags == NULL)
-		setres_info.flags = string_dup(NONE);
-	if (setres_info.jobFeatureString == NULL)
-		setres_info.jobFeatureString = string_dup(NONE);
+	if (setres_info->userList == NULL)
+		setres_info->userList = string_dup(NONE);
+	if (setres_info->accountList == NULL)
+		setres_info->accountList = string_dup(NONE);
+	if (setres_info->groupList == NULL)
+		setres_info->groupList = string_dup(NONE);
+	if (setres_info->classList == NULL)
+		setres_info->classList = string_dup(NONE);
+	if (setres_info->QOSList == NULL)
+		setres_info->QOSList = string_dup(NONE);
+	if (setres_info->rName == NULL)
+		setres_info->rName = string_dup(NONE);
+	if (setres_info->resourceList == NULL)
+		setres_info->resourceList = string_dup(NONE);
+	if (setres_info->chargeAccount == NULL)
+		setres_info->chargeAccount = string_dup(NONE);
+	if (setres_info->featureString == NULL)
+		setres_info->featureString = string_dup(NONE);
+	if (setres_info->nodeSetString == NULL)
+		setres_info->nodeSetString = string_dup(NONE);
+	if (setres_info->flags == NULL)
+		setres_info->flags = string_dup(NONE);
+	if (setres_info->jobFeatureString == NULL)
+		setres_info->jobFeatureString = string_dup(NONE);
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(setres_info.pName) + 1;
-	len += strlen(setres_info.userList) + 1;
-	len += strlen(setres_info.accountList) + 1;
-	len += strlen(setres_info.groupList) + 1;
-	len += strlen(setres_info.classList) + 1;
-	len += strlen(setres_info.QOSList) + 1;
-	len += strlen(setres_info.rName) + 1;
-	len += strlen(setres_info.resourceList) + 1;
-	len += strlen(setres_info.chargeAccount) + 1;
-	len += strlen(setres_info.featureString) + 1;
-	len += strlen(setres_info.nodeSetString) + 1;
-	len += strlen(setres_info.flags) + 1;
-	len += strlen(setres_info.jobFeatureString) + 1;
-	len += strlen(setres_info.nodeid) + 1;
+	len += strlen(setres_info->pName) + 1;
+	len += strlen(setres_info->userList) + 1;
+	len += strlen(setres_info->accountList) + 1;
+	len += strlen(setres_info->groupList) + 1;
+	len += strlen(setres_info->classList) + 1;
+	len += strlen(setres_info->QOSList) + 1;
+	len += strlen(setres_info->rName) + 1;
+	len += strlen(setres_info->resourceList) + 1;
+	len += strlen(setres_info->chargeAccount) + 1;
+	len += strlen(setres_info->featureString) + 1;
+	len += strlen(setres_info->nodeSetString) + 1;
+	len += strlen(setres_info->flags) + 1;
+	len += strlen(setres_info->jobFeatureString) + 1;
+	len += strlen(setres_info->nodeid) + 1;
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 35)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+		puts("ERROR: memory allocation failed");
+		free_structs(setres_info, client_info);
+		exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
 	sprintf(buffer, "%ld %ld %ld %s %s %s %s %s %s %s %s %s %s %s %s %s %d %s",
-			setres_info.clientTime, setres_info.beginTime, setres_info.endTime,
-			setres_info.pName, setres_info.userList, setres_info.groupList,
-			setres_info.accountList, setres_info.classList, setres_info.QOSList,
-			setres_info.rName, setres_info.resourceList,
-			setres_info.chargeAccount, setres_info.nodeid,
-			setres_info.featureString, setres_info.nodeSetString,
-			setres_info.flags, setres_info.taskCount,
-			setres_info.jobFeatureString);
+			setres_info->clientTime, setres_info->beginTime, setres_info->endTime,
+			setres_info->pName, setres_info->userList, setres_info->groupList,
+			setres_info->accountList, setres_info->classList, setres_info->QOSList,
+			setres_info->rName, setres_info->resourceList,
+			setres_info->chargeAccount, setres_info->nodeid,
+			setres_info->featureString, setres_info->nodeSetString,
+			setres_info->flags, setres_info->taskCount,
+			setres_info->jobFeatureString);
 	return buffer;
 }
 
@@ -246,11 +253,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(setres_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(setres_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -277,6 +286,7 @@ int process_args(int argc, char **argv,
 				fprintf(stderr, "ERROR:    invalid endtime specified, '%s'\n",
 						optarg);
 
+				free_structs(setres_info, client_info);
 				exit(EXIT_FAILURE);
               }
               break;
@@ -320,6 +330,7 @@ int process_args(int argc, char **argv,
 				fprintf(stderr, "ERROR:    invalid starttime specified, '%s'\n",
 						optarg);
 
+				free_structs(setres_info, client_info);
 				exit(EXIT_FAILURE);
               }
               break;
@@ -366,6 +377,7 @@ int process_args(int argc, char **argv,
     /* only need one argument */
     if(optind != argc - 1){
         print_usage();
+        free_structs(setres_info, client_info);
         exit(EXIT_FAILURE);
     }
 

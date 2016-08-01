@@ -16,7 +16,7 @@ typedef struct _changeparam_info {
 static void free_structs(changeparam_info_t *, client_info_t *);
 static int process_args(int, char **, changeparam_info_t *, client_info_t *);
 static void print_usage();
-static char *buildMsgBuffer(changeparam_info_t );
+static char *buildMsgBuffer(changeparam_info_t *, client_info_t *);
 
 int main(int argc, char **argv) {
 
@@ -36,27 +36,36 @@ int main(int argc, char **argv) {
 
 		get_connection_params(&client_info);
 
-		if (!connectToServer(&sd, client_info.port, client_info.host))
+		if (!connectToServer(&sd, client_info.port, client_info.host)){
+			free_structs(&changeparam_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		msgBuffer = buildMsgBuffer(changeparam_info);
+		msgBuffer = buildMsgBuffer(&changeparam_info, &client_info);
 		generateBuffer(request, msgBuffer, "changeparam");
 		free(msgBuffer);
 
-		if (!sendPacket(sd, request))
+		if (!sendPacket(sd, request)){
+			free_structs(&changeparam_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
-		if ((bufSize = getMessageSize(sd)) == 0)
+		if ((bufSize = getMessageSize(sd)) == 0){
+			free_structs(&changeparam_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
+			free_structs(&changeparam_info, &client_info);
 			puts("ERROR: cannot allocate memory for message");
 			exit(EXIT_FAILURE);
 		}
 
 		/* receive message from server */
-		if (!recvPacket(sd, &response, bufSize))
+		if (!recvPacket(sd, &response, bufSize)){
+			free_structs(&changeparam_info, &client_info);
 			exit(EXIT_FAILURE);
+		}
 
 		printf("\n%s\n", strstr(response, "ARG=") + strlen("ARG="));
 
@@ -70,31 +79,32 @@ int main(int argc, char **argv) {
 }
 
 /* combine and save information into a buffer */
-char *buildMsgBuffer(changeparam_info_t changeparam_info) {
+char *buildMsgBuffer(changeparam_info_t *changeparam_info, client_info_t *client_info) {
 	char *buffer;
 	int i = 0, len = 0;
 
 	/* calculate the length of the whole buffer */
 
 	/* plus one for a white space */
-	len += strlen(changeparam_info.attr) + 1;
-    while ((changeparam_info.value)[i] != NULL) {
-        len += strlen((changeparam_info.value)[i++]) + 1;
+	len += strlen(changeparam_info->attr) + 1;
+    while ((changeparam_info->value)[i] != NULL) {
+        len += strlen((changeparam_info->value)[i++]) + 1;
     }
 
 	i = 0;
 
 	/* plus two for a white space and a 0 */
 	if ((buffer = (char *) malloc(len + 2)) == NULL) {
-		puts("ERROR: cannot allocate memory for buffer");
-		return NULL;
+        puts("ERROR: memory allocation failed");
+        free_structs(changeparam_info, client_info);
+        exit(EXIT_FAILURE);
 	}
 
 	/* build buffer */
-	strcpy(buffer, changeparam_info.attr);
+	strcpy(buffer, changeparam_info->attr);
 	strcat(buffer, " ");
-	while ((changeparam_info.value)[i] != NULL) {
-		strcat(buffer, (changeparam_info.value)[i++]);
+	while ((changeparam_info->value)[i] != NULL) {
+		strcat(buffer, (changeparam_info->value)[i++]);
 		strcat(buffer, " ");
 	}
 
@@ -137,11 +147,13 @@ int process_args(int argc, char **argv,
 
           case 'h':
               print_usage();
+              free_structs(changeparam_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
           case 'V':
               printf("Maui version %s\n", MSCHED_VERSION);
+              free_structs(changeparam_info, client_info);
               exit(EXIT_SUCCESS);
               break;
 
@@ -175,6 +187,7 @@ int process_args(int argc, char **argv,
     /* need at least two arguments */
     if(optind > argc - 2){
         print_usage();
+        free_structs(changeparam_info, client_info);
         exit(EXIT_FAILURE);
     }
 
@@ -182,6 +195,7 @@ int process_args(int argc, char **argv,
     changeparam_info->value = (char **) malloc((argc - optind + 1) * sizeof(char *));
     if(!changeparam_info->value){
         puts("ERROR: memory allocation failed");
+        free_structs(changeparam_info, client_info);
         exit(EXIT_FAILURE);
     }
 
@@ -200,6 +214,12 @@ int process_args(int argc, char **argv,
 
 /* free memory */
 void free_structs(changeparam_info_t *changeparam_info, client_info_t *client_info) {
+	int i = 0;
+
+    while ((changeparam_info->value)[i] != NULL) {
+        free((changeparam_info->value)[i++]);
+    }
+
     free(changeparam_info->attr);
     free(changeparam_info->value);
     free(client_info->configfile);
