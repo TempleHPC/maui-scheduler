@@ -270,7 +270,7 @@ int main(int argc, char **argv) {
 		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			free_structs(&showstats_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
@@ -867,8 +867,12 @@ int showCStats(
 
 	while (MXMLFromString(&E, tail, &tail, NULL) != FAILURE) {
 
-		if (OCount == 0)
-			tmpCred = (cred_t *) calloc(MAX_MGROUP, sizeof(cred_t));
+		if (OCount == 0){
+			if((tmpCred = (cred_t *) calloc(MAX_MGROUP, sizeof(cred_t))) == NULL){
+		        printError(MEMALLO);
+		        return FAILURE;
+			}
+		}
 
 		O = &tmpCred[OCount + 1];
 
@@ -1989,7 +1993,7 @@ int MXMLAddE(
 
         if (E->C == NULL) {
             /* cannot alloc memory */
-
+            printError(MEMALLO);
             return (FAILURE);
         } /* END if (E->C == NULL) */
     }     /* END if (E->CCount >= E->CSize) */
@@ -2070,6 +2074,7 @@ int MXMLSetAttr(
         E->AVal = (char **)calloc(1, sizeof(char *) * MMAX_XMLATTR);
 
         if ((E->AName == NULL) || (E->AVal == NULL)) {
+            printError(MEMALLO);
             return (FAILURE);
         }
 
@@ -2238,6 +2243,7 @@ int MSecDecompress(
     } else if (DDstBuf != NULL) {
         if ((OutBuf == NULL) &&
             ((OutBuf = (unsigned char *)calloc(MAXBUFFER, 1)) == NULL)) {
+            printError(MEMALLO);
             return (FAILURE);
         } else {
             OutBufSize = MAXBUFFER;
@@ -2257,6 +2263,7 @@ int MSecDecompress(
 
     if (tmpBuf == NULL) {
         if ((tmpBuf = (unsigned char *)calloc(NewLength, 1)) == NULL) {
+            printError(MEMALLO);
             return (FAILURE);
         }
     } else {
@@ -2493,6 +2500,7 @@ int MXMLCreateE(
     }
 
     if ((*E = (mxml_t *)calloc(1, sizeof(mxml_t))) == NULL) {
+        printError(MEMALLO);
         return (FAILURE);
     }
 
@@ -2531,7 +2539,7 @@ char *buildMsgBuffer(showstats_info_t *showstats_info, client_info_t *client_inf
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 8)) == NULL) {
-		puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
 		free_structs(showstats_info, client_info);
 		exit(EXIT_FAILURE);
 	}

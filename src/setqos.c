@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			free_structs(&setqos_info, &client_info);
 			exit(EXIT_FAILURE);
 		}
@@ -94,7 +94,7 @@ char *buildMsgBuffer(setqos_info_t *setqos_info, client_info_t *client_info) {
     len += strlen(setqos_info->jobid);
 
 	if ((buffer = (char *) malloc(len + 89)) == NULL) {
-		puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
 		free_structs(setqos_info, client_info);
 		exit(EXIT_FAILURE);
 	}

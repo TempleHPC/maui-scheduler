@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			free_structs(&changeparam_info, &client_info);
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			exit(EXIT_FAILURE);
 		}
 
@@ -95,7 +95,7 @@ char *buildMsgBuffer(changeparam_info_t *changeparam_info, client_info_t *client
 
 	/* plus two for a white space and a 0 */
 	if ((buffer = (char *) malloc(len + 2)) == NULL) {
-        puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
         free_structs(changeparam_info, client_info);
         exit(EXIT_FAILURE);
 	}
@@ -194,7 +194,7 @@ int process_args(int argc, char **argv,
     /* allocate memory to save the string array from input*/
     changeparam_info->value = (char **) malloc((argc - optind + 1) * sizeof(char *));
     if(!changeparam_info->value){
-        puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
         free_structs(changeparam_info, client_info);
         exit(EXIT_FAILURE);
     }

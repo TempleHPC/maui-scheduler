@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			free_structs(&canceljob_info, &client_info);
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			exit(EXIT_FAILURE);
 		}
 
@@ -91,7 +91,7 @@ char *buildMsgBuffer(canceljob_info_t *canceljob_info,client_info_t *client_info
 
 	i = 0;
 	if ((buffer = (char *) malloc(len + 2)) == NULL) {
-        puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
         free_structs(canceljob_info, client_info);
         exit(EXIT_FAILURE);
 	}
@@ -189,7 +189,7 @@ int process_args(int argc, char **argv,
     /* allocate memory to save the string array from input*/
     canceljob_info->jobid = (char **) malloc((argc - optind + 1) * sizeof(char *));
     if(!canceljob_info->jobid){
-        puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
         free_structs(canceljob_info, client_info);
         exit(EXIT_FAILURE);
     }

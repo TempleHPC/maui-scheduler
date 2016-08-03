@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			free_structs(&sethold_info, &client_info);
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			exit(EXIT_FAILURE);
 		}
 
@@ -97,7 +97,7 @@ char *buildMsgBuffer(sethold_info_t *sethold_info, client_info_t *client_info) {
     len += strlen(sethold_info->type);
 
 	if ((buffer = (char *) malloc(len + 92)) == NULL) {
-		puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
 		free_structs(sethold_info, client_info);
 		exit(EXIT_FAILURE);
 	}

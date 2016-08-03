@@ -21,7 +21,10 @@ char *string_dup(const char *input){
     int len;
 
     len = strlen(input) + 1;
-    output = (char *) malloc(len);
+    if((output = (char *) malloc(len)) == NULL){
+        printError(MEMALLO);
+        return NULL;
+    }
     if (output) strcpy(output,input);
     return output;
 }
@@ -58,11 +61,17 @@ int string2int(const char *input){
 /** Print common help message for flags related to client/server
  * communication between the command line tools and the maui server. */
 
-void print_client_usage()
-{
+void print_client_usage(){
     puts("  -C, --configfile=FILENAME      set configfile\n"
          "  -H, --host=SERVERHOSTNAME      set serverhost\n"
          "  -P, --port=SERVERPORT          set serverport\n");
+}
+
+/** Print out the error message. */
+
+void printError(int flag){
+	if(flag == MEMALLO)
+		puts("Error: memory allocation failed");
 }
 
 /** Generate buffer to be sent to the server
@@ -522,7 +531,12 @@ char *getConfigVal(client_info_t *client_info, char *attr){
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
-    configBuffer = (char *)malloc(fsize + 1);
+
+    if((configBuffer = (char *)malloc(fsize + 1)) == NULL){
+    	printError(MEMALLO);
+    	return NULL;
+    }
+
     fread(configBuffer, fsize, 1, f);
     /* locate and get attribute value */
     configBuffer[fsize] = '\0';
@@ -536,7 +550,10 @@ char *getConfigVal(client_info_t *client_info, char *attr){
 	pch = strtok(ptr, " \n");
 	pch = strtok(NULL, " \n");
 
-    val = (char *)malloc(strlen(pch) + 1);
+    if((val = (char *)malloc(strlen(pch) + 1)) == NULL){
+    	printError(MEMALLO);
+    	return NULL;
+    }
     strcpy(val,pch);
 
 	free(configBuffer);

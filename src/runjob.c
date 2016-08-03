@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			exit(EXIT_FAILURE);
 		}
 
@@ -96,7 +96,7 @@ char *buildMsgBuffer(runjob_info_t *runjob_info, client_info_t *client_info) {
 	len += strlen(runjob_info->mode) + 1;
 
 	if ((buffer = (char *) malloc(len)) == NULL) {
-		puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
 		free_structs(runjob_info, client_info);
 		exit(EXIT_FAILURE);
 	}

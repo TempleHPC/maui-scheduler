@@ -42,6 +42,8 @@
 #define NONE "[NONE]"
 #define MSCHED_SNAME "maui"
 
+#define MEMALLO 1
+
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
@@ -101,5 +103,8 @@ extern char *getDateString(time_t *);
 
 /* convert time number to string with format: [DD:]HH:MM:SS */
 extern char *timeToString(long );
+
+/* print out the error message */
+extern void printError(int);
 
 #endif

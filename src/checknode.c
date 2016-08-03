@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
 			free_structs(&checknode_info, &client_info);
-			puts("ERROR: cannot allocate memory for message");
+	        printError(MEMALLO);
 			exit(EXIT_FAILURE);
 		}
 
@@ -93,7 +93,7 @@ char *buildMsgBuffer(checknode_info_t *checknode_info,client_info_t *client_info
 
 	/* reserve extra space for numbers */
 	if ((buffer = (char *) malloc(len + 3)) == NULL) {
-		puts("ERROR: memory allocation failed");
+        printError(MEMALLO);
 		free_structs(checknode_info, client_info);
 		exit(EXIT_FAILURE);
 	}

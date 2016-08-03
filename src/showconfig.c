@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 		}
 
 		if ((response = (char *) calloc(bufSize + 1, 1)) == NULL) {
-			puts("Error: cannot allocate memory for message");
+	        printError(MEMALLO);
 			free_structs(&client_info);
 			exit(EXIT_FAILURE);
 		}
