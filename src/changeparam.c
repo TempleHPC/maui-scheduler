@@ -216,9 +216,9 @@ int process_args(int argc, char **argv,
 void free_structs(changeparam_info_t *changeparam_info, client_info_t *client_info) {
 	int i = 0;
 
-    while ((changeparam_info->value)[i] != NULL) {
-        free((changeparam_info->value)[i++]);
-    }
+	if(changeparam_info->value != NULL)
+		while ((changeparam_info->value)[i] != NULL)
+			free((changeparam_info->value)[i++]);
 
     free(changeparam_info->attr);
     free(changeparam_info->value);

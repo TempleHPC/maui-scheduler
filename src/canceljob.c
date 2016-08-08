@@ -207,9 +207,9 @@ int process_args(int argc, char **argv,
 /* free memory */
 void free_structs(canceljob_info_t *canceljob_info, client_info_t *client_info) {
 	int i = 0;
-
-	while ((canceljob_info->jobid)[i] != NULL)
-		free((canceljob_info->jobid)[i++]);
+	if(canceljob_info->jobid != NULL)
+		while ((canceljob_info->jobid)[i] != NULL)
+			free((canceljob_info->jobid)[i++]);
 
     free(canceljob_info->jobid);
     free(client_info->configfile);
