@@ -1,6 +1,6 @@
 Name:           maui-scheduler
 Version:        3.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Maui Cluster Scheduler for Torque
 
 Group:          System Environment/Daemons

@@ -70,7 +70,7 @@
 #define MAX_MNODE_PER_FRAG 1024
 
 #ifndef MAX_MTASK
-#define MAX_MTASK 4096
+#define MAX_MTASK 8192
 #endif /* MAX_MTASK */
 
 #define MAX_MTASK_PER_FRAG MAX_MTASK
