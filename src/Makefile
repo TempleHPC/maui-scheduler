@@ -18,7 +18,7 @@ LIBS     =-l$(SCHEDLIB) $(REGEXLIB) $(SECLIB) -lm
 
 LP   =-L$(LIB) $(SCHEDLP) $(REGEXLP) $(PBSLDFLAGS)
 IP   =$(SCHEDIP) $(REGEXIP) $(PBSCFLAGS)
-DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF)
+DEFS =-D$(OPSYS) $(PBSDEF) $(OSDEF) $(REGEXDEF) $(SECDEF) $(DAEMONDEF) $(CFGDEF)
 
 MCLIENTS =canceljob changeparam checkjob checknode diagnose releasehold \
           releaseres resetstats runjob schedctl sethold setqos setres setspri \

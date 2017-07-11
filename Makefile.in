@@ -29,7 +29,7 @@ export OSLDFLAGS=@LDFLAGS@
 # ============================
 
 all: config.status
-	${MAKE} -C src all
+	${MAKE} -C src all CFGDEF="@DEFS@"
 	${MAKE} -C src setup   
 
 dep:
