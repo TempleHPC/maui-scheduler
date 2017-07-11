@@ -49,6 +49,7 @@ extern const char *MNodeState[];
 
 #ifdef __MPBS
 
+#include <stdbool.h>
 #include <pbs_error.h>
 #include <pbs_ifl.h>
 
