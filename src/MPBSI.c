@@ -49,7 +49,13 @@ extern const char *MNodeState[];
 
 #ifdef __MPBS
 
+/* for compatibility with newer torque headers, which use the C++ data type 'bool' */
+#if defined(HAVE_STDBOOL_H)
 #include <stdbool.h>
+#else
+#define bool unsigned char
+#endif
+
 #include <pbs_error.h>
 #include <pbs_ifl.h>
 
